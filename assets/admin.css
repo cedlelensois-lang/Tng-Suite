@@ -22,3 +22,9 @@
 .tngs-wrap .tngs-panel > h2:first-child { margin-top: .8em; }
 .tngs-wrap .tngs-overview td, .tngs-wrap .tngs-overview th { vertical-align: top; }
 .tngs-wrap .tngs-subtabs { float: none; margin: 8px 0 0; }
+
+/* Pages d'aide des modules sans réglages */
+.tngs-help .tngs-card { background: #fff; border: 1px solid #dcdcde; border-left: 4px solid #2271b1; padding: 4px 16px 12px; margin: 14px 0; max-width: 900px; }
+.tngs-help .tngs-card h3 { margin: .8em 0 .3em; }
+.tngs-help .tngs-card table { margin-top: 6px; }
+.tngs-wrap .tngs-modsections { margin-bottom: 10px; }

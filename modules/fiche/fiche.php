@@ -138,7 +138,7 @@ function tngfg_private_ok($row) {
 /* Page de réglages                                                    */
 /* ------------------------------------------------------------------ */
 add_action('admin_menu', function () {
-    tngs_add_subpage('Fiche généalogique et listes de documents', 'Fiche & documents', 'tngfg', 'tngfg_settings_page');
+    tngs_add_subpage('Fiche généalogique et listes de documents', 'Fiche : réglages', 'tngfg', 'tngfg_settings_page');
 });
 add_action('admin_init', function () {
     register_setting('tngfg', 'tngfg_options', ['sanitize_callback' => 'tngfg_sanitize']);
@@ -251,6 +251,7 @@ function tngfg_enqueue_lists($admin = false) {
         'labels' => tngfg_labels(),
         'lang'   => tngfg_default_lang(),
         'langFront' => ($admin || tngfg_opt('lang_front')) ? 1 : 0,
+        'langStore' => $admin ? 0 : 1,   // dans l'administration, la langue suit TNG Suite > Général (pas la dernière langue choisie dans le navigateur)
     ]);
     $done = true;
 }
@@ -259,7 +260,7 @@ function tngfg_enqueue_lists($admin = false) {
 /* Génération dans l'administration                                    */
 /* ------------------------------------------------------------------ */
 add_action('admin_menu', function () {
-    tngs_add_subpage('Générer les documents (fiche, listes)', 'Générer des documents', 'tngfg-generate', 'tngfg_generate_page');
+    tngs_add_subpage('Générer les documents (fiche, listes)', 'Fiche : générer des documents', 'tngfg-generate', 'tngfg_generate_page');
 });
 
 function tngfg_generate_page() {
@@ -267,7 +268,7 @@ function tngfg_generate_page() {
     tngfg_enqueue_lists(true);
     ?>
     <?php tngs_admin_header('Générer des documents', array('module' => 'fiche')); ?>
-      <p class="tngs-box"><?php echo esc_html(tngs_t('Créez ici, sans passer par une page du site, les listes d’ascendants et de descendants et la fiche individuelle (PDF, Excel, Word). Les champs affichés et la langue par défaut se règlent dans « Fiche & documents ».')); ?></p>
+      <p class="tngs-box"><?php echo esc_html(tngs_t('Créez ici, sans passer par une page du site, les listes d’ascendants et de descendants et la fiche individuelle (PDF, Excel, Word). Les champs affichés et la langue par défaut se règlent dans la section « Réglages » de cette page.')); ?></p>
       <div style="max-width:1100px;margin-top:1em">
         <div class="tngl"></div>
       </div>

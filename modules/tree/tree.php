@@ -1024,3 +1024,26 @@ function tng_person_profile_link_shortcode( $atts ) {
     } );
 }
 add_shortcode( 'lien_fiche_tng', 'tng_person_profile_link_shortcode' );
+
+
+/* Page d'aide (ce module n'a pas de réglages propres) */
+add_action( 'admin_menu', function () {
+    tngs_add_subpage( 'Arbres & descendance : utilisation', 'Aide', 'tng-tree-help', function () {
+        $id = array( 'id', 'Identifiant TNG de la personne (visible dans l’adresse de sa fiche TNG : personID=I12).', 'I1' );
+        tngs_render_shortcode_help(
+            'Arbres & descendance',
+            'tree',
+            array(
+                array( 'code' => '[arbre_tng id="I1" generations="3"]', 'desc' => 'Arbre d’ascendance : la personne, ses parents, grands-parents, etc.', 'atts' => array( $id, array( 'generations', 'Nombre de générations d’ancêtres affichées (1 à 5).', '3' ) ) ),
+                array( 'code' => '[enfants_tng id="I1"]', 'desc' => 'Descendants d’une personne, présentés avec leurs vignettes (photo ou silhouette).', 'atts' => array( $id ) ),
+                array( 'code' => '[patronyme_tng id="I1" generations="5"]', 'desc' => 'Lignée patronymique : la transmission du nom de famille de père en fils.', 'atts' => array( $id, array( 'generations', 'Nombre de générations suivies.', '5' ) ) ),
+                array( 'code' => '[liste_enfants_tng id="F12"]', 'desc' => 'Liste des enfants d’une famille (couple).', 'atts' => array( array( 'id', 'Identifiant TNG de la famille (F12…), obligatoire.', '—' ) ) ),
+                array( 'code' => '[stats_descendants_tng id="I1"]', 'desc' => 'Statistiques de descendance : nombre de descendants à chaque génération.', 'atts' => array( $id ) ),
+                array( 'code' => '[lien_fiche_tng id="I1"]', 'desc' => 'Bouton qui renvoie vers la fiche TNG de la personne.', 'atts' => array( $id ) ),
+            ),
+            array(
+                'Les résultats sont mis en cache ; le bouton « Vider tous les caches » de TNG Suite > Général > Maintenance les renouvelle après une mise à jour de TNG.',
+            )
+        );
+    } );
+} );

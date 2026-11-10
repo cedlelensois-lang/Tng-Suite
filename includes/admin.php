@@ -26,11 +26,27 @@ function tngs_admin_menu() {
  * Les pages hors « Réglages » n'affichent pas seules les messages d'enregistrement : on les affiche ici.
  */
 function tngs_add_subpage( $page_title, $menu_title, $slug, $callback ) {
-    global $tngs_tabs;
+    global $tngs_tabs, $tngs_pages;
     if ( ! is_array( $tngs_tabs ) ) {
         $tngs_tabs = array();
     }
-    $tngs_tabs[ $slug ] = tngs_t( $menu_title );
+    if ( ! is_array( $tngs_pages ) ) {
+        $tngs_pages = array();
+    }
+    $tngs_tabs[ $slug ]  = tngs_t( $menu_title );
+    $tngs_pages[ $slug ] = array( $callback, $menu_title, $page_title );
+    $mod                 = tngs_merged_module( $slug );
+    if ( '' !== $mod ) {
+        if ( tngs_module_primary( $mod ) !== $slug ) {
+            return; // page secondaire : affichée comme section dans la page du module.
+        }
+        $mods       = tngs_modules();
+        $menu_title = isset( $mods[ $mod ] ) ? $mods[ $mod ][0] : $menu_title;
+        $page_title = $menu_title;
+        $callback   = function () use ( $mod ) {
+            tngs_render_module_page( $mod );
+        };
+    }
     add_submenu_page(
         'tng-suite',
         tngs_t( $page_title ),
@@ -41,24 +57,145 @@ function tngs_add_subpage( $page_title, $menu_title, $slug, $callback ) {
     );
 }
 
+/** Fusion des pages d'un même module en une seule page à sections (désactivable : add_filter( 'tngs_merge_module_pages', '__return_false' )). */
+function tngs_merge_enabled() {
+    return (bool) apply_filters( 'tngs_merge_module_pages', true );
+}
+
+/** Module dont la page $slug est fusionnée avec d'autres (module qui a plusieurs pages), sinon ''. */
+function tngs_merged_module( $slug ) {
+    $map = tngs_page_modules();
+    if ( ! tngs_merge_enabled() || ! isset( $map[ $slug ] ) ) {
+        return '';
+    }
+    $mod = $map[ $slug ];
+    return count( array_keys( $map, $mod, true ) ) > 1 ? $mod : '';
+}
+
+/** Page principale d'un module (la première de la carte). */
+function tngs_module_primary( $mod ) {
+    $k = array_search( $mod, tngs_page_modules(), true );
+    return false === $k ? '' : $k;
+}
+
+/** Adresse d'une page d'administration de la suite (une page secondaire pointe vers la section de la page du module). */
+function tngs_page_url( $slug ) {
+    $mod = tngs_merged_module( $slug );
+    if ( '' !== $mod && tngs_module_primary( $mod ) !== $slug ) {
+        return admin_url( 'admin.php?page=' . tngs_module_primary( $mod ) ) . '#' . $slug;
+    }
+    return admin_url( 'admin.php?page=' . $slug );
+}
+
+/** Une page secondaire demandée directement (ancien lien, favori) : redirection vers sa section. */
+add_action(
+    'admin_init',
+    function () {
+        $page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
+        $mod  = '' !== $page ? tngs_merged_module( $page ) : '';
+        if ( '' !== $mod && tngs_module_primary( $mod ) !== $page ) {
+            wp_safe_redirect( tngs_page_url( $page ) );
+            exit;
+        }
+    }
+);
+
+/** Les ressources des pages secondaires (chargées selon le nom de la page) sont chargées avec la page du module. */
+add_action(
+    'admin_enqueue_scripts',
+    function ( $hook ) {
+        static $busy = false;
+        $page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
+        $mod  = '' !== $page ? tngs_merged_module( $page ) : '';
+        if ( $busy || '' === $mod || tngs_module_primary( $mod ) !== $page ) {
+            return;
+        }
+        $busy = true;
+        foreach ( tngs_page_modules() as $slug => $m ) {
+            if ( $m === $mod && $slug !== $page ) {
+                do_action( 'admin_enqueue_scripts', 'tng-suite_page_' . $slug );
+            }
+        }
+        $busy = false;
+    },
+    99
+);
+
+/**
+ * Page d'un module à plusieurs pages : un seul écran, une section par page d'origine (réglages, outils…).
+ */
+function tngs_render_module_page( $mod ) {
+    global $tngs_pages;
+    $mods = tngs_modules();
+    $secs = array();
+    foreach ( tngs_page_modules() as $slug => $m ) {
+        if ( $m === $mod && isset( $tngs_pages[ $slug ] ) ) {
+            $secs[ $slug ] = $tngs_pages[ $slug ];
+        }
+    }
+    tngs_admin_header( isset( $mods[ $mod ] ) ? $mods[ $mod ][0] : $mod, array( 'module' => $mod ) );
+    echo '<nav class="tngs-sections tngs-modsections" aria-label="Sections">';
+    foreach ( $secs as $slug => $pg ) {
+        $label = tngs_t( $pg[1] );
+        $pos   = strpos( $label, ' : ' );
+        if ( false !== $pos ) {
+            $label = ucfirst( substr( $label, $pos + 3 ) ); // « Implexe : réglages » → « Réglages » (le nom du module est déjà dans l'onglet).
+        }
+        echo '<a href="#' . esc_attr( $slug ) . '" class="tngs-sec" data-panel="' . esc_attr( $slug ) . '">' . esc_html( $label ) . '</a>';
+    }
+    echo '</nav>';
+    foreach ( $secs as $slug => $pg ) {
+        $GLOBALS['tngs_embed'] = $slug;
+        ob_start();
+        call_user_func( $pg[0] );
+        $out = (string) ob_get_clean();
+        $GLOBALS['tngs_embed'] = '';
+        $diff = substr_count( $out, '<div' ) - substr_count( $out, '</div>' );
+        echo $out . ( $diff > 0 ? str_repeat( '</div>', $diff ) : '' ); // phpcs:ignore WordPress.Security.EscapeOutput
+    }
+    ?>
+    </div>
+    <script>
+    (function () {
+        var wrap = document.querySelector('.tngs-wrap');
+        var panels = wrap.querySelectorAll('.tngs-panel[data-panel]');
+        var links = wrap.querySelectorAll('.tngs-modsections .tngs-sec');
+        function show(name) {
+            if (!wrap.querySelector('.tngs-panel[data-panel="' + name + '"]')) { name = links.length ? links[0].getAttribute('data-panel') : ''; }
+            panels.forEach(function (p) { p.style.display = p.getAttribute('data-panel') === name ? '' : 'none'; });
+            links.forEach(function (a) { a.classList.toggle('tngs-sec-active', a.getAttribute('data-panel') === name); });
+        }
+        links.forEach(function (a) {
+            a.addEventListener('click', function (e) { e.preventDefault(); history.replaceState(null, '', '#' + a.getAttribute('data-panel')); show(a.getAttribute('data-panel')); });
+        });
+        window.addEventListener('hashchange', function () { show((location.hash || '').slice(1)); });
+        wrap.classList.add('tngs-js');
+        show((location.hash || '').slice(1));
+    })();
+    </script>
+    <?php
+}
+
 /** Module auquel appartient chaque page d'administration (même ordre que tngs_modules()). */
 function tngs_page_modules() {
     return array(
+        'tng-tree-help'           => 'tree',
         'tng-link'                => 'link',
         'tng_family_timeline'     => 'timeline',
         'tng-heatmap-settings'    => 'heatmap',
-        'tng-fan'                 => 'fan',
         'tng-fan-gen'             => 'fan',
+        'tng-fan'                 => 'fan',
         'tng-stats'               => 'stats',
         'tng-stats-charts'        => 'stats',
         'tng-media-gallery'       => 'gallery',
         'tng_random'              => 'random',
-        'tng-implexe-settings'    => 'implexe',
+        'tng-extra-help'          => 'extra',
         'tng-implexe'             => 'implexe',
         'tng-implexe-inbreeding'  => 'implexe',
+        'tng-implexe-settings'    => 'implexe',
         'tngbook'                 => 'book',
-        'tngfg'                   => 'fiche',
         'tngfg-generate'          => 'fiche',
+        'tngfg'                   => 'fiche',
     );
 }
 
@@ -550,6 +687,15 @@ function tngs_admin_assets( $hook ) {
 function tngs_admin_header( $title, $args = array() ) {
     $a = wp_parse_args( $args, array( 'module' => '', 'db' => true, 'status' => null, 'shortcodes' => null, 'intro' => '' ) );
 
+    // Page intégrée à la page d'un module : une section (le <div> est refermé par la page d'origine).
+    if ( ! empty( $GLOBALS['tngs_embed'] ) ) {
+        echo '<div class="tngs-panel" data-panel="' . esc_attr( $GLOBALS['tngs_embed'] ) . '">';
+        if ( is_array( $a['shortcodes'] ) || ( is_string( $a['shortcodes'] ) && '' !== $a['shortcodes'] ) ) {
+            echo '<p class="tngs-box">' . esc_html( tngs_t( 'Shortcodes :' ) ) . ' ' . esc_html( implode( ' ', (array) $a['shortcodes'] ) ) . '</p>';
+        }
+        return;
+    }
+
     echo '<div class="wrap tngs-wrap"><h1><span class="tngs-brand">TNG Suite</span> – ' . esc_html( tngs_t( $title ) ) . '</h1>';
     tngs_admin_tabs();
 
@@ -625,7 +771,7 @@ function tngs_admin_tabs() {
         );
     }
     echo '</nav>';
-    $sub = $cur_mod ? tngs_module_pages( $cur_mod ) : array();
+    $sub = ( $cur_mod && ! tngs_merged_module( $current ) ) ? tngs_module_pages( $cur_mod ) : array();
     if ( count( $sub ) > 1 ) {
         echo '<ul class="subsubsub tngs-subtabs">';
         $n = 0;
@@ -640,4 +786,33 @@ function tngs_admin_tabs() {
         }
         echo '</ul><br class="clear">';
     }
+}
+
+
+/**
+ * Page d'aide d'un module qui n'a pas de réglages propres : chaque shortcode avec sa description, ses attributs et un exemple.
+ * $items : [ [ 'code' => '[arbre_tng id="I1"]', 'desc' => '…', 'atts' => [ [ 'id', 'description', 'valeur par défaut' ], … ] ], … ]
+ */
+function tngs_render_shortcode_help( $title, $module, array $items, $notes = array() ) {
+    tngs_admin_header( $title, array( 'module' => $module, 'db' => false ) );
+    echo '<div class="tngs-help">';
+    echo '<p class="tngs-box">' . esc_html( tngs_t( 'Ce module n’a pas de page de réglages : on l’utilise en collant un shortcode dans une page ou un article. Les personnes vivantes ou privées sont masquées ou affichées selon TNG Suite > Général > Modules.' ) ) . '</p>';
+    foreach ( $items as $it ) {
+        echo '<div class="tngs-card"><h3><code>' . esc_html( $it['code'] ) . '</code></h3>';
+        echo '<p>' . esc_html( tngs_t( $it['desc'] ) ) . '</p>';
+        if ( ! empty( $it['atts'] ) ) {
+            echo '<table class="widefat striped"><thead><tr><th>' . esc_html( tngs_t( 'Attribut' ) ) . '</th><th>' . esc_html( tngs_t( 'Rôle' ) ) . '</th><th>' . esc_html( tngs_t( 'Valeur par défaut' ) ) . '</th></tr></thead><tbody>';
+            foreach ( $it['atts'] as $at ) {
+                echo '<tr><td><code>' . esc_html( $at[0] ) . '</code></td><td>' . esc_html( tngs_t( $at[1] ) ) . '</td><td>' . esc_html( $at[2] ) . '</td></tr>';
+            }
+            echo '</tbody></table>';
+        } else {
+            echo '<p class="description">' . esc_html( tngs_t( 'Aucun attribut.' ) ) . '</p>';
+        }
+        echo '</div>';
+    }
+    foreach ( $notes as $n ) {
+        echo '<p class="description">' . esc_html( tngs_t( $n ) ) . '</p>';
+    }
+    echo '</div></div>';
 }

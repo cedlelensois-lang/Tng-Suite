@@ -322,7 +322,7 @@ TXT;
 	/* ------------------------------------------------------------------ Administration */
 
 	public static function menu() {
-		tngs_add_subpage( 'Statistiques', 'Statistiques', 'tng-stats', array( __CLASS__, 'page' ) );
+		tngs_add_subpage( 'Statistiques', 'Stats : réglages', 'tng-stats', array( __CLASS__, 'page' ) );
 		tngs_add_subpage( 'Statistiques : graphiques', 'Stats : graphiques', 'tng-stats-charts', array( __CLASS__, 'page_charts' ) );
 	}
 
@@ -346,7 +346,7 @@ TXT;
 
 	private static function privacy_line() {
 		return '<p>Vivants / privés : <strong>' . ( tngs_hide_living( 'stats' ) ? 'masqués' : '⚠️ affichés (RGPD)' ) . '</strong> — réglage dans <a href="'
-			. esc_url( admin_url( 'admin.php?page=tng-suite' ) ) . '">TNG Suite &gt; Général &gt; Modules</a>. Seuls des totaux sont publiés ; « masqués » cache le nom des personnes privées dans la liste des centenaires.</p>';
+			. esc_url( tngs_page_url( 'tng-suite' ) ) . '">TNG Suite &gt; Général &gt; Modules</a>. Seuls des totaux sont publiés ; « masqués » cache le nom des personnes privées dans la liste des centenaires.</p>';
 	}
 
 	public static function page() {
@@ -378,7 +378,7 @@ TXT;
 		}
 		?>
 		<?php tngs_admin_header( 'Statistiques', array( 'module' => 'stats', 'status' => array( $ok, $msg ) ) ); ?>
-			<p>Titres, libellés, légendes et couleurs de chaque graphique : <a href="<?php echo esc_url( admin_url( 'admin.php?page=tng-stats-charts' ) ); ?>">Stats : graphiques</a>.</p>
+			<p>Titres, libellés, légendes et couleurs de chaque graphique : <a href="<?php echo esc_url( tngs_page_url( 'tng-stats-charts' ) ); ?>">Stats : graphiques</a>.</p>
 
 			<form method="post" action="options.php">
 				<?php settings_fields( 'tngstats_group' ); ?>

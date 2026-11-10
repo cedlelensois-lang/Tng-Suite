@@ -1,6 +1,81 @@
 # TNG Suite – textes sources en français.
 msgid ""
 msgstr "Project-Id-Version: TNG Suite\nReport-Msgid-Bugs-To: \nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n != 1);\n"
+msgid "Aide"
+msgstr ""
+
+msgid "Arbres & descendance : utilisation"
+msgstr ""
+
+msgid "Nuage de noms & anniversaires : utilisation"
+msgstr ""
+
+msgid "Ce module n’a pas de page de réglages : on l’utilise en collant un shortcode dans une page ou un article. Les personnes vivantes ou privées sont masquées ou affichées selon TNG Suite > Général > Modules."
+msgstr ""
+
+msgid "Attribut"
+msgstr ""
+
+msgid "Rôle"
+msgstr ""
+
+msgid "Valeur par défaut"
+msgstr ""
+
+msgid "Aucun attribut."
+msgstr ""
+
+msgid "Identifiant TNG de la personne (visible dans l’adresse de sa fiche TNG : personID=I12)."
+msgstr ""
+
+msgid "Arbre d’ascendance : la personne, ses parents, grands-parents, etc."
+msgstr ""
+
+msgid "Nombre de générations d’ancêtres affichées (1 à 5)."
+msgstr ""
+
+msgid "Descendants d’une personne, présentés avec leurs vignettes (photo ou silhouette)."
+msgstr ""
+
+msgid "Lignée patronymique : la transmission du nom de famille de père en fils."
+msgstr ""
+
+msgid "Nombre de générations suivies."
+msgstr ""
+
+msgid "Liste des enfants d’une famille (couple)."
+msgstr ""
+
+msgid "Identifiant TNG de la famille (F12…), obligatoire."
+msgstr ""
+
+msgid "Statistiques de descendance : nombre de descendants à chaque génération."
+msgstr ""
+
+msgid "Bouton qui renvoie vers la fiche TNG de la personne."
+msgstr ""
+
+msgid "Les résultats sont mis en cache ; le bouton « Vider tous les caches » de TNG Suite > Général > Maintenance les renouvelle après une mise à jour de TNG."
+msgstr ""
+
+msgid "Nuage des noms de famille les plus fréquents : plus un nom est fréquent, plus il est grand."
+msgstr ""
+
+msgid "Nombre de noms affichés (1 à 200)."
+msgstr ""
+
+msgid "Les naissances survenues le même jour et le même mois, toutes années confondues."
+msgstr ""
+
+msgid "Les mariages célébrés le même jour et le même mois."
+msgstr ""
+
+msgid "Les décès survenus le même jour et le même mois."
+msgstr ""
+
+msgid "Les listes d’anniversaires sont mises en cache pour la journée."
+msgstr ""
+
 msgid "(TNG Suite > Général). Vous pouvez aussi indiquer un chemin absolu ("
 msgstr ""
 
@@ -1909,6 +1984,18 @@ msgstr ""
 msgid "État de la connexion"
 msgstr ""
 
+msgid "Éventail : réglages"
+msgstr ""
+
+msgid "Stats : réglages"
+msgstr ""
+
+msgid "Fiche : réglages"
+msgstr ""
+
+msgid "Fiche : générer des documents"
+msgstr ""
+
 msgid "Éventail / roue"
 msgstr ""
 
@@ -1916,9 +2003,6 @@ msgid "Éventail / roue de parenté"
 msgstr ""
 
 msgid "Éventail : indiquez la personne de départ, par exemple [tng_fan person=\"I1\"]."
-msgstr ""
-
-msgid "Éventail : réglages"
 msgstr ""
 
 msgid "Événement"
@@ -2548,7 +2632,7 @@ msgstr ""
 msgid "Générer les documents"
 msgstr ""
 
-msgid "Créez ici, sans passer par une page du site, les listes d’ascendants et de descendants et la fiche individuelle (PDF, Excel, Word). Les champs affichés et la langue par défaut se règlent dans « Fiche & documents »."
+msgid "Créez ici, sans passer par une page du site, les listes d’ascendants et de descendants et la fiche individuelle (PDF, Excel, Word). Les champs affichés et la langue par défaut se règlent dans la section « Réglages » de cette page."
 msgstr ""
 
 msgid "Listes et fiche individuelle"

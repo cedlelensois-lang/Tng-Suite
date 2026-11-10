@@ -21,3 +21,20 @@ add_action('init', function () {
 
 // « Vider tous les caches » (TNG Suite) et changement des réglages communs.
 add_action('tngs_flush_cache', array('TNG_Extra_DB', 'flush_cache'));
+
+// Page d'aide (ce module n'a pas de réglages propres).
+add_action('admin_menu', function () {
+    tngs_add_subpage('Nuage de noms & anniversaires : utilisation', 'Aide', 'tng-extra-help', function () {
+        tngs_render_shortcode_help(
+            'Nuage de noms & anniversaires',
+            'extra',
+            array(
+                array('code' => '[tng_name_cloud limit="50"]', 'desc' => 'Nuage des noms de famille les plus fréquents : plus un nom est fréquent, plus il est grand.', 'atts' => array(array('limit', 'Nombre de noms affichés (1 à 200).', '50'))),
+                array('code' => '[tng_births_today]', 'desc' => 'Les naissances survenues le même jour et le même mois, toutes années confondues.', 'atts' => array()),
+                array('code' => '[tng_marriages_today]', 'desc' => 'Les mariages célébrés le même jour et le même mois.', 'atts' => array()),
+                array('code' => '[tng_deaths_today]', 'desc' => 'Les décès survenus le même jour et le même mois.', 'atts' => array()),
+            ),
+            array('Les listes d’anniversaires sont mises en cache pour la journée.')
+        );
+    });
+});

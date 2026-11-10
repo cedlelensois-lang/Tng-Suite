@@ -1,6 +1,81 @@
 # TNG Suite – textes sources en français.
 msgid ""
 msgstr "Project-Id-Version: TNG Suite\nReport-Msgid-Bugs-To: \nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nLanguage: en_US\nPlural-Forms: nplurals=2; plural=(n != 1);\n"
+msgid "Aide"
+msgstr "Help"
+
+msgid "Arbres & descendance : utilisation"
+msgstr "Trees & descendants: usage"
+
+msgid "Nuage de noms & anniversaires : utilisation"
+msgstr "Name cloud & anniversaries: usage"
+
+msgid "Ce module n’a pas de page de réglages : on l’utilise en collant un shortcode dans une page ou un article. Les personnes vivantes ou privées sont masquées ou affichées selon TNG Suite > Général > Modules."
+msgstr "This module has no settings page: use it by pasting a shortcode into a page or post. Living or private people are hidden or shown according to TNG Suite > General > Modules."
+
+msgid "Attribut"
+msgstr "Attribute"
+
+msgid "Rôle"
+msgstr "Purpose"
+
+msgid "Valeur par défaut"
+msgstr "Default value"
+
+msgid "Aucun attribut."
+msgstr "No attributes."
+
+msgid "Identifiant TNG de la personne (visible dans l’adresse de sa fiche TNG : personID=I12)."
+msgstr "TNG ID of the person (visible in the address of their TNG page: personID=I12)."
+
+msgid "Arbre d’ascendance : la personne, ses parents, grands-parents, etc."
+msgstr "Ancestor tree: the person, their parents, grandparents, and so on."
+
+msgid "Nombre de générations d’ancêtres affichées (1 à 5)."
+msgstr "Number of ancestor generations shown (1 to 5)."
+
+msgid "Descendants d’une personne, présentés avec leurs vignettes (photo ou silhouette)."
+msgstr "A person’s descendants, shown with thumbnails (photo or silhouette)."
+
+msgid "Lignée patronymique : la transmission du nom de famille de père en fils."
+msgstr "Patronymic line: the family name passed from father to son."
+
+msgid "Nombre de générations suivies."
+msgstr "Number of generations followed."
+
+msgid "Liste des enfants d’une famille (couple)."
+msgstr "List of the children of a family (couple)."
+
+msgid "Identifiant TNG de la famille (F12…), obligatoire."
+msgstr "TNG ID of the family (F12…), required."
+
+msgid "Statistiques de descendance : nombre de descendants à chaque génération."
+msgstr "Descendant statistics: number of descendants in each generation."
+
+msgid "Bouton qui renvoie vers la fiche TNG de la personne."
+msgstr "Button linking to the person’s TNG page."
+
+msgid "Les résultats sont mis en cache ; le bouton « Vider tous les caches » de TNG Suite > Général > Maintenance les renouvelle après une mise à jour de TNG."
+msgstr "Results are cached; the “Clear all caches” button in TNG Suite > General > Maintenance refreshes them after a TNG update."
+
+msgid "Nuage des noms de famille les plus fréquents : plus un nom est fréquent, plus il est grand."
+msgstr "Cloud of the most frequent family names: the more frequent a name, the larger it is."
+
+msgid "Nombre de noms affichés (1 à 200)."
+msgstr "Number of names shown (1 to 200)."
+
+msgid "Les naissances survenues le même jour et le même mois, toutes années confondues."
+msgstr "Births on the same day and month, across all years."
+
+msgid "Les mariages célébrés le même jour et le même mois."
+msgstr "Marriages on the same day and month."
+
+msgid "Les décès survenus le même jour et le même mois."
+msgstr "Deaths on the same day and month."
+
+msgid "Les listes d’anniversaires sont mises en cache pour la journée."
+msgstr "Anniversary lists are cached for the day."
+
 msgid "(TNG Suite > Général). Vous pouvez aussi indiquer un chemin absolu ("
 msgstr "(TNG Suite > General). You can also enter an absolute path ("
 
@@ -1909,6 +1984,18 @@ msgstr "Status"
 msgid "État de la connexion"
 msgstr "Connection status"
 
+msgid "Éventail : réglages"
+msgstr "Fan: settings"
+
+msgid "Stats : réglages"
+msgstr "Stats: settings"
+
+msgid "Fiche : réglages"
+msgstr "Fiche: settings"
+
+msgid "Fiche : générer des documents"
+msgstr "Fiche: generate documents"
+
 msgid "Éventail / roue"
 msgstr "Fan / wheel"
 
@@ -1917,9 +2004,6 @@ msgstr "Fan / kinship wheel"
 
 msgid "Éventail : indiquez la personne de départ, par exemple [tng_fan person=\"I1\"]."
 msgstr "Fan: specify the starting person, for example [tng_fan person=\"I1\"]."
-
-msgid "Éventail : réglages"
-msgstr "Fan: settings"
 
 msgid "Événement"
 msgstr "Event"
@@ -2548,8 +2632,8 @@ msgstr "Generate documents"
 msgid "Générer les documents"
 msgstr "Generate documents"
 
-msgid "Créez ici, sans passer par une page du site, les listes d’ascendants et de descendants et la fiche individuelle (PDF, Excel, Word). Les champs affichés et la langue par défaut se règlent dans « Fiche & documents »."
-msgstr "Create here, without using a page of the site, the lists of ancestors and descendants and the individual sheet (PDF, Excel, Word). The fields shown and the default language are set in “Fiche & documents”."
+msgid "Créez ici, sans passer par une page du site, les listes d’ascendants et de descendants et la fiche individuelle (PDF, Excel, Word). Les champs affichés et la langue par défaut se règlent dans la section « Réglages » de cette page."
+msgstr "Create here, without using a page of the site, the lists of ancestors and descendants and the individual sheet (PDF, Excel, Word). The fields shown and the default language are set in the “Settings” section of this page."
 
 msgid "Listes et fiche individuelle"
 msgstr "Lists and individual sheet"

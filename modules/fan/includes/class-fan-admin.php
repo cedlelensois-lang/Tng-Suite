@@ -154,7 +154,7 @@ class TNGFan_Admin {
 
 	public static function menu() {
 		tngs_add_subpage( 'Éventail : générateur', 'Éventail : générer une roue', 'tng-fan-gen', array( __CLASS__, 'generator_page' ) );
-		tngs_add_subpage( 'Éventail : réglages', 'Éventail / roue', 'tng-fan', array( __CLASS__, 'page' ) );
+		tngs_add_subpage( 'Éventail : réglages', 'Éventail : réglages', 'tng-fan', array( __CLASS__, 'page' ) );
 	}
 
 	public static function admin_assets( $hook ) {
@@ -207,7 +207,7 @@ class TNGFan_Admin {
 				<code>color="generation|branch|sex"</code>, <code>palette="rainbow"</code>, <code>colors="#ff0000,#00ff00"</code>, <code>style="tint|solid"</code>,
 				<code>spouses="1|0"</code> (conjoints), <code>living="default|hide|show"</code> (personnes vivantes : voir l'avertissement du générateur), <code>zoomdetail="1|0"</code> (texte enrichi au zoom), <code>pdf="1|0"</code> (bouton d'export PDF),
 				<code>height="720"</code>, <code>controls="0"</code> (masquer le panneau d'options), <code>tree="…"</code>.
-				Vous pouvez aussi <a href="<?php echo esc_url( admin_url( 'admin.php?page=tng-fan-gen' ) ); ?>">générer la roue directement depuis l'administration</a>.</p>
+				Vous pouvez aussi <a href="<?php echo esc_url( tngs_page_url( 'tng-fan-gen' ) ); ?>">générer la roue directement depuis l'administration</a>.</p>
 
 			<form method="post" action="options.php">
 				<?php settings_fields( 'tngfan_group' ); ?>
@@ -385,7 +385,7 @@ class TNGFan_Admin {
 		?>
 		<?php tngs_admin_header( 'Éventail : générer une roue', array( 'module' => 'fan' ) ); ?>
 			<p class="tngs-box">Choisissez une personne et les options, cliquez sur « Générer la roue » : l'aperçu est interactif (zoom, déplacement, export PDF).
-				Copiez ensuite le shortcode dans une page. Les réglages par défaut se trouvent dans <a href="<?php echo esc_url( admin_url( 'admin.php?page=tng-fan' ) ); ?>">Éventail / roue</a>.
+				Copiez ensuite le shortcode dans une page. Les réglages par défaut se trouvent dans <a href="<?php echo esc_url( tngs_page_url( 'tng-fan' ) ); ?>">Éventail / roue</a>.
 			</p>
 
 			<form id="tngfan-gen" class="tngfan-genform" onsubmit="return false">

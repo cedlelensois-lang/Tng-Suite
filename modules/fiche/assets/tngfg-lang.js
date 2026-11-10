@@ -829,19 +829,20 @@
     }
   };
 
-  var conf = { def: 'fr', front: false }, cur = 'fr', ready = false;
+  var conf = { def: 'fr', front: false, store: true }, cur = 'fr', ready = false;
   function valid(l) { return Object.prototype.hasOwnProperty.call(NAMES, l); }
-  function stored() { try { var v = w.localStorage.getItem('tngfg_lang'); return valid(v) ? v : ''; } catch (e) { return ''; } }
+  function stored() { if (!conf.store) return ''; try { var v = w.localStorage.getItem('tngfg_lang'); return valid(v) ? v : ''; } catch (e) { return ''; } }
   var L = w.TNGFG_LANG = {
     names: NAMES, dict: DICT,
     init: function (C) {
       C = C || {};
       conf.def = valid(C.lang) ? C.lang : conf.def;
       conf.front = conf.front || !!C.langFront;
+      if (C.langStore === 0) conf.store = false;
       if (!ready) { cur = (conf.front && stored()) || conf.def; ready = true; }
     },
     lang: function () { return cur; },
-    set: function (l) { if (!valid(l)) return; cur = l; try { w.localStorage.setItem('tngfg_lang', l); } catch (e) { /* stockage indisponible */ } },
+    set: function (l) { if (!valid(l)) return; cur = l; if (!conf.store) return; try { w.localStorage.setItem('tngfg_lang', l); } catch (e) { /* stockage indisponible */ } },
     x: function () { return X[cur]; },
     t: function (s, v) {
       var r = (cur !== 'fr' && DICT[cur] && Object.prototype.hasOwnProperty.call(DICT[cur], s)) ? DICT[cur][s] : s;
