@@ -1,0 +1,63 @@
+.tngfg{max-width:1200px;margin:1.5em auto;font-family:Georgia,'Palatino Linotype',serif;color:#3b2a20}
+.tngfg *{box-sizing:border-box}
+.tngfg-search{position:relative;margin-bottom:1em}
+.tngfg-search label{display:block;font-weight:700;margin-bottom:.4em;color:#6e1d2a}
+.tngfg-input{width:100%;padding:.8em 1em;font:inherit;font-size:1.1em;border:2px solid #b5862f;border-radius:6px;background:#fbf4e3}
+.tngfg-input:focus{outline:3px solid rgba(110,29,42,.35);outline-offset:1px}
+.tngfg-list{position:absolute;z-index:20;left:0;right:0;margin:2px 0 0;padding:0;list-style:none;background:#fffaf0;border:2px solid #b5862f;border-radius:6px;max-height:320px;overflow:auto;box-shadow:0 8px 20px rgba(59,42,32,.18)}
+.tngfg-list li{padding:.6em 1em;cursor:pointer;border-bottom:1px solid #eadcc0}
+.tngfg-list li:last-child{border-bottom:0}
+.tngfg-list li span{color:#8b6c55;margin-left:.5em;font-size:.92em}
+.tngfg-list li:hover,.tngfg-list li.on{background:#f2e4c8}
+.tngfg-sel{display:flex;flex-wrap:wrap;gap:.8em;align-items:center;margin:.6em 0 1em}
+.tngfg-chosen{font-weight:700;color:#6e1d2a}
+.tngfg-fam{padding:.5em;font:inherit;max-width:100%}
+.tngfg-btn{padding:.65em 1.3em;font:inherit;font-weight:700;color:#faf1dd;background:#6e1d2a;border:2px solid #6e1d2a;border-radius:6px;cursor:pointer}
+.tngfg-btn:hover{background:#561521}
+.tngfg-btn:focus-visible{outline:3px solid #b5862f;outline-offset:2px}
+.tngfg-btn:disabled{opacity:.55;cursor:wait}
+.tngfg-ghost{background:transparent;color:#6e1d2a}
+.tngfg-ghost:hover{background:#f2e4c8}
+.tngfg-status{min-height:1.5em;margin:.4em 0;color:#6e1d2a}
+.tngfg-err{color:#a1261b;font-weight:700}
+.tngfg-bar{display:flex;flex-wrap:wrap;gap:.6em;margin:.5em 0 1em}
+.tngfg-edit{margin-bottom:1em;border:1px solid #d8c392;border-radius:6px;background:#fbf4e3;padding:.6em 1em}
+.tngfg-edit summary{cursor:pointer;font-weight:700;color:#6e1d2a}
+.tngfg-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1em;margin-top:1em}
+.tngfg-form fieldset{border:1px solid #d8c392;border-radius:6px;padding:.6em .9em}
+.tngfg-form legend{padding:0 .4em;font-weight:700;color:#b5862f}
+.tngfg-form label{display:block;margin:.5em 0}
+.tngfg-form label span{display:block;font-size:.85em;color:#8b6c55}
+.tngfg-form input,.tngfg-form select,.tngfg-form textarea{width:100%;padding:.45em .6em;font:inherit;border:1px solid #c9b27c;border-radius:4px;background:#fff}
+.tngfg-prev{border:1px solid #d8c392;box-shadow:0 10px 30px rgba(59,42,32,.18);background:#f2e4c8;line-height:0}
+.tngfg-prev svg{width:100%;height:auto;display:block}
+.tngfg-note{padding:1em;border-left:4px solid #b5862f;background:#fbf4e3}
+
+/* Module Listes de documents */
+.tngl{max-width:1200px;margin:1.5em auto;font-family:Georgia,'Palatino Linotype',serif;color:#3b2a20}
+.tngl *{box-sizing:border-box}
+.tngl-kind{border:1px solid #d8c392;border-radius:6px;padding:.6em 1em;margin:0 0 1em;background:#fbf4e3}
+.tngl-kind legend{padding:0 .4em;font-weight:700;color:#6e1d2a}
+.tngl-kind label{display:inline-block;margin-right:1.5em;cursor:pointer}
+.tngl-opts{margin:.4em 0 1em}
+.tngl-gens input{width:5em;padding:.4em;font:inherit;border:1px solid #c9b27c;border-radius:4px;margin-left:.5em}
+.tngl-hint{margin:.4em 0 0;font-size:.9em;color:#8b6c55}
+.tngl-prev{overflow:auto;max-height:80vh;border:1px solid #d8c392;background:#fff;padding:1em;font-family:Arial,Helvetica,sans-serif;color:#000}
+.tngl-doc h3{margin:0 0 .2em;color:#27455f;font-size:1.5em}
+.tngl-sub{margin:0 0 1em;color:#555;font-size:.9em}
+.tngl-run{margin:0 0 .8em;text-align:center;color:#808080;font-size:.8em}
+.tngl-doc table{width:100%;table-layout:fixed;border-collapse:collapse}
+.tngl-doc.landscape table{min-width:900px}
+.tngl-doc.portrait{max-width:760px;margin:0 auto}
+.tngl-doc td{border:1px solid #7ea1b8;padding:3px 4px;vertical-align:top;word-wrap:break-word}
+.tngl-doc tr.hd td{text-align:center}
+
+/* Champs affichés */
+.tngl-fields{margin:.6em 0 1em;border:1px solid #d8c392;border-radius:6px;background:#fbf4e3;padding:.5em 1em}
+.tngl-fields summary{cursor:pointer;font-weight:700;color:#6e1d2a}
+.tngl-fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.3em 1em;margin-top:.6em}
+.tngl-fgrid label{display:block}
+
+.tngfg-lang{margin-bottom:1em}
+.tngfg-lang label{font-weight:700;color:#6e1d2a}
+.tngfg-lang select{margin-left:.4em;padding:.3em .5em}

@@ -1,0 +1,65 @@
+.tngfan { position: relative; display: flex; flex-direction: column; min-height: 360px; border: 1px solid #d5dbe0; border-radius: 6px; background: #f6f7f8; overflow: hidden; font-size: 14px; line-height: 1.35; color: #1b1f23; box-sizing: border-box; }
+.tngfan *, .tngfan *::before, .tngfan *::after { box-sizing: border-box; }
+.tngfan-bar { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: #e9eef2; border-bottom: 1px solid #d5dbe0; }
+.tngfan-tabs { display: flex; flex: 1; flex-wrap: wrap; gap: 6px; }
+.tngfan-tab, .tngfan-back, .tngfan-gear, .tngfan-pdf { appearance: none; border: 1px solid #b8c2cc; background: #fff; color: #1b1f23; border-radius: 4px; padding: 5px 12px; font: inherit; cursor: pointer; }
+.tngfan-tab:hover, .tngfan-back:hover, .tngfan-gear:hover, .tngfan-pdf:hover { background: #f1f5f8; }
+.tngfan-tab.on { background: #2f6f73; border-color: #2f6f73; color: #fff; }
+.tngfan-gear { font-size: 18px; line-height: 1; padding: 3px 9px; }
+.tngfan-body { position: relative; display: flex; flex: 1; min-height: 0; }
+.tngfan-stage { position: relative; flex: 1; min-width: 0; overflow: hidden; background: #fbfbfc; touch-action: none; }
+.tngfan-svg { display: block; width: 100%; height: 100%; cursor: grab; user-select: none; -webkit-user-select: none; }
+.tngfan-svg:active { cursor: grabbing; }
+.tngfan-node { cursor: pointer; }
+.tngfan-node > path { vector-effect: non-scaling-stroke; }
+.tngfan-node:hover > path { filter: brightness(0.95); }
+.tngfan-node.is-hidden text { font-style: italic; opacity: .75; }
+.tngfan-empty { fill: #f2f3f5; stroke: #e1e4e8; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.tngfan-svg text { font-family: inherit; }
+.tngfan-zoom { position: absolute; top: 10px; left: 10px; display: flex; flex-direction: column; gap: 1px; border: 1px solid #b8c2cc; border-radius: 4px; overflow: hidden; background: #fff; }
+.tngfan-zoom button { appearance: none; border: 0; background: #fff; width: 30px; height: 30px; font-size: 18px; cursor: pointer; color: #1b1f23; }
+.tngfan-zoom button + button { border-top: 1px solid #e3e8ec; }
+.tngfan-zoom button:hover { background: #f1f5f8; }
+.tngfan-status { position: absolute; left: 50%; top: 14px; transform: translateX(-50%); padding: 6px 12px; background: rgba(255,255,255,.95); border: 1px solid #d5dbe0; border-radius: 4px; display: none; z-index: 3; }
+.tngfan-tip { position: absolute; z-index: 5; max-width: 260px; padding: 6px 9px; background: #1f2933; color: #fff; border-radius: 4px; font-size: 12px; pointer-events: none; }
+.tngfan-tip strong { display: block; }
+.tngfan-card { position: absolute; z-index: 6; width: 220px; padding: 10px 12px; background: #fff; border: 1px solid #b8c2cc; border-radius: 6px; box-shadow: 0 4px 14px rgba(0,0,0,.18); font-size: 13px; }
+.tngfan-card strong { display: block; margin-bottom: 4px; }
+.tngfan-acts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.tngfan-acts button, .tngfan-acts a { appearance: none; border: 1px solid #b8c2cc; background: #fff; color: #1b1f23; border-radius: 4px; padding: 3px 9px; font: inherit; font-size: 12px; text-decoration: none; cursor: pointer; }
+.tngfan-acts button:hover, .tngfan-acts a:hover { background: #f1f5f8; }
+.tngfan-panel { width: 270px; max-width: 80%; flex: none; overflow-y: auto; padding: 10px 14px 16px; background: #fff; border-left: 1px solid #d5dbe0; }
+.tngfan-panel[hidden] { display: none; }
+.tngfan-ph { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-size: 16px; }
+.tngfan-close { appearance: none; border: 1px solid #b8c2cc; background: #fff; border-radius: 4px; width: 26px; height: 26px; line-height: 1; font-size: 16px; cursor: pointer; }
+.tngfan-f { display: block; margin: 0 0 10px; }
+.tngfan-f > span { display: block; margin-bottom: 3px; font-size: 12px; color: #4b5560; }
+.tngfan-f select, .tngfan-f input[type=search] { width: 100%; padding: 5px 7px; border: 1px solid #c3ccd4; border-radius: 4px; background: #fff; font: inherit; }
+.tngfan-res button { display: block; width: 100%; text-align: left; padding: 5px 8px; margin: 0 0 2px; border: 1px solid #e3e8ec; background: #fafbfc; border-radius: 3px; font: inherit; font-size: 12px; cursor: pointer; }
+.tngfan-res button:hover { background: #eef3f6; }
+.tngfan-none { padding: 4px 2px; font-size: 12px; color: #6b7480; }
+.tngfan-shapes { display: flex; gap: 6px; }
+.tngfan-shapes button { appearance: none; flex: 1; padding: 6px 0; border: 1px solid #c3ccd4; background: #fff; border-radius: 4px; font-size: 20px; line-height: 1; cursor: pointer; }
+.tngfan-shapes button.on { background: #e6eef0; border-color: #2f6f73; }
+.tngfan-shapes button:disabled { opacity: .45; cursor: default; }
+.tngfan-sw { display: flex; flex-wrap: wrap; gap: 2px; margin: -4px 0 12px; }
+.tngfan-sw span { display: inline-block; width: 22px; height: 12px; border: 1px solid rgba(0,0,0,.15); }
+.tngfan-chk { display: block; margin: 4px 0 12px; font-size: 13px; }
+.tngfan-reset { appearance: none; width: 100%; padding: 8px; border: 1px solid #c3ccd4; background: #f7f9fa; border-radius: 4px; font: inherit; cursor: pointer; }
+.tngfan-reset:hover { background: #eef3f6; }
+.tngfan-msg { padding: 10px 12px; border: 1px solid #d5dbe0; background: #f6f7f8; border-radius: 4px; }
+@media (max-width: 640px) {
+  .tngfan-body { flex-direction: column; }
+  .tngfan-panel { width: 100%; max-width: none; max-height: 45%; border-left: 0; border-top: 1px solid #d5dbe0; }
+}
+
+.tngfan-pdf:disabled { opacity: .5; cursor: wait; }
+.tngfan-node.is-spouse > path { opacity: .98; }
+
+.tngfan-dlg { position: absolute; z-index: 8; top: 14px; right: 14px; width: 330px; max-width: calc(100% - 28px); padding: 14px; background: #fff; border: 1px solid #b8c2cc; border-radius: 6px; box-shadow: 0 6px 20px rgba(0,0,0,.22); font-size: 13px; }
+.tngfan-dlg strong { display: block; margin-bottom: 10px; font-size: 15px; }
+.tngfan-dlg select { width: 100%; padding: 5px 7px; border: 1px solid #c3ccd4; border-radius: 4px; background: #fff; font: inherit; }
+.tngfan-dlg-info { margin: 4px 0 10px; padding: 8px 10px; background: #f1f5f8; border-radius: 4px; color: #33404c; min-height: 2.6em; }
+.tngfan-dlg .tngfan-acts button { padding: 6px 12px; font-size: 13px; }
+.tngfan-dlg-ok { background: #2f6f73 !important; border-color: #2f6f73 !important; color: #fff !important; }
+.tngfan-dlg-ok:disabled { opacity: .5; cursor: wait; }

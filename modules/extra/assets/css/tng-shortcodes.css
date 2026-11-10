@@ -1,0 +1,15 @@
+/* Éléments au-delà des 10 premiers : masqués tant que l'on n'a pas cliqué sur « Afficher tout » */
+.tng-hidden {
+    display: none !important;
+}
+
+/* Bouton de dépliage : aspect d'un lien */
+.tng-events-toggle {
+    background: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+}

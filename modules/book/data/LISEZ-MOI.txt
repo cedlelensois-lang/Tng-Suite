@@ -1,0 +1,6 @@
+CARTE DES LIEUX DE VIE – fonds de carte facultatifs
+Déposez ici un ou plusieurs fichiers GeoJSON (WGS84, polygones) pour obtenir des cartes précises :
+  regions-fr.geojson  (départements français ; propriété « code » = 01…95, 2A, 2B, ou « nom »)
+  regions-es.geojson  (provinces espagnoles ; propriété « name »/« nombre »)
+  regions-be.geojson  (provinces belges ; propriété « name »/« nom »)
+Sans fichier, la carte utilise un fond schématique très simplifié. Les noms doivent correspondre à ceux des départements/provinces.

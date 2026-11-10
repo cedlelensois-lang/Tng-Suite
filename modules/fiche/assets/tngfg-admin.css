@@ -1,0 +1,22 @@
+/* Fiche & documents : habillage « administration WordPress » (remplace le thème sépia du site public) */
+.tngs-wrap .tngfg,.tngs-wrap .tngl{max-width:1100px;margin:1em 0;font-family:inherit;font-size:13px;color:#1d2327}
+.tngs-wrap .tngfg-search label,.tngs-wrap .tngfg-lang label,.tngs-wrap .tngl-kind legend,.tngs-wrap .tngfg-edit summary,.tngs-wrap .tngl-fields summary,.tngs-wrap .tngfg-form legend,.tngs-wrap .tngfg-chosen,.tngs-wrap .tngfg-status{color:#1d2327;font-weight:600}
+.tngs-wrap .tngfg-input,.tngs-wrap .tngfg-form input,.tngs-wrap .tngfg-form select,.tngs-wrap .tngfg-form textarea,.tngs-wrap .tngl-gens input,.tngs-wrap .tngfg-lang select{font:inherit;font-size:14px;padding:6px 10px;border:1px solid #8c8f94;border-radius:4px;background:#fff;color:#2c3338;min-height:30px;box-shadow:none}
+.tngs-wrap .tngfg-input{width:100%;max-width:520px}
+.tngs-wrap .tngfg-form input,.tngs-wrap .tngfg-form select,.tngs-wrap .tngfg-form textarea{width:100%}
+.tngs-wrap .tngl-gens input{width:5em}
+.tngs-wrap .tngfg-input:focus,.tngs-wrap .tngfg-form input:focus,.tngs-wrap .tngl-gens input:focus,.tngs-wrap .tngfg-lang select:focus{border-color:#2271b1;box-shadow:0 0 0 1px #2271b1;outline:2px solid transparent}
+.tngs-wrap .tngfg-list{background:#fff;border:1px solid #8c8f94;border-radius:4px;box-shadow:0 3px 8px rgba(0,0,0,.15);left:0;right:auto;width:100%;max-width:520px}
+.tngs-wrap .tngfg-list li{border-bottom:1px solid #f0f0f1}
+.tngs-wrap .tngfg-list li span{color:#646970}
+.tngs-wrap .tngfg-list li:hover,.tngs-wrap .tngfg-list li.on{background:#f0f6fc}
+.tngs-wrap .tngl-kind,.tngs-wrap .tngl-fields,.tngs-wrap .tngfg-edit,.tngs-wrap .tngfg-form fieldset{background:#fff;border:1px solid #c3c4c7;border-radius:4px}
+.tngs-wrap .tngl-hint,.tngs-wrap .tngfg-form label span{color:#646970}
+.tngs-wrap .tngfg-btn{padding:0 14px;min-height:32px;line-height:30px;font:inherit;font-size:13px;font-weight:400;color:#fff;background:#2271b1;border:1px solid #2271b1;border-radius:3px}
+.tngs-wrap .tngfg-btn:hover{background:#135e96;border-color:#135e96}
+.tngs-wrap .tngfg-btn:focus-visible{outline:2px solid #2271b1;outline-offset:2px}
+.tngs-wrap .tngfg-ghost{background:#f6f7f7;color:#2271b1}
+.tngs-wrap .tngfg-ghost:hover{background:#f0f0f1;color:#135e96}
+.tngs-wrap .tngfg-err{color:#d63638}
+.tngs-wrap .tngfg-note{border-left-color:#2271b1;background:#fff}
+.tngs-wrap .tngfg-prev{background:#f6f7f7;border-color:#c3c4c7}

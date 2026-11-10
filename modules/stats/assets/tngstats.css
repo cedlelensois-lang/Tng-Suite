@@ -1,0 +1,11 @@
+.tngs{margin:0 0 28px;max-width:100%}
+.tngs *{box-sizing:border-box}
+.tngs-title{font-size:1.25em;font-weight:700;margin:0 0 10px}
+.tngs-canvas{position:relative;width:100%}
+.tngs-note{margin:8px 0 0;font-size:12.5px;color:#6b7280}
+.tngs-error{padding:8px 12px;border-left:4px solid #d63638;background:#fcf0f1;font-size:14px}
+.tngs-scroll{overflow-x:auto}
+.tngs-table{width:100%;border-collapse:collapse;font-size:14px}
+.tngs-table th,.tngs-table td{padding:6px 10px;border-bottom:1px solid #e5e7eb;text-align:left}
+.tngs-table th{background:#f3f4f6;font-size:12px;text-transform:uppercase;letter-spacing:.03em}
+.tngs-table td.num{text-align:right;font-variant-numeric:tabular-nums}

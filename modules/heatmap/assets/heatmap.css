@@ -1,0 +1,42 @@
+/* TNG Ancestors Heatmap 1.21 */
+.tng-hm { font-family: sans-serif; }
+.tng-hm-filters {
+    margin-bottom: 15px; display: flex; flex-wrap: wrap; align-items: center; gap: 15px;
+    background: #f9f9f9; padding: 12px; border-radius: 6px; border: 1px solid #e0e0e0;
+}
+.tng-hm-field { display: flex; align-items: center; gap: 6px; }
+.tng-hm-field-right { margin-left: auto; }
+.tng-hm-field label { font-weight: bold; color: #333; font-size: 14px; }
+.tng-hm-field select, .tng-hm-field input[type="text"] {
+    padding: 6px; border-radius: 4px; border: 1px solid #ccc; background: #fff;
+}
+.tng-hm-surname { width: 160px; }
+.tng-hm-place { width: 220px; }
+.tng-hm-clear {
+    padding: 5px 8px; background: #eee; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; font-size: 12px;
+}
+.tng-hm-map-wrap { position: relative; }
+.tng-hm-map {
+    height: 600px; width: 100%; display: block; position: relative; z-index: 1;
+    background: #eee; border-radius: 6px; border: 1px solid #ccc;
+}
+.tng-hm-status {
+    position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center;
+    background: rgba(238, 238, 238, 0.85); color: #444; border-radius: 6px; text-align: center; padding: 20px;
+}
+.tng-hm-century {
+    margin-top: 15px; background: #f9f9f9; padding: 12px; border-radius: 6px; border: 1px solid #e0e0e0;
+    display: flex; align-items: center; gap: 15px;
+}
+.tng-hm-century-title { font-weight: bold; color: #333; }
+.tng-hm-century-options { display: flex; flex-wrap: wrap; gap: 10px; }
+.tng-hm-century-options label { cursor: pointer; }
+.tng-map-number {
+    background: none; border: none; box-shadow: none; font-weight: bold; color: #000; text-align: center;
+    text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+}
+@media (max-width: 640px) {
+    .tng-hm-field-right { margin-left: 0; }
+    .tng-hm-map { height: 420px; }
+    .tng-hm-century { flex-direction: column; align-items: flex-start; }
+}

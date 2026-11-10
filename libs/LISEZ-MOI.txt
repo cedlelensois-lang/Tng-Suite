@@ -1,0 +1,16 @@
+Bibliothèques tierces
+=====================
+TNG Suite charge chaque bibliothèque depuis le plugin si le fichier est présent, sinon depuis un CDN public.
+
+Déjà fournies dans ce zip :
+  modules/timeline/assets/                      vis-timeline 8.5.4          (MIT ou Apache-2.0)
+  modules/gallery/assets/vendor/glightbox/      GLightbox 3.3.0             (MIT)
+  modules/heatmap/assets/vendor/                leaflet.css + images (Leaflet 1.9.4, BSD-2-Clause)
+
+À ajouter pour fonctionner sans aucun service externe : lancez  ./tools/fetch-libs.sh  (nécessite Node/npm et Internet).
+Le script dépose les fichiers suivants (versions figées) :
+  libs/chart.umd.min.js                           Chart.js 4.4.1        (MIT)
+  libs/vis-network.min.js                         vis-network 9.1.9     (MIT ou Apache-2.0)
+  modules/heatmap/assets/vendor/leaflet.js        Leaflet 1.9.4         (BSD-2-Clause)
+  modules/heatmap/assets/vendor/leaflet-heat.js   Leaflet.heat 0.2.0    (BSD-2-Clause)
+La publication automatique GitHub (.github/workflows/release.yml) exécute ce script : le zip d'une Release est donc autonome.

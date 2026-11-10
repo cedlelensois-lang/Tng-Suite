@@ -1,0 +1,21 @@
+.tri-wrapper {
+    text-align: center;
+    margin: 15px auto;
+}
+
+.tri-photo {
+    max-width: 180px;
+    height: auto;
+    border-radius: 0;
+    margin-bottom: 10px;
+}
+
+.tri-name a {
+    font-size: 15px;
+    text-decoration: none;
+}
+
+.tri-dates {
+    font-size: 14px;
+    color: #555;
+}
