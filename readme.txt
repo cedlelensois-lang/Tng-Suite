@@ -1,6 +1,7 @@
 === TNG Suite ===
 Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
+Tested up to: 7.1
 Requires PHP: 7.4
 Stable tag: 1.35.8
 License: GPLv2 or later
