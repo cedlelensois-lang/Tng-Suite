@@ -1028,7 +1028,7 @@ add_shortcode( 'lien_fiche_tng', 'tng_person_profile_link_shortcode' );
 
 /* Page d'aide (ce module n'a pas de réglages propres) */
 add_action( 'admin_menu', function () {
-    tngs_add_subpage( 'Arbres & descendance : utilisation', 'Aide', 'tng-tree-help', function () {
+    tngs_add_subpage( 'Arbres & descendance : utilisation', 'Arbres & descendance', 'tng-tree-help', function () {
         $id = array( 'id', 'Identifiant TNG de la personne (visible dans l’adresse de sa fiche TNG : personID=I12).', 'I1' );
         tngs_render_shortcode_help(
             'Arbres & descendance',

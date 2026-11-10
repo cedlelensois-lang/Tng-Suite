@@ -24,7 +24,7 @@ add_action('tngs_flush_cache', array('TNG_Extra_DB', 'flush_cache'));
 
 // Page d'aide (ce module n'a pas de réglages propres).
 add_action('admin_menu', function () {
-    tngs_add_subpage('Nuage de noms & anniversaires : utilisation', 'Aide', 'tng-extra-help', function () {
+    tngs_add_subpage('Nuage de noms & anniversaires : utilisation', 'Nuage de noms & anniversaires', 'tng-extra-help', function () {
         tngs_render_shortcode_help(
             'Nuage de noms & anniversaires',
             'extra',
