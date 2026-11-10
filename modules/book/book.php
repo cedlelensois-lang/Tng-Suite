@@ -156,7 +156,9 @@ final class TNGBook {
             self::profile_back('deleted');
         }
         $cur = self::opts();
-        $new = self::sanitize_gen(array_merge((array) $all[$name]), $cur);   // repasse par le nettoyage des paramètres
+        $p = (array) $all[$name];
+        if (!array_key_exists('surname', $p)) { $p['surname'] = ''; $p['surname_title'] = ''; }   // profil d'avant la page patronyme : pas de texte hérité du profil précédent
+        $new = self::sanitize_gen($p, $cur);   // repasse par le nettoyage des paramètres
         update_option(self::OPT, $new);
         update_option(self::ACTIVE, $name, false);
         self::profile_back('loaded');
