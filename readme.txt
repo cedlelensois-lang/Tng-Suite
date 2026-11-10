@@ -2,7 +2,7 @@
 Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Requires PHP: 7.4
-Stable tag: 1.34.2
+Stable tag: 1.34.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,6 +78,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 1.34.3 =
+* Correction de la traduction anglaise « Sheet & documents ».
 
 = 1.34.2 =
 * Anglais : « Fiche » (mot français) remplacé par « Sheet » dans les menus et titres.

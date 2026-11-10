@@ -2467,8 +2467,8 @@ msgstr "The template applies to the printable page, the PDF, Word and OpenDocume
 msgid "Fiche & listes de documents"
 msgstr "Individual sheet & document lists"
 
-msgid "Sheet & documents"
-msgstr "Fiche & documents"
+msgid "Fiche & documents"
+msgstr "Sheet & documents"
 
 msgid "Fiche généalogique et listes de documents"
 msgstr "Genealogy sheet and document lists"

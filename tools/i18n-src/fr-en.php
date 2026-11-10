@@ -831,7 +831,7 @@ return array(
 	'Moderne : police sans empattement, bandeaux pleins, fiches en cartes' => 'Modern: sans-serif font, solid banners, entries as cards',
 	'Le modèle s’applique à la page imprimable, au PDF, au Word et à l’OpenDocument ; les couleurs ci-dessus restent réglables. Les colonnes sont natives dans Word et LibreOffice.' => 'The template applies to the printable page, the PDF, Word and OpenDocument; the colours above remain adjustable. Columns are native in Word and LibreOffice.',
 	'Fiche & listes de documents' => 'Individual sheet & document lists',
-	'Sheet & documents' => 'Fiche & documents',
+	'Fiche & documents' => 'Sheet & documents',
 	'Fiche généalogique et listes de documents' => 'Genealogy sheet and document lists',
 	'Insérez' => 'Insert',
 	'ou' => 'or',

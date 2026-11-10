@@ -2467,7 +2467,7 @@ msgstr ""
 msgid "Fiche & listes de documents"
 msgstr ""
 
-msgid "Sheet & documents"
+msgid "Fiche & documents"
 msgstr ""
 
 msgid "Fiche généalogique et listes de documents"
