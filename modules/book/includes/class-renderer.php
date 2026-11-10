@@ -485,7 +485,19 @@ class TNGBook_Renderer {
         $dir = $up['basedir'] . '/tngbook-cache';
         wp_mkdir_p($dir . '/img');
         if (!file_exists($dir . '/index.html')) @file_put_contents($dir . '/index.html', '');   // pas de listing du dossier
+        if (!file_exists($dir . '/.htaccess')) @file_put_contents($dir . '/.htaccess', "Options -Indexes\n<IfModule mod_headers.c>\nHeader set X-Robots-Tag \"noindex, noimageindex\"\n</IfModule>\n");
+        if (!file_exists($dir . '/web.config')) @file_put_contents($dir . '/web.config', '<?xml version="1.0" encoding="UTF-8"?><configuration><system.webServer><directoryBrowse enabled="false" /></system.webServer></configuration>');
+        $this->purgeCache($dir . '/img');
         return [$dir, $up['baseurl'] . '/tngbook-cache'];
+    }
+
+    /** Supprime les photos en cache de plus de 24 h (au plus une fois par heure) : les photos de personnes ne restent pas en ligne. */
+    private function purgeCache($imgDir) {
+        if (get_transient('tngbook_cache_purge')) return;
+        set_transient('tngbook_cache_purge', 1, HOUR_IN_SECONDS);
+        foreach ((array) glob($imgDir . '/*.{jpg,jpeg,png,gif,webp}', GLOB_BRACE) as $f) {
+            if (is_file($f) && filemtime($f) < time() - DAY_IN_SECONDS) @unlink($f);
+        }
     }
 
     private function asset($file, $url, $mime) {
@@ -546,7 +558,7 @@ class TNGBook_Renderer {
 
         list($dir, $url) = $this->upload();
         $light = !empty($this->o['imgq']) && ($this->mode === 'pdf' || $this->mode === 'doc');   // PDF / Word / OpenDocument : photos réduites (2 à 3 cm à l'impression), fichier bien plus léger
-        $base = md5($file . filemtime($file)) . ($light ? '-l' : '');
+        $base = hash_hmac('sha256', $file . filemtime($file), wp_salt('auth')) . ($light ? '-l' : '');   // nom non devinable
         $dest = $dir . '/img/' . $base . '.jpg';
         $name = $base . '.jpg';
         $mime = 'image/jpeg';
