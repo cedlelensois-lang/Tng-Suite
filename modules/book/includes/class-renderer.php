@@ -1381,6 +1381,7 @@ class TNGBook_Renderer {
             if (!$src) { $im->parentNode->removeChild($im); continue; }
             $px = (float) $im->getAttribute('width');
             $cm = min(15.0, max(1.0, ($px > 0 ? $px : $src[1]) * 0.02646));
+            $src = $this->surnameShrink($src, $cm);   // l'image est ramenée à la taille réellement imprimée (150 ppp) : PDF et Word restent légers
             $cls = ' ' . strtolower($im->getAttribute('class')) . ' ' . strtolower($im->getAttribute('style')) . ' ' . strtolower($im->getAttribute('align')) . ' ';
             $side = (strpos($cls, 'alignleft') !== false || preg_match('/float:\s*left|\sleft\s/', $cls)) ? 'left'
                 : ((strpos($cls, 'alignright') !== false || preg_match('/float:\s*right|\sright\s/', $cls)) ? 'right' : (strpos($cls, 'aligncenter') !== false ? 'center' : ''));
@@ -1446,7 +1447,38 @@ class TNGBook_Renderer {
             ob_start(); imagepng($g); $bin = ob_get_clean(); $mime = 'image/png';
         }
         if (!in_array($mime, ['image/jpeg', 'image/png', 'image/gif'], true)) return null;
-        return ['data:' . $mime . ';base64,' . base64_encode($bin), (int) $sz[0]];
+        return ['data:' . $mime . ';base64,' . base64_encode($bin), (int) $sz[0], $bin, $mime];
+    }
+
+    /** Réduit l'image à 150 ppp pour la largeur imprimée $cm (jamais agrandie) et la recompresse (JPEG 80 %, PNG conservé si transparent). */
+    private function surnameShrink(array $src, $cm) {
+        if (!function_exists('imagecreatefromstring') || !function_exists('imagescale')) return $src;
+        list(, $w0, $bin, $mime) = $src;
+        $target = (int) min(1800, max(200, round($cm / 2.54 * 150)));
+        $g = @imagecreatefromstring($bin);
+        if (!$g) return $src;
+        $w = imagesx($g); $h = imagesy($g);
+        if ($w > $target) {
+            $n = imagescale($g, $target, (int) max(1, round($h * $target / $w)), IMG_BICUBIC);
+            if ($n) { imagedestroy($g); $g = $n; $w = imagesx($g); $h = imagesy($g); }
+        }
+        $alpha = false;
+        if ($mime !== 'image/jpeg') {
+            // transparence réelle ? (on échantillonne l'image)
+            $step = max(1, (int) floor(max($w, $h) / 60));
+            for ($y = 0; $y < $h && !$alpha; $y += $step) for ($x = 0; $x < $w; $x += $step) { if ((imagecolorat($g, $x, $y) >> 24) & 0x7F) { $alpha = true; break; } }
+            if ($mime === 'image/gif' && !$alpha) $alpha = false;
+        }
+        ob_start();
+        if ($alpha) { imagesavealpha($g, true); imagepng($g, null, 8); $out = 'image/png'; }
+        else {
+            $flat = imagecreatetruecolor($w, $h); imagefill($flat, 0, 0, imagecolorallocate($flat, 255, 255, 255)); imagecopy($flat, $g, 0, 0, 0, 0, $w, $h);
+            imagejpeg($flat, null, 80); $out = 'image/jpeg'; imagedestroy($flat);
+        }
+        $new = (string) ob_get_clean();
+        imagedestroy($g);
+        if ($new === '' || strlen($new) >= strlen($bin)) return $src;   // pas de gain : on garde l'original
+        return ['data:' . $out . ';base64,' . base64_encode($new), $w0, $new, $out];
     }
 
     private function ascendance() {

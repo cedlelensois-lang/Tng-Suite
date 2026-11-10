@@ -2,7 +2,7 @@
 Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Requires PHP: 7.4
-Stable tag: 1.35.2
+Stable tag: 1.35.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,6 +78,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 1.35.3 =
+* Livre, page patronyme : les images sont réduites à la taille imprimée (150 ppp) et recompressées (JPEG 80 %, PNG conservé si transparent) : le PDF, Word et OpenDocument restent légers.
 
 = 1.35.2 =
 * Livre, page patronyme : l'alignement d'une image (à gauche / à droite, texte autour) est conservé à l'enregistrement et dans la page imprimable et le PDF. Dans Word et OpenDocument, l'image est placée après son paragraphe.
