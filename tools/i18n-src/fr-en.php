@@ -809,6 +809,7 @@ return array(
 	'Liste des ascendants' => 'List of ancestors',
 	'Liste des descendants' => 'List of descendants',
 	'Compresser les images (PDF direct et Word / OpenDocument : photos réduites, images du texte à 150 ppp) : fichier plus léger, qualité un peu moindre' => 'Compress images (direct PDF and Word / OpenDocument: smaller photos, text images at 150 dpi): lighter file, slightly lower quality',
+	'Titre de la page (vide = « Le patronyme NOM »)' => 'Page title (empty = “The NAME surname”)',
 	'Page sur le patronyme' => 'Surname page',
 	'Texte de présentation du patronyme (origine, signification, répartition…) : mise en forme, listes, tableaux (mode « Texte ») et images (bouton Ajouter un média). Vide = pas de page. La page fait partie du livre : elle se place dans « Ordre des parties » et s’enregistre dans le profil du livre. Les images (JPEG, PNG, GIF) sont intégrées au PDF, à Word et à OpenDocument.' => 'Introductory text about the surname (origin, meaning, distribution…): formatting, lists, tables (Text mode) and images (Add Media button). Empty = no page. The page is part of the book: it is placed with “Order of the book’s parts” and saved in the book profile. Images (JPEG, PNG, GIF) are embedded in the PDF, Word and OpenDocument files.',
 	'Ordre des parties du livre' => 'Order of the book’s parts',

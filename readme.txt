@@ -2,7 +2,7 @@
 Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Requires PHP: 7.4
-Stable tag: 1.35.6
+Stable tag: 1.35.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,6 +78,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 1.35.7 =
+* Audit : traduction anglaise du titre de la page patronyme (champ d'aide), aucune faille trouvée.
 
 = 1.35.6 =
 * Livre : charger un profil enregistré avant la page patronyme ne conserve plus le texte patronyme du profil précédent (il est vidé).
