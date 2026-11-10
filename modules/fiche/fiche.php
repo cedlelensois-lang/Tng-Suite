@@ -74,9 +74,11 @@ function tngfg_labels($group = null) {
 }
 
 /** Langue par défaut des documents (fr, en, ca, es). « auto » suit la langue du site. */
-function tngfg_default_lang() {
+function tngfg_default_lang($admin = false) {
     $o = wp_parse_args(get_option('tngfg_options', []), tngfg_defaults());
     $l = (string) $o['lang'];
+    // Dans l'administration, la langue de TNG Suite > Général prime (fr/en) ; seuls catalan et espagnol, absents de Général, sont conservés.
+    if ($admin && !in_array($l, ['ca', 'es'], true)) $l = 'auto';
     if ($l === 'auto') $l = tngs_lang();   // fr ou en, selon TNG Suite > Général > Langue / Language
     return in_array($l, ['fr', 'en', 'ca', 'es'], true) ? $l : 'fr';
 }
@@ -249,7 +251,7 @@ function tngfg_enqueue_lists($admin = false) {
         'fields' => ['asc' => $f['asc'], 'desc' => $f['desc'], 'fiche' => $f['fiche']],
         'front'  => ($admin || tngfg_opt('front')) ? 1 : 0,
         'labels' => tngfg_labels(),
-        'lang'   => tngfg_default_lang(),
+        'lang'   => tngfg_default_lang($admin),
         'langFront' => ($admin || tngfg_opt('lang_front')) ? 1 : 0,
         'langStore' => $admin ? 0 : 1,   // dans l'administration, la langue suit TNG Suite > Général (pas la dernière langue choisie dans le navigateur)
     ]);
