@@ -34,3 +34,7 @@ WordPress affichera alors « mise à jour disponible » dès qu'une nouvelle Rel
 
 - Le nom « TNG » désigne un logiciel tiers ; ce projet n'est pas affilié à son auteur.
 - Bibliothèques tierces : voir `libs/LISEZ-MOI.txt`.
+
+## Documentation
+
+[Guide en français](docs/fr/README.md) · [User guide in English](docs/en/README.md)

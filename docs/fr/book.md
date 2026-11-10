@@ -1,0 +1,32 @@
+# Livre généalogique
+
+Génère un livre complet (ascendance, descendance, index, cartes, statistiques) en page imprimable/PDF, Word (.docx) ou OpenDocument (.odt), en français, anglais, espagnol ou catalan.
+
+## Dans l’administration
+
+![Livre généalogique](../images/book.png)
+
+## Shortcodes
+
+```
+[tng_book]
+```
+
+## Utilisation
+
+1. Saisissez l’identifiant de la personne, l’arbre et le nombre de générations.
+2. Cochez le contenu voulu, ordonnez les parties, choisissez couleurs et modèle de mise en page.
+3. Choisissez le format puis générez. Un profil peut être enregistré et rechargé.
+
+## Résultat sur le site
+
+![Livre généalogique](../images/exemple%20book.png)
+
+## Remarques
+
+- Chaque partie commence sur une nouvelle page.
+- Le shortcode [tng_book] ouvre le générateur aux visiteurs connectés si l’option est activée.
+- Les personnes vivantes sont incluses en entier si vous choisissez de les afficher : ne diffusez pas ce livre sans accord.
+
+---
+[← Guide des modules](README.md)
