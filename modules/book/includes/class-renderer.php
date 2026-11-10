@@ -545,7 +545,7 @@ class TNGBook_Renderer {
         }
 
         list($dir, $url) = $this->upload();
-        $light = ($this->mode === 'pdf' || $this->mode === 'doc');   // PDF / Word / OpenDocument : photos réduites (2 à 3 cm à l'impression), fichier bien plus léger
+        $light = !empty($this->o['imgq']) && ($this->mode === 'pdf' || $this->mode === 'doc');   // PDF / Word / OpenDocument : photos réduites (2 à 3 cm à l'impression), fichier bien plus léger
         $base = md5($file . filemtime($file)) . ($light ? '-l' : '');
         $dest = $dir . '/img/' . $base . '.jpg';
         $name = $base . '.jpg';
@@ -1382,7 +1382,7 @@ class TNGBook_Renderer {
             if (!$src) { $im->parentNode->removeChild($im); continue; }
             $px = (float) $im->getAttribute('width');
             $cm = min(15.0, max(1.0, ($px > 0 ? $px : $src[1]) * 0.02646));
-            $src = $this->surnameShrink($src, $cm);   // l'image est ramenée à la taille réellement imprimée (150 ppp) : PDF et Word restent légers
+            if (!empty($this->o['imgq'])) $src = $this->surnameShrink($src, $cm);   // l'image est ramenée à la taille réellement imprimée (150 ppp) : PDF et Word restent légers
             $cls = ' ' . strtolower($im->getAttribute('class')) . ' ' . strtolower($im->getAttribute('style')) . ' ' . strtolower($im->getAttribute('align')) . ' ';
             $side = (strpos($cls, 'alignleft') !== false || preg_match('/float:\s*left|\sleft\s/', $cls)) ? 'left'
                 : ((strpos($cls, 'alignright') !== false || preg_match('/float:\s*right|\sright\s/', $cls)) ? 'right' : (strpos($cls, 'aligncenter') !== false ? 'center' : ''));

@@ -2398,6 +2398,9 @@ msgstr ""
 msgid "Liste des descendants"
 msgstr ""
 
+msgid "Compresser les images (PDF direct et Word / OpenDocument : photos réduites, images du texte à 150 ppp) : fichier plus léger, qualité un peu moindre"
+msgstr ""
+
 msgid "Page sur le patronyme"
 msgstr ""
 
