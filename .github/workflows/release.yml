@@ -1,0 +1,31 @@
+name: Publier une version
+
+# Pousser une étiquette « v1.2.3 » crée automatiquement une Release avec le zip prêt à installer.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Vérifier la syntaxe PHP
+        run: find . -name '*.php' -not -path './includes/plugin-update-checker/*' -print0 | xargs -0 -n1 php -l | grep -v '^No syntax errors' || true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Embarquer les bibliothèques JavaScript (aucun CDN dans le zip)
+        run: ./tools/fetch-libs.sh
+      - name: Construire le zip (dossier tng-suite/)
+        run: |
+          mkdir -p /tmp/build/tng-suite
+          rsync -a --exclude='.git' --exclude='.github' --exclude='.gitignore' --exclude='.gitattributes' --exclude='README.md' ./ /tmp/build/tng-suite/
+          (cd /tmp/build && zip -qr "$GITHUB_WORKSPACE/tng-suite.zip" tng-suite)
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: tng-suite.zip
+          generate_release_notes: true
