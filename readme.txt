@@ -2,7 +2,7 @@
 Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Requires PHP: 7.4
-Stable tag: 1.35.3
+Stable tag: 1.35.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,6 +78,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 1.35.4 =
+* Livre : en PDF, Word et OpenDocument, les photos des personnes sont réduites (240 × 320 px, JPEG 72 %) puisqu'elles s'impriment sur 2 à 3 cm ; la page imprimable (écran) garde 360 × 480 px. Compression PDF explicite.
 
 = 1.35.3 =
 * Livre, page patronyme : les images sont réduites à la taille imprimée (150 ppp) et recompressées (JPEG 80 %, PNG conservé si transparent) : le PDF, Word et OpenDocument restent légers.

@@ -545,7 +545,8 @@ class TNGBook_Renderer {
         }
 
         list($dir, $url) = $this->upload();
-        $base = md5($file . filemtime($file));
+        $light = ($this->mode === 'pdf' || $this->mode === 'doc');   // PDF / Word / OpenDocument : photos réduites (2 à 3 cm à l'impression), fichier bien plus léger
+        $base = md5($file . filemtime($file)) . ($light ? '-l' : '');
         $dest = $dir . '/img/' . $base . '.jpg';
         $name = $base . '.jpg';
         $mime = 'image/jpeg';
@@ -553,8 +554,8 @@ class TNGBook_Renderer {
             $done = false;
             $ed = wp_get_image_editor($file);
             if (!is_wp_error($ed)) {
-                $ed->resize(360, 480, false);
-                $ed->set_quality(82);
+                $light ? $ed->resize(240, 320, false) : $ed->resize(360, 480, false);
+                $ed->set_quality($light ? 72 : 82);
                 $res = $ed->save($dest, 'image/jpeg');
                 $done = !is_wp_error($res);
             }

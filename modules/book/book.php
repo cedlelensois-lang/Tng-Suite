@@ -629,6 +629,7 @@ final class TNGBook {
                 'mode' => 'utf-8', 'format' => 'A4', 'tempDir' => $tmp, 'default_font' => 'dejavuserif',
                 'margin_left' => 20, 'margin_right' => 20, 'margin_top' => 20, 'margin_bottom' => 22,
             ]);
+            $mpdf->SetCompression(true);
             $mpdf->SetFooter('{PAGENO}');
             $mpdf->WriteHTML($html);
             $mpdf->Output('livre-genealogique-' . $pid . '.pdf', 'D');
