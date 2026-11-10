@@ -2,12 +2,12 @@
 /**
  * TNG Suite – langue de l'extension (français / anglais).
  *
- * Les textes sources sont en français. Quand la langue est l'anglais, ils sont traduits à la volée :
+ * Les textes sources sont en français ; ils sont traduits à la volée par gettext (domaine « tng-suite », languages/*.mo) :
  *  - pages d'administration et notices : tngs_translate_html() sur la sortie de chaque page ;
  *  - shortcodes : filtre do_shortcode_tag (uniquement les textes EXACTEMENT présents dans le dictionnaire,
  *    jamais les noms, notes ou autres données issues de TNG) ;
  *  - textes construits dynamiquement : tngs_t() ;
- *  - JavaScript : dictionnaire window.TNGS_I18N.
+ *  - JavaScript : window.TNGS_I18N (textes du catalogue, contexte « js »).
  * En français, rien n'est modifié (aucun coût).
  */
 if ( ! defined( 'ABSPATH' ) ) {
@@ -28,22 +28,78 @@ function tngs_is_en() {
     return 'en' === tngs_lang();
 }
 
-/** Dictionnaire FR => EN (clés normalisées). */
-function tngs_dict() {
-    static $d = null;
-    if ( null === $d ) {
-        $d = require TNGSUITE_DIR . 'includes/i18n-en.php';
-        $d = is_array( $d ) ? $d : array();
+/**
+ * Catalogue gettext (domaine « tng-suite ») : les identifiants de message sont les textes français (normalisés).
+ * Langue : fichiers languages/tng-suite-{locale}.mo du plugin, ou wp-content/languages/plugins/ (Loco Translate, traduction.wordpress.org…).
+ * Réglage « Anglais » ou langue de WordPress sans catalogue : tng-suite-en_US.mo.
+ */
+function tngs_catalog_locale() {
+    $pref = (string) tngs_setting( 'lang' );
+    if ( 'fr' === $pref ) {
+        return '';
     }
-    return $d;
+    if ( 'en' !== $pref ) {
+        $loc = (string) ( function_exists( 'determine_locale' ) ? determine_locale() : get_locale() );
+        if ( 0 === strpos( $loc, 'fr' ) ) {
+            return '';
+        }
+        if ( '' !== $loc && tngs_catalog_file( $loc ) ) {
+            return $loc;
+        }
+    }
+    return 'en_US';
 }
 
-/** Dictionnaire des textes JavaScript (clés = chaîne exacte du JavaScript). */
+/** Chemin du fichier .mo d'une langue, ou ''. */
+function tngs_catalog_file( $locale ) {
+    $locale = preg_replace( '/[^A-Za-z_]/', '', (string) $locale );
+    foreach ( array( TNGSUITE_DIR . 'languages/', WP_LANG_DIR . '/plugins/' ) as $dir ) {
+        if ( file_exists( $dir . 'tng-suite-' . $locale . '.mo' ) ) {
+            return $dir . 'tng-suite-' . $locale . '.mo';
+        }
+    }
+    return '';
+}
+
+/** Charge (une fois) le catalogue de la langue effective ; false s'il n'y en a pas. */
+function tngs_catalog_load() {
+    static $ok = null;
+    if ( null === $ok ) {
+        $file = tngs_is_en() ? tngs_catalog_file( tngs_catalog_locale() ) : '';
+        $ok   = false;
+        if ( '' !== $file ) {
+            unload_textdomain( 'tng-suite' );
+            $ok = load_textdomain( 'tng-suite', $file );
+        }
+    }
+    return $ok;
+}
+
+/** Traduction d'un texte normalisé (gettext) ; null s'il n'y en a pas. */
+function tngs_lookup( $key ) {
+    if ( ! tngs_catalog_load() ) {
+        return null;
+    }
+    // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText,WordPress.WP.I18n.NonSingularStringLiteralDomain
+    $t = translate( $key, 'tng-suite' );
+    return ( $t !== $key && '' !== $t ) ? $t : null;
+}
+
+/** Dictionnaire des textes JavaScript (clés = chaîne exacte du JavaScript ; contexte gettext « js »). */
 function tngs_js_dict() {
     static $d = null;
     if ( null === $d ) {
-        $d = require TNGSUITE_DIR . 'includes/i18n-js-en.php';
-        $d = is_array( $d ) ? $d : array();
+        $d = array();
+        if ( tngs_catalog_load() ) {
+            $keys = require TNGSUITE_DIR . 'includes/i18n-js-keys.php';
+            foreach ( (array) $keys as $k ) {
+                // phpcs:ignore WordPress.WP.I18n
+                $t = translate_with_gettext_context( $k, 'js', 'tng-suite' );
+                if ( $t !== $k ) {
+                    $d[ $k ] = $t;
+                }
+            }
+        }
     }
     return $d;
 }
@@ -60,24 +116,23 @@ function tngs_t( $text ) {
     if ( ! tngs_is_en() ) {
         return $text;
     }
-    $d = tngs_dict();
     if ( ! preg_match( '/^(\s*)(.*?)(\s*)$/su', (string) $text, $m ) || '' === $m[2] ) {
         return $text;
     }
-    $k = tngs_norm( $m[2] );
-    return isset( $d[ $k ] ) ? $m[1] . $d[ $k ] . $m[3] : $text;
+    $t = tngs_lookup( tngs_norm( $m[2] ) );
+    return null !== $t ? $m[1] . $t . $m[3] : $text;
 }
 
 /** Traduit les attributs d'une balise (placeholder, title, alt, aria-label, bouton submit). */
-function tngs_translate_tag( $tag, array $dict ) {
+function tngs_translate_tag( $tag ) {
     return preg_replace_callback(
         '/\b(placeholder|title|alt|aria-label|value)="([^"]*)"/i',
-        function ( $m ) use ( $dict, $tag ) {
+        function ( $m ) use ( $tag ) {
             if ( 'value' === strtolower( $m[1] ) && ! preg_match( '/\btype="(?:submit|button)"/i', $tag ) ) {
                 return $m[0];
             }
-            $k = tngs_norm( $m[2] );
-            return isset( $dict[ $k ] ) ? $m[1] . '="' . esc_attr( $dict[ $k ] ) . '"' : $m[0];
+            $t = tngs_lookup( tngs_norm( $m[2] ) );
+            return null !== $t ? $m[1] . '="' . esc_attr( $t ) . '"' : $m[0];
         },
         $tag
     );
@@ -91,7 +146,6 @@ function tngs_translate_html( $html ) {
     if ( '' === $html || ! tngs_is_en() ) {
         return $html;
     }
-    $dict  = tngs_dict();
     $parts = preg_split(
         '/(<!--.*?-->|<(script|style|textarea|pre)\b[^>]*>.*?<\/\2>|<[^>]+>)/is',
         $html,
@@ -115,13 +169,13 @@ function tngs_translate_html( $html ) {
                 $out .= $p; // bloc protégé : conservé tel quel.
                 $i++;       // le groupe capturé qui suit (nom de l'élément) est ignoré.
             } else {
-                $out .= tngs_translate_tag( $p, $dict );
+                $out .= tngs_translate_tag( $p );
             }
             continue;
         }
         if ( preg_match( '/^(\s*)(.*?)(\s*)$/su', $p, $m ) && '' !== $m[2] ) {
-            $k    = tngs_norm( $m[2] );
-            $out .= isset( $dict[ $k ] ) ? $m[1] . esc_html( $dict[ $k ] ) . $m[3] : $p;
+            $t    = tngs_lookup( tngs_norm( $m[2] ) );
+            $out .= null !== $t ? $m[1] . esc_html( $t ) . $m[3] : $p;
         } else {
             $out .= $p;
         }

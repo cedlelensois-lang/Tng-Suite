@@ -1,0 +1,3423 @@
+# TNG Suite – textes sources en français.
+msgid ""
+msgstr "Project-Id-Version: TNG Suite\nReport-Msgid-Bugs-To: \nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n != 1);\n"
+msgid "(TNG Suite > Général). Vous pouvez aussi indiquer un chemin absolu ("
+msgstr ""
+
+msgid "(dans l’URL TNG :"
+msgstr ""
+
+msgid "(dossier photos trouvé)"
+msgstr ""
+
+msgid "(droit SELECT uniquement) pour TNG Suite."
+msgstr ""
+
+msgid "(le calcul se lance depuis la page"
+msgstr ""
+
+msgid "(masquer le panneau d'options),"
+msgstr ""
+
+msgid "(noms, dates, lieux, photos, notes). Ne diffusez pas ce livre sans leur consentement et réservez-le à un usage familial privé."
+msgstr ""
+
+msgid "(px, 380 par défaut),"
+msgstr ""
+
+msgid "(recommandé : rien n'est stocké dans la base)"
+msgstr ""
+
+msgid "(sans modifier wp-config.php)"
+msgstr ""
+
+msgid "(sans nom)"
+msgstr ""
+
+msgid "(sinon l'arbre par défaut),"
+msgstr ""
+
+msgid "(sinon le texte ci-dessous)."
+msgstr ""
+
+msgid "(texte, ou"
+msgstr ""
+
+msgid "(vérifiez le préfixe dans TNG Suite > Général, ou le réglage « Vivants / privés » du module si vos colonnes diffèrent)."
+msgstr ""
+
+msgid ") et les personnes vivantes/privées ("
+msgstr ""
+
+msgid ") se règlent dans"
+msgstr ""
+
+msgid "), l'arbre par défaut ("
+msgstr ""
+
+msgid ", arbre"
+msgstr ""
+
+msgid ", avant la ligne «"
+msgstr ""
+
+msgid ", ce qui est affiché au sujet des personnes vivantes ou privées."
+msgstr ""
+
+msgid ". Désactivez-les pour activer les modules correspondants."
+msgstr ""
+
+msgid ". Laisser vide pour ne pas filtrer (tous les arbres)."
+msgstr ""
+
+msgid ". Seuls des totaux sont publiés ; « masqués » cache le nom des personnes privées dans la liste des centenaires."
+msgstr ""
+
+msgid ". Une URL relative ("
+msgstr ""
+
+msgid ". Utilisez un compte MySQL en"
+msgstr ""
+
+msgid ". Vider le champ restaure les catégories par défaut."
+msgstr ""
+
+msgid "0 = pas de cache."
+msgstr ""
+
+msgid "0 = pas de cache. Les autres modules ont leur propre durée dans leur page."
+msgstr ""
+
+msgid "0 = pas de cache. Vidé à chaque enregistrement."
+msgstr ""
+
+msgid "0 = pas de descendance."
+msgstr ""
+
+msgid "0 = pas d’ascendance."
+msgstr ""
+
+msgid ": ce livre contient des données de personnes vivantes ou privées. Ne le diffusez pas sans leur consentement."
+msgstr ""
+
+msgid ": les personnes vivantes ou privées sont incluses"
+msgstr ""
+
+msgid "Accès"
+msgstr ""
+
+msgid "Accès et cache"
+msgstr ""
+
+msgid "Accès refusé."
+msgstr ""
+
+msgid "Accéder à la fiche généalogique de"
+msgstr ""
+
+msgid "Activer la recherche par ville"
+msgstr ""
+
+msgid "Activer le filtre par nom de famille"
+msgstr ""
+
+msgid "Activer le filtre par siècle"
+msgstr ""
+
+msgid "Activez les modules voulus et choisissez,"
+msgstr ""
+
+msgid "Activé"
+msgstr ""
+
+msgid "Administrateurs"
+msgstr ""
+
+msgid "Affiche une barre de sélection temporelle sous la carte."
+msgstr ""
+
+msgid "Afficher (⚠️ RGPD)"
+msgstr ""
+
+msgid "Afficher dates"
+msgstr ""
+
+msgid "Afficher les chiffres au centre"
+msgstr ""
+
+msgid "Afficher les emplacements vides"
+msgstr ""
+
+msgid "Afficher nom/prénom"
+msgstr ""
+
+msgid "Afficher photo"
+msgstr ""
+
+msgid "Afficher tout"
+msgstr ""
+
+msgid "Ajoutez ces lignes dans"
+msgstr ""
+
+msgid "Aller à la ville :"
+msgstr ""
+
+msgid "Ancien libellé = Nouveau libellé"
+msgstr ""
+
+msgid "Ancêtres décédés à 100 ans ou plus. precision = day (dates complètes) ou year. person = ID pour se limiter aux ancêtres de cette personne."
+msgstr ""
+
+msgid "Ancêtres inconnus"
+msgstr ""
+
+msgid "Années seulement"
+msgstr ""
+
+msgid "Anonymiser"
+msgstr ""
+
+msgid "Anonymiser (« Personne vivante », sans date ni photo)"
+msgstr ""
+
+msgid "Août"
+msgstr ""
+
+msgid "Aperçu"
+msgstr ""
+
+msgid "Apparence"
+msgstr ""
+
+msgid "Après"
+msgstr ""
+
+msgid "Arbre (gedcom)"
+msgstr ""
+
+msgid "Arbre et personne requis."
+msgstr ""
+
+msgid "Arbre requis."
+msgstr ""
+
+msgid "Arbres & descendance"
+msgstr ""
+
+msgid "Arc-en-ciel"
+msgstr ""
+
+msgid "Arrière-petits-enfants"
+msgstr ""
+
+msgid "Assurez-vous d'avoir leur consentement ou de restreindre l'accès à ces pages. Continuer ?"
+msgstr ""
+
+msgid "Attribue une couleur fixe à chaque type d’événement."
+msgstr ""
+
+msgid "Attributs spécifiques"
+msgstr ""
+
+msgid "Aucun"
+msgstr ""
+
+msgid "Aucun arbre TNG trouvé."
+msgstr ""
+
+msgid "Aucun cache pour le moment (il sera généré à la prochaine visite ou par la tâche planifiée)."
+msgstr ""
+
+msgid "Aucun descendant enregistré pour cet individu."
+msgstr ""
+
+msgid "Aucun décès aujourd’hui."
+msgstr ""
+
+msgid "Aucun enfant enregistré pour cette union."
+msgstr ""
+
+msgid "Aucun enfant trouvé pour cette famille."
+msgstr ""
+
+msgid "Aucun identifiant de famille fourni."
+msgstr ""
+
+msgid "Aucun identifiant à saisir : les tables"
+msgstr ""
+
+msgid "Aucun individu trouvé."
+msgstr ""
+
+msgid "Aucun mariage aujourd’hui."
+msgstr ""
+
+msgid "Aucun média trouvé."
+msgstr ""
+
+msgid "Aucun nom disponible."
+msgstr ""
+
+msgid "Aucun événement trouvé."
+msgstr ""
+
+msgid "Aucune"
+msgstr ""
+
+msgid "Aucune naissance aujourd’hui."
+msgstr ""
+
+msgid "Auteur"
+msgstr ""
+
+msgid "Automatique (langue de WordPress)"
+msgstr ""
+
+msgid "Automatique (suit le réglage clair/sombre du visiteur)"
+msgstr ""
+
+msgid "Autres"
+msgstr ""
+
+msgid "Autres (non classés)"
+msgstr ""
+
+msgid "Avant"
+msgstr ""
+
+msgid "Avant 1600 (Ancien Régime)"
+msgstr ""
+
+msgid "Avril"
+msgstr ""
+
+msgid "Balises GEDCOM séparées par des virgules (par défaut"
+msgstr ""
+
+msgid "Baptêmes uniquement"
+msgstr ""
+
+msgid "Base WordPress"
+msgstr ""
+
+msgid "Base de données WordPress inaccessible."
+msgstr ""
+
+msgid "Bouton vers la fiche"
+msgstr ""
+
+msgid "Branche"
+msgstr ""
+
+msgid "Cache"
+msgstr ""
+
+msgid "Cache (minutes)"
+msgstr ""
+
+msgid "Cache de la liste des individus éligibles (le tirage reste aléatoire). 0 = désactivé."
+msgstr ""
+
+msgid "Cache des arbres (heures)"
+msgstr ""
+
+msgid "Cache des données"
+msgstr ""
+
+msgid "Cache purgé et régénéré."
+msgstr ""
+
+msgid "Cache vidé."
+msgstr ""
+
+msgid "Camaïeu de bleus"
+msgstr ""
+
+msgid "Cartes modernes (légende au survol)"
+msgstr ""
+
+msgid "Català"
+msgstr ""
+
+msgid "Catégorie"
+msgstr ""
+
+msgid "Catégories de métiers"
+msgstr ""
+
+msgid "Catégories modifiables dans Réglages > TNG Stats. others = 1 pour afficher les professions non classées."
+msgstr ""
+
+msgid "Ce classement généalogique est réservé aux utilisateurs autorisés."
+msgstr ""
+
+msgid "Ce graphique est réservé aux utilisateurs autorisés."
+msgstr ""
+
+msgid "Ce graphique nécessite JavaScript."
+msgstr ""
+
+msgid "Cercle complet"
+msgstr ""
+
+msgid "Cet identifiant existe dans plusieurs arbres"
+msgstr ""
+
+msgid "Cette analyse généalogique est réservée aux utilisateurs autorisés."
+msgstr ""
+
+msgid "Chaque statistique s'insère avec son propre shortcode, ou avec"
+msgstr ""
+
+msgid "Chargement de la carte…"
+msgstr ""
+
+msgid "Chiffrement indisponible sur ce serveur : mot de passe non enregistré. Utilisez wp-config.php."
+msgstr ""
+
+msgid "Choisissez au moins une génération d’ascendants ou de descendants."
+msgstr ""
+
+msgid "Choisissez comment le plugin se connecte à la base de données de TNG. Ce choix est commun à tous les modules."
+msgstr ""
+
+msgid "Classement de consanguinité :"
+msgstr ""
+
+msgid "Classique"
+msgstr ""
+
+msgid "Classique (apparence d'origine)"
+msgstr ""
+
+msgid "Coloration par"
+msgstr ""
+
+msgid "Comme la palette de tous les graphiques"
+msgstr ""
+
+msgid "Comme le réglage commun"
+msgstr ""
+
+msgid "Commune seule"
+msgstr ""
+
+msgid "Commune, département"
+msgstr ""
+
+msgid "Compris"
+msgstr ""
+
+msgid "Configuration TNG Heatmap"
+msgstr ""
+
+msgid "Configuration TNG Timeline"
+msgstr ""
+
+msgid "Configuration de TNG Family Timeline"
+msgstr ""
+
+msgid "Configuration de la Heatmap TNG"
+msgstr ""
+
+msgid "Conjoint inconnu"
+msgstr ""
+
+msgid "Connectez-vous pour générer un livre généalogique."
+msgstr ""
+
+msgid "Connexion OK, mais aucun arbre trouvé dans la table trees."
+msgstr ""
+
+msgid "Connexion OK. Arbres détectés :"
+msgstr ""
+
+msgid "Connexion TNG OK :"
+msgstr ""
+
+msgid "Connexion TNG configurée dans"
+msgstr ""
+
+msgid "Connexion TNG impossible"
+msgstr ""
+
+msgid "Connexion TNG non configurée."
+msgstr ""
+
+msgid "Connexion dédiée (voir TNG Suite > Général)"
+msgstr ""
+
+msgid "Connexion à la base TNG"
+msgstr ""
+
+msgid "Connexion à la base TNG : OK."
+msgstr ""
+
+msgid "Connexion à la base TNG impossible"
+msgstr ""
+
+msgid "Connexion à la base TNG impossible (vérifiez les constantes DB_*TNG de wp-config.php)."
+msgstr ""
+
+msgid "Connexion à la base TNG impossible (vérifiez les identifiants dans TNG Suite > Général)."
+msgstr ""
+
+msgid "Connexion à la base TNG impossible."
+msgstr ""
+
+msgid "Connexion à la base TNG réussie"
+msgstr ""
+
+msgid "Consanguinité des individus"
+msgstr ""
+
+msgid "Constantes DB_HOSTTNG, DB_NAMETNG, DB_USERTNG, DB_PASSWORDTNG absentes de wp-config.php (voir TNG Suite > Général)."
+msgstr ""
+
+msgid "Contenu"
+msgstr ""
+
+msgid "Contenu momentanément indisponible."
+msgstr ""
+
+msgid "Couleur au survol"
+msgstr ""
+
+msgid "Couleur de fond"
+msgstr ""
+
+msgid "Couleur du texte / de l'icône"
+msgstr ""
+
+msgid "Couleur du texte au survol"
+msgstr ""
+
+msgid "Couleur par défaut"
+msgstr ""
+
+msgid "Couleur pleine"
+msgstr ""
+
+msgid "Couleurs"
+msgstr ""
+
+msgid "Couleurs d'origine"
+msgstr ""
+
+msgid "Couleurs de la chaleur (heatmap)"
+msgstr ""
+
+msgid "Couleurs distinctes par événement"
+msgstr ""
+
+msgid "DB_*TNG absentes"
+msgstr ""
+
+msgid "DB_*TNG présentes"
+msgstr ""
+
+msgid "Daltonien (Okabe-Ito)"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Dates"
+msgstr ""
+
+msgid "Dates complètes"
+msgstr ""
+
+msgid "Demi-cercle"
+msgstr ""
+
+msgid "Dernière erreur :"
+msgstr ""
+
+msgid "Diagnostic"
+msgstr ""
+
+msgid "Diagnostic photos"
+msgstr ""
+
+msgid "Distance moyenne (km)"
+msgstr ""
+
+msgid "Distance moyenne, en km, entre lieu de naissance et décès"
+msgstr ""
+
+msgid "Distance à vol d'oiseau entre lieu de naissance et lieu de décès, pour les lieux géolocalisés dans TNG, par période de"
+msgstr ""
+
+msgid "Données TNG indisponibles."
+msgstr ""
+
+msgid "Données indisponibles."
+msgstr ""
+
+msgid "Dossier de TNG sur le disque"
+msgstr ""
+
+msgid "Dossier des photos"
+msgstr ""
+
+msgid "Dossier où se trouve"
+msgstr ""
+
+msgid "Durée de conservation des résultats. 0 = désactivé. Évite d'interroger la base distante à chaque visite."
+msgstr ""
+
+msgid "Durée du cache (minutes)"
+msgstr ""
+
+msgid "Décembre"
+msgstr ""
+
+msgid "Décès"
+msgstr ""
+
+msgid "Décès du jour"
+msgstr ""
+
+msgid "Décès uniquement"
+msgstr ""
+
+msgid "Décédés"
+msgstr ""
+
+msgid "Désactivé"
+msgstr ""
+
+msgid "Effacer la ville"
+msgstr ""
+
+msgid "Effacer le mot de passe enregistré"
+msgstr ""
+
+msgid "Effacer le nom de famille"
+msgstr ""
+
+msgid "Effacer les mots de passe des anciens plugins"
+msgstr ""
+
+msgid "Enfant(s) de cette union :"
+msgstr ""
+
+msgid "Enfants"
+msgstr ""
+
+msgid "Enregistrer les graphiques"
+msgstr ""
+
+msgid "Enregistrer les modifications"
+msgstr ""
+
+msgid "Enregistrer les paramètres"
+msgstr ""
+
+msgid "Enregistrer les réglages"
+msgstr ""
+
+msgid "Erreur"
+msgstr ""
+
+msgid "Erreur SQL (voir le journal PHP)"
+msgstr ""
+
+msgid "Erreur SQL TNG :"
+msgstr ""
+
+msgid "Erreur SQL lors de la lecture de la base TNG (voir le journal PHP)."
+msgstr ""
+
+msgid "Erreur de lecture de la base TNG."
+msgstr ""
+
+msgid "Erreur de requête TNG (voir le journal PHP)."
+msgstr ""
+
+msgid "Erreur de requête TNG :"
+msgstr ""
+
+msgid "Erreur lors de la lecture de la base généalogique."
+msgstr ""
+
+msgid "Est."
+msgstr ""
+
+msgid "Ex."
+msgstr ""
+
+msgid "Exclure"
+msgstr ""
+
+msgid "Exclure (retirées du livre)"
+msgstr ""
+
+msgid "Exemple :"
+msgstr ""
+
+msgid "Exemple : photos (par défaut)"
+msgstr ""
+
+msgid "Facultatif (avancé). Laisser vide en cas de doute."
+msgstr ""
+
+msgid "Facultatif. Vide = déduit de l’"
+msgstr ""
+
+msgid "Famille %s"
+msgstr ""
+
+msgid "Femmes"
+msgstr ""
+
+msgid "Femmes (n)"
+msgstr ""
+
+msgid "Femmes (âge)"
+msgstr ""
+
+msgid "Fichiers vis-timeline manquants dans /assets/ (modules/timeline/assets/)"
+msgstr ""
+
+msgid "Fichiers vis-timeline présents dans /assets/"
+msgstr ""
+
+msgid "Fonctionnalités avancées (modules optionnels)"
+msgstr ""
+
+msgid "Fond de carte par défaut"
+msgstr ""
+
+msgid "Format"
+msgstr ""
+
+msgid "Formulaire public"
+msgstr ""
+
+msgid "Français"
+msgstr ""
+
+msgid "Frise chronologique"
+msgstr ""
+
+msgid "Février"
+msgstr ""
+
+msgid "Galerie"
+msgstr ""
+
+msgid "Galerie de médias"
+msgstr ""
+
+msgid "Galerie élégante"
+msgstr ""
+
+msgid "Genre"
+msgstr ""
+
+msgid "Graphique par défaut"
+msgstr ""
+
+msgid "Graphiques"
+msgstr ""
+
+msgid "Gris"
+msgstr ""
+
+msgid "GÉN."
+msgstr ""
+
+msgid "Général"
+msgstr ""
+
+msgid "Tableau de bord"
+msgstr ""
+
+msgid "Connexion"
+msgstr ""
+
+msgid "Réglages communs"
+msgstr ""
+
+msgid "Maintenance"
+msgstr ""
+
+msgid "Vos modules"
+msgstr ""
+
+msgid "✅ Activé"
+msgstr ""
+
+msgid "⏸ Désactivé"
+msgstr ""
+
+msgid "Pas de page propre : réglages dans le shortcode."
+msgstr ""
+
+msgid "Sections"
+msgstr ""
+
+msgid "Génération"
+msgstr ""
+
+msgid "Génération des données en cours."
+msgstr ""
+
+msgid "Générations"
+msgstr ""
+
+msgid "Générations de descendants"
+msgstr ""
+
+msgid "Générations du réseau"
+msgstr ""
+
+msgid "Générations d’ascendants"
+msgstr ""
+
+msgid "Générations maximum"
+msgstr ""
+
+msgid "Générer le livre"
+msgstr ""
+
+msgid "Généré le"
+msgstr ""
+
+msgid "Hauteur max. des vignettes (px)"
+msgstr ""
+
+msgid "Heatmap des lieux"
+msgstr ""
+
+msgid "Hommes"
+msgstr ""
+
+msgid "Hommes (n)"
+msgstr ""
+
+msgid "Hommes (âge)"
+msgstr ""
+
+msgid "Hommes, femmes, inconnus (vivants inclus)."
+msgstr ""
+
+msgid "Hôte MySQL"
+msgstr ""
+
+msgid "Hôte MySQL invalide."
+msgstr ""
+
+msgid "Identifiant"
+msgstr ""
+
+msgid "Identifiant de l'arbre TNG"
+msgstr ""
+
+msgid "Identifiant de la personne"
+msgstr ""
+
+msgid "Identifiant de personne manquant."
+msgstr ""
+
+msgid "Identifiant manquant."
+msgstr ""
+
+msgid "Il n'est jamais réaffiché. Il est chiffré avec les clés de sécurité de WordPress avant d'être enregistré."
+msgstr ""
+
+msgid "Implexe"
+msgstr ""
+
+msgid "Implexe & consanguinité"
+msgstr ""
+
+msgid "Implexe : analyse"
+msgstr ""
+
+msgid "Implexe : consanguinité"
+msgstr ""
+
+msgid "Implexe : réglages"
+msgstr ""
+
+msgid "Implexe – Analyse"
+msgstr ""
+
+msgid "Implexe – Consanguinité"
+msgstr ""
+
+msgid "Implexe – Réglages"
+msgstr ""
+
+msgid "Inconnus"
+msgstr ""
+
+msgid "Index des noms et des lieux"
+msgstr ""
+
+msgid "Individu au hasard"
+msgstr ""
+
+msgid "Individu introuvable."
+msgstr ""
+
+msgid "Individus"
+msgstr ""
+
+msgid "Informations militaires"
+msgstr ""
+
+msgid "Mini-arbre d’ascendance (parents et grands-parents) en tête de la fiche de chaque ancêtre"
+msgstr ""
+
+msgid "Mention « Mort pour la France » (cause de décès) avec la guerre ou la bataille tirée des événements militaires"
+msgstr ""
+
+msgid "Informations militaires / événements de guerre (dates et notes conservées telles quelles)"
+msgstr ""
+
+msgid "Insérez le shortcode"
+msgstr ""
+
+msgid "Intensité faible"
+msgstr ""
+
+msgid "Intensité forte"
+msgstr ""
+
+msgid "Intensité moyenne"
+msgstr ""
+
+msgid "Intitulé"
+msgstr ""
+
+msgid "Introuvable par PHP. Racine web :"
+msgstr ""
+
+msgid "Janvier"
+msgstr ""
+
+msgid "Jeton de sécurité invalide."
+msgstr ""
+
+msgid "Jeu de caractères"
+msgstr ""
+
+msgid "Juillet"
+msgstr ""
+
+msgid "Juin"
+msgstr ""
+
+msgid "Jusqu'à 10 couleurs, utilisées dans l'ordre (génération 1, génération 2… ou branche 1, branche 2…). Laissez vides les couleurs inutiles."
+msgstr ""
+
+msgid "Jusqu'à 10 couleurs, utilisées dans l'ordre (série 1, série 2… ou part 1, part 2…). Laissez vide les couleurs inutiles."
+msgstr ""
+
+msgid "L'URL de TNG et l'arbre par défaut se règlent dans"
+msgstr ""
+
+msgid "L'ancien plugin"
+msgstr ""
+
+msgid "L'arbre par défaut, l'URL de TNG et le préfixe des tables se règlent dans"
+msgstr ""
+
+msgid "La chronologie est momentanément indisponible."
+msgstr ""
+
+msgid "La connexion à la base, le préfixe des tables et l'URL de TNG se règlent dans"
+msgstr ""
+
+msgid "La connexion, le préfixe ("
+msgstr ""
+
+msgid "La connexion, le préfixe des tables et la confidentialité se règlent dans"
+msgstr ""
+
+msgid "La connexion, le préfixe et l'arbre par défaut ("
+msgstr ""
+
+msgid "La connexion, le préfixe, l'URL de TNG et la confidentialité se règlent dans"
+msgstr ""
+
+msgid "La connexion, le préfixe, l'URL de TNG, l'arbre par défaut et les personnes vivantes/privées ("
+msgstr ""
+
+msgid "Laisser vide pour conserver le mot de passe enregistré."
+msgstr ""
+
+msgid "Laisser vide pour ne pas afficher d'emoji."
+msgstr ""
+
+msgid "Langue / Language"
+msgstr ""
+
+msgid "Langue du livre"
+msgstr ""
+
+msgid "Largeur max. des vignettes (px)"
+msgstr ""
+
+msgid "Le cache a été purgé mais la régénération a échoué (voir « Dernière erreur » ci-dessous)."
+msgstr ""
+
+msgid "Le diagnostic est refait à chaque affichage de cette page : enregistrez vos réglages pour tester une nouvelle connexion."
+msgstr ""
+
+msgid "Le graphique est limité à 3 000 personnes."
+msgstr ""
+
+msgid "Le livre dépasse"
+msgstr ""
+
+msgid "Le mot de passe enregistré est illisible (clés de sécurité modifiées) : ressaisissez-le dans TNG Suite > Général."
+msgstr ""
+
+msgid "Lecture impossible (voir TNG Suite > Général)."
+msgstr ""
+
+msgid "Lecture impossible (voir le journal PHP)."
+msgstr ""
+
+msgid "Les 10 plus longues vies"
+msgstr ""
+
+msgid "Les 40 intitulés les plus fréquents qui ne correspondent à aucune catégorie"
+msgstr ""
+
+msgid "Les anciens plugins concernés ne pourront plus se connecter à la base TNG. Continuer ?"
+msgstr ""
+
+msgid "Les mots de passe ont été effacés des réglages des anciens plugins."
+msgstr ""
+
+msgid "Les résultats sont mis en cache (6 h par défaut). Videz le cache après une modification dans TNG."
+msgstr ""
+
+msgid "Les visiteurs ne peuvent jamais inclure les personnes vivantes en entier."
+msgstr ""
+
+msgid "Les âges « ≈ » sont calculés à l'année près (dates incomplètes)."
+msgstr ""
+
+msgid "Lettres, chiffres et « _ » uniquement (par défaut"
+msgstr ""
+
+msgid "Libellé = mot-clé, mot-clé"
+msgstr ""
+
+msgid "Libellés (légende, tableau)"
+msgstr ""
+
+msgid "Libellés d'origine :"
+msgstr ""
+
+msgid "Lieu"
+msgstr ""
+
+msgid "Lieu complet"
+msgstr ""
+
+msgid "Lieux"
+msgstr ""
+
+msgid "Lieux et dates des personnes vivantes ou privées dans la carte."
+msgstr ""
+
+msgid "Liste des événements (format : AAAA-MM-JJ|Titre)"
+msgstr ""
+
+msgid "Livre généalogique"
+msgstr ""
+
+msgid "Livre généalogique TNG"
+msgstr ""
+
+msgid "Livre à générer"
+msgstr ""
+
+msgid "Légende"
+msgstr ""
+
+msgid "Ma palette personnalisée"
+msgstr ""
+
+msgid "Ma palette personnalisée (ci-dessous)"
+msgstr ""
+
+msgid "Mai"
+msgstr ""
+
+msgid "Mariages du jour"
+msgstr ""
+
+msgid "Mariages uniquement"
+msgstr ""
+
+msgid "Mars"
+msgstr ""
+
+msgid "Masquer"
+msgstr ""
+
+msgid "Masquer les personnes vivantes ou privées (recommandé)"
+msgstr ""
+
+msgid "Masquer les personnes vivantes ou privées (recommandé, RGPD)"
+msgstr ""
+
+msgid "Masquées"
+msgstr ""
+
+msgid "Maximum proposé aux visiteurs :"
+msgstr ""
+
+msgid "Mentions"
+msgstr ""
+
+msgid "Mentions de professions classées par catégorie"
+msgstr ""
+
+msgid "Mes tables TNG sont dans la base de WordPress"
+msgstr ""
+
+msgid "Migration depuis vos anciens plugins :"
+msgstr ""
+
+msgid "Mode : base de données WordPress"
+msgstr ""
+
+msgid "Mode : constantes de wp-config.php"
+msgstr ""
+
+msgid "Mode : identifiants saisis dans le plugin"
+msgstr ""
+
+msgid "Mode de connexion"
+msgstr ""
+
+msgid "Mode de couleurs"
+msgstr ""
+
+msgid "Mode « saisie dans le plugin » : renseignez au minimum la base et l'utilisateur."
+msgstr ""
+
+msgid "Moderne (carte arrondie, ombres douces, accents colorés)"
+msgstr ""
+
+msgid "Modules"
+msgstr ""
+
+msgid "Modules et confidentialité des vivants"
+msgstr ""
+
+msgid "Mois"
+msgstr ""
+
+msgid "Mot de passe MySQL"
+msgstr ""
+
+msgid "Moyenne d'âge à la première union (H/F)"
+msgstr ""
+
+msgid "Médias liés à des personnes vivantes ou privées."
+msgstr ""
+
+msgid "Naissance"
+msgstr ""
+
+msgid "Naissances"
+msgstr ""
+
+msgid "Naissances du jour"
+msgstr ""
+
+msgid "Naissances et décès par mois"
+msgstr ""
+
+msgid "Naissances uniquement"
+msgstr ""
+
+msgid "Niveaux de lieux affichés"
+msgstr ""
+
+msgid "Nom"
+msgstr ""
+
+msgid "Nom de base invalide."
+msgstr ""
+
+msgid "Nom de famille :"
+msgstr ""
+
+msgid "Nom de la base TNG"
+msgstr ""
+
+msgid "Nombre"
+msgstr ""
+
+msgid "Nombre de personnes décédées et vivantes de l'arbre (totaux uniquement). Renommez les libellés (ex. Oui / Non) dans Stats : graphiques."
+msgstr ""
+
+msgid "Noms de famille et anniversaires du jour des personnes vivantes ou privées."
+msgstr ""
+
+msgid "Noms des personnes vivantes ou privées dans les graphes et les listes."
+msgstr ""
+
+msgid "Noms, dates et liens des personnes vivantes ou privées dans les arbres et les listes."
+msgstr ""
+
+msgid "Noms, dates et lieux des personnes vivantes ou privées dans le graphique."
+msgstr ""
+
+msgid "Note sous le graphique"
+msgstr ""
+
+msgid "Notes (générales de chaque personne et de chaque union, et notes des événements : naissance, mariage, décès…)"
+msgstr ""
+
+msgid "Novembre"
+msgstr ""
+
+msgid "Nuage de noms & anniversaires"
+msgstr ""
+
+msgid "Nécessite des lieux géolocalisés dans TNG. basis = death ou birth (année servant à former les périodes)."
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "Octobre"
+msgstr ""
+
+msgid "Opacité de remplissage"
+msgstr ""
+
+msgid "Options d'affichage & intensité"
+msgstr ""
+
+msgid "Ou couleurs propres à ce graphique (prioritaires, dans l'ordre) :"
+msgstr ""
+
+msgid "Oui"
+msgstr ""
+
+msgid "PARENTÉ"
+msgstr ""
+
+msgid "PDF (téléchargement direct)"
+msgstr ""
+
+msgid "Page imprimable (Imprimer → Enregistrer en PDF)"
+msgstr ""
+
+msgid "Palette de tous les graphiques"
+msgstr ""
+
+msgid "Palette par défaut"
+msgstr ""
+
+msgid "Par siècle du mariage. min_n = nombre minimal de cas par siècle et par sexe."
+msgstr ""
+
+msgid "Paramètres enregistrés."
+msgstr ""
+
+msgid "Paramètres généraux"
+msgstr ""
+
+msgid "Part"
+msgstr ""
+
+msgid "Part (%)"
+msgstr ""
+
+msgid "Pas à l'aise avec ce fichier ? Choisissez plutôt « Saisir les identifiants ici »."
+msgstr ""
+
+msgid "Pastel"
+msgstr ""
+
+msgid "Permet de centrer et zoomer rapidement sur une ville de votre arbre."
+msgstr ""
+
+msgid "Permet de filtrer la carte sur un patronyme précis."
+msgstr ""
+
+msgid "Personne"
+msgstr ""
+
+msgid "Personne de départ par défaut"
+msgstr ""
+
+msgid "Personne introuvable dans cet arbre."
+msgstr ""
+
+msgid "Personne introuvable."
+msgstr ""
+
+msgid "Personne privée"
+msgstr ""
+
+msgid "Personne protégée"
+msgstr ""
+
+msgid "Personne vivante ou privée"
+msgstr ""
+
+msgid "Personnes avec une année connue, vivants inclus pour les naissances."
+msgstr ""
+
+msgid "Personnes vivantes / privées"
+msgstr ""
+
+msgid "Personnes vivantes ou privées dans le livre (noms, dates, photos)."
+msgstr ""
+
+msgid "Personnes vivantes/privées"
+msgstr ""
+
+msgid "Petits-enfants"
+msgstr ""
+
+msgid "Photos"
+msgstr ""
+
+msgid "Photos TNG (uniquement celles au statut « Photo par défaut »)"
+msgstr ""
+
+msgid "Plusieurs connexions différentes trouvées"
+msgstr ""
+
+msgid "Pour chaque graphique : titre, libellés de la légende, titres d'axes, position de la légende et couleurs. Les réglages s'appliquent immédiatement (sans vider le cache). Les attributs du shortcode ("
+msgstr ""
+
+msgid "Pour les afficher en entier : TNG Suite > Général > Modules > Livre généalogique (⚠️ RGPD)."
+msgstr ""
+
+msgid "Pratique pour compléter les catégories ci-dessus."
+msgstr ""
+
+msgid "Principales villes"
+msgstr ""
+
+msgid "Principaux métiers exercés par les individus en %"
+msgstr ""
+
+msgid "Professions non classées"
+msgstr ""
+
+msgid "Profondeur affichée dans le graphe d'ascendance."
+msgstr ""
+
+msgid "Préface"
+msgstr ""
+
+msgid "Préfixe de tables invalide (voir TNG Suite > Général)."
+msgstr ""
+
+msgid "Préfixe des tables TNG"
+msgstr ""
+
+msgid "Préfixe invalide (lettres, chiffres, _ ; 32 max). « tng_ » a été utilisé."
+msgstr ""
+
+msgid "Prénom usuel (le premier)"
+msgstr ""
+
+msgid "Prénoms"
+msgstr ""
+
+msgid "Purger et régénérer le cache"
+msgstr ""
+
+msgid "Période"
+msgstr ""
+
+msgid "Période (début)"
+msgstr ""
+
+msgid "Période historique :"
+msgstr ""
+
+msgid "Qui peut voir le graphique"
+msgstr ""
+
+msgid "Qui peut voir les résultats (shortcode)"
+msgstr ""
+
+msgid "Rechercher un lieu..."
+msgstr ""
+
+msgid "Recommandation : utilisez un utilisateur MySQL en"
+msgstr ""
+
+msgid "Relatif au dossier de TNG ("
+msgstr ""
+
+msgid "Reprise de celle de"
+msgstr ""
+
+msgid "Retenu :"
+msgstr ""
+
+msgid "Ronds opaques / visibles"
+msgstr ""
+
+msgid "Roue d'ascendance"
+msgstr ""
+
+msgid "Roue de descendance"
+msgstr ""
+
+msgid "Roue mixte"
+msgstr ""
+
+msgid "Réduire la liste"
+msgstr ""
+
+msgid "Réglage commun à tous les modules :"
+msgstr ""
+
+msgid "Réglages"
+msgstr ""
+
+msgid "Réglages TNG Link"
+msgstr ""
+
+msgid "Réglages TNG Media Gallery"
+msgstr ""
+
+msgid "Réglages TNG Random Individual"
+msgstr ""
+
+msgid "Réglages communs à tous les modules"
+msgstr ""
+
+msgid "Réglages de connexion complets (TNG Suite > Général)"
+msgstr ""
+
+msgid "Régénération automatique deux fois par jour."
+msgstr ""
+
+msgid "Répartition des décès et des vivants de la base"
+msgstr ""
+
+msgid "Répartition des individus par genre"
+msgstr ""
+
+msgid "Répartition des naissances et décès par demi-siècle"
+msgstr ""
+
+msgid "Répertoire des photos TNG"
+msgstr ""
+
+msgid "Résolu :"
+msgstr ""
+
+msgid "S'applique uniquement au thème moderne."
+msgstr ""
+
+msgid "Saisir les identifiants ici"
+msgstr ""
+
+msgid "Sans objet : simple lien, c'est TNG qui protège la fiche."
+msgstr ""
+
+msgid "Septembre"
+msgstr ""
+
+msgid "Seules les dates comportant un mois sont comptées."
+msgstr ""
+
+msgid "Seules les personnes décédées dont les dates de naissance et de décès sont complètes (jour, mois, année) et non approximatives sont retenues."
+msgstr ""
+
+msgid "Seuls des totaux sont publiés : « Masquer » cache le nom des personnes privées dans la liste des centenaires."
+msgstr ""
+
+msgid "Sexe"
+msgstr ""
+
+msgid "Silhouettes génériques (homme / femme) sinon"
+msgstr ""
+
+msgid "Siècle"
+msgstr ""
+
+msgid "Siècle du mariage"
+msgstr ""
+
+msgid "Sources"
+msgstr ""
+
+msgid "Statistique"
+msgstr ""
+
+msgid "Statistique inconnue."
+msgstr ""
+
+msgid "Statistique momentanément indisponible."
+msgstr ""
+
+msgid "Statistiques"
+msgstr ""
+
+msgid "Statistiques & graphiques"
+msgstr ""
+
+msgid "Statistiques : graphiques"
+msgstr ""
+
+msgid "Stats : graphiques"
+msgstr ""
+
+msgid "Statut"
+msgstr ""
+
+msgid "Style par défaut des ronds (si couleur distincte désactivée)"
+msgstr ""
+
+msgid "Sécurité :"
+msgstr ""
+
+msgid "Sépultures uniquement"
+msgstr ""
+
+msgid "TNG Implexe & Ancêtres"
+msgstr ""
+
+msgid "TNG Implexe : réglages"
+msgstr ""
+
+msgid "TNG Link : URL de TNG non configurée (TNG Suite > Général)."
+msgstr ""
+
+msgid "TNG Livre Généalogique"
+msgstr ""
+
+msgid "TNG Random Réglages"
+msgstr ""
+
+msgid "TNG Suite > Général"
+msgstr ""
+
+msgid "TNG Suite > Général > Modules"
+msgstr ""
+
+msgid "TNG Suite > Implexe : consanguinité"
+msgstr ""
+
+msgid "TNG Suite – Général"
+msgstr ""
+
+msgid "TNG Timeline : erreur de connexion ou de requête sur la base TNG. Vérifiez la connexion dans TNG Suite > Général."
+msgstr ""
+
+msgid "TNG Timeline : fichiers vis-timeline manquants dans le dossier /assets/ du plugin."
+msgstr ""
+
+msgid "TNG Timeline : indiquez person=\"…\" ou family=\"…\" dans le shortcode."
+msgstr ""
+
+msgid "TNG Timeline : échec d'encodage JSON (vérifiez le jeu de caractères de la connexion dans TNG Suite > Général)."
+msgstr ""
+
+msgid "TOTAL"
+msgstr ""
+
+msgid "Table"
+msgstr ""
+
+msgid "Tables TNG introuvables (vérifiez la base et le préfixe dans TNG Suite > Général)."
+msgstr ""
+
+msgid "Teinte légère et contour coloré"
+msgstr ""
+
+msgid "Terre"
+msgstr ""
+
+msgid "Texte du bouton"
+msgstr ""
+
+msgid "Textes de l'administration et des modules affichés aux visiteurs (graphiques, boutons, messages). Les noms, notes et lieux issus de TNG ne sont jamais traduits. Le livre généalogique a sa propre langue."
+msgstr ""
+
+msgid "Thème visuel"
+msgstr ""
+
+msgid "Tirage au sort parmi les personnes vivantes ou privées."
+msgstr ""
+
+msgid "Titre"
+msgstr ""
+
+msgid "Titres des axes"
+msgstr ""
+
+msgid "Titres, libellés, légendes et couleurs de chaque graphique :"
+msgstr ""
+
+msgid "Total"
+msgstr ""
+
+msgid "Toujours afficher"
+msgstr ""
+
+msgid "Toujours clair"
+msgstr ""
+
+msgid "Toujours sombre"
+msgstr ""
+
+msgid "Tous les caches ont été vidés."
+msgstr ""
+
+msgid "Tous les intitulés sont classés (ou aucune profession trouvée)."
+msgstr ""
+
+msgid "Tous les prénoms"
+msgstr ""
+
+msgid "Tous les événements"
+msgstr ""
+
+msgid "Tout le monde"
+msgstr ""
+
+msgid "Toutes époques"
+msgstr ""
+
+msgid "Trois quarts de cercle"
+msgstr ""
+
+msgid "Type de graphique"
+msgstr ""
+
+msgid "Types d'événement « profession »"
+msgstr ""
+
+msgid "Types de graphique ("
+msgstr ""
+
+msgid "URL de TNG"
+msgstr ""
+
+msgid "URL de TNG non configurée (TNG Suite > Général)"
+msgstr ""
+
+msgid "URL de votre site TNG"
+msgstr ""
+
+msgid "Un module désactivé n'est pas chargé du tout : ses shortcodes n'affichent plus rien, ses réglages sont conservés."
+msgstr ""
+
+msgid "Un nouveau média ajouté dans TNG apparaît au plus tard à l'expiration du cache. Pour l'afficher tout de suite :"
+msgstr ""
+
+msgid "Une règle par ligne :"
+msgstr ""
+
+msgid "Utilisateurs WordPress connectés"
+msgstr ""
+
+msgid "Utilisateurs connectés"
+msgstr ""
+
+msgid "Valeur utilisée par les modules réglés sur « Comme le réglage commun ». Chaque module peut être réglé séparément dans le tableau « Modules » ci-dessous."
+msgstr ""
+
+msgid "Valeurs différentes trouvées pour"
+msgstr ""
+
+msgid "Vers"
+msgstr ""
+
+msgid "Via le fichier wp-config.php"
+msgstr ""
+
+msgid "Vide = arbre par défaut de TNG Suite > Général, sinon détection automatique."
+msgstr ""
+
+msgid "Vide = même couleur que le texte normal."
+msgstr ""
+
+msgid "Vide = note d'origine (s'il y en a une)."
+msgstr ""
+
+msgid "Vide = titre automatique dans la langue choisie."
+msgstr ""
+
+msgid "Vide = titre d'origine. Saisissez"
+msgstr ""
+
+msgid "Vide = titres d'origine (sans effet sur les camemberts et tableaux)."
+msgstr ""
+
+msgid "Vide les caches de tous les modules (utile après une modification dans TNG)."
+msgstr ""
+
+msgid "Vider le cache"
+msgstr ""
+
+msgid "Vider tous les caches"
+msgstr ""
+
+msgid "Vivants"
+msgstr ""
+
+msgid "Vivants / privés"
+msgstr ""
+
+msgid "Vivants / privés (par défaut)"
+msgstr ""
+
+msgid "Vivants / privés :"
+msgstr ""
+
+msgid "Vivants/privés pour le formulaire public"
+msgstr ""
+
+msgid "Vive"
+msgstr ""
+
+msgid "Voir la fiche de l'individu"
+msgstr ""
+
+msgid "Vérifiez les valeurs ci-dessous."
+msgstr ""
+
+msgid "XIXe siècle (1800-1899)"
+msgstr ""
+
+msgid "XVIIIe siècle (1700-1799)"
+msgstr ""
+
+msgid "XVIIe siècle (1600-1699)"
+msgstr ""
+
+msgid "Zoom arrière"
+msgstr ""
+
+msgid "Zoom avant"
+msgstr ""
+
+msgid "[tng_book] (et génération depuis l'administration)"
+msgstr ""
+
+msgid "affichait les personnes vivantes : le module garde ce comportement (⚠️ RGPD, réglable dans Général > Modules)."
+msgstr ""
+
+msgid "affichées"
+msgstr ""
+
+msgid "arbre"
+msgstr ""
+
+msgid "attribut stat invalide. Valeurs possibles :"
+msgstr ""
+
+msgid "baptêmes"
+msgstr ""
+
+msgid "cas par sexe sont ignorés."
+msgstr ""
+
+msgid "ces anciens plugins sont encore actifs, leur module n'est donc pas chargé par la suite. Désactivez-les (puis supprimez-les) :"
+msgstr ""
+
+msgid "couleurs choisies par le plugin pour chaque graphique"
+msgstr ""
+
+msgid "dans la base. Une fois TNG Suite vérifié et les anciens plugins désactivés, effacez-le."
+msgstr ""
+
+msgid "dans la plupart des cas, ou"
+msgstr ""
+
+msgid "dans une page, avec en option :"
+msgstr ""
+
+msgid "dans une page. Options facultatives :"
+msgstr ""
+
+msgid "disponible (mPDF détecté)."
+msgstr ""
+
+msgid "décès"
+msgstr ""
+
+msgid "défaut :"
+msgstr ""
+
+msgid "est introuvable"
+msgstr ""
+
+msgid "incomplets"
+msgstr ""
+
+msgid "introuvable"
+msgstr ""
+
+msgid "introuvable (préfixe ou base à vérifier)."
+msgstr ""
+
+msgid "introuvable dans l’arbre"
+msgstr ""
+
+msgid "introuvable."
+msgstr ""
+
+msgid "les personnes vivantes ou privées sont actuellement"
+msgstr ""
+
+msgid "mais le dossier"
+msgstr ""
+
+msgid "mariages"
+msgstr ""
+
+msgid "masquées"
+msgstr ""
+
+msgid "masqués"
+msgstr ""
+
+msgid "mentions non classées exclues"
+msgstr ""
+
+msgid "mot de passe illisible"
+msgstr ""
+
+msgid "naissance"
+msgstr ""
+
+msgid "naissances"
+msgstr ""
+
+msgid "non configurée"
+msgstr ""
+
+msgid "non disponible. Le livre s’ouvre en page imprimable (Imprimer → Enregistrer en PDF). Pour un PDF direct, installez mPDF dans le dossier du plugin :"
+msgstr ""
+
+msgid "par défaut)."
+msgstr ""
+
+msgid "personnes : réduisez le nombre de générations, ou augmentez le nombre maximum de personnes dans les réglages."
+msgstr ""
+
+msgid "Nombre maximum de personnes"
+msgstr ""
+
+msgid "personnes : réduisez le nombre de générations."
+msgstr ""
+
+msgid "personnes."
+msgstr ""
+
+msgid "pour chacun"
+msgstr ""
+
+msgid "pour la masquer."
+msgstr ""
+
+msgid "pour le masquer),"
+msgstr ""
+
+msgid "pour ne pas afficher de titre."
+msgstr ""
+
+msgid "premier arbre"
+msgstr ""
+
+msgid "précisez l’arbre."
+msgstr ""
+
+msgid "regroupés par commune."
+msgstr ""
+
+msgid "renseignés"
+msgstr ""
+
+msgid "siècle"
+msgstr ""
+
+msgid "sont définies dans"
+msgstr ""
+
+msgid "source = événements comptés, séparés par des virgules : birth (naissances), baptism (baptêmes), marriage (mariages), death (décès), burial (sépultures), ou all (les cinq, par défaut). level = rang du segment du lieu (1 = premier, avant la première virgule). others = 1 pour ajouter « Autres »."
+msgstr ""
+
+msgid "step = taille de la période en années (25, 50, 100…)."
+msgstr ""
+
+msgid "sur les tables people, families et places uniquement)."
+msgstr ""
+
+msgid "sépultures"
+msgstr ""
+
+msgid "tables TNG attendues dans la base WordPress"
+msgstr ""
+
+msgid "trouvée"
+msgstr ""
+
+msgid "vérifiez-la."
+msgstr ""
+
+msgid "« Cartes modernes » affiche les images en plein cadre (les tailles de vignettes ci-dessous sont ignorées dans ce mode)."
+msgstr ""
+
+msgid "À droite"
+msgstr ""
+
+msgid "À gauche"
+msgstr ""
+
+msgid "Âge"
+msgstr ""
+
+msgid "Âge au décès"
+msgstr ""
+
+msgid "Âge au décès (ans)"
+msgstr ""
+
+msgid "Âge calculé à l'année près, à la première union connue. Les siècles avec moins de"
+msgstr ""
+
+msgid "Âge moyen (ans)"
+msgstr ""
+
+msgid "Échec (voir le journal PHP)"
+msgstr ""
+
+msgid "État"
+msgstr ""
+
+msgid "État de la connexion"
+msgstr ""
+
+msgid "Éventail / roue"
+msgstr ""
+
+msgid "Éventail / roue de parenté"
+msgstr ""
+
+msgid "Éventail : indiquez la personne de départ, par exemple [tng_fan person=\"I1\"]."
+msgstr ""
+
+msgid "Éventail : réglages"
+msgstr ""
+
+msgid "Événement"
+msgstr ""
+
+msgid "Événement :"
+msgstr ""
+
+msgid "Événements comptés"
+msgstr ""
+
+msgid "Événements des personnes vivantes ou privées dans la frise."
+msgstr ""
+
+msgid "Événements historiques contextuels"
+msgstr ""
+
+msgid "échec"
+msgstr ""
+
+msgid "— individu aléatoire avec ce patronyme"
+msgstr ""
+
+msgid "— individu aléatoire dans cet arbre (sinon l'arbre des réglages)"
+msgstr ""
+
+msgid "— individu aléatoire dans la base"
+msgstr ""
+
+msgid "•••••••• (enregistré)"
+msgstr ""
+
+msgid "… sont lues dans la même base que WordPress."
+msgstr ""
+
+msgid "⚠️ Affichées (RGPD)"
+msgstr ""
+
+msgid "⚠️ Cette méthode garde le mot de passe (chiffré) dans la base de WordPress : elle est un peu moins sûre que wp-config.php. Dans tous les cas, créez un compte MySQL en"
+msgstr ""
+
+msgid "⚠️ Le mot de passe enregistré est illisible (les clés de sécurité de WordPress ont changé) : ressaisissez-le."
+msgstr ""
+
+msgid "⚠️ L’URL doit indiquer où est située la page placesearch.php"
+msgstr ""
+
+msgid "⚠️ RGPD : vous allez afficher publiquement des personnes vivantes ou privées pour :"
+msgstr ""
+
+msgid "⚠️ affichées (RGPD)"
+msgstr ""
+
+msgid "⚠️ affichés (RGPD)"
+msgstr ""
+
+msgid "✅ Les quatre constantes"
+msgstr ""
+
+msgid "Éventail : générateur"
+msgstr ""
+
+msgid "Éventail : générer une roue"
+msgstr ""
+
+msgid "(conjoints),"
+msgstr ""
+
+msgid "(personnes vivantes : voir l'avertissement du générateur),"
+msgstr ""
+
+msgid "(texte enrichi au zoom),"
+msgstr ""
+
+msgid "(bouton d'export PDF),"
+msgstr ""
+
+msgid "Vous pouvez aussi"
+msgstr ""
+
+msgid "générer la roue directement depuis l'administration"
+msgstr ""
+
+msgid "Ascendance : jusqu'à 12 générations (8 191 ancêtres). Maximum de descendance proposé aux visiteurs :"
+msgstr ""
+
+msgid "La descendance est limitée à 3 000 personnes."
+msgstr ""
+
+msgid "Conjoints"
+msgstr ""
+
+msgid "Afficher les conjoints (anneau extérieur de chaque descendant, et au centre pour la personne de départ)"
+msgstr ""
+
+msgid "Zoom"
+msgstr ""
+
+msgid "Enrichir le texte au zoom (années, puis communes, puis dates et lieux complets)"
+msgstr ""
+
+msgid "Générer une roue de parenté"
+msgstr ""
+
+msgid "Choisissez une personne et les options, cliquez sur « Générer la roue » : l'aperçu est interactif (zoom, déplacement, export PDF)."
+msgstr ""
+
+msgid "Copiez ensuite le shortcode dans une page. Les réglages par défaut se trouvent dans"
+msgstr ""
+
+msgid "Personne de départ"
+msgstr ""
+
+msgid "ex. I1"
+msgstr ""
+
+msgid "…ou rechercher par nom"
+msgstr ""
+
+msgid "Ascendance"
+msgstr ""
+
+msgid "Descendance"
+msgstr ""
+
+msgid "Par génération"
+msgstr ""
+
+msgid "Par branche"
+msgstr ""
+
+msgid "Par sexe"
+msgstr ""
+
+msgid "Teinte légère"
+msgstr ""
+
+msgid "Années"
+msgstr ""
+
+msgid "Commune"
+msgstr ""
+
+msgid "Afficher les conjoints"
+msgstr ""
+
+msgid "Enrichir le texte au zoom"
+msgstr ""
+
+msgid "Bouton d'export PDF"
+msgstr ""
+
+msgid "Personnes vivantes"
+msgstr ""
+
+msgid "Selon le réglage du module (masquées)"
+msgstr ""
+
+msgid "Selon le réglage du module (affichées)"
+msgstr ""
+
+msgid "Toujours masquer sur cette roue"
+msgstr ""
+
+msgid "Afficher sur cette roue (⚠️ RGPD)"
+msgstr ""
+
+msgid "⚠️ Attention RGPD : les noms, dates et lieux des personnes vivantes ou privées seront visibles de tous les visiteurs de la page qui contiendra ce shortcode. Ce choix est ignoré si le module est réglé sur « Toujours masquer » dans TNG Suite > Général, ou si l'auteur de la page n'est pas éditeur ou administrateur."
+msgstr ""
+
+msgid "Générer la roue"
+msgstr ""
+
+msgid "Shortcode à copier"
+msgstr ""
+
+msgid "Copier"
+msgstr ""
+
+msgid "Copié !"
+msgstr ""
+
+msgid "Noms, dates et lieux des personnes vivantes ou privées dans le graphique. Le paramètre living=\"show\" du shortcode permet de les afficher sur une roue précise, sauf si « Toujours masquer » est choisi ici."
+msgstr ""
+
+msgid "Arbres visuels : une roue complète en ouverture de l’ascendance et de la descendance, et une mini-roue (génération en évidence, personnes numérotées) à chaque génération"
+msgstr ""
+
+msgid "Arbres visuels : un arbre (Nom (code)) en ouverture de l’ascendance et de la descendance, et une mini-roue (génération en évidence, personnes numérotées) à chaque génération"
+msgstr ""
+
+msgid "Style des textes"
+msgstr ""
+
+msgid "° naissance, † décès, x mariage"
+msgstr ""
+
+msgid "N : naissance, D : décès, M : mariage (style Heredis)"
+msgstr ""
+
+msgid "Style"
+msgstr ""
+
+msgid "Selon le réglage du module"
+msgstr ""
+
+msgid "Couleurs des textes"
+msgstr ""
+
+msgid "Titres des parties"
+msgstr ""
+
+msgid "Générations, codes et liens"
+msgstr ""
+
+msgid "Noms des personnes"
+msgstr ""
+
+msgid "Texte courant"
+msgstr ""
+
+msgid "Années, sources, légendes"
+msgstr ""
+
+msgid "Revenir aux couleurs par défaut"
+msgstr ""
+
+msgid "S’appliquent à la page imprimable, au PDF, au fichier Word (.docx) et au fichier OpenDocument (.odt)."
+msgstr ""
+
+msgid "Word (.docx, téléchargement)"
+msgstr ""
+
+msgid "OpenDocument (.odt, téléchargement)"
+msgstr ""
+
+msgid "Arbres : traits et cases"
+msgstr ""
+
+msgid "Arbres : génération en évidence"
+msgstr ""
+
+msgid "Carte des lieux de vie en noir et blanc (nombre de personnes par département ou province ; fond de carte précis si des fichiers GeoJSON sont déposés dans le dossier data du module, voir le guide)"
+msgstr ""
+
+msgid "Palettes harmonisées :"
+msgstr ""
+
+msgid "Bordeaux classique"
+msgstr ""
+
+msgid "Bleu marine"
+msgstr ""
+
+msgid "Forêt"
+msgstr ""
+
+msgid "Terre de Sienne"
+msgstr ""
+
+msgid "Ardoise et cuivre"
+msgstr ""
+
+msgid "Prune"
+msgstr ""
+
+msgid "Bleu canard"
+msgstr ""
+
+msgid "Vieux papier"
+msgstr ""
+
+msgid "Sobre (noir et gris)"
+msgstr ""
+
+msgid "Photo du conjoint (petite vignette à côté de l’union, quand le conjoint n’a pas sa propre fiche)"
+msgstr ""
+
+msgid "Baptême (date et lieu, quand ils sont renseignés dans TNG)"
+msgstr ""
+
+msgid "Sépulture (inhumation, ou incinération le cas échéant : date et lieu quand ils sont renseignés)"
+msgstr ""
+
+msgid "Phrases détaillées (« Il est né le … à …, fils de … » ; « Il est décédé le …, à l’âge de … ans » ; « Il a été inhumé … ») au lieu des mentions courtes « Né le … »"
+msgstr ""
+
+msgid "Pays entre parenthèses après le lieu (« Lyon, Rhône (France) »), traduit dans la langue du livre et déduit du département ou de l’État quand il n’est pas écrit"
+msgstr ""
+
+msgid "Départements, provinces et États traduits dans la langue du livre (Bouches-du-Rhône / Bocas del Ródano, Bavière / Bavaria / Baviera, Nouvelle-Galles du Sud / New South Wales…), y compris dans les cartes"
+msgstr ""
+
+msgid "Liste des ascendants (tableau récapitulatif : n° Sosa, naissance, conjoint, décès, âge), placée avant la liste des descendants"
+msgstr ""
+
+msgid "Lieux de résidence (« A résidé à Comines (Belgique), Nieppe (France) », du plus ancien au plus récent, d’après les événements Résidence de TNG)"
+msgstr ""
+
+msgid "Frères et sœurs sur les fiches (liste des autres enfants de la famille d’origine, avec lien vers leur fiche si elle existe)"
+msgstr ""
+
+msgid "Âge des époux au mariage (« il avait 27 ans et elle 24 ans », si les dates de naissance sont connues)"
+msgstr ""
+
+msgid "Cousinages et implexes (partie ajoutée seulement si un même ancêtre apparaît plusieurs fois : liste des implexes et des unions entre apparentés)"
+msgstr ""
+
+msgid "Cousinages et implexes"
+msgstr ""
+
+msgid "Profils de livre enregistrés"
+msgstr ""
+
+msgid "Charger"
+msgstr ""
+
+msgid "Supprimer"
+msgstr ""
+
+msgid "Supprimer ce profil ?"
+msgstr ""
+
+msgid "Nom du profil"
+msgstr ""
+
+msgid "Enregistrer comme profil"
+msgstr ""
+
+msgid "Profil enregistré."
+msgstr ""
+
+msgid "Profil chargé : les paramètres ci-dessous sont ceux du profil."
+msgstr ""
+
+msgid "Profil supprimé."
+msgstr ""
+
+msgid "Donnez un nom au profil (les paramètres ont tout de même été enregistrés)."
+msgstr ""
+
+msgid "Profil introuvable."
+msgstr ""
+
+msgid "Nombre maximal de profils atteint (50)."
+msgstr ""
+
+msgid "Aucun profil. Réglez le livre ci-dessous, donnez un nom à côté du bouton « Enregistrer comme profil », puis retrouvez ici vos réglages (personne, générations, options, modèle, couleurs, préface…)."
+msgstr ""
+
+msgid "Profil actif :"
+msgstr ""
+
+msgid "modifiez les réglages ci-dessous puis utilisez « Mettre à jour le profil » pour l’enregistrer."
+msgstr ""
+
+msgid "Mettre à jour le profil"
+msgstr ""
+
+msgid "Sépia & Tradition Chaleureuse"
+msgstr ""
+
+msgid "Forêt Ancienne"
+msgstr ""
+
+msgid "Bleu Nuit & Or"
+msgstr ""
+
+msgid "Héritage & parchemin"
+msgstr ""
+
+msgid "Ardoise & vieux rose"
+msgstr ""
+
+msgid "Vert sauge & cuivre"
+msgstr ""
+
+msgid "En chiffres"
+msgstr ""
+
+msgid "Carte des lieux de vie"
+msgstr ""
+
+msgid "Index des noms"
+msgstr ""
+
+msgid "Index des lieux"
+msgstr ""
+
+msgid "Liste des ascendants"
+msgstr ""
+
+msgid "Liste des descendants"
+msgstr ""
+
+msgid "Ordre des parties du livre"
+msgstr ""
+
+msgid "Les parties désactivées plus haut (statistiques, carte, index, listes…) sont simplement ignorées. Les index sont toujours complets, quelle que soit leur place."
+msgstr ""
+
+msgid "Mode diagnostic (en haut du livre : pourquoi une photo n’est pas trouvée ; à la fin du chapitre « Carte des lieux de vie » : chaque lieu pris en compte, son origine et la raison de son classement)"
+msgstr ""
+
+msgid "0 = pas d’ascendance. Aucune limite : 6 par défaut ; chaque génération double le nombre de places, le livre s’arrête de lui-même quand il n’y a plus d’ancêtres connus."
+msgstr ""
+
+msgid "0 = pas de descendance. Aucune limite : 4 par défaut."
+msgstr ""
+
+msgid "Garde-fou contre les livres trop lourds (délai dépassé, mémoire). 4000 par défaut ;"
+msgstr ""
+
+msgid "0 = illimité"
+msgstr ""
+
+msgid "Si la génération échoue ou s’arrête, baissez cette valeur ou le nombre de générations."
+msgstr ""
+
+msgid "Pour les masquer :"
+msgstr ""
+
+msgid ". Si la génération échoue ou s’arrête, baissez cette valeur ou le nombre de générations."
+msgstr ""
+
+msgid "Autres mariages et unions des ancêtres (en plus de l’union dont descend la lignée)"
+msgstr ""
+
+msgid "Liste des descendants (tableau récapitulatif : n° d’Aboville, naissance, conjoint, décès, âge) à la toute fin du document"
+msgstr ""
+
+msgid "Chapitre « En chiffres » (statistiques, histogrammes, complétude de l’ascendance, frise) et chiffres clés sur la page de titre"
+msgstr ""
+
+msgid "— dans « En chiffres » : prénoms les plus fréquents"
+msgstr ""
+
+msgid "— dans « En chiffres » : noms de famille les plus fréquents"
+msgstr ""
+
+msgid "Modèle de mise en page"
+msgstr ""
+
+msgid "Classique (modèle d’origine) : une colonne, texte justifié, photo à droite"
+msgstr ""
+
+msgid "Récit en 2 colonnes : bandeaux de génération, âge des parents, « autres informations », couples et enfants en puces"
+msgstr ""
+
+msgid "Compact : 2 colonnes, petit corps, pour limiter le nombre de pages"
+msgstr ""
+
+msgid "Élégant : titres centrés et filets, photo à gauche, grande marge de lecture"
+msgstr ""
+
+msgid "Moderne : police sans empattement, bandeaux pleins, fiches en cartes"
+msgstr ""
+
+msgid "Le modèle s’applique à la page imprimable, au PDF, au Word et à l’OpenDocument ; les couleurs ci-dessus restent réglables. Les colonnes sont natives dans Word et LibreOffice."
+msgstr ""
+
+msgid "Fiche & listes de documents"
+msgstr ""
+
+msgid "Fiche & documents"
+msgstr ""
+
+msgid "Fiche généalogique et listes de documents"
+msgstr ""
+
+msgid "Insérez"
+msgstr ""
+
+msgid "ou"
+msgstr ""
+
+msgid "listes d’ascendants / descendants et fiche individuelle"
+msgstr ""
+
+msgid "dans une page ou un article."
+msgstr ""
+
+msgid "La connexion TNG, le préfixe des tables, l’URL de TNG, l’arbre et la protection des personnes vivantes se règlent dans TNG Suite > Général."
+msgstr ""
+
+msgid "Champs affichés dans les documents"
+msgstr ""
+
+msgid "Décochez ce que vous ne voulez pas voir. Pour les listes, les colonnes décochées disparaissent (PDF et Excel) ; pour la fiche individuelle, les rubriques décochées sont omises."
+msgstr ""
+
+msgid "Personne de référence"
+msgstr ""
+
+msgid "Liste des ascendants (colonnes)"
+msgstr ""
+
+msgid "Liste des descendants (colonnes)"
+msgstr ""
+
+msgid "Fiche individuelle (rubriques)"
+msgstr ""
+
+msgid "N° Sosa"
+msgstr ""
+
+msgid "N° d’Aboville"
+msgstr ""
+
+msgid "Nom (toujours affiché)"
+msgstr ""
+
+msgid "Date de naissance / baptême"
+msgstr ""
+
+msgid "Lieu de naissance / baptême"
+msgstr ""
+
+msgid "Conjoint"
+msgstr ""
+
+msgid "Date d’union"
+msgstr ""
+
+msgid "Lieu d’union"
+msgstr ""
+
+msgid "Date de décès / inhumation"
+msgstr ""
+
+msgid "Lieu de décès / inhumation"
+msgstr ""
+
+msgid "N° Sosa et génération (si une personne de référence est définie)"
+msgstr ""
+
+msgid "Profession"
+msgstr ""
+
+msgid "Mention « sait / ne sait pas signer »"
+msgstr ""
+
+msgid "Rubriques personnelles (événements personnalisés)"
+msgstr ""
+
+msgid "Parents"
+msgstr ""
+
+msgid "Âge des parents à la naissance"
+msgstr ""
+
+msgid "Mention « légitime »"
+msgstr ""
+
+msgid "Rang dans la fratrie"
+msgstr ""
+
+msgid "Frères et sœurs"
+msgstr ""
+
+msgid "Conjoint et enfants des frères et sœurs"
+msgstr ""
+
+msgid "Conjoints et enfants"
+msgstr ""
+
+msgid "Détail du mariage (date et lieu)"
+msgstr ""
+
+msgid "Petits-enfants (nombre et prénoms)"
+msgstr ""
+
+msgid "Chronologie"
+msgstr ""
+
+msgid "Âges dans la chronologie"
+msgstr ""
+
+msgid "Événements des proches dans la chronologie (conjoints, enfants, parents)"
+msgstr ""
+
+msgid "Photos des époux (sinon silhouettes)"
+msgstr ""
+
+msgid "Profession de l’époux"
+msgstr ""
+
+msgid "Ligne « Mariés le … à … »"
+msgstr ""
+
+msgid "Encart « Lieu de vie »"
+msgstr ""
+
+msgid "Encart « Leurs enfants »"
+msgstr ""
+
+msgid "Encart de contexte n° 1 (métier)"
+msgstr ""
+
+msgid "Encart de contexte n° 2 (maison et foyer)"
+msgstr ""
+
+msgid "Encart de contexte n° 3 (faits de l’époque)"
+msgstr ""
+
+msgid "Encart de contexte n° 4 (transmission)"
+msgstr ""
+
+msgid "Bandeau « Informations clés »"
+msgstr ""
+
+msgid "Choix sur la page"
+msgstr ""
+
+msgid "Affiche aux visiteurs une case à cocher par champ, pré-réglée avec les choix ci-dessus (ils ne modifient que leur propre document)."
+msgstr ""
+
+msgid "Langue des documents"
+msgstr ""
+
+msgid "Générer les documents (fiche, listes)"
+msgstr ""
+
+msgid "Générer des documents"
+msgstr ""
+
+msgid "Générer les documents"
+msgstr ""
+
+msgid "Créez ici, sans passer par une page du site, les listes d’ascendants et de descendants et la fiche individuelle (PDF, Excel, Word). Les champs affichés et la langue par défaut se règlent dans « Fiche & documents »."
+msgstr ""
+
+msgid "Listes et fiche individuelle"
+msgstr ""
+
+msgid "Langue par défaut"
+msgstr ""
+
+msgid "Langue du site"
+msgstr ""
+
+msgid "Langue des textes des listes et de la fiche individuelle (dates, phrases, titres) : français, anglais (britannique), catalan ou espagnol."
+msgstr ""
+
+msgid "Choix de la langue sur la page"
+msgstr ""
+
+msgid "Affiche aux visiteurs une liste pour choisir la langue du document."
+msgstr ""
+
+msgid "Personne de référence (Sosa 1)"
+msgstr ""
+
+msgid "Identifiant TNG de la personne de départ de la numérotation Sosa (ex. <code>I1</code>) pour les fiches individuelles ; modifiable à chaque fiche."
+msgstr ""
+
+msgid "Réserver aux utilisateurs connectés"
+msgstr ""
+
+msgid "Modèle"
+msgstr ""
+
+msgid "Vous devez être connecté pour utiliser cet outil."
+msgstr ""
+
+msgid "Noms et dates des personnes vivantes ou privées dans les listes et les fiches individuelles."
+msgstr ""
+
+msgid "Ne diffusez pas ce livre sans leur consentement et réservez-le à un usage familial privé."
+msgstr ""
+
+msgid "Arbres visuels : un arbre (Nom (code)) en ouverture de l’ascendance et de la descendance, et des arbres classiques en cases (génération en évidence) à chaque génération"
+msgstr ""
+
+msgid "Diagnostic des photos (affiche en haut du livre pourquoi une photo n’est pas trouvée)"
+msgstr ""
+
+msgid "). Si le dossier est introuvable, des silhouettes génériques sont utilisées."
+msgstr ""
+
+msgid "Enregistrer et générer le livre"
+msgstr ""
+
+msgid "— réglage dans"
+msgstr ""
+
+msgid "Afficher les professions non classées"
+msgstr ""
+
+msgid "Erreur de requête :"
+msgstr ""
+
+msgid ". Vous pouvez aussi"
+msgstr ""
+
+msgid "Choisissez une personne et les options, cliquez sur « Générer la roue » : l'aperçu est interactif (zoom, déplacement, export PDF). Copiez ensuite le shortcode dans une page. Les réglages par défaut se trouvent dans"
+msgstr ""
+
+msgid "lignes agrégées."
+msgstr ""
+
+msgid ". Sert à lire les photos directement sur le disque ; sinon l’URL de TNG (réglages communs) est utilisée."
+msgstr ""
+
+msgid ") pour les fiches individuelles ; modifiable à chaque fiche."
+msgstr ""
+
+msgid "Identifiant TNG de la personne de départ de la numérotation Sosa (ex."
+msgstr ""
+
+msgid ". Vérifiez que vous avez leur consentement ou que ces pages sont à accès restreint."
+msgstr ""
+
+msgid "un ancien plugin ("
+msgstr ""
+
+msgid ") conserve encore un mot de passe MySQL"
+msgstr ""
+
+msgid "Par défaut"
+msgstr ""
+
+msgid "Shortcodes :"
+msgstr ""
+
+msgid "La connexion, le préfixe, l'URL de TNG et l'arbre par défaut se règlent dans"
+msgstr ""
+
+msgid ". Libellés d'origine :"
+msgstr ""
+
+msgid "– Général"
+msgstr ""
+
+msgctxt "js"
+msgid " Page "
+msgstr ""
+
+msgctxt "js"
+msgid " consanguins trouvés."
+msgstr ""
+
+msgctxt "js"
+msgid " couples affichés sur "
+msgstr ""
+
+msgctxt "js"
+msgid " individu(s) — classés par F décroissant (à égalité : profondeur de l’ascendance connue). F est la probabilité que les deux allèles d’un même gène soient identiques par descendance."
+msgstr ""
+
+msgctxt "js"
+msgid " individus examinés, "
+msgstr ""
+
+msgctxt "js"
+msgid " par page"
+msgstr ""
+
+msgctxt "js"
+msgid " personnes sur "
+msgstr ""
+
+msgctxt "js"
+msgid " · génération "
+msgstr ""
+
+msgctxt "js"
+msgid ". Réduisez la profondeur du réseau pour tout afficher."
+msgstr ""
+
+msgctxt "js"
+msgid ". Seuls les individus dont les deux parents sont connus sont évalués ; les autres ne peuvent pas être consanguins d’après les données."
+msgstr ""
+
+msgctxt "js"
+msgid "1re gén."
+msgstr ""
+
+msgctxt "js"
+msgid "Actualiser"
+msgstr ""
+
+msgctxt "js"
+msgid "Affichage"
+msgstr ""
+
+msgctxt "js"
+msgid "Analyse en cours… (cela peut prendre quelques secondes sur un grand arbre)"
+msgstr ""
+
+msgctxt "js"
+msgid "Analyser"
+msgstr ""
+
+msgctxt "js"
+msgid "Anc. communs"
+msgstr ""
+
+msgctxt "js"
+msgid "Ancêtre"
+msgstr ""
+
+msgctxt "js"
+msgid "Ancêtres distincts"
+msgstr ""
+
+msgctxt "js"
+msgid "Ancêtres inconnus"
+msgstr ""
+
+msgctxt "js"
+msgid "Ancêtres répétés"
+msgstr ""
+
+msgctxt "js"
+msgid "Ancêtres théoriques, connus et distincts (échelle logarithmique)"
+msgstr ""
+
+msgctxt "js"
+msgid "Années"
+msgstr ""
+
+msgctxt "js"
+msgid "Apparitions"
+msgstr ""
+
+msgctxt "js"
+msgid "Arbre"
+msgstr ""
+
+msgctxt "js"
+msgid "Arrière-grands-parents"
+msgstr ""
+
+msgctxt "js"
+msgid "Ascendance de "
+msgstr ""
+
+msgctxt "js"
+msgid "Aucun"
+msgstr ""
+
+msgctxt "js"
+msgid "Aucun ancêtre connu pour cette personne."
+msgstr ""
+
+msgctxt "js"
+msgid "Aucun ancêtre."
+msgstr ""
+
+msgctxt "js"
+msgid "Aucun calcul pour cet arbre. Cliquez sur « Calculer / recalculer » (la durée dépend de la taille de l’arbre)."
+msgstr ""
+
+msgctxt "js"
+msgid "Aucun couple fondateur détecté dans la profondeur analysée."
+msgstr ""
+
+msgctxt "js"
+msgid "Aucun individu à afficher avec ce filtre."
+msgstr ""
+
+msgctxt "js"
+msgid "Aucun résultat."
+msgstr ""
+
+msgctxt "js"
+msgid "Aucune"
+msgstr ""
+
+msgctxt "js"
+msgid "Aucune donnée disponible."
+msgstr ""
+
+msgctxt "js"
+msgid "Bibliothèque cartographique indisponible."
+msgstr ""
+
+msgctxt "js"
+msgid "Bibliothèque de graphiques indisponible."
+msgstr ""
+
+msgctxt "js"
+msgid "Bibliothèque vis-network indisponible."
+msgstr ""
+
+msgctxt "js"
+msgid "Branche"
+msgstr ""
+
+msgctxt "js"
+msgid "Calcul en cours : "
+msgstr ""
+
+msgctxt "js"
+msgid "Calcul en cours… ne fermez pas cette page."
+msgstr ""
+
+msgctxt "js"
+msgid "Calcul terminé."
+msgstr ""
+
+msgctxt "js"
+msgid "Calculer / recalculer"
+msgstr ""
+
+msgctxt "js"
+msgid "Cases d’ancêtres connues"
+msgstr ""
+
+msgctxt "js"
+msgid "Centrer ici"
+msgstr ""
+
+msgctxt "js"
+msgid "Cercle complet"
+msgstr ""
+
+msgctxt "js"
+msgid "Chargement…"
+msgstr ""
+
+msgctxt "js"
+msgid "Chercher"
+msgstr ""
+
+msgctxt "js"
+msgid "Choisissez un arbre et une personne."
+msgstr ""
+
+msgctxt "js"
+msgid "Classés par nombre d’occurrences dans l’ascendance (nombre de chemins menant au probant). La part théorique correspond à la somme des 1/2^g de chaque occurrence."
+msgstr ""
+
+msgctxt "js"
+msgid "Coloration par"
+msgstr ""
+
+msgctxt "js"
+msgid "Commune"
+msgstr ""
+
+msgctxt "js"
+msgid "Complétude"
+msgstr ""
+
+msgctxt "js"
+msgid "Complétude de la génération"
+msgstr ""
+
+msgctxt "js"
+msgid "Complétude et implexe (%)"
+msgstr ""
+
+msgctxt "js"
+msgid "Connus"
+msgstr ""
+
+msgctxt "js"
+msgid "Connus (avec répétitions)"
+msgstr ""
+
+msgctxt "js"
+msgid "Couleur pleine"
+msgstr ""
+
+msgctxt "js"
+msgid "Couples fondateurs"
+msgstr ""
+
+msgctxt "js"
+msgid "DU"
+msgstr ""
+
+msgctxt "js"
+msgid "Dates"
+msgstr ""
+
+msgctxt "js"
+msgid "Dates complètes"
+msgstr ""
+
+msgctxt "js"
+msgid "Demi-cercle"
+msgstr ""
+
+msgctxt "js"
+msgid "Dernier calcul : "
+msgstr ""
+
+msgctxt "js"
+msgid "Disposition hiérarchique"
+msgstr ""
+
+msgctxt "js"
+msgid "Disposition libre"
+msgstr ""
+
+msgctxt "js"
+msgid "Distincts"
+msgstr ""
+
+msgctxt "js"
+msgid "Données indisponibles pour le moment, veuillez réessayer plus tard."
+msgstr ""
+
+msgctxt "js"
+msgid "Erreur "
+msgstr ""
+
+msgctxt "js"
+msgid "Erreur de chargement."
+msgstr ""
+
+msgctxt "js"
+msgid "Fermer"
+msgstr ""
+
+msgctxt "js"
+msgid "Fiche"
+msgstr ""
+
+msgctxt "js"
+msgid "Figer / relancer"
+msgstr ""
+
+msgctxt "js"
+msgid "Filtrer la liste…"
+msgstr ""
+
+msgctxt "js"
+msgid "Forme"
+msgstr ""
+
+msgctxt "js"
+msgid "Fraction"
+msgstr ""
+
+msgctxt "js"
+msgid "Grands-parents"
+msgstr ""
+
+msgctxt "js"
+msgid "Graphique limité à 3 000 personnes : réduisez le nombre de générations."
+msgstr ""
+
+msgctxt "js"
+msgid "Gén."
+msgstr ""
+
+msgctxt "js"
+msgid "Gén. des conjoints"
+msgstr ""
+
+msgctxt "js"
+msgid "Génération"
+msgstr ""
+
+msgctxt "js"
+msgid "Génération "
+msgstr ""
+
+msgctxt "js"
+msgid "Générations"
+msgstr ""
+
+msgctxt "js"
+msgid "Générations atteintes"
+msgstr ""
+
+msgctxt "js"
+msgid "Générations d'ascendance"
+msgstr ""
+
+msgctxt "js"
+msgid "Générations de descendance"
+msgstr ""
+
+msgctxt "js"
+msgid "Implexe"
+msgstr ""
+
+msgctxt "js"
+msgid "Implexe = (cases d’ancêtres connues − ancêtres distincts) ÷ cases connues. Une personne présente plusieurs fois dans une même génération compte pour un seul ancêtre distinct."
+msgstr ""
+
+msgctxt "js"
+msgid "Implexe cumulé"
+msgstr ""
+
+msgctxt "js"
+msgid "Implexe cumulé (%)"
+msgstr ""
+
+msgctxt "js"
+msgid "Implexe de la génération"
+msgstr ""
+
+msgctxt "js"
+msgid "Implexe de la génération (%)"
+msgstr ""
+
+msgctxt "js"
+msgid "Implexe par génération"
+msgstr ""
+
+msgctxt "js"
+msgid "Individu"
+msgstr ""
+
+msgctxt "js"
+msgid "Individus"
+msgstr ""
+
+msgctxt "js"
+msgid "Individus consanguins"
+msgstr ""
+
+msgctxt "js"
+msgid "Individus évalués"
+msgstr ""
+
+msgctxt "js"
+msgid "Le calcul n’a pas encore été effectué pour cet arbre."
+msgstr ""
+
+msgctxt "js"
+msgid "Le dernier calcul est incomplet : relancez-le."
+msgstr ""
+
+msgctxt "js"
+msgid "Lieu complet"
+msgstr ""
+
+msgctxt "js"
+msgid "Lieux"
+msgstr ""
+
+msgctxt "js"
+msgid "Mère"
+msgstr ""
+
+msgctxt "js"
+msgid "Niveau"
+msgstr ""
+
+msgctxt "js"
+msgid "Occurrences"
+msgstr ""
+
+msgctxt "js"
+msgid "Options"
+msgstr ""
+
+msgctxt "js"
+msgid "Palette"
+msgstr ""
+
+msgctxt "js"
+msgid "Paramètres par défaut"
+msgstr ""
+
+msgctxt "js"
+msgid "Parents"
+msgstr ""
+
+msgctxt "js"
+msgid "Part de consanguins"
+msgstr ""
+
+msgctxt "js"
+msgid "Part théorique"
+msgstr ""
+
+msgctxt "js"
+msgid "Pas de données."
+msgstr ""
+
+msgctxt "js"
+msgid "Personnalisée"
+msgstr ""
+
+msgctxt "js"
+msgid "Personne"
+msgstr ""
+
+msgctxt "js"
+msgid "Personne (ID)"
+msgstr ""
+
+msgctxt "js"
+msgid "Personne vivante"
+msgstr ""
+
+msgctxt "js"
+msgid "Probant"
+msgstr ""
+
+msgctxt "js"
+msgid "Profondeur"
+msgstr ""
+
+msgctxt "js"
+msgid "Prénom usuel"
+msgstr ""
+
+msgctxt "js"
+msgid "Prénoms"
+msgstr ""
+
+msgctxt "js"
+msgid "Père"
+msgstr ""
+
+msgctxt "js"
+msgid "Quadrisaïeuls"
+msgstr ""
+
+msgctxt "js"
+msgid "Quintaïeuls"
+msgstr ""
+
+msgctxt "js"
+msgid "Rang"
+msgstr ""
+
+msgctxt "js"
+msgid "Recentrer"
+msgstr ""
+
+msgctxt "js"
+msgid "Rechercher par nom…"
+msgstr ""
+
+msgctxt "js"
+msgid "Rechercher une personne…"
+msgstr ""
+
+msgctxt "js"
+msgid "Retour"
+msgstr ""
+
+msgctxt "js"
+msgid "Roue d'ascendance"
+msgstr ""
+
+msgctxt "js"
+msgid "Roue de descendance"
+msgstr ""
+
+msgctxt "js"
+msgid "Roue mixte"
+msgstr ""
+
+msgctxt "js"
+msgid "Répartition des individus consanguins par classe de F"
+msgstr ""
+
+msgctxt "js"
+msgid "Réseau"
+msgstr ""
+
+msgctxt "js"
+msgid "Réseau limité à "
+msgstr ""
+
+msgctxt "js"
+msgid "Sexe"
+msgstr ""
+
+msgctxt "js"
+msgid "Sextaïeuls"
+msgstr ""
+
+msgctxt "js"
+msgid "Style"
+msgstr ""
+
+msgctxt "js"
+msgid "Suivant →"
+msgstr ""
+
+msgctxt "js"
+msgid "Teinte légère"
+msgstr ""
+
+msgctxt "js"
+msgid "Théorique"
+msgstr ""
+
+msgctxt "js"
+msgid "Théorique (2^g)"
+msgstr ""
+
+msgctxt "js"
+msgid "Top 100 ancêtres"
+msgstr ""
+
+msgctxt "js"
+msgid "Tous les prénoms"
+msgstr ""
+
+msgctxt "js"
+msgid "Trisaïeuls"
+msgstr ""
+
+msgctxt "js"
+msgid "Trois quarts"
+msgstr ""
+
+msgctxt "js"
+msgid "Un couple fondateur est un couple d’ancêtres dont aucun des deux conjoints n’a de parents connus dans l’arbre. Le nombre d’apparitions compte les chemins distincts reliant ce couple au probant : au-delà de 1, il révèle un implexe."
+msgstr ""
+
+msgctxt "js"
+msgid "Zoom arrière"
+msgstr ""
+
+msgctxt "js"
+msgid "Zoom avant"
+msgstr ""
+
+msgctxt "js"
+msgid "parents cousins au 3e degré"
+msgstr ""
+
+msgctxt "js"
+msgid "parents cousins germains"
+msgstr ""
+
+msgctxt "js"
+msgid "parents cousins germains éloignés d’un degré, ou demi-cousins germains"
+msgstr ""
+
+msgctxt "js"
+msgid "parents cousins issus de germains"
+msgstr ""
+
+msgctxt "js"
+msgid "parents cousins issus de germains éloignés d’un degré"
+msgstr ""
+
+msgctxt "js"
+msgid "parents demi-frère/sœur, oncle et nièce, tante et neveu, ou grand-parent et petit-enfant"
+msgstr ""
+
+msgctxt "js"
+msgid "parents frère et sœur (ou parent et enfant)"
+msgstr ""
+
+msgctxt "js"
+msgid "Épouse"
+msgstr ""
+
+msgctxt "js"
+msgid "Époux"
+msgstr ""
+
+msgctxt "js"
+msgid "Évolution"
+msgstr ""
+
+msgctxt "js"
+msgid "← Précédent"
+msgstr ""
+
+msgctxt "js"
+msgid "◆ couple fondateur · bord rouge = ancêtre répété · taille = nombre d’occurrences · couleur = génération"
+msgstr ""
+
+msgctxt "js"
+msgid "Exporter en PDF"
+msgstr ""
+
+msgctxt "js"
+msgid "Conjoints"
+msgstr ""
+
+msgctxt "js"
+msgid "Texte enrichi au zoom"
+msgstr ""
+
+msgctxt "js"
+msgid "Automatique"
+msgstr ""
+
+msgctxt "js"
+msgid "Export PDF : format du papier"
+msgstr ""
+
+msgctxt "js"
+msgid "Création du PDF…"
+msgstr ""
+
+msgctxt "js"
+msgid "Échec de l'export PDF."
+msgstr ""
+
+msgctxt "js"
+msgid "Généré avec TNG Suite"
+msgstr ""
+
+msgctxt "js"
+msgid "gén. d'ascendance"
+msgstr ""
+
+msgctxt "js"
+msgid "gén. de descendance"
+msgstr ""
+
+msgctxt "js"
+msgid "Ascendance limitée à 8 400 personnes : réduisez le nombre de générations."
+msgstr ""
+
+msgctxt "js"
+msgid "Descendance limitée à 3 000 personnes : réduisez le nombre de générations."
+msgstr ""
+
+msgctxt "js"
+msgid "Indiquez la personne de départ."
+msgstr ""
+
+msgctxt "js"
+msgid "Adapté au texte (tout le texte en entier)"
+msgstr ""
+
+msgctxt "js"
+msgid "Portrait"
+msgstr ""
+
+msgctxt "js"
+msgid "Paysage"
+msgstr ""
+
+msgctxt "js"
+msgid "Comme à l'écran"
+msgstr ""
+
+msgctxt "js"
+msgid "Complet : dates et lieux complets"
+msgstr ""
+
+msgctxt "js"
+msgid "Calcul…"
+msgstr ""
+
+msgctxt "js"
+msgid "Feuille"
+msgstr ""
+
+msgctxt "js"
+msgid "portrait"
+msgstr ""
+
+msgctxt "js"
+msgid "paysage"
+msgstr ""
+
+msgctxt "js"
+msgid "cases avec le texte complet"
+msgstr ""
+
+msgctxt "js"
+msgid "même au format maximal, certains textes restent tronqués."
+msgstr ""
+
+msgctxt "js"
+msgid "les autres cases s'affichent sans texte ou tronquées : choisissez une feuille plus grande."
+msgstr ""
+
+msgctxt "js"
+msgid "Format de la feuille"
+msgstr ""
+
+msgctxt "js"
+msgid "Orientation"
+msgstr ""
+
+msgctxt "js"
+msgid "Contenu"
+msgstr ""
+
+msgctxt "js"
+msgid "Style des textes"
+msgstr ""
+
+msgctxt "js"
+msgid "° † x (symboles)"
+msgstr ""
+
+msgctxt "js"
+msgid "N : D : M : (lettres)"
+msgstr ""
+
+msgctxt "js"
+msgid "Champs affichés dans le document"
+msgstr ""
+
+msgctxt "js"
+msgid "Éléments affichés"
+msgstr ""
+

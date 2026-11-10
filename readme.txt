@@ -2,7 +2,7 @@
 Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Requires PHP: 7.4
-Stable tag: 1.32.1
+Stable tag: 1.33.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,6 +78,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 1.33.0 =
+* Traductions par gettext : domaine « tng-suite », catalogues languages/tng-suite.pot et tng-suite-en_US.po/.mo (1076 textes, JavaScript compris, contexte « js »). Une autre langue s'ajoute en déposant un .mo (Poedit, Loco Translate). Les textes du livre (français, anglais, espagnol, catalan) ne changent pas : ils restent dans modules/book/includes/lang*.php. Le dictionnaire includes/i18n-en.php devient la source tools/i18n-src/, régénérée par php tools/build-i18n.php.
 
 = 1.32.1 =
 * Publication GitHub : le script de téléchargement des bibliothèques est lancé avec bash (le droit d'exécution se perd au téléversement par le navigateur).

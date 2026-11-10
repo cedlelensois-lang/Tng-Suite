@@ -84,8 +84,11 @@ LANGUAGE: FRENCH OR ENGLISH (TNG Suite > General > Language / Langue)
  The family book has its own language (French, English, Spanish, Catalan): by default that of the suite.
  Month names and number formats follow the language of WordPress / of the browser.
  The photo diagnostics of the book (the "debug" option) stay in French.
- To add a language or fix a translation: includes/i18n-en.php (admin and pages) and includes/i18n-js-en.php
- (JavaScript) map each French text to its English equivalent.
+ Translations (gettext, text domain "tng-suite"): source texts are in French; languages/tng-suite.pot is the template and
+ languages/tng-suite-en_US.po/.mo the English translation. To add a language, open the .pot in Poedit or Loco Translate and save
+ e.g. tng-suite-es_ES.po/.mo in languages/ or wp-content/languages/plugins/: it is used when WordPress runs in that language.
+ To fix the English text, edit tools/i18n-src/fr-en.php (or js-fr-en.php for JavaScript) and run  php tools/build-i18n.php
+ which regenerates the .pot, .po, .mo and includes/i18n-js-keys.php.
 
 
 LIVING / PRIVATE PEOPLE: ONE SETTING PER MODULE (TNG Suite > General > Modules)

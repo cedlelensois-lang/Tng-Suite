@@ -79,8 +79,11 @@ LANGUE / LANGUAGE : FRANÇAIS OU ENGLISH (TNG Suite > Général > Langue / Langu
  Le livre généalogique a sa propre langue (français, anglais, espagnol, catalan) : par défaut celle de la suite.
  Les noms de mois et les formats de nombres suivent la langue de WordPress / du navigateur.
  Les textes de diagnostic des photos du livre (option « debug ») restent en français.
- Pour ajouter une langue ou corriger une traduction : includes/i18n-en.php (administration et pages) et
- includes/i18n-js-en.php (JavaScript) associent chaque texte français à son équivalent anglais.
+ Traductions (gettext, domaine « tng-suite ») : les textes sources sont en français ; languages/tng-suite.pot est le modèle,
+ languages/tng-suite-en_US.po/.mo la traduction anglaise. Pour ajouter une langue : ouvrez le .pot avec Poedit ou Loco Translate,
+ enregistrez tng-suite-es_ES.po/.mo (par exemple) dans languages/ ou wp-content/languages/plugins/ : elle est utilisée quand WordPress
+ est dans cette langue. Pour corriger l'anglais : modifiez tools/i18n-src/fr-en.php (ou js-fr-en.php pour le JavaScript)
+ puis lancez  php tools/build-i18n.php  qui régénère le .pot, le .po, le .mo et includes/i18n-js-keys.php.
 
 
 VIVANTS / PRIVÉS : UN RÉGLAGE PAR MODULE (TNG Suite > Général > Modules)
