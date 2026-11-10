@@ -1,0 +1,362 @@
+TNG SUITE 1.28.0 – USER GUIDE
+
+============================
+
+(Version française : LISEZ-MOI.txt. The WordPress.org description is in readme.txt.)
+
+One plugin instead of eleven:
+
+  Old plugin                             TNG Suite module           Shortcodes
+  -------------------------------------  -------------------------  ----------------------------------------------
+  TNG Gutenberg Tree & Descendants 7.0   Trees & descendants        [arbre_tng] [enfants_tng] [patronyme_tng]
+                                                                    [liste_enfants_tng] [stats_descendants_tng]
+                                                                    [lien_fiche_tng]
+  TNG Individual Link Button 1.9         Record link button         [tng_link id="I001"]
+  TNG Family Timeline 3.1                Timeline                   [tng_timeline]
+  TNG Ancestors Heatmap 1.21             Places heatmap             [tng_heatmap]
+  TNG Media Gallery Pro 1.3              Media gallery              [tng_media_gallery]
+  TNG Random Individual 2.0              Random individual          [tng_random_individual]
+  TNG Extra Shortcodes 2.0               Name cloud & birthdays     [tng_name_cloud] [tng_births_today]
+                                                                    [tng_marriages_today] [tng_deaths_today]
+  TNG Stats 1.0                          Statistics & charts        [tng_stat_genre] [tng_stat_vivants]
+                                                                    [tng_stat_centenaires] [tng_stat_age_union]
+                                                                    [tng_stat_distance] [tng_stat_demi_siecle]
+                                                                    [tng_stat_mois] [tng_stat_villes]
+                                                                    [tng_stat_metiers]
+                                                                    or [tng_stat stat="…"]
+  (new)                                  Fan / kinship wheel        [tng_fan]
+  TNG Implexe & Ancêtres 1.0             Implex & inbreeding        [tng_implexe] [tng_consanguinite]
+  TNG Livre Généalogique 1.1             Family book                [tng_book] + generation in the admin area
+  TNG Fiche Généalogique 1.1             Sheet & document lists     [tng_listes]
+
+Shortcode names and attributes are unchanged: your existing pages keep working.
+
+
+INSTALLATION / MIGRATION
+------------------------
+1. Make a backup (files + database).
+2. Put the "tng-suite" folder in wp-content/plugins/ (or install the zip).
+3. On the Plugins screen, DEACTIVATE the 11 old plugins, then activate TNG Suite.
+   (If an old plugin is still active, its module is not loaded and a warning is shown: this prevents the
+    fatal error "Cannot redeclare function".)
+4. Open TNG Suite > General: the values of your old plugins have been imported automatically.
+   If the old plugins used different values, a blue box tells you: check them.
+5. Test your pages, then delete the 11 old plugins.
+
+DON'T FORGET
+ - Timeline: vis-timeline 8.5.4 is bundled (modules/timeline/assets/), nothing to copy.
+ - Third-party libraries: each module loads them from a local copy if one exists, otherwise from a public CDN.
+   To avoid any external service, drop the files listed in libs/LISEZ-MOI.txt (Chart.js, vis-network),
+   modules/heatmap/assets/vendor/ (Leaflet) and modules/gallery/assets/vendor/glightbox/.
+ - Connection to the TNG database: TNG Suite > General offers three modes (see below). Your DB_*TNG constants in
+   wp-config.php remain valid; DB_PREFIXTNG is no longer needed (the prefix is set in General).
+
+
+CONNECTION TO THE TNG DATABASE: THREE MODES (TNG Suite > General)
+-----------------------------------------------------------------
+ 1. Via wp-config.php (recommended): constants DB_HOSTTNG, DB_NAMETNG, DB_USERTNG, DB_PASSWORDTNG
+    (+ DB_CHARSETTNG / DB_COLLATETNG if needed). Nothing is stored in the database.
+ 2. Enter the credentials in the plugin: for people who do not want to edit wp-config.php.
+    The password is encrypted (libsodium) with the WordPress security keys, is never displayed again, and is
+    deleted if you switch to another mode. If you change the security keys (AUTH_KEY…) it becomes unreadable:
+    the page tells you, and you simply enter it again. This mode still keeps the (encrypted) password in the
+    WordPress database, so it is slightly less safe than mode 1.
+ 3. TNG tables in the WordPress database: no credentials to enter.
+ In every case, create a read-only MySQL account (SELECT) for the suite.
+ The diagnostics at the top of the page check the connection and the presence of the tables each time the page
+ is displayed.
+
+ Automatic import: if the old "Family book" or "Implex" plugins had their own MySQL credentials, they are
+ imported (mode 2). Those old plugins leave their password IN CLEAR TEXT in their options: once everything works,
+ use the "Delete the passwords of the old plugins" button on the General page (or simply delete the old plugins
+ and their data).
+
+
+LANGUAGE: FRENCH OR ENGLISH (TNG Suite > General > Language / Langue)
+---------------------------------------------------------------------
+ "Automatic" follows the WordPress language (French if the site is in French, English otherwise); you can also
+ force French or English.
+ What is translated: the admin pages, menus and messages, and everything the modules show to visitors (buttons,
+ chart titles and legends, labels, error messages, the Implex interface, the heatmap, and GEDCOM dates such as
+ "ABT / BEF / AFT…" shown as "about / before / after…").
+ What is NEVER translated: names, places, notes and dates entered in TNG, and the labels you chose yourself
+ (titles, labels and colours of the Statistics charts).
+ The family book has its own language (French, English, Spanish, Catalan): by default that of the suite.
+ Month names and number formats follow the language of WordPress / of the browser.
+ The photo diagnostics of the book (the "debug" option) stay in French.
+ To add a language or fix a translation: includes/i18n-en.php (admin and pages) and includes/i18n-js-en.php
+ (JavaScript) map each French text to its English equivalent.
+
+
+LIVING / PRIVATE PEOPLE: ONE SETTING PER MODULE (TNG Suite > General > Modules)
+------------------------------------------------------------------------------
+ Each module has its own list: "Same as the shared setting" / "Hide" / "Show (⚠️ GDPR)".
+ - The "Hide living or private people" box on the General page is the default for modules set to "Same as the
+   shared setting" (ticked at installation).
+ - Choosing "Show" asks for a confirmation, shows a GDPR warning next to the module and a permanent banner at the
+   top of the General page for as long as living people are displayed.
+ - "Random individual" and "Name cloud & birthdays" stay on "Hide" by default (as before).
+ - Family book: "Show" includes living people in full in the book generated from the admin area (with a
+   non-printing GDPR banner). The public [tng_book] form NEVER includes living people in full.
+ - Statistics: only totals are published; "Hide" masks the names of private people in the centenarians list.
+ - Record link button: not applicable (a simple link; TNG itself protects the record).
+ - Migration: if an old plugin was already showing living people, its module is imported as "Show" (and flagged).
+
+
+STATISTICS: CUSTOMISE EACH CHART (TNG Suite > Stats: charts)
+------------------------------------------------------------
+ For each chart: title, default type, label replacement ("Old = New", for the legend and the table), axis titles,
+ legend position (or hidden), note, and colours.
+ Colours: palette for all charts (8 ready-made palettes including a colour-blind friendly one, or "My custom
+ palette" of 10 colours), a palette specific to one chart, or 6 colours specific to one chart.
+ Priority order: shortcode attribute (title, type) > chart setting > original value.
+ New chart [tng_stat_vivants]: breakdown of deceased / living people in the tree (default type "polarArea").
+ To display "Yes / No" labels, enter for example "Deceased = No" and "Living = Yes" in the labels of that chart
+ (a rule can use either the original French label or the label shown in the current language).
+ Customisation changes apply immediately (no need to clear the cache).
+ Only the charts of the Statistics module can be customised this way.
+
+
+PLACES STATISTIC: ALL EVENTS
+----------------------------
+ [tng_stat_villes] now counts births, baptisms (christening), marriages, deaths and burials by default.
+ Use source="birth,baptism,marriage,death,burial" (or source="all") to remove some of them.
+
+
+FAMILY BOOK: MARRIED OR LIVING TOGETHER
+---------------------------------------
+ Rule applied to each family: if the marrdate field contains anything, the couple is considered married
+ ("He / She married …"); if marrdate is empty or NULL, the couple is described as living together
+ ("He / She lived as a couple with …", in French "Il / Elle vécut en couple avec …", in Spanish "Vivió en pareja
+ con …", in Catalan "Va viure en parella amb …"). The book therefore never writes "married" without a marriage
+ date.
+
+
+FAN / KINSHIP WHEEL (TNG Suite > Fan / wheel)
+---------------------------------------------
+ New module (no equivalent among the old plugins). Shortcode: [tng_fan person="I1"] (alias [tng_roue]).
+ - Three types: ancestors wheel, descendants wheel, mixed wheel (ancestors on top, descendants below).
+ - Generations set separately: ancestors up to 12 (8,191 ancestors); descendants up to 10 (3,000 people maximum).
+ - Shapes: full circle, three quarters, half circle (not for the mixed wheel, which is always a full circle).
+ - Colours: by generation, by branch or by sex; 8 ready-made palettes or your own 10-colour palette;
+   "light tint + coloured outline" or "solid colour" style.
+ - Spouses (spouses="1", on by default): in the descendants and mixed wheels each descendant carries, on its outer
+   ring, its spouse(s) (one arc per union, aligned with the children of that union); the spouses of the central
+   person form an inner ring (one arc per marriage, facing their children) and are also written in the centre ("x SURNAME First name"). Clicking a spouse lets you centre the wheel on them.
+ - Smart zoom (zoomdetail="1"): at every zoom level the texts are recomputed to fit the enlarged box. The more you
+   zoom, the more lines appear: name, then years, then towns, then full dates and places. Only visible boxes are
+   written, so the display stays smooth even at 12 generations.
+ - PDF export ("PDF" button, pdf="0" to remove it): vector PDF built in the browser, no library, text included (names
+   follow the arcs). A dialog lets you choose the sheet size (A4, A3, A2, A1, A0, or "Fit to the text"), the
+   orientation and the content (as on screen, or full dates and places). It shows live "N / M boxes with their full
+   text" for the chosen sheet. "Fit to the text" picks the smallest sheet on which all the text fits in full (beyond
+   A0, a custom size up to 5 m).
+ - Living / private people: the module setting (General > Modules) AND the shortcode parameter
+   living="default|hide|show". "default" follows the module setting; "hide" hides them on this wheel; "show" displays
+   them on this wheel (⚠️ GDPR: their names, dates and places are visible to every visitor of the page).
+   "show" is ignored if the module is set to "Always hide", or if the page author is not allowed to edit other
+   people's posts (editor or administrator role required). Visitors cannot change this choice.
+ - Generate the wheel from the administration: TNG Suite > Fan chart: generate a wheel. Pick the person (search by
+   name), type, generations, colours, content and living people; "Generate the wheel" shows an interactive preview
+   (zoom, PDF) and the matching shortcode to copy into a page.
+ - Visitor options panel (gear): type, generations, shape, colouring, palette, style, dates, places, spouses, text
+   enriched on zoom, PDF paper size, person search. "Back" goes back.
+ - Shortcode attributes: person, tree, mode (ancestors|descendants|mixed), asc (1 to 12), desc, shape (full|three|half),
+   color (generation|branch|sex), palette, colors="#ff0000,#00ff00", style (tint|solid), dates, places, spouses,
+   living, zoomdetail, pdf, height, controls="0" (hides the panel and the tabs), class.
+ - Limits: 8,400 ancestors and 3,000 descendants per chart. No external library: everything is SVG.
+ - At 12 generations the last rings hold up to 2,048 boxes: zoom in to read the names.
+
+
+FAMILY BOOK: MAP OF PLACES LIVED (option, black and white)
+-----------------------------------------------------------
+ "Map of places lived" box in the book settings (unticked by default). One number of people per département (France),
+ province (Spain, Belgium) or country; a person is counted once per territory, from birth, residence (RESI event),
+ marriage and death places. Hidden living persons are excluded.
+ - Assignment: département/province name in the place, else code or postal code (France), else GPS coordinates of
+   the TNG places table (nearest territory centre: approximate, flagged under the map).
+ - Base map: precise outlines if you drop regions-fr.geojson, regions-es.geojson, regions-be.geojson into
+   modules/book/data/ ; otherwise a very simplified schematic base map.
+ - Word/ODT: only the summary table is included (like the charts).
+
+FAMILY BOOK: "BY THE NUMBERS" CHAPTER
+-------------------------------------
+ "By the numbers chapter" box (ticked by default) in the book settings. The chapter comes after the descendants part;
+ its sections appear in the table of contents.
+ - Overview: people mentioned (men / women), couples, generations, period, sources.
+ - Completeness of the ancestry: for each generation, ancestors possible / known, percentage, pedigree collapse,
+   dated births and deaths; total number of different ancestors identified.
+ - Demography: mean and median age at death (by century of birth and sex), age at first marriage and at the birth of
+   the first child, average number of children per couple, largest families.
+ - Histograms: age at death (10-year bands), children per couple, births per quarter-century.
+ - Infant mortality: deaths before 1 and before 5, by century (people whose birth and death are dated).
+ - First names and surnames: most frequent (men, women, surnames), overall and by century.
+ - Geography: most cited places of birth, marriage and death; towns of parents then of their children.
+ - Timeline of direct ancestors: one birth-death bar per ancestor (60 at most, closest first).
+ Living or private (hidden) people are excluded from the detailed calculations; unknown dates are ignored.
+ In Word/OpenDocument files, histograms become tables with text bars and the timeline is left out.
+ Title page: a line of key figures (people, families, sources, period) appears under the author.
+ The statistics cover all the families mentioned, including the siblings of ancestors, which adds one read query on the
+ TNG database (no effect on numbering or entries).
+
+
+FAMILY BOOK: COLOURS AND WORD / OPENDOCUMENT EXPORT
+---------------------------------------------------
+ - Colours: seven colour pickers (including "Trees: lines and boxes" and "Trees: highlighted generation") in the book settings (part titles; generations, codes and links; people's names;
+   body text; years, sources and captions). They apply to the printable page, the PDF and the Word/OpenDocument files.
+   "Restore the default colours" resets them.
+ - "Word (.docx)" or "OpenDocument (.odt)" format: the book is downloaded as an editable document (LibreOffice, Word,
+   Google Docs...). Contents: title page, clickable table of contents, structured headings (Navigation pane), photos on
+   the right of the entries, clickable cross-references, page numbers. The classic box trees become indented lists
+   "Name (code)" (the drawing is not carried over). Requires the PHP "zip" extension (available on most hosts);
+   otherwise these two formats are not offered.
+
+SETTINGS PAGES: ONE LAYOUT
+--------------------------
+ Every module page now starts the same way: title "TNG Suite - <module>", the state of the TNG connection with a reminder
+ of the living / private setting of that module (and the link to TNG Suite > General), then the shortcodes of the
+ module. Save buttons are all "Save Changes", at the bottom of the form. The whole administration and the public
+ texts are available in French and English (TNG Suite > General > Language); Fiche & documents also offers Catalan
+ and Spanish for the documents it produces ("Site language" there follows the General setting).
+
+
+FAMILY BOOK: LAYOUT TEMPLATES (TNG Suite > Family book > Layout template)
+--------------------------------------------------------------------------
+ The "Classic" template is the original layout and its output is unchanged. Four more templates are offered; all of
+ them work for the printable page, the PDF, Word (.docx) and OpenDocument (.odt), and follow your colours:
+ - Narrative, 2 columns: generation banners (tint of the "generations" colour), name heading "A12 - First LAST.",
+   one sentence for birth/death, one for parentage with the parents' years and ages at the birth ("aged 32"), a
+   block "Other known information about X:" (Sosa / d'Aboville number, occupation) as bullets, then, for ancestors,
+   one block per couple ("X and Y were married on … Their union lasted 41 years and 5 months.") followed by
+   "X and Y have 4 children:" with one bullet per child (birth, death, link to the entry). Translated in the four
+   languages of the book. In Word / LibreOffice the columns are real section columns.
+ - Compact: 2 columns, small type, to keep the number of pages down.
+ - Elegant: one column, centred headings with rules, photo on the left, generous reading comfort.
+ - Modern: sans-serif font, solid generation banners, each entry as a card (cards are HTML/PDF only; Word and
+   OpenDocument get the font and the banners).
+ Fonts are standard ones (Garamond, Cambria, Palatino, Calibri); if they are not installed the viewer substitutes a
+ close font. PDF written by the direct-download option (mPDF) was not tested with the 2-column templates: use the
+ printable page ("Save as PDF") for a guaranteed result.
+
+
+FICHE & DOCUMENT LISTS MODULE (TNG Suite > Fiche & documents)
+-------------------------------------------------------------
+ Former plugin "TNG Fiche Généalogique", now a module. Shortcode: [tng_listes] (list of ancestors with Sosa numbers, list of descendants with d'Aboville numbers, individual
+ sheet; PDF, Excel, Word). Connection, prefix, TNG URL, tree and living/private people come from the common
+ settings (TNG Suite > General > Modules sets "living / private" for this module). Your previous settings of the
+ standalone plugin (reference person) are read again automatically; the A3 genealogy poster was removed ([tng_fiche] now shows the [tng_listes] tool); the database
+ connection fields of the old plugin are no longer used.
+ Generate from the administration: TNG Suite > Generate documents (lists and individual sheet). Field choice and
+ language list are always available there. Create the documents without any page or shortcode.
+ Fields shown: tick or untick them in TNG Suite > Fiche & documents.
+ - Lists: any column except the name (number, birth date and place, spouse, union date and place, death date and
+   place, age at death).
+ - Individual sheet: Sosa number, occupation, signature note, personal items, parents (with their age at the birth
+   and the "legitimate" note), rank among siblings, siblings (and their spouse and children), spouses and
+   children (with marriage details and grandchildren), timeline (with ages and relatives' events).
+ "Choice on the page" (ticked by default) shows visitors one checkbox per field, preset with your choices.
+ Language of the documents: French, English (UK), Catalan or Spanish. Choose the default in TNG Suite > Fiche &
+ documents > Language of the documents ("Site language" follows the WordPress language); "Language choice on the
+ page" (on by default) adds a list so visitors pick the language themselves. The choice applies to dates, sentences,
+ titles, column headings, buttons, PDF / Excel / Word files. Person data
+ (occupations, notes, place names) stay as recorded in TNG.
+
+
+FAN WHEEL: COUPLES, HEREDIS STYLE AND GENERATOR MEMORY
+------------------------------------------------------
+ - Spouses form a thin strip on the outer edge of each ring, facing the children of that union: "NAME First name
+   (years)" then "M : marriage date" (the full date appears when zooming). "Light tint" style: coloured edge on every ring.
+ - "Text style" setting: ° † x (symbols) or N : D : M : (letters, with date and place on the same line in "Full dates"
+   mode). In the shortcode: labels="letters".
+ - Generator: the configuration (person, type, generations, colours, content, living people, height...) is saved each time
+   you click "Generate the wheel" and restored on the next visit.
+
+
+FAMILY BOOK: VISUAL TREES
+-------------------------
+ "Visual trees" box (ticked by default) in the book settings.
+ - Start of the Ancestors part: indented tree (father then mother at each generation, 5 generations at most). Each
+   line reads "First name SURNAME (A12) (1850–1920)"; the code links to the entry.
+ - Start of the Descendants part: indented tree where each person is followed by their children,
+   "First name SURNAME (D1.2.3)". Limited to 400 people (extra generations are left out, with a note).
+ - At each generation (from the 2nd): classic trees made of boxes joined by lines (root on the left, branches to the
+   right), covering the last three generations; the current generation is in colour. Each box shows the name, the
+   code (A… or D…) and the years. Ancestors: one tree per ancestor of generation g-2; descendants: one tree per person
+   of generation g-2 who has descendants. At most 16 trees per generation (a note says so otherwise).
+ - Living people: same rules as the book (hidden = "Living person" and no years).
+ - Captions in the book's four languages; the tree is HTML text (prints and goes to PDF with no setting).
+
+
+FAMILY BOOK: REMARRIAGE (END OF THE PREVIOUS UNION)
+---------------------------------------------------
+ For a person's second union (and later ones), the sentence starts with how the previous union ended:
+   - if the previous family has a divorce date (divdate field):
+     "Divorced from Marie DUPONT (divorced on 3 June 1860), he married Jeanne MARTIN on 5 May 1861."
+     (divdate = Y without a date: "Divorced from Marie DUPONT, he married …")
+   - otherwise, if the previous spouse has died (known death date):
+     "Widower of Marie DUPONT (died on 12 March 1850), he married Jeanne MARTIN on 5 May 1851."
+   - otherwise nothing is stated. A death dated after the remarriage is ignored (inconsistent data).
+ Previous union not a marriage (empty marrdate): "Separated from Marie DUPONT (separated on 3 June 1860), he …"
+ instead of "divorced", and "After the death of Marie DUPONT (on 12 March 1850), he …" instead of "widower".
+ A hidden living person is never described as deceased. Translated in the book's four languages.
+
+
+FAMILY BOOK: EVENT NOTES, DATES, PHOTOS, MILITARY SERVICE
+----------------------------------------------------------
+ - Event notes: with the "Notes" box ticked, the book also prints the notes attached to events (birth, marriage,
+   death, burial, and war events). A marriage note appears under the union sentence; death and burial notes under
+   the matching sentence. The text is reproduced as written.
+ - Event dates: a simple date ("12 MAR 1845", "ABT 1850") is formatted; any other value ("1939-1945", free text,
+   a period) is kept as written, never reduced to a single year.
+ - Military heading: "Military service / War event" (translated in the book's four languages).
+ - Photos: only photos with the "Default photo" status in TNG are used; without a default photo, the generic
+   silhouette is used if that option is ticked.
+
+
+WHAT IS NOW SHARED (TNG Suite > General)
+----------------------------------------
+ - Language, TNG site URL, table prefix, default tree (gedcom)
+ - Privacy: default "hide living / private people" (ticked by default), then adjustable per module
+ - Tree cache duration, "Clear all caches" button
+ - A single MySQL connection to the TNG database for every module (instead of six)
+ - "TNG tables in the WordPress database" mode if the DB_*TNG constants are missing
+ - Enable / disable each module
+ - Diagnostics (constants, connection, tables)
+
+The settings specific to each module (timeline theme, heatmap colours, gallery sizes, cache of the random
+individual…) stay in their own sub-page of the "TNG Suite" menu.
+
+
+BEHAVIOUR CHANGES TO KNOW ABOUT
+-------------------------------
+ - Privacy: one "living / private" setting per module (see above). The old "Include living/private people" box of
+   the heatmap is replaced by this setting.
+ - The old "Random individual" plugin had a hard-coded default TNG URL (/malvache/tng/): there is no default any
+   more; enter the TNG URL in General.
+ - The heatmap search URL (placesearch.php) is derived from the TNG URL if left empty.
+ - The gallery uses the shared TNG URL as the base of the media (the old "TNG base URL" field was removed).
+ - Detailed error messages (connection, SQL) are reserved for administrators or the PHP log.
+
+RECORD LINK BUTTON vs [lien_fiche_tng]
+--------------------------------------
+ - [tng_link id="I001"]: a simple customisable link (emoji, text, 4 colours: background, text, hover background, hover text), with no database access.
+   Optional attributes: tree="..." and text="...". The hover effect is pure CSS (no more inline JavaScript).
+ - [lien_fiche_tng id="I001"] (Trees module): reads the name from the database, shows it in the button, and
+   shows nothing for a living / private person.
+
+NEW MODULES: THINGS TO KNOW
+---------------------------
+ - Family book (TNG Suite > Family book): showing living people in full is set in
+   TNG Suite > General > Modules > Family book > "Show (⚠️ GDPR)". The tree and the prefix come from the shared
+   settings; the TNG folder on disk is derived from the TNG URL if left empty.
+   Direct PDF: install mPDF with "composer require mpdf/mpdf" in modules/book/ (otherwise a printable page).
+ - Implex & inbreeding (TNG Suite > Implex: analysis / inbreeding / settings): the hiding of living people
+   follows the shared box. The inbreeding calculation writes to a table of the WordPress database
+   (<WP prefix>tngi_inbreeding), which is removed when the suite is uninstalled. Chart.js and vis-network are
+   loaded from libs/ if present, otherwise from cdnjs.cloudflare.com (the visitor's IP address is then sent to
+   that CDN).
+
+UNINSTALLING
+------------
+Deleting TNG Suite removes its own settings, caches and scheduled task. Your TNG data and the options of the old
+plugins are not touched.
