@@ -1366,6 +1366,7 @@ class TNGBook_Renderer {
     /** HTML du texte : images rendues autonomes (données intégrées) et sorties des paragraphes pour que Word / OpenDocument les reprennent. */
     private function surnameBody($html) {
         $html = TNGBook::surname_kses(wpautop($html));
+        $html = preg_replace(['#<h[12](\s|>)#i', '#</h[12]>#i'], ['<h3$1', '</h3>'], $html);   // les titres de la page restent sous le titre de la partie
         if (stripos($html, '<img') === false || !class_exists('DOMDocument')) return $html;
         $dom = new DOMDocument();
         $prev = libxml_use_internal_errors(true);
@@ -1386,17 +1387,15 @@ class TNGBook_Renderer {
             $new->setAttribute('style', 'display:block;margin:.6em auto;max-width:100%;height:auto');
             $new->setAttribute('src', $src[0]);
             $new->setAttribute('alt', $im->getAttribute('alt'));
-            // dans un paragraphe : l'image passe après lui (au même niveau) ; dans une cellule de tableau elle est retirée (non reprise par Word).
+            // l'image passe après le bloc qui la contient (Word / OpenDocument n'acceptent pas les images dans un paragraphe) ; dans une cellule de tableau elle est retirée.
             $par = $im->parentNode;
-            while ($par && $par !== $root && !in_array(strtolower($par->nodeName), ['p', 'td', 'th', 'li', 'blockquote', 'a'], true)) $par = $par->parentNode;
+            $inCell = false;
+            for ($x = $par; $x && $x !== $root; $x = $x->parentNode) if (in_array(strtolower($x->nodeName), ['td', 'th'], true)) $inCell = true;
             $im->parentNode->removeChild($im);
-            if (!$par || $par === $root) { $root->appendChild($new); continue; }
-            $cell = $par;
-            while ($cell && $cell !== $root && !in_array(strtolower($cell->nodeName), ['td', 'th'], true)) $cell = $cell->parentNode;
-            if ($cell && $cell !== $root) continue;
+            if ($inCell) continue;
             $top = $par;
-            while ($top->parentNode && $top->parentNode !== $root) $top = $top->parentNode;
-            $top->parentNode->insertBefore($new, $top->nextSibling);
+            while ($top && $top->parentNode && $top->parentNode !== $root) $top = $top->parentNode;
+            if (!$top || $top === $root) $root->appendChild($new); else $top->parentNode->insertBefore($new, $top->nextSibling);
         }
         $out = '';
         foreach ($root->childNodes as $n) $out .= $dom->saveHTML($n);

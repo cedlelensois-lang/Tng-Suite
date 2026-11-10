@@ -51,14 +51,18 @@ final class TNGBook {
 
     /** Texte enrichi de la page patronyme : mise en forme, listes, tableaux, liens et images ; rien d'exécutable. */
     public static function surname_kses($html) {
-        $a = ['class' => true, 'style' => false];
+        $a  = ['class' => true, 'style' => true, 'align' => true];
+        $h  = ['style' => true, 'align' => true];
         $tags = [
-            'p' => $a, 'br' => [], 'hr' => [], 'strong' => [], 'b' => [], 'em' => [], 'i' => [], 'u' => [], 'sup' => [], 'sub' => [], 'blockquote' => $a,
-            'h2' => [], 'h3' => [], 'h4' => [], 'ul' => [], 'ol' => [], 'li' => [], 'a' => ['href' => true, 'title' => true],
-            'table' => $a, 'thead' => [], 'tbody' => [], 'tr' => [], 'th' => ['colspan' => true, 'rowspan' => true], 'td' => ['colspan' => true, 'rowspan' => true],
-            'img' => ['src' => true, 'alt' => true, 'width' => true, 'height' => true],
+            'p' => $a, 'div' => $a, 'span' => $a, 'br' => [], 'hr' => [], 'strong' => [], 'b' => [], 'em' => [], 'i' => [], 'u' => [], 's' => [], 'del' => [], 'ins' => [], 'strike' => [],
+            'sup' => [], 'sub' => [], 'small' => [], 'mark' => [], 'blockquote' => $a, 'figure' => $a, 'figcaption' => $a,
+            'h1' => $h, 'h2' => $h, 'h3' => $h, 'h4' => $h, 'h5' => $h, 'h6' => $h, 'ul' => [], 'ol' => [], 'li' => $h, 'a' => ['href' => true, 'title' => true],
+            'table' => $a + ['border' => true, 'width' => true], 'thead' => [], 'tbody' => [], 'tfoot' => [], 'caption' => [], 'colgroup' => [], 'col' => ['width' => true],
+            'tr' => $h, 'th' => $h + ['colspan' => true, 'rowspan' => true, 'width' => true], 'td' => $h + ['colspan' => true, 'rowspan' => true, 'width' => true],
+            'img' => ['src' => true, 'alt' => true, 'width' => true, 'height' => true, 'style' => true],
         ];
-        return wp_kses((string) $html, $tags, ['http', 'https', 'mailto']);
+        $out = wp_kses((string) $html, $tags, ['http', 'https', 'mailto', 'data']);   // « data » : images collées depuis le presse-papiers
+        return preg_replace('#(href\s*=\s*["\'])\s*data:#i', '$1#blocked:', $out);   // jamais de lien data:
     }
 
     public static function defaults() {
@@ -433,7 +437,7 @@ final class TNGBook {
             wp_editor((string) ($o['surname'] ?? ''), 'tngbook_surname', [
                 'textarea_name' => self::OPT . '[surname]', 'textarea_rows' => 12, 'media_buttons' => true, 'drag_drop_upload' => true,
                 'teeny' => false, 'quicktags' => true,
-                'tinymce' => ['toolbar1' => 'formatselect,bold,italic,underline,bullist,numlist,blockquote,link,unlink,alignleft,aligncenter,alignright,removeformat,undo,redo', 'toolbar2' => '', 'block_formats' => 'Paragraphe=p;Titre 1=h2;Titre 2=h3;Titre 3=h4'],
+                'tinymce' => ['paste_data_images' => true, 'paste_as_text' => false, 'paste_webkit_styles' => 'font-weight font-style text-decoration text-align color background-color', 'paste_remove_styles_if_webkit' => false, 'toolbar1' => 'formatselect,bold,italic,underline,bullist,numlist,blockquote,link,unlink,alignleft,aligncenter,alignright,removeformat,undo,redo', 'toolbar2' => '', 'block_formats' => 'Paragraphe=p;Titre 1=h2;Titre 2=h3;Titre 3=h4'],
             ]);
             echo '<p class="description">Texte de présentation du patronyme (origine, signification, répartition…) : mise en forme, listes, tableaux (mode « Texte ») et images (bouton Ajouter un média). Vide = pas de page. La page fait partie du livre : elle se place dans « Ordre des parties » et s’enregistre dans le profil du livre. Les images (JPEG, PNG, GIF) sont intégrées au PDF, à Word et à OpenDocument.</p></td></tr>';
         }
