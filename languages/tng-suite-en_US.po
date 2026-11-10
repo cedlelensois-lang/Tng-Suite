@@ -1991,10 +1991,10 @@ msgid "Stats : réglages"
 msgstr "Stats: settings"
 
 msgid "Fiche : réglages"
-msgstr "Fiche: settings"
+msgstr "Sheet: settings"
 
 msgid "Fiche : générer des documents"
-msgstr "Fiche: generate documents"
+msgstr "Sheet: generate documents"
 
 msgid "Éventail / roue"
 msgstr "Fan / wheel"
@@ -2465,9 +2465,9 @@ msgid "Le modèle s’applique à la page imprimable, au PDF, au Word et à l’
 msgstr "The template applies to the printable page, the PDF, Word and OpenDocument; the colours above remain adjustable. Columns are native in Word and LibreOffice."
 
 msgid "Fiche & listes de documents"
-msgstr "Fiche & document lists"
+msgstr "Individual sheet & document lists"
 
-msgid "Fiche & documents"
+msgid "Sheet & documents"
 msgstr "Fiche & documents"
 
 msgid "Fiche généalogique et listes de documents"
