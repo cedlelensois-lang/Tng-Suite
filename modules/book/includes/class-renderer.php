@@ -1381,6 +1381,17 @@ class TNGBook_Renderer {
             if (!$src) { $im->parentNode->removeChild($im); continue; }
             $px = (float) $im->getAttribute('width');
             $cm = min(15.0, max(1.0, ($px > 0 ? $px : $src[1]) * 0.02646));
+            $cls = ' ' . strtolower($im->getAttribute('class')) . ' ' . strtolower($im->getAttribute('style')) . ' ' . strtolower($im->getAttribute('align')) . ' ';
+            $side = (strpos($cls, 'alignleft') !== false || preg_match('/float:\s*left|\sleft\s/', $cls)) ? 'left'
+                : ((strpos($cls, 'alignright') !== false || preg_match('/float:\s*right|\sright\s/', $cls)) ? 'right' : (strpos($cls, 'aligncenter') !== false ? 'center' : ''));
+            if ($this->mode !== 'doc') {   // page imprimable / PDF : l'image reste à sa place, le texte l'entoure comme dans l'éditeur
+                $st = $side === 'left' ? 'float:left;margin:.2em 1em .5em 0;' : ($side === 'right' ? 'float:right;margin:.2em 0 .5em 1em;' : 'display:block;margin:.6em auto;');
+                $im->setAttribute('src', $src[0]);
+                $im->removeAttribute('class');
+                $im->removeAttribute('align');
+                $im->setAttribute('style', $st . 'width:' . round($cm, 2) . 'cm;max-width:' . ($side === 'center' || $side === '' ? '100%' : '60%') . ';height:auto');
+                continue;
+            }
             $new = $dom->createElement('img');
             $new->setAttribute('class', 'tpng');
             $new->setAttribute('data-cm', (string) round($cm, 2));
@@ -1974,6 +1985,7 @@ ul.kids { margin: .1em 0 .4em 1.2em; padding: 0; list-style: none; }
 .surn table { border-collapse: collapse; margin: .6em 0; max-width: 100%; }
 .surn th, .surn td { border: 1px solid #999; padding: .25em .5em; font-size: 10pt; vertical-align: top; }
 .surn th { background: #eee; }
+.surn::after { content: ""; display: block; clear: both; }
 .surn blockquote { margin: .6em 1.5em; font-style: italic; }
 .idx { column-count: 2; column-gap: 1cm; font-size: 10pt; }
 .idx p { margin: .15em 0; break-inside: avoid; }

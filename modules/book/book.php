@@ -59,7 +59,7 @@ final class TNGBook {
             'h1' => $h, 'h2' => $h, 'h3' => $h, 'h4' => $h, 'h5' => $h, 'h6' => $h, 'ul' => [], 'ol' => [], 'li' => $h, 'a' => ['href' => true, 'title' => true],
             'table' => $a + ['border' => true, 'width' => true], 'thead' => [], 'tbody' => [], 'tfoot' => [], 'caption' => [], 'colgroup' => [], 'col' => ['width' => true],
             'tr' => $h, 'th' => $h + ['colspan' => true, 'rowspan' => true, 'width' => true], 'td' => $h + ['colspan' => true, 'rowspan' => true, 'width' => true],
-            'img' => ['src' => true, 'alt' => true, 'width' => true, 'height' => true, 'style' => true],
+            'img' => ['src' => true, 'alt' => true, 'width' => true, 'height' => true, 'style' => true, 'class' => true, 'align' => true],
         ];
         $out = wp_kses((string) $html, $tags, ['http', 'https', 'mailto', 'data']);   // « data » : images collées depuis le presse-papiers
         return preg_replace('#(href\s*=\s*["\'])\s*data:#i', '$1#blocked:', $out);   // jamais de lien data:
