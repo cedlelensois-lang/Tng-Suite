@@ -808,6 +808,8 @@ return array(
 	'Index des lieux' => 'Index of places',
 	'Liste des ascendants' => 'List of ancestors',
 	'Liste des descendants' => 'List of descendants',
+	'Page sur le patronyme' => 'Surname page',
+	'Texte de présentation du patronyme (origine, signification, répartition…) : mise en forme, listes, tableaux (mode « Texte ») et images (bouton Ajouter un média). Vide = pas de page. La page fait partie du livre : elle se place dans « Ordre des parties » et s’enregistre dans le profil du livre. Les images (JPEG, PNG, GIF) sont intégrées au PDF, à Word et à OpenDocument.' => 'Introductory text about the surname (origin, meaning, distribution…): formatting, lists, tables (Text mode) and images (Add Media button). Empty = no page. The page is part of the book: it is placed with “Order of the book’s parts” and saved in the book profile. Images (JPEG, PNG, GIF) are embedded in the PDF, Word and OpenDocument files.',
 	'Ordre des parties du livre' => 'Order of the book’s parts',
 	'Les parties désactivées plus haut (statistiques, carte, index, listes…) sont simplement ignorées. Les index sont toujours complets, quelle que soit leur place.' => 'Parts switched off above (statistics, map, indexes, lists…) are simply skipped. The indexes are always complete, wherever they are placed.',
 	'Mode diagnostic (en haut du livre : pourquoi une photo n’est pas trouvée ; à la fin du chapitre « Carte des lieux de vie » : chaque lieu pris en compte, son origine et la raison de son classement)' => 'Diagnostic mode (at the top of the book: why a photo is not found; at the end of the “Map of places of life” chapter: every place taken into account, its origin and why it was classified that way)',

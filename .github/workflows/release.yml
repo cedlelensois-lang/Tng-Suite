@@ -23,7 +23,7 @@ jobs:
       - name: Construire le zip (dossier tng-suite/)
         run: |
           mkdir -p /tmp/build/tng-suite
-          rsync -a --exclude='.git' --exclude='.github' --exclude='.gitignore' --exclude='.gitattributes' --exclude='README.md' --exclude='docs' ./ /tmp/build/tng-suite/
+          rsync -a --exclude='.git' --exclude='.github' --exclude='.gitignore' --exclude='.gitattributes' --exclude='README.md' ./ /tmp/build/tng-suite/
           (cd /tmp/build && zip -qr "$GITHUB_WORKSPACE/tng-suite.zip" tng-suite)
       - uses: softprops/action-gh-release@v2
         with:

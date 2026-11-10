@@ -24,6 +24,7 @@ Generates a complete book (ancestry, descendants, indexes, maps, statistics) as 
 
 ## Notes
 
+- Surname page: an editor (formatting, tables, images) lets you write an introduction to the surname; it is saved in the book profile and placed with “Order of the book’s parts”. Empty = no page.
 - Each part starts on a new page.
 - The [tng_book] shortcode opens the generator to logged-in visitors if enabled.
 - Living people are fully included if you choose to show them: do not share the book without consent.

@@ -1351,6 +1351,94 @@ class TNGBook_Renderer {
         return '<h2 class="part-title" id="' . esc_attr($id) . '">' . $this->e($title) . '</h2>';
     }
 
+    /** Page de présentation du patronyme : texte libre de l'administrateur (profil du livre), avec tableaux et images. */
+    private function surnamePart() {
+        $o = $this->o; $L = $this->L;
+        $title = trim((string) ($o['surname_title'] ?? ''));
+        if ($title === '') {
+            $p = $this->d->people[$o['root']] ?? [];
+            $last = trim(trim((string) ($p['lnprefix'] ?? '')) . ' ' . trim((string) ($p['lastname'] ?? '')));
+            $title = str_replace('{name}', mb_strtoupper($last), $L['surname_default']);
+        }
+        return '<div class="part notice surn">' . $this->part('p-surn', $title) . $this->surnameBody((string) $o['surname']) . '</div>';
+    }
+
+    /** HTML du texte : images rendues autonomes (données intégrées) et sorties des paragraphes pour que Word / OpenDocument les reprennent. */
+    private function surnameBody($html) {
+        $html = TNGBook::surname_kses(wpautop($html));
+        if (stripos($html, '<img') === false || !class_exists('DOMDocument')) return $html;
+        $dom = new DOMDocument();
+        $prev = libxml_use_internal_errors(true);
+        $dom->loadHTML('<?xml encoding="utf-8"?><div id="surn-root">' . $html . '</div>', LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
+        libxml_clear_errors(); libxml_use_internal_errors($prev);
+        $root = $dom->getElementById('surn-root');
+        if (!$root) return $html;
+        $imgs = [];
+        foreach ($dom->getElementsByTagName('img') as $im) $imgs[] = $im;
+        foreach ($imgs as $im) {
+            $src = $this->surnameImage($im->getAttribute('src'));
+            if (!$src) { $im->parentNode->removeChild($im); continue; }
+            $px = (float) $im->getAttribute('width');
+            $cm = min(15.0, max(1.0, ($px > 0 ? $px : $src[1]) * 0.02646));
+            $new = $dom->createElement('img');
+            $new->setAttribute('class', 'tpng');
+            $new->setAttribute('data-cm', (string) round($cm, 2));
+            $new->setAttribute('style', 'display:block;margin:.6em auto;max-width:100%;height:auto');
+            $new->setAttribute('src', $src[0]);
+            $new->setAttribute('alt', $im->getAttribute('alt'));
+            // dans un paragraphe : l'image passe après lui (au même niveau) ; dans une cellule de tableau elle est retirée (non reprise par Word).
+            $par = $im->parentNode;
+            while ($par && $par !== $root && !in_array(strtolower($par->nodeName), ['p', 'td', 'th', 'li', 'blockquote', 'a'], true)) $par = $par->parentNode;
+            $im->parentNode->removeChild($im);
+            if (!$par || $par === $root) { $root->appendChild($new); continue; }
+            $cell = $par;
+            while ($cell && $cell !== $root && !in_array(strtolower($cell->nodeName), ['td', 'th'], true)) $cell = $cell->parentNode;
+            if ($cell && $cell !== $root) continue;
+            $top = $par;
+            while ($top->parentNode && $top->parentNode !== $root) $top = $top->parentNode;
+            $top->parentNode->insertBefore($new, $top->nextSibling);
+        }
+        $out = '';
+        foreach ($root->childNodes as $n) $out .= $dom->saveHTML($n);
+        return $out;
+    }
+
+    /** Image du texte → [ « data:… », largeur en pixels ] (JPEG, PNG, GIF ; WebP converti en PNG si GD le permet), ou null. */
+    private function surnameImage($url) {
+        $url = trim((string) $url);
+        if ($url === '') return null;
+        $bin = null;
+        if (strpos($url, 'data:') === 0) {
+            if (preg_match('#^data:image/[a-z+]+;base64,(.+)$#s', $url, $m)) $bin = base64_decode($m[1], true);
+        } else {
+            $up = wp_upload_dir();
+            $base = trailingslashit($up['baseurl']);
+            $clean = preg_replace('#-\d+x\d+(\.[a-z]+)$#i', '$1', $url);   // la taille d'origine pour une meilleure qualité d'impression
+            foreach ([$url, $clean] as $u) {
+                $alt = ($clean !== $url && $u === $clean);
+                if (strpos($u, $base) === 0) {
+                    $path = realpath(trailingslashit($up['basedir']) . ltrim(rawurldecode(substr($u, strlen($base))), '/'));
+                    $root = realpath($up['basedir']);
+                    if ($path && $root && strpos($path, $root . DIRECTORY_SEPARATOR) === 0 && is_file($path) && filesize($path) < 8 * MB_IN_BYTES) { $bin = file_get_contents($path); break; }
+                } elseif (!$alt && preg_match('#^https?://#i', $u)) {
+                    $r = wp_safe_remote_get($u, ['timeout' => 10, 'limit_response_size' => 8 * MB_IN_BYTES]);
+                    if (!is_wp_error($r) && (int) wp_remote_retrieve_response_code($r) === 200) { $bin = wp_remote_retrieve_body($r); break; }
+                }
+            }
+        }
+        if (!$bin) return null;
+        $sz = @getimagesizefromstring($bin);
+        if (!$sz) return null;
+        $mime = $sz['mime'];
+        if ($mime === 'image/webp' && function_exists('imagecreatefromwebp')) {
+            $g = @imagecreatefromstring($bin);
+            if (!$g) return null;
+            ob_start(); imagepng($g); $bin = ob_get_clean(); $mime = 'image/png';
+        }
+        if (!in_array($mime, ['image/jpeg', 'image/png', 'image/gif'], true)) return null;
+        return ['data:' . $mime . ';base64,' . base64_encode($bin), (int) $sz[0]];
+    }
+
     private function ascendance() {
         $d = $this->d;
         $by = [];
@@ -1884,6 +1972,10 @@ ul.kids { margin: .1em 0 .4em 1.2em; padding: 0; list-style: none; }
 .anon h4 { font-weight: normal; color: #666; }
 .toc p { margin: .2em 0; } .toc .l2 { margin-left: 1.5em; font-size: 10pt; }
 .notice p { text-align: justify; }
+.surn table { border-collapse: collapse; margin: .6em 0; max-width: 100%; }
+.surn th, .surn td { border: 1px solid #999; padding: .25em .5em; font-size: 10pt; vertical-align: top; }
+.surn th { background: #eee; }
+.surn blockquote { margin: .6em 1.5em; font-style: italic; }
 .idx { column-count: 2; column-gap: 1cm; font-size: 10pt; }
 .idx p { margin: .15em 0; break-inside: avoid; }
 .idx h5 { margin: .8em 0 .2em; font-size: 12pt; color: %head%; break-after: avoid; }
@@ -1924,6 +2016,7 @@ CSS;
         // Les parties sont produites dans l'ordre technique (les index et les sources se nourrissent des fiches), puis assemblées dans l'ordre choisi.
         $parts = []; $tocs = []; $tocPre = $this->toc;
         $run = function ($k, $fn) use (&$parts, &$tocs) { $n = count($this->toc); $parts[$k] = $fn(); $tocs[$k] = array_slice($this->toc, $n); };
+        if (trim((string) ($o['surname'] ?? '')) !== '') $run('surn', function () { return $this->surnamePart(); });
         if ($o['up'] > 0) $run('asc', function () { return $this->ascendance(); });
         if ($o['down'] > 0) $run('desc', function () { return $this->descendance(); });
         if (!empty($o['stats'])) $run('stats', function () { return $this->statsPart(); });

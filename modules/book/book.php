@@ -33,7 +33,7 @@ final class TNGBook {
     /** Parties du livre, dans l'ordre par défaut : clé => libellé. */
     public static function partLabels() {
         return [
-            'asc' => 'Ascendance', 'desc' => 'Descendance', 'stats' => 'En chiffres', 'cous' => 'Cousinages et implexes', 'map' => 'Carte des lieux de vie',
+            'surn' => 'Page sur le patronyme', 'asc' => 'Ascendance', 'desc' => 'Descendance', 'stats' => 'En chiffres', 'cous' => 'Cousinages et implexes', 'map' => 'Carte des lieux de vie',
             'idxn' => 'Index des noms', 'idxp' => 'Index des lieux', 'src' => 'Sources',
             'alist' => 'Liste des ascendants', 'dlist' => 'Liste des descendants',
         ];
@@ -44,8 +44,21 @@ final class TNGBook {
         $def = array_keys(self::partLabels());
         $out = [];
         foreach ((array) $v as $k) if (is_string($k) && in_array($k, $def, true) && !in_array($k, $out, true)) $out[] = $k;
+        if ($out && !in_array('surn', $out, true)) array_unshift($out, 'surn');   // profils d'avant la page patronyme : elle s'ouvre en tête
         foreach ($def as $k) if (!in_array($k, $out, true)) $out[] = $k;
         return $out;
+    }
+
+    /** Texte enrichi de la page patronyme : mise en forme, listes, tableaux, liens et images ; rien d'exécutable. */
+    public static function surname_kses($html) {
+        $a = ['class' => true, 'style' => false];
+        $tags = [
+            'p' => $a, 'br' => [], 'hr' => [], 'strong' => [], 'b' => [], 'em' => [], 'i' => [], 'u' => [], 'sup' => [], 'sub' => [], 'blockquote' => $a,
+            'h2' => [], 'h3' => [], 'h4' => [], 'ul' => [], 'ol' => [], 'li' => [], 'a' => ['href' => true, 'title' => true],
+            'table' => $a, 'thead' => [], 'tbody' => [], 'tr' => [], 'th' => ['colspan' => true, 'rowspan' => true], 'td' => ['colspan' => true, 'rowspan' => true],
+            'img' => ['src' => true, 'alt' => true, 'width' => true, 'height' => true],
+        ];
+        return wp_kses((string) $html, $tags, ['http', 'https', 'mailto']);
     }
 
     public static function defaults() {
@@ -57,7 +70,7 @@ final class TNGBook {
             'personID' => '', 'tree' => '', 'lang' => tngs_lang(),
             'gen_up' => 6, 'gen_down' => 4, 'max_people' => self::MAX_PEOPLE, 'living' => 'anonymize', 'place_parts' => 2,
             'photos' => 1, 'spphotos' => 1, 'generic' => 1, 'sources' => 1, 'index' => 1, 'notes' => 0, 'military' => 0, 'mpf' => 1, 'mini' => 0, 'trees' => 1, 'stats' => 1, 'stats_first' => 1, 'stats_last' => 1, 'desclist' => 1, 'map' => 0, 'bapt' => 0, 'burial' => 1, 'verbose' => 0, 'country' => 0, 'regions' => 0, 'asclist' => 0, 'resi' => 0, 'sibs' => 0, 'marrage' => 0, 'cous' => 1, 'allunions' => 1, 'order' => ['asc', 'desc', 'stats', 'map', 'idxn', 'idxp', 'src', 'alist', 'dlist'],
-            'title' => '', 'author' => '', 'preface' => '', 'format' => 'html', 'template' => 'classic',
+            'title' => '', 'author' => '', 'preface' => '', 'surname' => '', 'surname_title' => '', 'format' => 'html', 'template' => 'classic',
             'colors' => TNGBook_Renderer::defaultColors(),
         ];
     }
@@ -253,6 +266,10 @@ final class TNGBook {
         $out['title'] = sanitize_text_field($in['title'] ?? '');
         $out['author'] = sanitize_text_field($in['author'] ?? '');
         $out['preface'] = sanitize_textarea_field($in['preface'] ?? '');
+        if (current_user_can('manage_options')) {   // le texte de la page patronyme est rédigé par l'administrateur (jamais par les visiteurs)
+            $out['surname'] = array_key_exists('surname', $in) ? self::surname_kses($in['surname']) : (string) ($base['surname'] ?? '');
+            $out['surname_title'] = array_key_exists('surname_title', $in) ? sanitize_text_field($in['surname_title']) : (string) ($base['surname_title'] ?? '');
+        }
         $tp = (string) ($in['template'] ?? 'classic');
         $out['template'] = isset(TNGBook_Renderer::templates()[$tp]) ? $tp : 'classic';
         $f = $in['format'] ?? '';
@@ -410,6 +427,16 @@ final class TNGBook {
         self::field('Titre', 'title', $o, 'text', 'Vide = titre automatique dans la langue choisie.');
         self::field('Auteur', 'author', $o);
         echo '<tr><th scope="row"><label for="tngbook_preface">Préface</label></th><td><textarea id="tngbook_preface" name="' . esc_attr(self::OPT) . '[preface]" rows="4" class="large-text">' . esc_textarea($o['preface']) . '</textarea></td></tr>';
+        if ($admin) {
+            echo '<tr><th scope="row"><label for="tngbook_surname_title">Page sur le patronyme</label></th><td>';
+            echo '<p><input id="tngbook_surname_title" type="text" class="regular-text" name="' . esc_attr(self::OPT) . '[surname_title]" value="' . esc_attr($o['surname_title'] ?? '') . '" placeholder="Titre de la page (vide = « Le patronyme NOM »)"></p>';
+            wp_editor((string) ($o['surname'] ?? ''), 'tngbook_surname', [
+                'textarea_name' => self::OPT . '[surname]', 'textarea_rows' => 12, 'media_buttons' => true, 'drag_drop_upload' => true,
+                'teeny' => false, 'quicktags' => true,
+                'tinymce' => ['toolbar1' => 'formatselect,bold,italic,underline,bullist,numlist,blockquote,link,unlink,alignleft,aligncenter,alignright,removeformat,undo,redo', 'toolbar2' => '', 'block_formats' => 'Paragraphe=p;Titre 1=h2;Titre 2=h3;Titre 3=h4'],
+            ]);
+            echo '<p class="description">Texte de présentation du patronyme (origine, signification, répartition…) : mise en forme, listes, tableaux (mode « Texte ») et images (bouton Ajouter un média). Vide = pas de page. La page fait partie du livre : elle se place dans « Ordre des parties » et s’enregistre dans le profil du livre. Les images (JPEG, PNG, GIF) sont intégrées au PDF, à Word et à OpenDocument.</p></td></tr>';
+        }
         self::select('Modèle de mise en page', 'template', [
             'classic' => 'Classique (modèle d’origine) : une colonne, texte justifié, photo à droite',
             'recit' => 'Récit en 2 colonnes : bandeaux de génération, âge des parents, « autres informations », couples et enfants en puces',
@@ -559,7 +586,7 @@ final class TNGBook {
                 'sources' => (bool) $o['sources'], 'index' => (bool) $o['index'],
                 'notes' => (bool) $o['notes'], 'military' => (bool) $o['military'], 'mpf' => !empty($o['mpf']), 'mini' => !empty($o['mini']), 'trees' => !empty($o['trees']), 'stats' => !empty($o['stats']), 'stats_first' => !empty($o['stats_first']), 'stats_last' => !empty($o['stats_last']), 'desclist' => !empty($o['desclist']), 'map' => !empty($o['map']), 'bapt' => !empty($o['bapt']), 'burial' => !empty($o['burial']), 'verbose' => !empty($o['verbose']), 'country' => !empty($o['country']), 'regions' => !empty($o['regions']), 'asclist' => !empty($o['asclist']), 'resi' => !empty($o['resi']), 'sibs' => !empty($o['sibs']), 'cous' => !empty($o['cous']), 'allunions' => !empty($o['allunions']), 'marrage' => !empty($o['marrage']),
                 'debug' => $debug, 'place_parts' => (int) $o['place_parts'],
-                'title' => $o['title'], 'author' => $o['author'], 'preface' => $o['preface'], 'colors' => $o['colors'] ?? [],
+                'title' => $o['title'], 'author' => $o['author'], 'preface' => $o['preface'], 'surname' => (string) ($o['surname'] ?? ''), 'surname_title' => (string) ($o['surname_title'] ?? ''), 'colors' => $o['colors'] ?? [],
                 'template' => $o['template'] ?? 'classic', 'order' => self::clean_order($o['order'] ?? null),
                 'tng_path' => $o['tng_path'], 'photo_folder' => $o['photo_folder'],
             ];
