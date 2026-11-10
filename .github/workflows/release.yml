@@ -19,7 +19,7 @@ jobs:
         with:
           node-version: 20
       - name: Embarquer les bibliothèques JavaScript (aucun CDN dans le zip)
-        run: ./tools/fetch-libs.sh
+        run: bash tools/fetch-libs.sh
       - name: Construire le zip (dossier tng-suite/)
         run: |
           mkdir -p /tmp/build/tng-suite

@@ -2,7 +2,7 @@
 Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Requires PHP: 7.4
-Stable tag: 1.32.0
+Stable tag: 1.32.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,6 +78,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 1.32.1 =
+* Publication GitHub : le script de téléchargement des bibliothèques est lancé avec bash (le droit d'exécution se perd au téléversement par le navigateur).
 
 = 1.32.0 =
 * Administration réorganisée : la barre d'onglets est groupée par module (un onglet par module, ses pages en sous-onglets), le menu est trié dans l'ordre des modules, et la page « Général » est découpée en sections (Tableau de bord avec état de chaque module et liens vers ses réglages, Connexion, Réglages communs, Modules, Maintenance). Aucun réglage enregistré n'est modifié.
