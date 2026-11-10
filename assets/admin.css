@@ -1,0 +1,24 @@
+/* TNG Suite – présentation commune des pages d'administration */
+.tngs-wrap h1 .tngs-brand { color: #2271b1; }
+.tngs-wrap h2 { margin: 2em 0 .7em; padding-bottom: .4em; border-bottom: 1px solid #dcdcde; font-size: 1.25em; }
+.tngs-wrap h2.nav-tab-wrapper { padding-bottom: 0; border-bottom: 1px solid #c3c4c7; }
+.tngs-wrap .notice.inline { margin: 12px 0; max-width: 980px; }
+.tngs-wrap .tngs-shortcodes, .tngs-wrap .tngs-box { background: #fff; border: 1px solid #dcdcde; border-left: 4px solid #2271b1; padding: 10px 16px; margin: 12px 0; max-width: 980px; line-height: 1.7; box-sizing: border-box; }
+.tngs-wrap .tngs-shortcodes code { margin-right: .6em; }
+.tngs-wrap .tngs-box p { margin: .4em 0; }
+.tngs-wrap .form-table th { width: 260px; }
+.tngs-wrap .form-table td .description, .tngs-wrap > .description { max-width: 760px; }
+.tngs-wrap .submit { margin-top: 1.2em; }
+.tngs-wrap table.widefat { max-width: 980px; }
+
+.tngs-wrap .tngs-tabs { display: flex; flex-wrap: wrap; gap: 0; margin: 14px 0 6px; border-bottom: 1px solid #c3c4c7; }
+.tngs-wrap .tngs-tabs .nav-tab { margin: 0 4px -1px 0; font-size: 13px; padding: 6px 12px; }
+
+/* Page « Général » : sections */
+.tngs-wrap .tngs-sections { display: none; margin: 14px 0 4px; gap: 6px; flex-wrap: wrap; }
+.tngs-wrap.tngs-js .tngs-sections { display: flex; }
+.tngs-wrap .tngs-sec { text-decoration: none; padding: 6px 14px; border: 1px solid #c3c4c7; border-radius: 16px; background: #f6f7f7; color: #1d2327; font-size: 13px; }
+.tngs-wrap .tngs-sec.tngs-sec-active { background: #2271b1; border-color: #2271b1; color: #fff; }
+.tngs-wrap .tngs-panel > h2:first-child { margin-top: .8em; }
+.tngs-wrap .tngs-overview td, .tngs-wrap .tngs-overview th { vertical-align: top; }
+.tngs-wrap .tngs-subtabs { float: none; margin: 8px 0 0; }
