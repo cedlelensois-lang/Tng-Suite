@@ -2278,7 +2278,7 @@ msgstr ""
 msgid "Sobre (noir et gris)"
 msgstr ""
 
-msgid "Photo du conjoint (petite vignette à côté de l’union, quand le conjoint n’a pas sa propre fiche)"
+msgid "Photo du conjoint (petite vignette à côté de l’union)"
 msgstr ""
 
 msgid "Baptême (date et lieu, quand ils sont renseignés dans TNG)"

@@ -2278,8 +2278,8 @@ msgstr "Old paper"
 msgid "Sobre (noir et gris)"
 msgstr "Plain (black and grey)"
 
-msgid "Photo du conjoint (petite vignette à côté de l’union, quand le conjoint n’a pas sa propre fiche)"
-msgstr "Spouse’s photo (small thumbnail next to the union, when the spouse has no entry of their own)"
+msgid "Photo du conjoint (petite vignette à côté de l’union)"
+msgstr "Spouse’s photo (small thumbnail next to the union)"
 
 msgid "Baptême (date et lieu, quand ils sont renseignés dans TNG)"
 msgstr "Baptism (date and place, when entered in TNG)"

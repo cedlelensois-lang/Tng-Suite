@@ -825,7 +825,7 @@ class TNGBook_Renderer {
         return $this->e($L['widowed'][$sex]) . ' ' . $name . ' (' . $this->e($diedWord . ' ' . $dd) . ')';
     }
 
-    /** Petite photo du conjoint, quand il n'a pas sa propre fiche dans le livre (conjoints des descendants, par exemple). */
+    /** Petite photo du conjoint, à côté de l'union (répétée même si le conjoint a sa propre fiche dans le livre). */
     private function spPhoto($pid, $fid) {
         if (empty($this->o['photos']) || empty($this->o['spphotos'])) return '';
         $d = $this->d;
@@ -833,7 +833,7 @@ class TNGBook_Renderer {
         if (!$f) return '';
         $sp = ($f['husband'] === $pid) ? $f['wife'] : $f['husband'];
         if ($sp === '' || !isset($d->people[$sp]) || $d->dropped($sp) || $d->hidden($sp)) return '';
-        if (isset($d->sosaOf[$sp]) || isset($d->desc[$sp]) || empty($d->photos[$sp])) return '';
+        if (empty($d->photos[$sp])) return '';   // la vignette est répétée même si le conjoint a sa propre fiche
         $src = $this->cachedPhoto($d->photos[$sp], $this->plain($sp) . ' (' . $sp . ')');
         return $src === '' ? '' : '<img class="ph sp" src="' . esc_attr($src) . '" alt="">';
     }

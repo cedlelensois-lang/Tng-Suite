@@ -768,7 +768,7 @@ return array(
 	'Bleu canard' => 'Teal',
 	'Vieux papier' => 'Old paper',
 	'Sobre (noir et gris)' => 'Plain (black and grey)',
-	'Photo du conjoint (petite vignette à côté de l’union, quand le conjoint n’a pas sa propre fiche)' => 'Spouse’s photo (small thumbnail next to the union, when the spouse has no entry of their own)',
+	'Photo du conjoint (petite vignette à côté de l’union)' => 'Spouse’s photo (small thumbnail next to the union)',
 	'Baptême (date et lieu, quand ils sont renseignés dans TNG)' => 'Baptism (date and place, when entered in TNG)',
 	'Sépulture (inhumation, ou incinération le cas échéant : date et lieu quand ils sont renseignés)' => 'Burial (burial or cremation where applicable: date and place when entered)',
 	'Phrases détaillées (« Il est né le … à …, fils de … » ; « Il est décédé le …, à l’âge de … ans » ; « Il a été inhumé … ») au lieu des mentions courtes « Né le … »' => 'Detailed sentences (“He was born on … in …, son of …”; “He died on …, at the age of …”; “He was buried …”) instead of the short “Born on …” entries',

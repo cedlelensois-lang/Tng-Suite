@@ -358,7 +358,7 @@ final class TNGBook {
         self::select('Niveaux de lieux affichés', 'place_parts', ['1' => 'Commune seule', '2' => 'Commune, département', '3' => '3 niveaux', '0' => 'Lieu complet'], $o['place_parts']);
         echo '<tr><th>Contenu</th><td>'
             . self::chk('photos', 'Photos TNG (uniquement celles au statut « Photo par défaut »)', $o)
-            . self::chk('spphotos', 'Photo du conjoint (petite vignette à côté de l’union, quand le conjoint n’a pas sa propre fiche)', $o)
+            . self::chk('spphotos', 'Photo du conjoint (petite vignette à côté de l’union)', $o)
             . self::chk('generic', 'Silhouettes génériques (homme / femme) sinon', $o)
             . self::chk('bapt', 'Baptême (date et lieu, quand ils sont renseignés dans TNG)', $o)
             . self::chk('burial', 'Sépulture (inhumation, ou incinération le cas échéant : date et lieu quand ils sont renseignés)', $o)
