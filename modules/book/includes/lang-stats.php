@@ -5,7 +5,7 @@ if (!defined('ABSPATH')) exit;
 return [
 
 'fr' => [
-    'st_life' => 'Espérance de vie moyenne par siècle de naissance', 'st_pyr' => 'Pyramide des âges au décès (hommes / femmes)', 'st_age' => 'Âge',
+    'st_life' => 'Espérance de vie moyenne par siècle de décès', 'st_century_d' => 'Décès', 'st_pyr' => 'Pyramide des âges au décès (hommes / femmes)', 'st_age' => 'Âge',
     'st_title' => 'En chiffres', 'st_overview' => 'Vue d’ensemble',
     'st_intro' => 'Chiffres calculés sur les personnes et les familles citées dans ce livre, à partir des dates renseignées. Les valeurs inconnues sont ignorées ; les personnes vivantes ou privées sont exclues des calculs détaillés.',
     'st_people' => 'Personnes citées', 'st_men' => 'hommes', 'st_women' => 'femmes', 'st_unk' => 'sexe inconnu',
@@ -31,7 +31,7 @@ return [
 ],
 
 'en' => [
-    'st_life' => 'Average life expectancy by century of birth', 'st_pyr' => 'Age pyramid at death (men / women)', 'st_age' => 'Age',
+    'st_life' => 'Average life expectancy by century of death', 'st_century_d' => 'Died', 'st_pyr' => 'Age pyramid at death (men / women)', 'st_age' => 'Age',
     'st_title' => 'By the numbers', 'st_overview' => 'Overview',
     'st_intro' => 'Figures calculated from the people and families mentioned in this book, using the dates recorded. Unknown values are ignored; living or private people are excluded from the detailed calculations.',
     'st_people' => 'People mentioned', 'st_men' => 'men', 'st_women' => 'women', 'st_unk' => 'sex unknown',
@@ -57,7 +57,7 @@ return [
 ],
 
 'es' => [
-    'st_life' => 'Esperanza de vida media por siglo de nacimiento', 'st_pyr' => 'Pirámide de edades al fallecer (hombres / mujeres)', 'st_age' => 'Edad',
+    'st_life' => 'Esperanza de vida media por siglo de fallecimiento', 'st_century_d' => 'Fallecidos', 'st_pyr' => 'Pirámide de edades al fallecer (hombres / mujeres)', 'st_age' => 'Edad',
     'st_title' => 'En cifras', 'st_overview' => 'Visión general',
     'st_intro' => 'Cifras calculadas sobre las personas y familias citadas en este libro, a partir de las fechas registradas. Los valores desconocidos se ignoran; las personas vivas o privadas se excluyen de los cálculos detallados.',
     'st_people' => 'Personas citadas', 'st_men' => 'hombres', 'st_women' => 'mujeres', 'st_unk' => 'sexo desconocido',
@@ -83,7 +83,7 @@ return [
 ],
 
 'ca' => [
-    'st_life' => 'Esperança de vida mitjana per segle de naixement', 'st_pyr' => 'Piràmide d’edats en morir (homes / dones)', 'st_age' => 'Edat',
+    'st_life' => 'Esperança de vida mitjana per segle de defunció', 'st_century_d' => 'Morts', 'st_pyr' => 'Piràmide d’edats en morir (homes / dones)', 'st_age' => 'Edat',
     'st_title' => 'En xifres', 'st_overview' => 'Visió general',
     'st_intro' => 'Xifres calculades sobre les persones i famílies citades en aquest llibre, a partir de les dates registrades. Els valors desconeguts s’ignoren; les persones vives o privades s’exclouen dels càlculs detallats.',
     'st_people' => 'Persones citades', 'st_men' => 'homes', 'st_women' => 'dones', 'st_unk' => 'sexe desconegut',

@@ -99,7 +99,7 @@ trait TNGBook_StatsView {
             $rows = [[$this->e($L['st_all']), $this->sm($ad['M']), $this->sm($ad['F']), $this->sm($ad['all'])]];
             foreach ($ad['by_century'] as $r) $rows[] = [$r['c'] . '–' . ($r['c'] + 99), $this->sm($r['M']), $this->sm($r['F']), $this->sm($r['A'])];
             $h .= '<p class="nh">' . $this->e($L['st_life']) . ' — ' . $this->e($L['st_mean']) . ' (' . $this->e($L['st_n']) . ')</p>'
-                . $this->table([$L['st_century'], ucfirst($L['st_men']), ucfirst($L['st_women']), $L['st_all']], $rows, 'lrrr')
+                . $this->table([$L['st_century_d'], ucfirst($L['st_men']), ucfirst($L['st_women']), $L['st_all']], $rows, 'lrrr')
                 . '<p class="src">' . $this->e($L['st_median']) . ' : ' . $this->nf($ad['all']['median']) . ' (' . $this->e($L['st_all']) . ')</p>';
             if ($this->mode !== 'doc' && count($ad['by_century']) > 1) {   // courbes d'espérance de vie (le tableau ci-dessus les donne pour Word / OpenDocument)
                 $lab = []; $vm = []; $vf = []; $va = [];

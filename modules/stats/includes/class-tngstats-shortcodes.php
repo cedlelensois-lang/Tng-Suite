@@ -65,8 +65,8 @@ class TNGStats_Shortcodes {
 				'title'   => 'Espérance de vie moyenne par siècle',
 				'types'   => array( 'line', 'area', 'bar', 'table' ),
 				'default' => 'line',
-				'atts'    => array( 'basis' => 'birth', 'min_age' => '0', 'min_n' => '5' ),
-				'help'    => 'Âge moyen au décès (naissance et décès connus), par siècle de naissance (basis = birth) ou de décès (basis = death). min_age = âge minimal au décès pris en compte (0 = tous ; 5 ou 20 pour écarter la mortalité infantile). min_n = nombre minimal de personnes par siècle.',
+				'atts'    => array( 'min_age' => '0', 'min_n' => '5' ),
+				'help'    => 'Âge moyen au décès (naissance et décès connus), par siècle du décès. min_age = âge minimal au décès pris en compte (0 = tous ; 5 ou 20 pour écarter la mortalité infantile). min_n = nombre minimal de personnes par siècle.',
 			),
 			'pyramid'       => array(
 				'alias'   => 'tng_stat_pyramide',
@@ -325,7 +325,7 @@ class TNGStats_Shortcodes {
 			case 'marriage_age':
 				return $q->marriage_age( $a['min_n'] );
 			case 'life_expectancy':
-				return $q->life_expectancy( $a['basis'], $a['min_age'], $a['min_n'] );
+				return $q->life_expectancy( $a['min_age'], $a['min_n'] );
 			case 'pyramid':
 				return $q->pyramid( $a['step'], $a['year'], $a['max_age'] );
 			case 'distance':
