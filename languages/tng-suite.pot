@@ -2404,6 +2404,63 @@ msgstr ""
 msgid "Titre de la page (vide = « Le patronyme NOM »)"
 msgstr ""
 
+msgid "Espérance de vie moyenne par siècle"
+msgstr ""
+
+msgid "Pyramide des âges"
+msgstr ""
+
+msgid "Âge moyen au décès (ans)"
+msgstr ""
+
+msgid "Siècle de naissance"
+msgstr ""
+
+msgid "Siècle du décès"
+msgstr ""
+
+msgid "Ensemble"
+msgstr ""
+
+msgid "Ensemble (âge)"
+msgstr ""
+
+msgid "Ensemble (n)"
+msgstr ""
+
+msgid "Âge au décès à l'année près, personnes dont la naissance et le décès sont connus"
+msgstr ""
+
+msgid "décédés à"
+msgstr ""
+
+msgid "ans ou plus"
+msgstr ""
+
+msgid "cas sont ignorés."
+msgstr ""
+
+msgid "Personnes vivantes en"
+msgstr ""
+
+msgid "Nombre de décès"
+msgstr ""
+
+msgid "personnes"
+msgstr ""
+
+msgid "Personnes dont la naissance et le décès sont connus, vivantes l'année indiquée (âge atteint cette année-là)."
+msgstr ""
+
+msgid "Âge au décès à l'année près, personnes dont la naissance et le décès sont connus."
+msgstr ""
+
+msgid "Âge moyen au décès (naissance et décès connus), par siècle de naissance (basis = birth) ou de décès (basis = death). min_age = âge minimal au décès pris en compte (0 = tous ; 5 ou 20 pour écarter la mortalité infantile). min_n = nombre minimal de personnes par siècle."
+msgstr ""
+
+msgid "Sans year : répartition des âges au décès, hommes à gauche, femmes à droite. Avec year=\"1850\" : âges des personnes vivantes cette année-là (naissance connue, décès connu postérieur). step = taille des tranches (5 ou 10), max_age = dernière tranche."
+msgstr ""
+
 msgid "Page sur le patronyme"
 msgstr ""
 

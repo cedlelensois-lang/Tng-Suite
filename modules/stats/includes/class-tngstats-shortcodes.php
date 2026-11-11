@@ -60,6 +60,22 @@ class TNGStats_Shortcodes {
 				'atts'    => array( 'min_n' => '3' ),
 				'help'    => 'Par siècle du mariage. min_n = nombre minimal de cas par siècle et par sexe.',
 			),
+			'life_expectancy' => array(
+				'alias'   => 'tng_stat_esperance',
+				'title'   => 'Espérance de vie moyenne par siècle',
+				'types'   => array( 'line', 'area', 'bar', 'table' ),
+				'default' => 'line',
+				'atts'    => array( 'basis' => 'birth', 'min_age' => '0', 'min_n' => '5' ),
+				'help'    => 'Âge moyen au décès (naissance et décès connus), par siècle de naissance (basis = birth) ou de décès (basis = death). min_age = âge minimal au décès pris en compte (0 = tous ; 5 ou 20 pour écarter la mortalité infantile). min_n = nombre minimal de personnes par siècle.',
+			),
+			'pyramid'       => array(
+				'alias'   => 'tng_stat_pyramide',
+				'title'   => 'Pyramide des âges',
+				'types'   => array( 'pyramid', 'bar', 'table' ),
+				'default' => 'pyramid',
+				'atts'    => array( 'step' => '10', 'year' => '', 'max_age' => '100' ),
+				'help'    => 'Sans year : répartition des âges au décès, hommes à gauche, femmes à droite. Avec year="1850" : âges des personnes vivantes cette année-là (naissance connue, décès connu postérieur). step = taille des tranches (5 ou 10), max_age = dernière tranche.',
+			),
 			'distance'      => array(
 				'alias'   => 'tng_stat_distance',
 				'title'   => 'Distance moyenne, en km, entre lieu de naissance et décès',
@@ -110,6 +126,8 @@ class TNGStats_Shortcodes {
 			'gender'       => "Hommes\nFemmes\nInconnus\nIndividus",
 			'living'       => "Décédés\nVivants\nIndividus",
 			'marriage_age' => "Hommes\nFemmes",
+			'life_expectancy' => "Hommes\nFemmes\nEnsemble",
+			'pyramid'      => "Hommes\nFemmes",
 			'distance'     => "Distance moyenne (km)",
 			'half_century' => "Naissances\nDécès",
 			'months'       => "Naissances\nDécès",
@@ -204,7 +222,7 @@ class TNGStats_Shortcodes {
 
 		// Textes : libellés personnalisés d'abord (sur les libellés d'origine), puis traduction du reste.
 		$data = self::apply_labels( $data, TNGStats_Settings::label_map( $cust['labels'] ) );
-		foreach ( array( 'xTitle', 'yTitle', 'note', 'first' ) as $tk ) {
+		foreach ( array( 'xTitle', 'yTitle', 'note', 'first', 'unit' ) as $tk ) {
 			if ( isset( $data[ $tk ] ) && is_string( $data[ $tk ] ) ) {
 				$data[ $tk ] = tngs_t( $data[ $tk ] );
 			}
@@ -306,6 +324,10 @@ class TNGStats_Shortcodes {
 				return $q->living();
 			case 'marriage_age':
 				return $q->marriage_age( $a['min_n'] );
+			case 'life_expectancy':
+				return $q->life_expectancy( $a['basis'], $a['min_age'], $a['min_n'] );
+			case 'pyramid':
+				return $q->pyramid( $a['step'], $a['year'], $a['max_age'] );
 			case 'distance':
 				return $q->distance( $a['from'], $a['to'], $a['step'], 'birth' === strtolower( $a['basis'] ) ? 'birth' : 'death' );
 			case 'half_century':

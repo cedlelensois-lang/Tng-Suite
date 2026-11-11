@@ -2404,6 +2404,63 @@ msgstr "Compress images (direct PDF and Word / OpenDocument: smaller photos, tex
 msgid "Titre de la page (vide = « Le patronyme NOM »)"
 msgstr "Page title (empty = “The NAME surname”)"
 
+msgid "Espérance de vie moyenne par siècle"
+msgstr "Average life expectancy by century"
+
+msgid "Pyramide des âges"
+msgstr "Age pyramid"
+
+msgid "Âge moyen au décès (ans)"
+msgstr "Average age at death (years)"
+
+msgid "Siècle de naissance"
+msgstr "Century of birth"
+
+msgid "Siècle du décès"
+msgstr "Century of death"
+
+msgid "Ensemble"
+msgstr "All"
+
+msgid "Ensemble (âge)"
+msgstr "All (age)"
+
+msgid "Ensemble (n)"
+msgstr "All (n)"
+
+msgid "Âge au décès à l'année près, personnes dont la naissance et le décès sont connus"
+msgstr "Age at death to the nearest year, people whose birth and death are known"
+
+msgid "décédés à"
+msgstr "died at"
+
+msgid "ans ou plus"
+msgstr "years or more"
+
+msgid "cas sont ignorés."
+msgstr "cases are ignored."
+
+msgid "Personnes vivantes en"
+msgstr "People alive in"
+
+msgid "Nombre de décès"
+msgstr "Number of deaths"
+
+msgid "personnes"
+msgstr "people"
+
+msgid "Personnes dont la naissance et le décès sont connus, vivantes l'année indiquée (âge atteint cette année-là)."
+msgstr "People whose birth and death are known, alive in the given year (age reached that year)."
+
+msgid "Âge au décès à l'année près, personnes dont la naissance et le décès sont connus."
+msgstr "Age at death to the nearest year, people whose birth and death are known."
+
+msgid "Âge moyen au décès (naissance et décès connus), par siècle de naissance (basis = birth) ou de décès (basis = death). min_age = âge minimal au décès pris en compte (0 = tous ; 5 ou 20 pour écarter la mortalité infantile). min_n = nombre minimal de personnes par siècle."
+msgstr "Average age at death (birth and death known), by century of birth (basis = birth) or of death (basis = death). min_age = minimum age at death taken into account (0 = all; 5 or 20 to leave out infant mortality). min_n = minimum number of people per century."
+
+msgid "Sans year : répartition des âges au décès, hommes à gauche, femmes à droite. Avec year=\"1850\" : âges des personnes vivantes cette année-là (naissance connue, décès connu postérieur). step = taille des tranches (5 ou 10), max_age = dernière tranche."
+msgstr "Without year: distribution of ages at death, men on the left, women on the right. With year=\"1850\": ages of people alive that year (birth known, later death known). step = band size (5 or 10), max_age = last band."
+
 msgid "Page sur le patronyme"
 msgstr "Surname page"
 

@@ -25,6 +25,18 @@ Graphiques publics (sexe, vivants, demi-siècles, mois…). Deux sections : Rég
 ```
 
 ```
+[tng_stat_esperance basis="birth" min_age="0" min_n="5"]
+```
+
+```
+[tng_stat_pyramide step="10"]
+[tng_stat_pyramide year="1850"]
+```
+
+Espérance de vie : âge moyen au décès par siècle de naissance (`basis="death"` pour le siècle du décès), hommes, femmes et ensemble. `min_age="5"` écarte la mortalité infantile. Pyramide des âges : sans `year`, âges au décès ; avec `year`, âges des personnes vivantes cette année-là.
+
+
+```
 [tng_stat type="…" height="380"]
 ```
 

@@ -5,7 +5,7 @@ function tngsT(s) { var d = window.TNGS_I18N; return (d && Object.prototype.hasO
 
 	var PALETTE = ['#4e79a7', '#f28e2b', '#e15759', '#76b7b2', '#59a14f', '#edc948', '#b07aa1', '#ff9da7', '#9c755f', '#bab0ac',
 		'#86a8c9', '#f6b26b', '#ea8a8a', '#a3cfcb', '#8cc784', '#f1db8a', '#c9a8d1', '#ffc4ca', '#c3a38f', '#d4cfcb'];
-	var TYPE_MAP = { bar: 'bar', hbar: 'bar', line: 'line', area: 'line', pie: 'pie', doughnut: 'doughnut', polarArea: 'polarArea', radar: 'radar' };
+	var TYPE_MAP = { bar: 'bar', hbar: 'bar', line: 'line', area: 'line', pie: 'pie', doughnut: 'doughnut', polarArea: 'polarArea', radar: 'radar', pyramid: 'bar' };
 	var nf = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 1 });
 
 	function alpha(hex, a) {
@@ -54,10 +54,12 @@ function tngsT(s) { var d = window.TNGS_I18N; return (d && Object.prototype.hasO
 		var t = cfg.type;
 		var pieLike = t === 'pie' || t === 'doughnut' || t === 'polarArea';
 		var multi = cfg.datasets.length > 1;
-		var horizontal = t === 'hbar';
+		var pyramid = t === 'pyramid';   // pyramide : hommes à gauche (valeurs négatives affichées en positif), femmes à droite
+		var horizontal = t === 'hbar' || pyramid;
 
 		var datasets = cfg.datasets.map(function (ds, i) {
-			var o = { label: ds.label, data: ds.data };
+			var o = { label: ds.label, data: (pyramid && i === 0) ? ds.data.map(function (v) { return v == null ? v : -v; }) : ds.data };
+			if (pyramid) { o.categoryPercentage = 1; o.barPercentage = 0.95; }
 			var color = ds.color || PALETTE[i % PALETTE.length];
 			if (pieLike) {
 				var base = cfg.colors || cfg.labels.map(function (_, k) { return PALETTE[k % PALETTE.length]; });
@@ -95,6 +97,7 @@ function tngsT(s) { var d = window.TNGS_I18N; return (d && Object.prototype.hasO
 						label: function (ctx) {
 							var v = ctx.raw;
 							if (v == null) return '';
+							if (pyramid) v = Math.abs(v);
 							var head = pieLike ? ctx.label : ctx.dataset.label;
 							var txt = nf.format(v);
 							if (cfg.unit === '%') txt += ' %';
@@ -113,7 +116,9 @@ function tngsT(s) { var d = window.TNGS_I18N; return (d && Object.prototype.hasO
 		if (!pieLike && t !== 'radar') {
 			var cat = { title: { display: !!cfg.xTitle, text: cfg.xTitle } };
 			var val = { beginAtZero: true, title: { display: !!cfg.yTitle, text: cfg.yTitle } };
-			options.scales = horizontal
+			options.scales = pyramid
+				? { x: { stacked: true, title: { display: !!cfg.xTitle, text: cfg.xTitle }, ticks: { callback: function (v) { return nf.format(Math.abs(v)); } } }, y: { stacked: true, reverse: true, title: { display: false } } }
+				: horizontal
 				? { x: { beginAtZero: true, title: { display: !!cfg.xTitle, text: cfg.xTitle } }, y: { title: { display: false } } }
 				: { x: cat, y: val };
 		}

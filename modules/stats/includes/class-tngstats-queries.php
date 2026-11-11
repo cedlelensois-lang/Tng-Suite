@@ -400,6 +400,126 @@ class TNGStats_Queries {
 		);
 	}
 
+	/* ------------------------------------------------------------------ Espérance de vie et pyramide des âges */
+
+	/** Espérance de vie : âge moyen au décès par siècle (naissance et décès connus, à l'année près). */
+	public function life_expectancy( $basis, $min_age, $min_n ) {
+		return $this->run(
+			function () use ( $basis, $min_age, $min_n ) {
+				$by_death = 'death' === strtolower( (string) $basis );
+				$min_age  = max( 0, min( 100, (int) $min_age ) );
+				$min_n    = max( 1, (int) $min_n );
+				$col      = $by_death ? 'deathdatetr' : 'birthdatetr';
+				$sql      = "SELECT CEIL(YEAR({$col}) / 100) AS century, sex, AVG(YEAR(deathdatetr) - YEAR(birthdatetr)) AS avg_age, COUNT(*) AS n
+					FROM {$this->t['people']}
+					WHERE gedcom = %s AND YEAR(birthdatetr) > 0 AND YEAR(deathdatetr) > 0
+					AND (YEAR(deathdatetr) - YEAR(birthdatetr)) BETWEEN %d AND 110 AND sex IN ('M', 'F')
+					GROUP BY century, sex ORDER BY century";
+				$rows     = $this->rows( $sql, array( $this->tree, $min_age ) );
+				$by       = array();
+				foreach ( $rows as $r ) {
+					$by[ (int) $r['century'] ][ strtoupper( $r['sex'] ) ] = array( (float) $r['avg_age'], (int) $r['n'] );
+				}
+				ksort( $by );
+				$labels = array();
+				$men    = array();
+				$women  = array();
+				$all    = array();
+				$body   = array();
+				foreach ( $by as $c => $v ) {
+					$nm = isset( $v['M'] ) ? $v['M'][1] : 0;
+					$nf = isset( $v['F'] ) ? $v['F'][1] : 0;
+					if ( $nm + $nf < $min_n ) {
+						continue;
+					}
+					$m   = $nm >= $min_n ? round( $v['M'][0], 1 ) : null;
+					$f   = $nf >= $min_n ? round( $v['F'][0], 1 ) : null;
+					$tot = round( ( ( $nm ? $v['M'][0] * $nm : 0 ) + ( $nf ? $v['F'][0] * $nf : 0 ) ) / ( $nm + $nf ), 1 );
+					$lab = $this->roman( $c ) . ' ' . tngs_t( 'siècle' );
+					$labels[] = $lab;
+					$men[]    = $m;
+					$women[]  = $f;
+					$all[]    = $tot;
+					$body[]   = array( $lab, $m, $nm, $f, $nf, $tot, $nm + $nf );
+				}
+				return $this->pack(
+					$labels,
+					array(
+						array( 'label' => 'Hommes', 'data' => $men, 'color' => '#1d4ed8' ),
+						array( 'label' => 'Femmes', 'data' => $women, 'color' => '#f472b6' ),
+						array( 'label' => 'Ensemble', 'data' => $all, 'color' => '#444444' ),
+					),
+					array(
+						'unit'   => 'ans',
+						'xTitle' => $by_death ? 'Siècle du décès' : 'Siècle de naissance',
+						'yTitle' => 'Âge moyen au décès (ans)',
+						'note'   => tngs_t( 'Âge au décès à l\'année près, personnes dont la naissance et le décès sont connus' ) . ( $min_age > 0 ? ' (' . tngs_t( 'décédés à' ) . ' ' . $min_age . ' ' . tngs_t( 'ans ou plus' ) . ')' : '' ) . '. ' . tngs_t( 'Les siècles avec moins de' ) . ' ' . $min_n . ' ' . tngs_t( 'cas sont ignorés.' ),
+						'table'  => array( 'head' => array( 'Siècle', 'Hommes (âge)', 'Hommes (n)', 'Femmes (âge)', 'Femmes (n)', 'Ensemble (âge)', 'Ensemble (n)' ), 'body' => $body ),
+					)
+				);
+			}
+		);
+	}
+
+	/** Pyramide des âges : âges au décès, ou âges des personnes vivantes une année donnée. Hommes et femmes par tranche. */
+	public function pyramid( $step, $year, $max_age ) {
+		return $this->run(
+			function () use ( $step, $year, $max_age ) {
+				$step    = in_array( (int) $step, array( 1, 2, 5, 10, 20 ), true ) ? (int) $step : 10;
+				$max_age = max( $step, min( 120, (int) $max_age ) );
+				$year    = (int) $year;
+				if ( $year > 0 ) {
+					$sql  = "SELECT sex, ( %d - YEAR(birthdatetr) ) AS a, COUNT(*) AS n FROM {$this->t['people']}
+						WHERE gedcom = %s AND YEAR(birthdatetr) > 0 AND YEAR(birthdatetr) <= %d AND YEAR(deathdatetr) > %d AND sex IN ('M', 'F')
+						GROUP BY sex, a";
+					$rows = $this->rows( $sql, array( $year, $this->tree, $year, $year ) );
+				} else {
+					$sql  = "SELECT sex, ( YEAR(deathdatetr) - YEAR(birthdatetr) ) AS a, COUNT(*) AS n FROM {$this->t['people']}
+						WHERE gedcom = %s AND YEAR(birthdatetr) > 0 AND YEAR(deathdatetr) > 0 AND (YEAR(deathdatetr) - YEAR(birthdatetr)) BETWEEN 0 AND 120 AND sex IN ('M', 'F')
+						GROUP BY sex, a";
+					$rows = $this->rows( $sql, array( $this->tree ) );
+				}
+				$bands = (int) ceil( ( $max_age + 1 ) / $step );
+				$m     = array_fill( 0, $bands, 0 );
+				$f     = array_fill( 0, $bands, 0 );
+				foreach ( $rows as $r ) {
+					$a = (int) $r['a'];
+					if ( $a < 0 || $a > 120 ) {
+						continue;
+					}
+					$i = min( $bands - 1, (int) floor( $a / $step ) );   // la dernière tranche regroupe les âges plus élevés
+					if ( 'M' === strtoupper( $r['sex'] ) ) {
+						$m[ $i ] += (int) $r['n'];
+					} else {
+						$f[ $i ] += (int) $r['n'];
+					}
+				}
+				$labels = array();
+				$body   = array();
+				for ( $i = 0; $i < $bands; $i++ ) {
+					$lo = $i * $step;
+					$lab = ( $i === $bands - 1 ) ? $lo . '+' : ( 1 === $step ? (string) $lo : $lo . '-' . ( $lo + $step - 1 ) );
+					$labels[] = $lab;
+					$body[]   = array( $lab, $m[ $i ], $f[ $i ] );
+				}
+				return $this->pack(
+					$labels,
+					array(
+						array( 'label' => 'Hommes', 'data' => $m, 'color' => '#1d4ed8' ),
+						array( 'label' => 'Femmes', 'data' => $f, 'color' => '#f472b6' ),
+					),
+					array(
+						'unit'   => $year > 0 ? 'personnes' : 'décès',
+						'xTitle' => $year > 0 ? tngs_t( 'Personnes vivantes en' ) . ' ' . $year : 'Nombre de décès',
+						'first'  => 'Âge',
+						'note'   => $year > 0 ? tngs_t( 'Personnes dont la naissance et le décès sont connus, vivantes l\'année indiquée (âge atteint cette année-là).' ) : tngs_t( 'Âge au décès à l\'année près, personnes dont la naissance et le décès sont connus.' ),
+						'table'  => array( 'head' => array( 'Âge', 'Hommes', 'Femmes' ), 'body' => $body ),
+					)
+				);
+			}
+		);
+	}
+
 	/* ------------------------------------------------------------------ 4. Distance naissance → décès */
 
 	public function distance( $from, $to, $step, $basis ) {

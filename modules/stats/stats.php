@@ -2,7 +2,7 @@
 /**
  * TNG Suite – module « Statistiques & graphiques » (ex-plugin TNG Stats 1.0.0).
  * Shortcodes : [tng_stat stat="…"] et un alias par statistique ([tng_stat_genre], [tng_stat_vivants],
- * [tng_stat_centenaires], [tng_stat_age_union], [tng_stat_distance], [tng_stat_demi_siecle],
+ * [tng_stat_centenaires], [tng_stat_age_union], [tng_stat_distance], [tng_stat_demi_siecle], [tng_stat_esperance], [tng_stat_pyramide],
  * [tng_stat_mois], [tng_stat_villes], [tng_stat_metiers]).
  * Titres, libellés, légendes et palettes de chaque graphique : TNG Suite > Stats : graphiques.
  * Connexion, préfixe, arbre par défaut et vivants/privés : réglages communs.
