@@ -2,7 +2,7 @@
 /**
  * Plugin Name: TNG Suite
  * Description: Suite unifiée pour TNG : arbres et descendance, bouton vers la fiche, frise chronologique, heatmap des lieux, galerie de médias, individu au hasard, nuage de noms et anniversaires, statistiques et graphiques, éventail (roue de parenté), implexe et consanguinité, livre généalogique, fiche et listes de documents. Un seul réglage de connexion (wp-config.php ou saisie dans le plugin), de préfixe et d'URL, et un réglage « vivants / privés » par module, en français ou en anglais.
- * Version: 1.36.1
+ * Version: 1.36.2
  * Requires PHP: 7.4
  * Requires at least: 5.8
  * Author: Cédric Malvache
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'TNGSUITE_VERSION', '1.36.1' );
+define( 'TNGSUITE_VERSION', '1.36.2' );
 define( 'TNGSUITE_FILE', __FILE__ );
 define( 'TNGSUITE_DIR', plugin_dir_path( __FILE__ ) );
 define( 'TNGSUITE_URL', plugin_dir_url( __FILE__ ) );

@@ -2461,6 +2461,9 @@ msgstr ""
 msgid "Sans year : répartition des âges au décès, hommes à gauche, femmes à droite. Avec year=\"1850\" : âges des personnes vivantes cette année-là (naissance connue, décès connu postérieur). step = taille des tranches (5 ou 10), max_age = dernière tranche."
 msgstr ""
 
+msgid "Les siècles avec moins de"
+msgstr ""
+
 msgid "Page sur le patronyme"
 msgstr ""
 
