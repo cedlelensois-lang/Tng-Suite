@@ -562,6 +562,7 @@ class TNGBook_Renderer {
         $dest = $dir . '/img/' . $base . '.jpg';
         $name = $base . '.jpg';
         $mime = 'image/jpeg';
+        if (file_exists($dest) && filesize($dest) < 100) @unlink($dest);   // fichier de cache vide ou tronqué : on le refait
         if (!file_exists($dest)) {
             $done = false;
             $ed = wp_get_image_editor($file);
