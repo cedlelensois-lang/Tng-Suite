@@ -1,15 +1,16 @@
 <?php
 /**
  * Mises à jour automatiques depuis les « Releases » d'un dépôt GitHub (Plugin Update Checker, licence MIT).
- * Inactif tant qu'aucune adresse de dépôt n'est renseignée : définissez TNGSUITE_GITHUB_REPO dans wp-config.php
- * (ex. define( 'TNGSUITE_GITHUB_REPO', 'https://github.com/votre-compte/tng-suite/' );) ou renseignez la constante ci-dessous.
+ * Dépôt par défaut : celui du plugin. Pour un fork ou un dépôt privé, définissez TNGSUITE_GITHUB_REPO dans wp-config.php
+ * (ex. define( 'TNGSUITE_GITHUB_REPO', 'https://github.com/votre-compte/tng-suite/' );), ou filtre « tngsuite_github_repo ».
+ * Désactiver : define( 'TNGSUITE_GITHUB_REPO', '' );
  */
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
 if ( ! defined( 'TNGSUITE_GITHUB_REPO' ) ) {
-    define( 'TNGSUITE_GITHUB_REPO', '' );
+    define( 'TNGSUITE_GITHUB_REPO', 'https://github.com/cedlelensois-lang/tng-suite/' );
 }
 
 add_action( 'plugins_loaded', function () {

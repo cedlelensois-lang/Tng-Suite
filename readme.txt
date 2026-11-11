@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.36.4
+Stable tag: 1.36.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 1.36.5 =
+* Mises à jour automatiques actives par défaut depuis le dépôt GitHub du plugin (plus besoin de définir la constante dans wp-config.php).
 
 = 1.36.4 =
 * Espérance de vie (statistiques et livre) : toujours par siècle du décès (l'attribut basis est supprimé).
