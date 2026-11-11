@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.36.0
+Stable tag: 1.36.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 1.36.1 =
+* Livre, chapitre « En chiffres » : espérance de vie par siècle de naissance (colonne Ensemble + courbes hommes / femmes / ensemble) et pyramide des âges au décès (dessin en PDF / page imprimable, tableau dans Word / OpenDocument).
 
 = 1.36.0 =
 * Statistiques : espérance de vie moyenne par siècle ([tng_stat_esperance], par siècle de naissance ou de décès, hommes / femmes / ensemble) et pyramide des âges ([tng_stat_pyramide], âges au décès ou âges des vivants une année donnée).

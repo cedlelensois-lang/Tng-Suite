@@ -94,6 +94,7 @@ class TNGBook_Stats {
         $ageDc = [];                                // [siècle][sexe] => âges
         $inf = [];                                  // [siècle] => [n, <1, <5]
         $bands = array_fill(0, 11, 0);
+        $bandsS = ['M' => array_fill(0, 11, 0), 'F' => array_fill(0, 11, 0)];   // pyramide : hommes / femmes par tranche de 10 ans
         $births = [];
         foreach ($vis as $pid => $p) {
             $b = self::ymd($p['birthdatetr']);
@@ -105,6 +106,7 @@ class TNGBook_Stats {
             $ageD['A'][] = $a;
             if ($k === 'M' || $k === 'F') { $ageD[$k][] = $a; $ageDc[self::century($b[0])][$k][] = $a; }
             $bands[min(10, (int) floor($a / 10))]++;
+            if ($k === 'M' || $k === 'F') $bandsS[$k][min(10, (int) floor($a / 10))]++;
             $c = self::century($b[0]);
             if (!isset($inf[$c])) $inf[$c] = [0, 0, 0];
             $inf[$c][0]++;
@@ -116,9 +118,10 @@ class TNGBook_Stats {
         foreach ($ageDc as $c => $bySex) {
             $row = ['c' => $c];
             foreach (['M', 'F'] as $k) $row[$k] = self::summary($bySex[$k] ?? []);
+            $row['A'] = self::summary(array_merge($bySex['M'] ?? [], $bySex['F'] ?? []));
             if ($row['M']['n'] + $row['F']['n'] >= 5) $byC[] = $row;
         }
-        $this->r['age_death'] = ['all' => self::summary($ageD['A']), 'M' => self::summary($ageD['M']), 'F' => self::summary($ageD['F']), 'by_century' => $byC, 'bands' => $bands];
+        $this->r['age_death'] = ['all' => self::summary($ageD['A']), 'M' => self::summary($ageD['M']), 'F' => self::summary($ageD['F']), 'by_century' => $byC, 'bands' => $bands, 'bands_sex' => $bandsS];
         $this->r['births'] = $births;
         $infRows = [];
         foreach ($inf as $c => $v) if ($v[0] >= 5) $infRows[] = ['c' => $c, 'n' => $v[0], 'u1' => $v[1], 'u5' => $v[2]];

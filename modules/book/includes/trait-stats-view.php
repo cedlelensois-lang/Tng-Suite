@@ -96,11 +96,36 @@ trait TNGBook_StatsView {
         $ad = $st['age_death'];
         $h .= $this->stSection('st-demo', $L['st_demo']);
         if ($ad['all']['n']) {
-            $rows = [[$this->e($L['st_all']), $this->sm($ad['M']), $this->sm($ad['F'])]];
-            foreach ($ad['by_century'] as $r) $rows[] = [$r['c'] . '–' . ($r['c'] + 99), $this->sm($r['M']), $this->sm($r['F'])];
-            $h .= '<p class="nh">' . $this->e($L['st_age_death']) . ' — ' . $this->e($L['st_mean']) . ' (' . $this->e($L['st_n']) . ')</p>'
-                . $this->table([$L['st_century'], ucfirst($L['st_men']), ucfirst($L['st_women'])], $rows, 'lrr')
+            $rows = [[$this->e($L['st_all']), $this->sm($ad['M']), $this->sm($ad['F']), $this->sm($ad['all'])]];
+            foreach ($ad['by_century'] as $r) $rows[] = [$r['c'] . '–' . ($r['c'] + 99), $this->sm($r['M']), $this->sm($r['F']), $this->sm($r['A'])];
+            $h .= '<p class="nh">' . $this->e($L['st_life']) . ' — ' . $this->e($L['st_mean']) . ' (' . $this->e($L['st_n']) . ')</p>'
+                . $this->table([$L['st_century'], ucfirst($L['st_men']), ucfirst($L['st_women']), $L['st_all']], $rows, 'lrrr')
                 . '<p class="src">' . $this->e($L['st_median']) . ' : ' . $this->nf($ad['all']['median']) . ' (' . $this->e($L['st_all']) . ')</p>';
+            if ($this->mode !== 'doc' && count($ad['by_century']) > 1) {   // courbes d'espérance de vie (le tableau ci-dessus les donne pour Word / OpenDocument)
+                $lab = []; $vm = []; $vf = []; $va = [];
+                foreach ($ad['by_century'] as $r) {
+                    $lab[] = (string) $r['c'];
+                    $vm[] = $r['M']['n'] >= 3 ? round($r['M']['mean'], 1) : null;
+                    $vf[] = $r['F']['n'] >= 3 ? round($r['F']['mean'], 1) : null;
+                    $va[] = $r['A']['n'] ? round($r['A']['mean'], 1) : null;
+                }
+                $h .= '<div class="chart">' . TNGBook_Charts::lines($lab, [
+                    ['name' => ucfirst($L['st_men']), 'vals' => $vm, 'color' => '#1d4ed8'],
+                    ['name' => ucfirst($L['st_women']), 'vals' => $vf, 'color' => '#f472b6'],
+                    ['name' => $L['st_all'], 'vals' => $va, 'color' => '#555555'],
+                ], $this->colors(), $this->mode, $L['st_life']) . '</div>';
+            }
+            $bs = $ad['bands_sex'];
+            $bl = ['0–9', '10–19', '20–29', '30–39', '40–49', '50–59', '60–69', '70–79', '80–89', '90–99', '100+'];
+            if (array_sum($bs['M']) + array_sum($bs['F']) > 0) {
+                $h .= '<p class="nh">' . $this->e($L['st_pyr']) . '</p>';
+                if ($this->mode === 'doc') {
+                    $rows = []; for ($i = count($bl) - 1; $i >= 0; $i--) $rows[] = [$bl[$i], (string) $bs['M'][$i], (string) $bs['F'][$i]];
+                    $h .= $this->table([$L['st_age'], ucfirst($L['st_men']), ucfirst($L['st_women'])], $rows, 'lrr');
+                } else {
+                    $h .= '<div class="chart">' . TNGBook_Charts::pyramid($bl, $bs['M'], $bs['F'], $this->colors(), $this->mode, $L['st_pyr'], ucfirst($L['st_men']), ucfirst($L['st_women'])) . '</div>';
+                }
+            }
             $h .= $this->histo($L['st_h_death'], ['0–9', '10–19', '20–29', '30–39', '40–49', '50–59', '60–69', '70–79', '80–89', '90–99', '100+'], $ad['bands']);
         }
         $am = $st['age_marr']; $ac = $st['age_child'];
