@@ -12,13 +12,13 @@ Licence : GPLv2 ou ultérieure. Prérequis : WordPress 5.8+, PHP 7.4+.
 
 ## Mises à jour automatiques
 
-Dans `wp-config.php`, avant la ligne « That's all, stop editing » :
+Rien à configurer : le plugin interroge les Releases de ce dépôt (public) et WordPress affiche « mise à jour disponible » dès qu'une nouvelle Release est publiée.
+
+Pour un fork ou un dépôt privé, ou pour désactiver la vérification, définissez dans `wp-config.php` (avant la ligne « That's all, stop editing ») :
 
 ```php
-define( 'TNGSUITE_GITHUB_REPO', 'https://github.com/VOTRE-COMPTE/tng-suite/' );
+define( 'TNGSUITE_GITHUB_REPO', 'https://github.com/VOTRE-COMPTE/tng-suite/' );   // '' pour désactiver
 ```
-
-WordPress affichera alors « mise à jour disponible » dès qu'une nouvelle Release est publiée (dépôt public).
 
 ## Publier une version
 
