@@ -72,7 +72,7 @@ function tngsT(s) { var d = window.TNGS_I18N; return (d && Object.prototype.hasO
 				o.borderColor = color;
 				o.backgroundColor = (t === 'area' || t === 'radar') ? alpha(color, 0.6) : color;
 				o.fill = (t === 'area' || t === 'radar') ? 'origin' : false;
-				o.tension = 0.25;
+				o.tension = cfg.smooth === false ? 0 : 0.25;
 				o.spanGaps = true;
 				o.pointRadius = 3;
 				if (t === 'radar') o.fill = true;

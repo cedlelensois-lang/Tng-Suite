@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.36.2
+Stable tag: 1.36.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 1.36.3 =
+* Espérance de vie par siècle (statistiques et livre) : par siècle de naissance, les personnes nées il y a moins de 100 ans sont écartées (générations incomplètes qui faussaient le dernier siècle) ; courbes en segments droits (plus de dépassements).
 
 = 1.36.2 =
 * Audit : traduction anglaise de la note des statistiques (« Les siècles avec moins de… cas »).

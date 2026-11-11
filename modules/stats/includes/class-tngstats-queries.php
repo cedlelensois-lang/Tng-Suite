@@ -82,6 +82,7 @@ class TNGStats_Queries {
 			'table'    => $table,
 			'note'     => isset( $opt['note'] ) ? $opt['note'] : '',
 			'total'    => isset( $opt['total'] ) ? $opt['total'] : null,
+			'smooth'   => isset( $opt['smooth'] ) ? (bool) $opt['smooth'] : true,
 		);
 	}
 
@@ -410,12 +411,15 @@ class TNGStats_Queries {
 				$min_age  = max( 0, min( 100, (int) $min_age ) );
 				$min_n    = max( 1, (int) $min_n );
 				$col      = $by_death ? 'deathdatetr' : 'birthdatetr';
+				// Par siècle de naissance, seules les générations « terminées » comptent : les personnes nées il y a moins de 100 ans sont
+				// surtout encore vivantes (ou non datées), et leurs décès précoces seuls fausseraient la moyenne.
+				$cut      = $by_death ? 9999 : ( (int) gmdate( 'Y' ) - 100 );
 				$sql      = "SELECT CEIL(YEAR({$col}) / 100) AS century, sex, AVG(YEAR(deathdatetr) - YEAR(birthdatetr)) AS avg_age, COUNT(*) AS n
 					FROM {$this->t['people']}
 					WHERE gedcom = %s AND YEAR(birthdatetr) > 0 AND YEAR(deathdatetr) > 0
-					AND (YEAR(deathdatetr) - YEAR(birthdatetr)) BETWEEN %d AND 110 AND sex IN ('M', 'F')
+					AND (YEAR(deathdatetr) - YEAR(birthdatetr)) BETWEEN %d AND 110 AND YEAR(birthdatetr) <= %d AND sex IN ('M', 'F')
 					GROUP BY century, sex ORDER BY century";
-				$rows     = $this->rows( $sql, array( $this->tree, $min_age ) );
+				$rows     = $this->rows( $sql, array( $this->tree, $min_age, $cut ) );
 				$by       = array();
 				foreach ( $rows as $r ) {
 					$by[ (int) $r['century'] ][ strtoupper( $r['sex'] ) ] = array( (float) $r['avg_age'], (int) $r['n'] );
@@ -451,9 +455,10 @@ class TNGStats_Queries {
 					),
 					array(
 						'unit'   => 'ans',
+						'smooth' => false,
 						'xTitle' => $by_death ? 'Siècle du décès' : 'Siècle de naissance',
 						'yTitle' => 'Âge moyen au décès (ans)',
-						'note'   => tngs_t( 'Âge au décès à l\'année près, personnes dont la naissance et le décès sont connus' ) . ( $min_age > 0 ? ' (' . tngs_t( 'décédés à' ) . ' ' . $min_age . ' ' . tngs_t( 'ans ou plus' ) . ')' : '' ) . '. ' . tngs_t( 'Les siècles avec moins de' ) . ' ' . $min_n . ' ' . tngs_t( 'cas sont ignorés.' ),
+						'note'   => tngs_t( 'Âge au décès à l\'année près, personnes dont la naissance et le décès sont connus' ) . ( $min_age > 0 ? ' (' . tngs_t( 'décédés à' ) . ' ' . $min_age . ' ' . tngs_t( 'ans ou plus' ) . ')' : '' ) . '. ' . tngs_t( 'Les siècles avec moins de' ) . ' ' . $min_n . ' ' . tngs_t( 'cas sont ignorés.' ) . ( $by_death ? '' : ' ' . tngs_t( 'Personnes nées il y a moins de 100 ans exclues (générations incomplètes).' ) ),
 						'table'  => array( 'head' => array( 'Siècle', 'Hommes (âge)', 'Hommes (n)', 'Femmes (âge)', 'Femmes (n)', 'Ensemble (âge)', 'Ensemble (n)' ), 'body' => $body ),
 					)
 				);

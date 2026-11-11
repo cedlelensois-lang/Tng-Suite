@@ -104,7 +104,7 @@ class TNGBook_Stats {
             if ($a === null) continue;
             $k = strtoupper(trim((string) $p['sex']));
             $ageD['A'][] = $a;
-            if ($k === 'M' || $k === 'F') { $ageD[$k][] = $a; $ageDc[self::century($b[0])][$k][] = $a; }
+            if ($k === 'M' || $k === 'F') { $ageD[$k][] = $a; if ($b[0] <= (int) gmdate('Y') - 100) $ageDc[self::century($b[0])][$k][] = $a; }   // espérance de vie par siècle : générations terminées seulement
             $bands[min(10, (int) floor($a / 10))]++;
             if ($k === 'M' || $k === 'F') $bandsS[$k][min(10, (int) floor($a / 10))]++;
             $c = self::century($b[0]);

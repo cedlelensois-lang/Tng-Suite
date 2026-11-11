@@ -2464,6 +2464,9 @@ msgstr "Without year: distribution of ages at death, men on the left, women on t
 msgid "Les siècles avec moins de"
 msgstr "Centuries with fewer than"
 
+msgid "Personnes nées il y a moins de 100 ans exclues (générations incomplètes)."
+msgstr "People born less than 100 years ago are excluded (incomplete generations)."
+
 msgid "Page sur le patronyme"
 msgstr "Surname page"
 

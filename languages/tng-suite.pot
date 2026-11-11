@@ -2464,6 +2464,9 @@ msgstr ""
 msgid "Les siècles avec moins de"
 msgstr ""
 
+msgid "Personnes nées il y a moins de 100 ans exclues (générations incomplètes)."
+msgstr ""
+
 msgid "Page sur le patronyme"
 msgstr ""
 
