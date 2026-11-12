@@ -32,13 +32,12 @@ Generates a complete book (ancestry, descendants, indexes, maps, statistics) as 
 
 ## Automatic generation (beta)
 
-Below the profiles, the **Automatic generation** section produces a profile’s book on its own, every day, week or month.
+Each profile can be generated automatically, every day, week or month, with no action on your part.
 
-1. Save a book profile (PDF, Word, OpenDocument or HTML: the profile’s format is used).
-2. In the section, tick **Active** on the profile’s row, then choose the frequency, day and time.
-3. Enter the **destination folder** (absolute path on the server). Left empty, the plugin uses a protected, randomly named folder inside WordPress uploads. To sync with OneDrive, Dropbox, etc., choose a folder your sync tool watches.
-4. Set the number of files kept per profile (older ones are deleted; only files created by the plugin are affected), the **Only if the data has changed** option and the notification email.
-5. **Save**, then **Generate now** to test.
+1. Load (or create) a book profile. Its format (PDF, Word, OpenDocument or HTML) is the one used.
+2. In the **Automatic generation for this profile** section of the form, tick **Generate automatically**, then choose the frequency, day and time.
+3. Click **Update the active profile** (or **Save as profile**): the schedule is saved with the profile.
+4. At the very bottom of the page, the **Automatic generation** section shows all profiles (schedule, last generation, latest file, **Generate now** button to test) and holds the shared settings: **destination folder** (absolute path on the server; empty = protected, randomly named folder inside WordPress uploads; to sync with OneDrive, Dropbox, etc., choose a folder your sync tool watches), number of files kept per profile (older ones are deleted; only files created by the plugin are affected), the **Only if the data has changed** option and the notification email.
 
 Notes:
 

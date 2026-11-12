@@ -3031,6 +3031,57 @@ msgstr ""
 msgid "À chaque génération"
 msgstr ""
 
+msgid "Désactivée"
+msgstr ""
+
+msgid "Génération automatique de ce profil"
+msgstr ""
+
+msgid "ces réglages sont enregistrés avec le profil (bouton « Mettre à jour le profil actif »)."
+msgstr ""
+
+msgid "Ces réglages sont enregistrés avec le profil : donnez un nom au profil, puis « Enregistrer comme profil »."
+msgstr ""
+
+msgid "Générer automatiquement"
+msgstr ""
+
+msgid "Générer le livre de ce profil à intervalle régulier"
+msgstr ""
+
+msgid "(jour du mois, de 1 à 28)"
+msgstr ""
+
+msgid "Prochaine génération :"
+msgstr ""
+
+msgid "Le dossier de destination, le nombre de fichiers conservés et l’e-mail sont communs à tous les profils : voir plus bas, « Génération automatique »."
+msgstr ""
+
+msgid "Génère automatiquement le livre des profils pour lesquels la génération automatique est activée, à intervalle régulier, dans un dossier du serveur (les anciens fichiers sont supprimés au-delà du nombre conservé)."
+msgstr ""
+
+msgid "Enregistrez d’abord un profil de livre (ci-dessus) : la génération automatique se règle dans chaque profil."
+msgstr ""
+
+msgid "Vue d’ensemble des profils"
+msgstr ""
+
+msgid "La planification se règle dans chaque profil : chargez le profil, modifiez « Génération automatique de ce profil », puis « Mettre à jour le profil actif »."
+msgstr ""
+
+msgid "Planification"
+msgstr ""
+
+msgid "Réglages communs de la génération automatique enregistrés."
+msgstr ""
+
+msgid "à"
+msgstr ""
+
+msgid "le"
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""

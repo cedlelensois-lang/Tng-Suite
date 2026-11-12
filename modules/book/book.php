@@ -145,6 +145,7 @@ final class TNGBook {
         $all[$name] = $prof;
         update_option(self::PROFILES, $all, false);
         update_option(self::ACTIVE, $name, false);
+        TNGBook_Auto::save_profile_job($name);
         self::profile_back('saved');
     }
 
@@ -172,7 +173,7 @@ final class TNGBook {
     }
 
     /** Nom du profil actif (chargé ou enregistré en dernier), s'il existe encore. */
-    private static function active_name() {
+    public static function active_name() {
         $act = (string) get_option(self::ACTIVE, '');
         return ($act !== '' && isset(self::profiles()[$act])) ? $act : '';
     }
@@ -510,6 +511,8 @@ final class TNGBook {
         self::select('Accès', 'front_access', ['none' => 'Désactivé', 'logged_in' => 'Utilisateurs WordPress connectés'], $o['front_access']);
         self::select('Vivants/privés pour le formulaire public', 'front_living', ['anonymize' => 'Anonymiser', 'exclude' => 'Exclure'], $o['front_living'], 'Les visiteurs ne peuvent jamais inclure les personnes vivantes en entier.');
         echo '</table>';
+
+        TNGBook_Auto::profile_fields(self::active_name());
 
         echo '<p class="submit"><button type="submit" class="button button-secondary">Enregistrer les paramètres</button> '
             . '<span style="margin-left:12px"><input type="text" name="tngbook_profile_name" maxlength="60" value="' . esc_attr(self::active_name()) . '" placeholder="' . esc_attr(tngs_t('Nom du profil')) . '"> '

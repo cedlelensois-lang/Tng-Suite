@@ -269,6 +269,7 @@ class TNGBook_Auto {
         exit;
     }
 
+    /** Réglages communs (dossier, rotation, e-mail). La planification de chaque profil se règle dans le profil lui-même. */
     public static function save() {
         self::guard('tngbook_auto');
         $in = (isset($_POST['tngbook_auto']) && is_array($_POST['tngbook_auto'])) ? wp_unslash($_POST['tngbook_auto']) : [];
@@ -288,25 +289,62 @@ class TNGBook_Auto {
             'mail_on' => in_array($set['mail_on'] ?? '', ['never', 'fail', 'always'], true) ? $set['mail_on'] : 'fail',
         ], false);
 
-        $profiles = TNGBook::profiles();
-        $old = self::jobs();
-        $new = [];
-        foreach ((array) ($in['jobs'] ?? []) as $row) {
-            $row = (array) $row;
-            $name = sanitize_text_field((string) ($row['name'] ?? ''));
-            if ($name === '' || !isset($profiles[$name])) continue;
-            $j = array_merge(self::job_defaults(), $old[$name] ?? []);
-            $j['on'] = empty($row['on']) ? 0 : 1;
-            $j['freq'] = in_array($row['freq'] ?? '', ['daily', 'weekly', 'monthly'], true) ? $row['freq'] : 'weekly';
-            $j['dow'] = max(0, min(6, (int) ($row['dow'] ?? 1)));
-            $j['dom'] = max(1, min(28, (int) ($row['dom'] ?? 1)));
-            $j['hour'] = max(0, min(23, (int) ($row['hour'] ?? 3)));
-            $j['next'] = $j['on'] ? self::next_run($j) : 0;
-            $new[$name] = $j;
-        }
-        update_option(self::JOBS, $new, false);
         self::ensure_schedule();
         self::back($msg);
+    }
+
+    /**
+     * Enregistre la planification du profil $name à partir du formulaire du livre (appelé par l'enregistrement du profil, jeton déjà vérifié).
+     */
+    public static function save_profile_job($name) {
+        if (!isset($_POST['tngbook_auto_job']) || !is_array($_POST['tngbook_auto_job'])) return;   // phpcs:ignore WordPress.Security.NonceVerification.Missing -- jeton vérifié par TNGBook::profile_save()
+        $row = wp_unslash($_POST['tngbook_auto_job']);                                              // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+        $jobs = self::jobs();
+        $j = array_merge(self::job_defaults(), $jobs[$name] ?? []);
+        $j['on'] = empty($row['on']) ? 0 : 1;
+        $j['freq'] = in_array($row['freq'] ?? '', ['daily', 'weekly', 'monthly'], true) ? $row['freq'] : 'weekly';
+        $j['dow'] = max(0, min(6, (int) ($row['dow'] ?? 1)));
+        $j['dom'] = max(1, min(28, (int) ($row['dom'] ?? 1)));
+        $j['hour'] = max(0, min(23, (int) ($row['hour'] ?? 3)));
+        $j['next'] = $j['on'] ? self::next_run($j) : 0;
+        $jobs[$name] = $j;
+        update_option(self::JOBS, $jobs, false);
+        self::ensure_schedule();
+    }
+
+    /** « Chaque semaine, le lundi à 03 h » : description lisible d'une planification. */
+    public static function describe(array $j) {
+        if (empty($j['on'])) return tngs_t('Désactivée');
+        $days = [0 => 'Dimanche', 1 => 'Lundi', 2 => 'Mardi', 3 => 'Mercredi', 4 => 'Jeudi', 5 => 'Vendredi', 6 => 'Samedi'];
+        $h = sprintf('%02d h', (int) $j['hour']);
+        if ($j['freq'] === 'daily') return tngs_t('Chaque jour') . ' ' . tngs_t('à') . ' ' . $h;
+        if ($j['freq'] === 'monthly') return tngs_t('Chaque mois') . ', ' . tngs_t('le') . ' ' . (int) $j['dom'] . ' ' . tngs_t('à') . ' ' . $h;
+        return tngs_t('Chaque semaine') . ', ' . tngs_t($days[(int) $j['dow']] ?? 'Lundi') . ' ' . tngs_t('à') . ' ' . $h;
+    }
+
+    /** Section du formulaire du livre : planification du profil actif (enregistrée avec « Enregistrer comme profil » / « Mettre à jour le profil actif »). */
+    public static function profile_fields($active) {
+        $jobs = self::jobs();
+        $j = array_merge(self::job_defaults(), ($active !== '' ? ($jobs[$active] ?? []) : []));
+        $days = [1 => 'Lundi', 2 => 'Mardi', 3 => 'Mercredi', 4 => 'Jeudi', 5 => 'Vendredi', 6 => 'Samedi', 0 => 'Dimanche'];
+        $k = 'tngbook_auto_job';
+        echo '<h2 id="tngbook-auto-job">' . esc_html(tngs_t('Génération automatique de ce profil')) . ' <span style="background:#dba617;color:#1d2327;font-size:11px;padding:2px 7px;border-radius:9px;vertical-align:middle">' . esc_html(tngs_t('Bêta')) . '</span></h2>';
+        echo '<p class="description">' . esc_html($active !== ''
+            ? tngs_t('Profil actif :') . ' ' . $active . ' — ' . tngs_t('ces réglages sont enregistrés avec le profil (bouton « Mettre à jour le profil actif »).')
+            : tngs_t('Ces réglages sont enregistrés avec le profil : donnez un nom au profil, puis « Enregistrer comme profil ».')) . '</p>';
+        echo '<table class="form-table" data-tngjob><tr><th scope="row">' . esc_html(tngs_t('Générer automatiquement')) . '</th><td><label><input type="checkbox" name="' . esc_attr($k) . '[on]" value="1"' . checked(!empty($j['on']), true, false) . '> '
+            . esc_html(tngs_t('Générer le livre de ce profil à intervalle régulier')) . '</label></td></tr>';
+        echo '<tr><th scope="row">' . esc_html(tngs_t('Fréquence')) . '</th><td><select name="' . esc_attr($k) . '[freq]" class="tngauto-freq">';
+        foreach (['daily' => 'Chaque jour', 'weekly' => 'Chaque semaine', 'monthly' => 'Chaque mois'] as $v => $l) echo '<option value="' . esc_attr($v) . '"' . selected($j['freq'], $v, false) . '>' . esc_html(tngs_t($l)) . '</option>';
+        echo '</select> <select name="' . esc_attr($k) . '[dow]" class="tngauto-dow">';
+        foreach ($days as $v => $l) echo '<option value="' . (int) $v . '"' . selected((int) $j['dow'], $v, false) . '>' . esc_html(tngs_t($l)) . '</option>';
+        echo '</select><span class="tngauto-dom"><input type="number" min="1" max="28" name="' . esc_attr($k) . '[dom]" value="' . (int) $j['dom'] . '" class="small-text"> ' . esc_html(tngs_t('(jour du mois, de 1 à 28)')) . '</span> '
+            . esc_html(tngs_t('à')) . ' <select name="' . esc_attr($k) . '[hour]">';
+        for ($h = 0; $h < 24; $h++) echo '<option value="' . (int) $h . '"' . selected((int) $j['hour'], $h, false) . '>' . sprintf('%02d h', $h) . '</option>';
+        echo '</select>';
+        if (!empty($j['on']) && $j['next']) echo '<p class="description">' . esc_html(tngs_t('Prochaine génération :')) . ' ' . esc_html(wp_date('d/m/Y H:i', (int) $j['next'])) . '</p>';
+        echo '<p class="description">' . esc_html(tngs_t('Le dossier de destination, le nombre de fichiers conservés et l’e-mail sont communs à tous les profils : voir plus bas, « Génération automatique ».')) . '</p></td></tr></table>';
+        echo '<script>(function(){var t=document.querySelector("[data-tngjob]");if(!t)return;var f=t.querySelector(".tngauto-freq"),w=t.querySelector(".tngauto-dow"),d=t.querySelector(".tngauto-dom");function u(){w.style.display=f.value==="weekly"?"":"none";d.style.display=f.value==="monthly"?"":"none";}f.addEventListener("change",u);u();})();</script>';
     }
 
     /** « Générer maintenant » : exécution immédiate pour un profil (ignore l'option « seulement si modifié »). */
@@ -341,7 +379,7 @@ class TNGBook_Auto {
         $s = self::settings();
         $jobs = self::jobs();
         $m = isset($_GET['tngbook_msg']) ? sanitize_key(wp_unslash($_GET['tngbook_msg'])) : '';   // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-        $notes = ['auto_saved' => ['success', 'Réglages de la génération automatique enregistrés.'], 'auto_ok' => ['success', 'Livre généré : voir la colonne « Dernière génération ».'],
+        $notes = ['auto_saved' => ['success', 'Réglages communs de la génération automatique enregistrés.'], 'auto_ok' => ['success', 'Livre généré : voir la colonne « Dernière génération ».'],
             'auto_fail' => ['error', 'La génération a échoué : voir le message dans la colonne « Dernière génération ».'], 'auto_skip' => ['info', 'Génération non lancée : voir le message dans la colonne « Dernière génération ».'],
             'auto_dir' => ['warning', 'Dossier refusé : l’ancien réglage est conservé.']];
         echo '<div id="tngbook-auto" style="margin-top:28px"><h2>' . esc_html(tngs_t('Génération automatique')) . ' <span style="background:#dba617;color:#1d2327;font-size:11px;padding:2px 7px;border-radius:9px;vertical-align:middle">' . esc_html(tngs_t('Bêta')) . '</span></h2>';
@@ -350,9 +388,9 @@ class TNGBook_Auto {
             if ($m === 'auto_dir' && ($why = get_transient('tngbook_auto_why'))) echo ' ' . esc_html($why);
             echo '</p></div>';
         }
-        echo '<p class="description">' . esc_html(tngs_t('Génère automatiquement le livre de chaque profil choisi, à intervalle régulier, dans un dossier du serveur (les anciens fichiers sont supprimés au-delà du nombre conservé).')) . '</p>';
+        echo '<p class="description">' . esc_html(tngs_t('Génère automatiquement le livre des profils pour lesquels la génération automatique est activée, à intervalle régulier, dans un dossier du serveur (les anciens fichiers sont supprimés au-delà du nombre conservé).')) . '</p>';
         if (!$profiles) {
-            echo '<p>' . esc_html(tngs_t('Enregistrez d’abord un profil de livre (ci-dessus) : la génération automatique se règle profil par profil.')) . '</p></div>';
+            echo '<p>' . esc_html(tngs_t('Enregistrez d’abord un profil de livre (ci-dessus) : la génération automatique se règle dans chaque profil.')) . '</p></div>';
             return;
         }
         if (defined('DISABLE_WP_CRON') && DISABLE_WP_CRON) {
@@ -363,24 +401,16 @@ class TNGBook_Auto {
 
         echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '">';
         echo '<input type="hidden" name="_tngauto" value="' . esc_attr(wp_create_nonce('tngbook_auto')) . '">';
-        echo '<table class="widefat striped" style="max-width:1100px"><thead><tr><th>' . esc_html(tngs_t('Profil')) . '</th><th>' . esc_html(tngs_t('Actif')) . '</th><th>' . esc_html(tngs_t('Fréquence')) . '</th><th>' . esc_html(tngs_t('Jour')) . '</th><th>' . esc_html(tngs_t('Heure')) . '</th><th>' . esc_html(tngs_t('Dernière génération')) . '</th><th></th></tr></thead><tbody>';
+        echo '<h3>' . esc_html(tngs_t('Vue d’ensemble des profils')) . '</h3><p class="description">' . esc_html(tngs_t('La planification se règle dans chaque profil : chargez le profil, modifiez « Génération automatique de ce profil », puis « Mettre à jour le profil actif ».')) . '</p>';
+        echo '<table class="widefat striped" style="max-width:1100px"><thead><tr><th>' . esc_html(tngs_t('Profil')) . '</th><th>' . esc_html(tngs_t('Planification')) . '</th><th>' . esc_html(tngs_t('Dernière génération')) . '</th><th></th></tr></thead><tbody>';
         ksort($profiles, SORT_NATURAL | SORT_FLAG_CASE);
-        $days = [1 => 'Lundi', 2 => 'Mardi', 3 => 'Mercredi', 4 => 'Jeudi', 5 => 'Vendredi', 6 => 'Samedi', 0 => 'Dimanche'];
-        $i = 0;
         foreach ($profiles as $name => $prof) {
             $j = array_merge(self::job_defaults(), $jobs[$name] ?? []);
-            $k = 'tngbook_auto[jobs][' . $i . ']';
-            echo '<tr data-tngjob><td><strong>' . esc_html($name) . '</strong><input type="hidden" name="' . esc_attr($k) . '[name]" value="' . esc_attr($name) . '"><br><span class="description">' . esc_html(strtoupper((string) ($prof['format'] ?? 'html'))) . '</span>';
+            echo '<tr><td><strong>' . esc_html($name) . '</strong><br><span class="description">' . esc_html(strtoupper((string) ($prof['format'] ?? 'html'))) . '</span>';
             if (($prof['format'] ?? '') === 'pdf' && !TNGBook::mpdf_available()) echo '<br><span style="color:#b32d2e">' . esc_html(tngs_t('PDF direct indisponible (mPDF absent) : la génération échouera.')) . '</span>';
-            echo '</td><td><input type="checkbox" name="' . esc_attr($k) . '[on]" value="1"' . checked(!empty($j['on']), true, false) . '></td>';
-            echo '<td><select name="' . esc_attr($k) . '[freq]" class="tngauto-freq">';
-            foreach (['daily' => 'Chaque jour', 'weekly' => 'Chaque semaine', 'monthly' => 'Chaque mois'] as $v => $l) echo '<option value="' . esc_attr($v) . '"' . selected($j['freq'], $v, false) . '>' . esc_html(tngs_t($l)) . '</option>';
-            echo '</select></td><td><select name="' . esc_attr($k) . '[dow]" class="tngauto-dow">';
-            foreach ($days as $v => $l) echo '<option value="' . (int) $v . '"' . selected((int) $j['dow'], $v, false) . '>' . esc_html(tngs_t($l)) . '</option>';
-            echo '</select><input type="number" min="1" max="28" name="' . esc_attr($k) . '[dom]" value="' . (int) $j['dom'] . '" class="tngauto-dom small-text" title="' . esc_attr(tngs_t('Jour du mois (1 à 28)')) . '"></td>';
-            echo '<td><select name="' . esc_attr($k) . '[hour]">';
-            for ($h = 0; $h < 24; $h++) echo '<option value="' . (int) $h . '"' . selected((int) $j['hour'], $h, false) . '>' . sprintf('%02d h', $h) . '</option>';
-            echo '</select></td><td>';
+            echo '</td><td>' . (!empty($j['on']) ? '<span style="color:#1a7f37">●</span> ' : '<span style="color:#8c8f94">●</span> ') . esc_html(self::describe($j));
+            if (!empty($j['on']) && $j['next']) echo '<br><span class="description">' . esc_html(tngs_t('Prochaine :')) . ' ' . esc_html(wp_date('d/m/Y H:i', (int) $j['next'])) . '</span>';
+            echo '</td><td>';
             if ($j['last']) {
                 $col = $j['status'] === 'ok' ? '#1a7f37' : ($j['status'] === 'fail' ? '#b32d2e' : '#6b6b6b');
                 echo '<span style="color:' . esc_attr($col) . '">●</span> ' . esc_html(wp_date('d/m/Y H:i', (int) $j['last'])) . ' — ' . esc_html($j['msg']);
@@ -392,12 +422,11 @@ class TNGBook_Auto {
                 $url = wp_nonce_url(add_query_arg(['action' => 'tngbook_auto_dl', 'f' => $files[0]], admin_url('admin-post.php')), 'tngbook_auto', '_tngauto');
                 echo '<br><a href="' . esc_url($url) . '">' . esc_html($files[0]) . '</a>' . ($j['size'] && $files[0] === $j['file'] ? ' (' . esc_html(size_format((int) $j['size'])) . ')' : '') . ' <span class="description">· ' . (int) count($files) . ' ' . esc_html(tngs_t('fichier(s) conservé(s)')) . '</span>';
             }
-            if (!empty($j['on']) && $j['next']) echo '<br><span class="description">' . esc_html(tngs_t('Prochaine :')) . ' ' . esc_html(wp_date('d/m/Y H:i', (int) $j['next'])) . '</span>';
             echo '</td><td><button type="submit" class="button" name="now" value="' . esc_attr($name) . '" formaction="' . esc_url(admin_url('admin-post.php?action=tngbook_auto_now')) . '">' . esc_html(tngs_t('Générer maintenant')) . '</button></td></tr>';
-            $i++;
         }
         echo '</tbody></table>';
 
+        echo '<h3>' . esc_html(tngs_t('Réglages communs')) . '</h3>';
         echo '<table class="form-table" style="max-width:1100px">';
         echo '<tr><th scope="row">' . esc_html(tngs_t('Dossier de destination')) . '</th><td><input type="text" class="large-text code" name="tngbook_auto[settings][dir]" value="' . esc_attr($s['dir']) . '" placeholder="' . esc_attr(self::default_dir()) . '">'
             . '<p class="description">' . esc_html(tngs_t('Chemin absolu sur le serveur. Vide = dossier protégé dans les téléversements de WordPress (nom aléatoire). Idéalement, choisissez un dossier situé hors du site web. Seuls les fichiers créés par le plugin peuvent être supprimés.')) . '</p></td></tr>';
@@ -408,7 +437,6 @@ class TNGBook_Auto {
         foreach (['fail' => 'En cas d’échec seulement', 'always' => 'À chaque génération', 'never' => 'Jamais'] as $v => $l) echo '<option value="' . esc_attr($v) . '"' . selected($s['mail_on'], $v, false) . '>' . esc_html(tngs_t($l)) . '</option>';
         echo '</select></td></tr></table>';
         echo '<p class="submit"><button type="submit" class="button button-primary" name="action" value="tngbook_auto_save">' . esc_html(tngs_t('Enregistrer la génération automatique')) . '</button></p></form>';
-        echo '<script>(function(){document.querySelectorAll("[data-tngjob]").forEach(function(r){var f=r.querySelector(".tngauto-freq"),w=r.querySelector(".tngauto-dow"),d=r.querySelector(".tngauto-dom");function u(){w.style.display=f.value==="weekly"?"":"none";d.style.display=f.value==="monthly"?"":"none";}f.addEventListener("change",u);u();});})();</script>';
         echo '</div>';
     }
 }

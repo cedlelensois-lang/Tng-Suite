@@ -80,6 +80,9 @@ Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding`
 
 == Changelog ==
 
+= 2.1.0-beta.3 =
+* Génération automatique : la planification (activer, fréquence, jour, heure) se règle désormais dans chaque profil, sur l'écran du profil chargé, et s'enregistre avec « Enregistrer comme profil » / « Mettre à jour le profil actif ». Le tableau en bas de page devient une vue d'ensemble (planification, dernière génération, fichier, « Générer maintenant ») ; le dossier, le nombre de fichiers conservés et l'e-mail restent des réglages communs.
+
 = 2.1.0-beta.2 =
 * PDF direct intégré : le zip publié sur GitHub (Releases) embarque désormais mPDF (polices DejaVu uniquement, environ quelques Mo) : plus aucune installation à faire pour obtenir le PDF direct, ni pour la génération automatique au format PDF. La publication contrôle automatiquement qu'un PDF valide (accents, gras, italique, alphabets grec et cyrillique) est produit avant d'être mise en ligne.
 * Installation depuis le code source : composer install --no-dev dans modules/book (fichier composer.json fourni).

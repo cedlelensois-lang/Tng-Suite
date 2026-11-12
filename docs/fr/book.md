@@ -32,13 +32,12 @@ Génère un livre complet (ascendance, descendance, index, cartes, statistiques)
 
 ## Génération automatique (bêta)
 
-Sous les profils, la section **Génération automatique** permet de produire le livre d’un profil sans rien faire, chaque jour, chaque semaine ou chaque mois.
+Chaque profil peut être généré automatiquement, chaque jour, chaque semaine ou chaque mois, sans rien faire.
 
-1. Enregistrez un profil de livre (format PDF, Word, OpenDocument ou HTML : celui du profil est utilisé).
-2. Dans la section, cochez **Actif** sur la ligne du profil, puis choisissez la fréquence, le jour et l’heure.
-3. Indiquez le **dossier de destination** (chemin absolu sur le serveur). Laissé vide, le plugin utilise un dossier protégé, au nom aléatoire, dans les téléversements de WordPress. Pour synchroniser avec OneDrive, Dropbox, etc., choisissez un dossier que votre outil de synchronisation surveille.
-4. Réglez le nombre de fichiers conservés par profil (les plus anciens sont supprimés ; seuls les fichiers créés par le plugin sont concernés), l’option **Seulement si les données ont changé** et l’e-mail de notification.
-5. **Enregistrer**, puis **Générer maintenant** pour tester.
+1. Chargez (ou créez) un profil de livre. Son format (PDF, Word, OpenDocument ou HTML) est celui utilisé.
+2. Dans la section **Génération automatique de ce profil** du formulaire, cochez **Générer automatiquement**, puis choisissez la fréquence, le jour et l’heure.
+3. Cliquez sur **Mettre à jour le profil actif** (ou **Enregistrer comme profil**) : la planification est enregistrée avec le profil.
+4. Tout en bas de la page, la section **Génération automatique** montre l’ensemble des profils (planification, dernière génération, dernier fichier, bouton **Générer maintenant** pour tester) et regroupe les réglages communs : **dossier de destination** (chemin absolu sur le serveur ; vide = dossier protégé, au nom aléatoire, dans les téléversements de WordPress ; pour synchroniser avec OneDrive, Dropbox, etc., choisissez un dossier que votre outil de synchronisation surveille), nombre de fichiers conservés par profil (les plus anciens sont supprimés ; seuls les fichiers créés par le plugin sont concernés), option **Seulement si les données ont changé** et e-mail de notification.
 
 Remarques :
 
