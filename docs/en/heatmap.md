@@ -23,6 +23,7 @@ Heat map of birth, marriage, death… places in the tree.
 
 ## Notes
 
+- Base map: 11 choices, all free and with no API key (CARTO, OpenStreetMap, OpenStreetMap France, OpenTopoMap, Esri). Positron and Esri Light Gray are the most understated for reading the heatmap colours; Voyager and OpenStreetMap France are the most legible for place names.
 - Places need coordinates in TNG.
 
 ---
