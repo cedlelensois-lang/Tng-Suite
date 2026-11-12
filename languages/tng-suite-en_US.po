@@ -3118,6 +3118,21 @@ msgstr "Settings shared by all profiles. Scheduling (frequency, day, time) is se
 msgid "Le dossier de destination, le nombre de fichiers conservés et l’e-mail sont communs à tous les profils : voir l’onglet « Réglages »."
 msgstr "The destination folder, the number of files kept and the e-mail are shared by all profiles: see the “Settings” tab."
 
+msgid "Mettre à jour le profil actif"
+msgstr "Update active profile"
+
+msgid "3 niveaux"
+msgstr "3 levels"
+
+msgid "Monter"
+msgstr "Move up"
+
+msgid "Descendre"
+msgstr "Move down"
+
+msgid "PDF direct :"
+msgstr "Direct PDF:"
+
 msgctxt "js"
 msgid " Page "
 msgstr " Page "

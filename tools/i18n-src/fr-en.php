@@ -1048,4 +1048,9 @@ return array(
 	'La planification se règle dans chaque profil : cliquez sur « Modifier », réglez « Génération automatique de ce profil », puis « Mettre à jour le profil actif ».' => 'Scheduling is set in each profile: click “Edit”, adjust “Automatic generation of this profile”, then “Update active profile”.',
 	'Réglages communs à tous les profils. La planification (fréquence, jour, heure) se règle dans chaque profil.' => 'Settings shared by all profiles. Scheduling (frequency, day, time) is set in each profile.',
 	'Le dossier de destination, le nombre de fichiers conservés et l’e-mail sont communs à tous les profils : voir l’onglet « Réglages ».' => 'The destination folder, the number of files kept and the e-mail are shared by all profiles: see the “Settings” tab.',
+	'Mettre à jour le profil actif' => 'Update active profile',
+	'3 niveaux' => '3 levels',
+	'Monter' => 'Move up',
+	'Descendre' => 'Move down',
+	'PDF direct :' => 'Direct PDF:',
 );

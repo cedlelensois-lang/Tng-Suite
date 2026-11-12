@@ -3118,6 +3118,21 @@ msgstr ""
 msgid "Le dossier de destination, le nombre de fichiers conservés et l’e-mail sont communs à tous les profils : voir l’onglet « Réglages »."
 msgstr ""
 
+msgid "Mettre à jour le profil actif"
+msgstr ""
+
+msgid "3 niveaux"
+msgstr ""
+
+msgid "Monter"
+msgstr ""
+
+msgid "Descendre"
+msgstr ""
+
+msgid "PDF direct :"
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""

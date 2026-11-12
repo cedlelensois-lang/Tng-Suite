@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.0.1
+Stable tag: 2.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,29 +80,12 @@ Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding`
 
 == Changelog ==
 
-= 2.1.0-beta.7 =
-* PDF direct : le texte des fiches ne touche plus la photo (espace de 6 mm entre les deux).
-
-= 2.1.0-beta.6 =
-* PDF direct : mise en page des fiches corrigée. Le texte de la fiche passe maintenant à côté de la photo (au lieu de commencer sous la photo en laissant un grand vide) ; la photo est placée dans un bloc flottant et les fiches peuvent se couper entre deux pages, ce que mPDF exige pour ne pas superposer les textes.
-
-= 2.1.0-beta.5 =
-* Livre : la page d'administration est organisée en trois onglets, comme l'éventail : « Générer un livre », « Réglages » et « Vue d'ensemble des profils ». Le tableau récapitulatif de la génération automatique passe dans la vue d'ensemble (avec un bouton « Modifier » par profil) ; les réglages communs (dossier, fichiers conservés, e-mail), les photos, le formulaire public et le statut du PDF direct passent dans « Réglages ».
-* Livre : quand des profils existent, « Générer un livre » n'affiche d'abord que le choix du profil ; le formulaire apparaît en chargeant un profil ou avec « Nouveau livre ». Sans profil, le formulaire complet reste affiché.
-
-= 2.1.0-beta.4 =
-* Correction PDF direct : le PDF produit par mPDF était inutilisable (milliers de pages blanches : la règle d'impression @page du navigateur n'est pas comprise par mPDF) et plantait (« erreur critique ») dès que le livre dépassait 1 Mo de HTML (limite pcre.backtrack_limit de PHP). Le livre est maintenant envoyé à mPDF par morceaux, sans règle @page, et une éventuelle erreur de création du PDF s'affiche au lieu d'une erreur critique.
-
-= 2.1.0-beta.3 =
-* Génération automatique : la planification (activer, fréquence, jour, heure) se règle désormais dans chaque profil, sur l'écran du profil chargé, et s'enregistre avec « Enregistrer comme profil » / « Mettre à jour le profil actif ». Le tableau en bas de page devient une vue d'ensemble (planification, dernière génération, fichier, « Générer maintenant ») ; le dossier, le nombre de fichiers conservés et l'e-mail restent des réglages communs.
-
-= 2.1.0-beta.2 =
-* PDF direct intégré : le zip publié sur GitHub (Releases) embarque désormais mPDF (polices DejaVu uniquement, environ quelques Mo) : plus aucune installation à faire pour obtenir le PDF direct, ni pour la génération automatique au format PDF. La publication contrôle automatiquement qu'un PDF valide (accents, gras, italique, alphabets grec et cyrillique) est produit avant d'être mise en ligne.
-* Installation depuis le code source : composer install --no-dev dans modules/book (fichier composer.json fourni).
-
-= 2.1.0-beta.1 =
-* BÊTA — Livre : génération automatique par profil. Pour chaque profil enregistré : fréquence (chaque jour, semaine ou mois), jour et heure ; le livre (PDF, Word, OpenDocument ou HTML, selon le profil) est écrit dans un dossier du serveur, avec rotation (nombre de fichiers conservés réglable), option « seulement si les données ont changé » et e-mail de succès ou d'échec. Bouton « Générer maintenant », téléchargement des fichiers depuis l'administration. Cette pré-version n'est pas proposée en mise à jour automatique : installation manuelle pour la tester.
-* Refonte interne : la construction du livre est séparée de son téléchargement (TNGBook::build).
+= 2.1.0 =
+* Livre : génération automatique par profil (fonction encore jeune, signalée « Bêta » dans l'écran). Pour chaque profil : fréquence (chaque jour, semaine ou mois), jour et heure ; le livre (PDF, Word, OpenDocument ou HTML, selon le profil) est écrit dans un dossier du serveur (protégé par défaut, ou le dossier de votre choix, par exemple un dossier synchronisé avec OneDrive), avec rotation des anciens fichiers, option « seulement si les données ont changé » et notification par e-mail.
+* Livre : la page d'administration est organisée en trois onglets, comme l'éventail : « Générer un livre », « Réglages » et « Vue d'ensemble des profils ». Quand des profils existent, « Générer un livre » n'affiche d'abord que le choix du profil (formulaire avec « Nouveau livre » ou en chargeant un profil).
+* PDF direct intégré : le zip publié sur GitHub (Releases) embarque mPDF (polices DejaVu uniquement) : plus aucune installation à faire. Installation depuis le code source : composer install --no-dev dans modules/book.
+* PDF direct : le PDF était inutilisable (milliers de pages blanches) et plantait sur les gros livres ; corrigé. Le texte des fiches passe maintenant à côté de la photo, avec un espace entre les deux ; les fiches peuvent se couper entre deux pages.
+* Traductions anglaises complétées (écrans du livre). Aucun changement de réglages ni de shortcodes : la mise à jour est directe.
 
 = 2.0.1 =
 * Heatmap : retrait des fonds CARTO (Positron, Voyager, Dark Matter), qui demandent une inscription ; 8 fonds restent, tous sans clé d'API ni inscription. Le fond par défaut devient « Esri Gris clair » (les sites qui utilisaient CARTO basculent dessus automatiquement).
