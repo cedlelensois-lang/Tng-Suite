@@ -80,6 +80,10 @@ Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding`
 
 == Changelog ==
 
+= 2.1.0-beta.5 =
+* Livre : la page d'administration est organisée en trois onglets, comme l'éventail : « Générer un livre », « Réglages » et « Vue d'ensemble des profils ». Le tableau récapitulatif de la génération automatique passe dans la vue d'ensemble (avec un bouton « Modifier » par profil) ; les réglages communs (dossier, fichiers conservés, e-mail), les photos, le formulaire public et le statut du PDF direct passent dans « Réglages ».
+* Livre : quand des profils existent, « Générer un livre » n'affiche d'abord que le choix du profil ; le formulaire apparaît en chargeant un profil ou avec « Nouveau livre ». Sans profil, le formulaire complet reste affiché.
+
 = 2.1.0-beta.4 =
 * Correction PDF direct : le PDF produit par mPDF était inutilisable (milliers de pages blanches : la règle d'impression @page du navigateur n'est pas comprise par mPDF) et plantait (« erreur critique ») dès que le livre dépassait 1 Mo de HTML (limite pcre.backtrack_limit de PHP). Le livre est maintenant envoyé à mPDF par morceaux, sans règle @page, et une éventuelle erreur de création du PDF s'affiche au lieu d'une erreur critique.
 

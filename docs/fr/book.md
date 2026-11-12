@@ -14,6 +14,8 @@ Génère un livre complet (ascendance, descendance, index, cartes, statistiques)
 
 ## Utilisation
 
+La page comporte trois onglets : **Générer un livre**, **Réglages** et **Vue d’ensemble des profils**. Quand des profils existent, l’onglet « Générer un livre » n’affiche d’abord que le choix du profil : chargez un profil ou cliquez sur **Nouveau livre** pour afficher le formulaire (sans profil, il s’affiche directement). Les photos, le formulaire public et les réglages de la génération automatique sont dans l’onglet **Réglages**.
+
 1. Saisissez l’identifiant de la personne, l’arbre et le nombre de générations.
 2. Cochez le contenu voulu, ordonnez les parties, choisissez couleurs et modèle de mise en page.
 3. Choisissez le format puis générez. Un profil peut être enregistré et rechargé.
@@ -37,7 +39,7 @@ Chaque profil peut être généré automatiquement, chaque jour, chaque semaine 
 1. Chargez (ou créez) un profil de livre. Son format (PDF, Word, OpenDocument ou HTML) est celui utilisé.
 2. Dans la section **Génération automatique de ce profil** du formulaire, cochez **Générer automatiquement**, puis choisissez la fréquence, le jour et l’heure.
 3. Cliquez sur **Mettre à jour le profil actif** (ou **Enregistrer comme profil**) : la planification est enregistrée avec le profil.
-4. Tout en bas de la page, la section **Génération automatique** montre l’ensemble des profils (planification, dernière génération, dernier fichier, bouton **Générer maintenant** pour tester) et regroupe les réglages communs : **dossier de destination** (chemin absolu sur le serveur ; vide = dossier protégé, au nom aléatoire, dans les téléversements de WordPress ; pour synchroniser avec OneDrive, Dropbox, etc., choisissez un dossier que votre outil de synchronisation surveille), nombre de fichiers conservés par profil (les plus anciens sont supprimés ; seuls les fichiers créés par le plugin sont concernés), option **Seulement si les données ont changé** et e-mail de notification.
+4. L’onglet **Vue d’ensemble des profils** montre l’ensemble des profils (planification, dernière génération, dernier fichier, boutons **Générer maintenant** pour tester et **Modifier** pour charger le profil). L’onglet **Réglages** regroupe les réglages communs : **dossier de destination** (chemin absolu sur le serveur ; vide = dossier protégé, au nom aléatoire, dans les téléversements de WordPress ; pour synchroniser avec OneDrive, Dropbox, etc., choisissez un dossier que votre outil de synchronisation surveille), nombre de fichiers conservés par profil (les plus anciens sont supprimés ; seuls les fichiers créés par le plugin sont concernés), option **Seulement si les données ont changé** et e-mail de notification.
 
 Remarques :
 

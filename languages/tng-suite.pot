@@ -3085,6 +3085,39 @@ msgstr ""
 msgid "La création du PDF a échoué :"
 msgstr ""
 
+msgid "Livre : générer un livre"
+msgstr ""
+
+msgid "Livre : réglages"
+msgstr ""
+
+msgid "Livre : vue d’ensemble des profils"
+msgstr ""
+
+msgid "Nouveau livre"
+msgstr ""
+
+msgid "ou chargez un profil ci-dessus pour afficher ses réglages."
+msgstr ""
+
+msgid "Réglages enregistrés."
+msgstr ""
+
+msgid "Modifier"
+msgstr ""
+
+msgid "Aucun profil pour le moment. Réglez un livre dans l’onglet « Générer un livre », puis enregistrez-le comme profil : la génération automatique se règle dans chaque profil."
+msgstr ""
+
+msgid "La planification se règle dans chaque profil : cliquez sur « Modifier », réglez « Génération automatique de ce profil », puis « Mettre à jour le profil actif »."
+msgstr ""
+
+msgid "Réglages communs à tous les profils. La planification (fréquence, jour, heure) se règle dans chaque profil."
+msgstr ""
+
+msgid "Le dossier de destination, le nombre de fichiers conservés et l’e-mail sont communs à tous les profils : voir l’onglet « Réglages »."
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""

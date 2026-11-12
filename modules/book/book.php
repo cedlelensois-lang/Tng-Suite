@@ -99,6 +99,7 @@ final class TNGBook {
         add_action('admin_post_tngbook_generate', [__CLASS__, 'generate']);
         add_action('admin_post_tngbook_profile_save', [__CLASS__, 'profile_save']);
         add_action('admin_post_tngbook_profile_apply', [__CLASS__, 'profile_apply']);
+        add_action('admin_post_tngbook_settings_save', [__CLASS__, 'settings_save']);
         add_shortcode('tng_book', [__CLASS__, 'shortcode']);
     }
 
@@ -178,7 +179,7 @@ final class TNGBook {
         return ($act !== '' && isset(self::profiles()[$act])) ? $act : '';
     }
 
-    private static function profile_panel() {
+    private static function profile_panel($form_shown = true) {
         $msgs = ['saved' => 'Profil enregistré.', 'loaded' => 'Profil chargé : les paramètres ci-dessous sont ceux du profil.', 'deleted' => 'Profil supprimé.',
             'noname' => 'Donnez un nom au profil (les paramètres ont tout de même été enregistrés).', 'missing' => 'Profil introuvable.', 'full' => 'Nombre maximal de profils atteint (' . self::MAX_PROFILES . ').'];
         $m = isset($_GET['tngbook_msg']) ? sanitize_key(wp_unslash($_GET['tngbook_msg'])) : '';
@@ -187,7 +188,7 @@ final class TNGBook {
         $act = (string) get_option(self::ACTIVE, '');
         if (!isset($all[$act])) $act = '';
         echo '<h2>' . esc_html(tngs_t('Profils de livre enregistrés')) . '</h2>';
-        if ($act !== '') echo '<p>' . esc_html(tngs_t('Profil actif :')) . ' <strong>' . esc_html($act) . '</strong> — ' . esc_html(tngs_t('modifiez les réglages ci-dessous puis utilisez « Mettre à jour le profil » pour l’enregistrer.')) . '</p>';
+        if ($act !== '' && $form_shown) echo '<p>' . esc_html(tngs_t('Profil actif :')) . ' <strong>' . esc_html($act) . '</strong> — ' . esc_html(tngs_t('modifiez les réglages ci-dessous puis utilisez « Mettre à jour le profil » pour l’enregistrer.')) . '</p>';
         if (!$all) {
             echo '<p class="description">' . esc_html(tngs_t('Aucun profil. Réglez le livre ci-dessous, donnez un nom à côté du bouton « Enregistrer comme profil », puis retrouvez ici vos réglages (personne, générations, options, modèle, couleurs, préface…).')) . '</p>';
             return;
@@ -203,6 +204,7 @@ final class TNGBook {
         }
         echo '</select> <button type="submit" class="button" name="op" value="load">' . esc_html(tngs_t('Charger')) . '</button> '
             . '<button type="submit" class="button" name="op" value="delete" onclick="return confirm(\'' . esc_js(tngs_t('Supprimer ce profil ?')) . '\')">' . esc_html(tngs_t('Supprimer')) . '</button></form>';
+        if (!$form_shown) echo '<p><a class="button button-primary" href="' . esc_url(add_query_arg(['page' => 'tngbook', 'new' => 1], admin_url('admin.php'))) . '">' . esc_html(tngs_t('Nouveau livre')) . '</a> <span class="description">' . esc_html(tngs_t('ou chargez un profil ci-dessus pour afficher ses réglages.')) . '</span></p>';
     }
 
     /* ---------- Connexion TNG (lecture seule, fournie par le cœur de TNG Suite) ---------- */
@@ -254,7 +256,9 @@ final class TNGBook {
     /* ---------- Réglages : tout est sauvegardé ensemble ---------- */
 
     public static function menu() {
-        tngs_add_subpage('Livre généalogique TNG', 'Livre généalogique', 'tngbook', [__CLASS__, 'page']);
+        tngs_add_subpage('Livre généalogique TNG', 'Livre : générer un livre', 'tngbook', [__CLASS__, 'page']);
+        tngs_add_subpage('Livre : réglages', 'Livre : réglages', 'tngbook-settings', [__CLASS__, 'page_settings']);
+        tngs_add_subpage('Livre : vue d’ensemble des profils', 'Livre : vue d’ensemble des profils', 'tngbook-overview', [__CLASS__, 'page_overview']);
     }
 
     public static function register() {
@@ -305,13 +309,14 @@ final class TNGBook {
         $in = (array) $in;
         $old = self::opts();
         $out = self::sanitize_gen($in, $old);
+        // Photos et formulaire public se règlent dans l'onglet « Réglages » : absents du formulaire du livre, ils gardent leur valeur.
         foreach (['tng_path', 'photo_folder'] as $k) {
-            $out[$k] = sanitize_text_field($in[$k] ?? '');
+            $out[$k] = array_key_exists($k, $in) ? sanitize_text_field($in[$k]) : (string) ($old[$k] ?? '');
         }
         $out['photo_folder'] = $out['photo_folder'] !== '' ? $out['photo_folder'] : 'photos';
-        $out['max_people'] = max(0, (int) ($in['max_people'] ?? self::MAX_PEOPLE));   // réglage administrateur (jamais modifiable par les visiteurs)
-        $out['front_access'] = ($in['front_access'] ?? '') === 'logged_in' ? 'logged_in' : 'none';
-        $out['front_living'] = ($in['front_living'] ?? '') === 'exclude' ? 'exclude' : 'anonymize';
+        $out['max_people'] = max(0, (int) ($in['max_people'] ?? ($old['max_people'] ?? self::MAX_PEOPLE)));   // réglage administrateur (jamais modifiable par les visiteurs)
+        $out['front_access'] = array_key_exists('front_access', $in) ? (($in['front_access'] ?? '') === 'logged_in' ? 'logged_in' : 'none') : (string) ($old['front_access'] ?? 'none');
+        $out['front_living'] = array_key_exists('front_living', $in) ? (($in['front_living'] ?? '') === 'exclude' ? 'exclude' : 'anonymize') : (string) ($old['front_living'] ?? 'anonymize');
         // Anciennes clés de connexion (ex-plugin autonome) : on ne les conserve pas.
         foreach (['db_host', 'db_name', 'db_user', 'db_pass', 'prefix'] as $k) unset($out[$k]);
         return $out;
@@ -319,18 +324,18 @@ final class TNGBook {
 
     /* ---------- Composants de formulaire ---------- */
 
-    private static function field($label, $key, $o, $type = 'text', $desc = '', $attrs = '') {
+    private static function field($label, $key, $o, $type = 'text', $desc = '', $attrs = '', $name = null) {
         printf(
             '<tr><th scope="row"><label for="%1$s">%2$s</label></th><td><input id="%1$s" name="%3$s" type="%4$s" value="%5$s" class="regular-text" %6$s>%7$s</td></tr>',
-            esc_attr('tngbook_' . $key), esc_html($label), esc_attr(self::OPT . '[' . $key . ']'), esc_attr($type),
+            esc_attr('tngbook_' . $key), esc_html($label), esc_attr(($name ?: self::OPT) . '[' . $key . ']'), esc_attr($type),
             esc_attr($type === 'password' ? '' : $o[$key]), $attrs,
             $desc ? '<p class="description">' . wp_kses_post($desc) . '</p>' : ''
         );
     }
 
-    private static function select($label, $key, array $choices, $current, $desc = '') {
+    private static function select($label, $key, array $choices, $current, $desc = '', $name = null) {
         $id = 'tngbook_' . $key;
-        echo '<tr><th scope="row"><label for="' . esc_attr($id) . '">' . esc_html($label) . '</label></th><td><select id="' . esc_attr($id) . '" name="' . esc_attr(self::OPT . '[' . $key . ']') . '">';
+        echo '<tr><th scope="row"><label for="' . esc_attr($id) . '">' . esc_html($label) . '</label></th><td><select id="' . esc_attr($id) . '" name="' . esc_attr(($name ?: self::OPT) . '[' . $key . ']') . '">';
         foreach ($choices as $v => $l) {
             echo '<option value="' . esc_attr($v) . '"' . selected((string) $current, (string) $v, false) . '>' . esc_html($l) . '</option>';
         }
@@ -468,21 +473,21 @@ final class TNGBook {
 
     /* ---------- Page d'administration (un seul formulaire) ---------- */
 
+    /** Onglet « Générer un livre ». Avec des profils enregistrés, la page n'affiche d'abord que le choix du profil (ou « Nouveau livre »). */
     public static function page() {
         if (!current_user_can('manage_options')) return;
         $o = self::opts();
-        $db = self::db();
-        if (is_wp_error($db)) {
-            $status = array(false, $db->get_error_message());
-        } else {
-            $cnt    = $db->get_var('SELECT COUNT(*) FROM `' . esc_sql($o['prefix']) . 'people`');
-            $status = $cnt === null
-                ? array(false, tngs_t('Table') . ' ' . $o['prefix'] . 'people ' . tngs_t('introuvable (préfixe ou base à vérifier).'))
-                : array(true, tngs_t('Connexion TNG OK :') . ' ' . (int) $cnt . ' ' . tngs_t('personnes.'));
-        }
-        tngs_admin_header('Livre généalogique', array('module' => 'book', 'status' => $status));
+        tngs_admin_header('Livre généalogique', array('module' => 'book'));
 
-        self::profile_panel();
+        $m = isset($_GET['tngbook_msg']) ? sanitize_key(wp_unslash($_GET['tngbook_msg'])) : '';   // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $new = isset($_GET['new']);                                                              // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $show = !self::profiles() || $new || isset($_GET['settings-updated']) || in_array($m, ['loaded', 'saved', 'noname', 'full'], true);   // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $act = $new ? '' : self::active_name();
+        self::profile_panel($show);
+        if (!$show) {
+            echo '</div>';
+            return;
+        }
         echo '<form method="post" action="options.php">';
         settings_fields('tngbook_group');
         wp_nonce_field('tngbook_generate', 'tngbook_nonce');
@@ -491,8 +496,28 @@ final class TNGBook {
         self::gen_fields($o, true);
         echo '</table>';
 
-        echo '<h2>Photos</h2><p class="description">La connexion à la base, le préfixe des tables et l\'URL de TNG se règlent dans <strong>TNG Suite &gt; Général</strong>.</p><table class="form-table">';
+        TNGBook_Auto::profile_fields($act);
 
+        echo '<p class="submit"><button type="submit" class="button button-secondary">Enregistrer les paramètres</button> '
+            . '<span style="margin-left:12px"><input type="text" name="tngbook_profile_name" maxlength="60" value="' . esc_attr($act) . '" placeholder="' . esc_attr(tngs_t('Nom du profil')) . '"> '
+            . '<button type="submit" class="button" name="action" value="tngbook_profile_save" formaction="' . esc_url(admin_url('admin-post.php')) . '">' . esc_html(tngs_t('Enregistrer comme profil')) . '</button>'
+            . ($act !== '' ? ' <button type="submit" class="button button-primary" name="action" value="tngbook_profile_save" formaction="' . esc_url(admin_url('admin-post.php')) . '" onclick="this.form.insertAdjacentHTML(\'beforeend\',\'<input type=hidden name=tngbook_profile_update value=1>\')">' . esc_html(tngs_t('Mettre à jour le profil actif')) . '</button>' : '')
+            . '</span> '
+            . '<button type="submit" class="button button-primary" name="action" value="tngbook_generate" formaction="' . esc_url(admin_url('admin-post.php')) . '" formtarget="_blank">Enregistrer et générer le livre</button></p>';
+        echo '</form></div>';
+    }
+
+    /** Onglet « Réglages » : photos, formulaire public, PDF direct et réglages communs de la génération automatique. */
+    public static function page_settings() {
+        if (!current_user_can('manage_options')) return;
+        $o = self::opts();
+        tngs_admin_header('Livre : réglages', array('module' => 'book'));
+        $m = isset($_GET['tngbook_msg']) ? sanitize_key(wp_unslash($_GET['tngbook_msg'])) : '';   // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        if ($m === 'cfg_saved') echo '<div class="notice notice-success is-dismissible"><p>' . esc_html(tngs_t('Réglages enregistrés.')) . '</p></div>';
+
+        echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '"><input type="hidden" name="action" value="tngbook_settings_save">';
+        wp_nonce_field('tngbook_settings', 'tngbook_snonce');
+        echo '<h2>Photos</h2><p class="description">La connexion à la base, le préfixe des tables et l\'URL de TNG se règlent dans <strong>TNG Suite &gt; Général</strong>.</p><table class="form-table">';
         $res = self::resolve_tng_path($o['tng_path']);
         $dr = isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : '?';
         if ($o['tng_path'] === '' && tngs_site_url() === '') {
@@ -503,31 +528,47 @@ final class TNGBook {
         } else {
             $st = '<br><strong style="color:#b32d2e">' . esc_html(tngs_t('Introuvable par PHP. Racine web :')) . ' ' . esc_html($dr) . ' — WordPress : ' . esc_html(ABSPATH) . '</strong>';
         }
-        self::field('Dossier de TNG sur le disque', 'tng_path', $o, 'text', 'Facultatif. Vide = déduit de l’<strong>URL de TNG</strong> (TNG Suite > Général). Vous pouvez aussi indiquer un chemin absolu (<code>/home/…/tng</code>). Si le dossier est introuvable, des silhouettes génériques sont utilisées.' . $st);
-        self::field('Dossier des photos', 'photo_folder', $o, 'text', 'Relatif au dossier de TNG (<code>photos</code> par défaut).');
+        self::field('Dossier de TNG sur le disque', 'tng_path', $o, 'text', 'Facultatif. Vide = déduit de l’<strong>URL de TNG</strong> (TNG Suite > Général). Vous pouvez aussi indiquer un chemin absolu (<code>/home/…/tng</code>). Si le dossier est introuvable, des silhouettes génériques sont utilisées.' . $st, '', 'tngbook_cfg');
+        self::field('Dossier des photos', 'photo_folder', $o, 'text', 'Relatif au dossier de TNG (<code>photos</code> par défaut).', '', 'tngbook_cfg');
         echo '</table>';
 
         echo '<h2>Formulaire public <code>[tng_book]</code></h2><table class="form-table">';
-        self::select('Accès', 'front_access', ['none' => 'Désactivé', 'logged_in' => 'Utilisateurs WordPress connectés'], $o['front_access']);
-        self::select('Vivants/privés pour le formulaire public', 'front_living', ['anonymize' => 'Anonymiser', 'exclude' => 'Exclure'], $o['front_living'], 'Les visiteurs ne peuvent jamais inclure les personnes vivantes en entier.');
+        self::select('Accès', 'front_access', ['none' => 'Désactivé', 'logged_in' => 'Utilisateurs WordPress connectés'], $o['front_access'], '', 'tngbook_cfg');
+        self::select('Vivants/privés pour le formulaire public', 'front_living', ['anonymize' => 'Anonymiser', 'exclude' => 'Exclure'], $o['front_living'], 'Les visiteurs ne peuvent jamais inclure les personnes vivantes en entier.', 'tngbook_cfg');
         echo '</table>';
-
-        TNGBook_Auto::profile_fields(self::active_name());
-
-        echo '<p class="submit"><button type="submit" class="button button-secondary">Enregistrer les paramètres</button> '
-            . '<span style="margin-left:12px"><input type="text" name="tngbook_profile_name" maxlength="60" value="' . esc_attr(self::active_name()) . '" placeholder="' . esc_attr(tngs_t('Nom du profil')) . '"> '
-            . '<button type="submit" class="button" name="action" value="tngbook_profile_save" formaction="' . esc_url(admin_url('admin-post.php')) . '">' . esc_html(tngs_t('Enregistrer comme profil')) . '</button>'
-            . (self::active_name() !== '' ? ' <button type="submit" class="button button-primary" name="action" value="tngbook_profile_save" formaction="' . esc_url(admin_url('admin-post.php')) . '" onclick="this.form.insertAdjacentHTML(\'beforeend\',\'<input type=hidden name=tngbook_profile_update value=1>\')">' . esc_html(tngs_t('Mettre à jour le profil')) . '</button>' : '')
-            . '</span> '
-            . '<button type="submit" class="button button-primary" name="action" value="tngbook_generate" formaction="' . esc_url(admin_url('admin-post.php')) . '" formtarget="_blank">Enregistrer et générer le livre</button></p>';
-        echo '</form>';
+        echo '<p class="submit"><button type="submit" class="button button-primary">' . esc_html(tngs_t('Enregistrer les réglages')) . '</button></p></form>';
 
         echo '<p><strong>PDF direct :</strong> ' . (self::mpdf_available()
             ? 'disponible (mPDF détecté).'
             : 'non disponible. Le livre s’ouvre en page imprimable (Imprimer → Enregistrer en PDF). mPDF est fourni avec le zip des Releases GitHub (réinstallez le plugin depuis ce zip). Installé depuis le code source, lancez dans le dossier modules/book du plugin : <code>composer install --no-dev</code>.')
             . '</p>';
-        TNGBook_Auto::panel();
+        TNGBook_Auto::settings_form();
         echo '</div>';
+    }
+
+    /** Onglet « Vue d'ensemble des profils » : planification et dernière génération de chaque profil. */
+    public static function page_overview() {
+        if (!current_user_can('manage_options')) return;
+        tngs_admin_header('Livre : vue d’ensemble des profils', array('module' => 'book'));
+        TNGBook_Auto::overview();
+        echo '</div>';
+    }
+
+    /** Enregistre les réglages de l'onglet « Réglages » (sans toucher aux paramètres du livre). */
+    public static function settings_save() {
+        if (!current_user_can('manage_options')) wp_die(esc_html(tngs_t('Accès refusé.')), 403);
+        if (!isset($_POST['tngbook_snonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['tngbook_snonce'])), 'tngbook_settings')) wp_die(esc_html(tngs_t('Jeton de sécurité invalide.')), 403);
+        $in = (isset($_POST['tngbook_cfg']) && is_array($_POST['tngbook_cfg'])) ? wp_unslash($_POST['tngbook_cfg']) : [];
+        $cur = wp_parse_args(get_option(self::OPT, []), self::defaults());
+        $cur['tng_path'] = sanitize_text_field($in['tng_path'] ?? '');
+        $ph = sanitize_text_field($in['photo_folder'] ?? '');
+        $cur['photo_folder'] = $ph !== '' ? $ph : 'photos';
+        $cur['front_access'] = ($in['front_access'] ?? '') === 'logged_in' ? 'logged_in' : 'none';
+        $cur['front_living'] = ($in['front_living'] ?? '') === 'exclude' ? 'exclude' : 'anonymize';
+        foreach (['db_host', 'db_name', 'db_user', 'db_pass', 'prefix'] as $k) unset($cur[$k]);
+        update_option(self::OPT, $cur);
+        wp_safe_redirect(add_query_arg(['page' => 'tngbook', 'tngbook_msg' => 'cfg_saved'], admin_url('admin.php')) . '#tngbook-settings');
+        exit;
     }
 
     /* ---------- Formulaire public ---------- */

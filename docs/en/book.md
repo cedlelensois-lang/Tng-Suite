@@ -14,6 +14,8 @@ Generates a complete book (ancestry, descendants, indexes, maps, statistics) as 
 
 ## How to use
 
+The page has three tabs: **Generate a book**, **Settings** and **Overview of profiles**. When profiles exist, the “Generate a book” tab first shows only the profile picker: load a profile or click **New book** to display the form (with no profile, the form is shown directly). Photos, the public form and the automatic generation settings are in the **Settings** tab.
+
 1. Enter the person ID, the tree and the number of generations.
 2. Tick the wanted content, order the parts, pick colours and a layout template.
 3. Choose the format and generate. A profile can be saved and reloaded.
@@ -37,7 +39,7 @@ Each profile can be generated automatically, every day, week or month, with no a
 1. Load (or create) a book profile. Its format (PDF, Word, OpenDocument or HTML) is the one used.
 2. In the **Automatic generation for this profile** section of the form, tick **Generate automatically**, then choose the frequency, day and time.
 3. Click **Update the active profile** (or **Save as profile**): the schedule is saved with the profile.
-4. At the very bottom of the page, the **Automatic generation** section shows all profiles (schedule, last generation, latest file, **Generate now** button to test) and holds the shared settings: **destination folder** (absolute path on the server; empty = protected, randomly named folder inside WordPress uploads; to sync with OneDrive, Dropbox, etc., choose a folder your sync tool watches), number of files kept per profile (older ones are deleted; only files created by the plugin are affected), the **Only if the data has changed** option and the notification email.
+4. The **Overview of profiles** tab shows all profiles (schedule, last generation, latest file, **Generate now** button to test and **Edit** button to load the profile). The **Settings** tab holds the shared settings: **destination folder** (absolute path on the server; empty = protected, randomly named folder inside WordPress uploads; to sync with OneDrive, Dropbox, etc., choose a folder your sync tool watches), number of files kept per profile (older ones are deleted; only files created by the plugin are affected), the **Only if the data has changed** option and the notification email.
 
 Notes:
 

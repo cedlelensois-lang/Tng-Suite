@@ -264,8 +264,8 @@ class TNGBook_Auto {
         if (!isset($_REQUEST['_tngauto']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_REQUEST['_tngauto'])), $action)) wp_die(esc_html(tngs_t('Jeton de sécurité invalide.')), 403);
     }
 
-    private static function back($msg) {
-        wp_safe_redirect(add_query_arg(['page' => 'tngbook', 'tngbook_msg' => $msg], admin_url('admin.php')) . '#tngbook-auto');
+    private static function back($msg, $page = 'tngbook-settings') {
+        wp_safe_redirect(add_query_arg(['page' => 'tngbook', 'tngbook_msg' => $msg], admin_url('admin.php')) . '#' . $page);
         exit;
     }
 
@@ -343,7 +343,7 @@ class TNGBook_Auto {
         for ($h = 0; $h < 24; $h++) echo '<option value="' . (int) $h . '"' . selected((int) $j['hour'], $h, false) . '>' . sprintf('%02d h', $h) . '</option>';
         echo '</select>';
         if (!empty($j['on']) && $j['next']) echo '<p class="description">' . esc_html(tngs_t('Prochaine génération :')) . ' ' . esc_html(wp_date('d/m/Y H:i', (int) $j['next'])) . '</p>';
-        echo '<p class="description">' . esc_html(tngs_t('Le dossier de destination, le nombre de fichiers conservés et l’e-mail sont communs à tous les profils : voir plus bas, « Génération automatique ».')) . '</p></td></tr></table>';
+        echo '<p class="description">' . esc_html(tngs_t('Le dossier de destination, le nombre de fichiers conservés et l’e-mail sont communs à tous les profils : voir l’onglet « Réglages ».')) . '</p></td></tr></table>';
         echo '<script>(function(){var t=document.querySelector("[data-tngjob]");if(!t)return;var f=t.querySelector(".tngauto-freq"),w=t.querySelector(".tngauto-dow"),d=t.querySelector(".tngauto-dom");function u(){w.style.display=f.value==="weekly"?"":"none";d.style.display=f.value==="monthly"?"":"none";}f.addEventListener("change",u);u();})();</script>';
     }
 
@@ -351,9 +351,9 @@ class TNGBook_Auto {
     public static function now() {
         self::guard('tngbook_auto');
         $name = sanitize_text_field(wp_unslash((string) ($_POST['now'] ?? '')));
-        if ($name === '' || !isset(TNGBook::profiles()[$name])) self::back('missing');
+        if ($name === '' || !isset(TNGBook::profiles()[$name])) self::back('missing', 'tngbook-overview');
         $res = self::run($name, true);
-        self::back('auto_' . $res[0]);
+        self::back('auto_' . $res[0], 'tngbook-overview');
     }
 
     /** Téléchargement d'un livre généré (le dossier peut se trouver hors du site). */
@@ -374,23 +374,32 @@ class TNGBook_Auto {
 
     /* ---------- Page d'administration ---------- */
 
-    public static function panel() {
-        $profiles = TNGBook::profiles();
-        $s = self::settings();
-        $jobs = self::jobs();
-        $m = isset($_GET['tngbook_msg']) ? sanitize_key(wp_unslash($_GET['tngbook_msg'])) : '';   // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+    /** Bandeau de bêta + notes de retour d'action. */
+    private static function notices(array $keys) {
         $notes = ['auto_saved' => ['success', 'Réglages communs de la génération automatique enregistrés.'], 'auto_ok' => ['success', 'Livre généré : voir la colonne « Dernière génération ».'],
             'auto_fail' => ['error', 'La génération a échoué : voir le message dans la colonne « Dernière génération ».'], 'auto_skip' => ['info', 'Génération non lancée : voir le message dans la colonne « Dernière génération ».'],
-            'auto_dir' => ['warning', 'Dossier refusé : l’ancien réglage est conservé.']];
-        echo '<div id="tngbook-auto" style="margin-top:28px"><h2>' . esc_html(tngs_t('Génération automatique')) . ' <span style="background:#dba617;color:#1d2327;font-size:11px;padding:2px 7px;border-radius:9px;vertical-align:middle">' . esc_html(tngs_t('Bêta')) . '</span></h2>';
-        if (isset($notes[$m])) {
+            'auto_dir' => ['warning', 'Dossier refusé : l’ancien réglage est conservé.'], 'missing' => ['warning', 'Profil introuvable.']];
+        $m = isset($_GET['tngbook_msg']) ? sanitize_key(wp_unslash($_GET['tngbook_msg'])) : '';   // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        if (in_array($m, $keys, true) && isset($notes[$m])) {
             echo '<div class="notice notice-' . esc_attr($notes[$m][0]) . ' is-dismissible"><p>' . esc_html(tngs_t($notes[$m][1]));
             if ($m === 'auto_dir' && ($why = get_transient('tngbook_auto_why'))) echo ' ' . esc_html($why);
             echo '</p></div>';
         }
+    }
+
+    private static function beta_badge() {
+        return ' <span style="background:#dba617;color:#1d2327;font-size:11px;padding:2px 7px;border-radius:9px;vertical-align:middle">' . esc_html(tngs_t('Bêta')) . '</span>';
+    }
+
+    /** Onglet « Vue d'ensemble des profils » : tableau en lecture seule (planification, dernière génération, générer maintenant, modifier). */
+    public static function overview() {
+        $profiles = TNGBook::profiles();
+        $jobs = self::jobs();
+        echo '<div id="tngbook-overview"><h2>' . esc_html(tngs_t('Vue d’ensemble des profils')) . self::beta_badge() . '</h2>';
+        self::notices(['auto_ok', 'auto_fail', 'auto_skip', 'missing']);
         echo '<p class="description">' . esc_html(tngs_t('Génère automatiquement le livre des profils pour lesquels la génération automatique est activée, à intervalle régulier, dans un dossier du serveur (les anciens fichiers sont supprimés au-delà du nombre conservé).')) . '</p>';
         if (!$profiles) {
-            echo '<p>' . esc_html(tngs_t('Enregistrez d’abord un profil de livre (ci-dessus) : la génération automatique se règle dans chaque profil.')) . '</p></div>';
+            echo '<p>' . esc_html(tngs_t('Aucun profil pour le moment. Réglez un livre dans l’onglet « Générer un livre », puis enregistrez-le comme profil : la génération automatique se règle dans chaque profil.')) . '</p></div>';
             return;
         }
         if (defined('DISABLE_WP_CRON') && DISABLE_WP_CRON) {
@@ -398,10 +407,11 @@ class TNGBook_Auto {
         } else {
             echo '<p class="description">' . esc_html(tngs_t('Le planificateur de WordPress ne s’exécute que lorsque le site est visité : l’heure choisie est donc approximative. Pour une heure précise, programmez une tâche cron du serveur qui appelle wp-cron.php.')) . '</p>';
         }
+        echo '<p class="description">' . esc_html(tngs_t('La planification se règle dans chaque profil : cliquez sur « Modifier », réglez « Génération automatique de ce profil », puis « Mettre à jour le profil actif ».')) . '</p>';
 
         echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '">';
         echo '<input type="hidden" name="_tngauto" value="' . esc_attr(wp_create_nonce('tngbook_auto')) . '">';
-        echo '<h3>' . esc_html(tngs_t('Vue d’ensemble des profils')) . '</h3><p class="description">' . esc_html(tngs_t('La planification se règle dans chaque profil : chargez le profil, modifiez « Génération automatique de ce profil », puis « Mettre à jour le profil actif ».')) . '</p>';
+        echo '<input type="hidden" name="tngbook_pnonce" value="' . esc_attr(wp_create_nonce('tngbook_profile')) . '">';
         echo '<table class="widefat striped" style="max-width:1100px"><thead><tr><th>' . esc_html(tngs_t('Profil')) . '</th><th>' . esc_html(tngs_t('Planification')) . '</th><th>' . esc_html(tngs_t('Dernière génération')) . '</th><th></th></tr></thead><tbody>';
         ksort($profiles, SORT_NATURAL | SORT_FLAG_CASE);
         foreach ($profiles as $name => $prof) {
@@ -422,11 +432,20 @@ class TNGBook_Auto {
                 $url = wp_nonce_url(add_query_arg(['action' => 'tngbook_auto_dl', 'f' => $files[0]], admin_url('admin-post.php')), 'tngbook_auto', '_tngauto');
                 echo '<br><a href="' . esc_url($url) . '">' . esc_html($files[0]) . '</a>' . ($j['size'] && $files[0] === $j['file'] ? ' (' . esc_html(size_format((int) $j['size'])) . ')' : '') . ' <span class="description">· ' . (int) count($files) . ' ' . esc_html(tngs_t('fichier(s) conservé(s)')) . '</span>';
             }
-            echo '</td><td><button type="submit" class="button" name="now" value="' . esc_attr($name) . '" formaction="' . esc_url(admin_url('admin-post.php?action=tngbook_auto_now')) . '">' . esc_html(tngs_t('Générer maintenant')) . '</button></td></tr>';
+            echo '</td><td style="white-space:nowrap"><button type="submit" class="button" name="now" value="' . esc_attr($name) . '" formaction="' . esc_url(admin_url('admin-post.php?action=tngbook_auto_now')) . '">' . esc_html(tngs_t('Générer maintenant')) . '</button> '
+                . '<button type="submit" class="button" name="tngbook_profile" value="' . esc_attr($name) . '" formaction="' . esc_url(admin_url('admin-post.php?action=tngbook_profile_apply')) . '">' . esc_html(tngs_t('Modifier')) . '</button></td></tr>';
         }
-        echo '</tbody></table>';
+        echo '</tbody></table></form></div>';
+    }
 
-        echo '<h3>' . esc_html(tngs_t('Réglages communs')) . '</h3>';
+    /** Réglages communs à tous les profils (dossier, rotation, e-mail), à placer dans l'onglet « Réglages ». */
+    public static function settings_form() {
+        $s = self::settings();
+        echo '<div id="tngbook-auto" style="margin-top:28px"><h2>' . esc_html(tngs_t('Génération automatique')) . self::beta_badge() . '</h2>';
+        self::notices(['auto_saved', 'auto_dir']);
+        echo '<p class="description">' . esc_html(tngs_t('Réglages communs à tous les profils. La planification (fréquence, jour, heure) se règle dans chaque profil.')) . '</p>';
+        echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '">';
+        echo '<input type="hidden" name="_tngauto" value="' . esc_attr(wp_create_nonce('tngbook_auto')) . '">';
         echo '<table class="form-table" style="max-width:1100px">';
         echo '<tr><th scope="row">' . esc_html(tngs_t('Dossier de destination')) . '</th><td><input type="text" class="large-text code" name="tngbook_auto[settings][dir]" value="' . esc_attr($s['dir']) . '" placeholder="' . esc_attr(self::default_dir()) . '">'
             . '<p class="description">' . esc_html(tngs_t('Chemin absolu sur le serveur. Vide = dossier protégé dans les téléversements de WordPress (nom aléatoire). Idéalement, choisissez un dossier situé hors du site web. Seuls les fichiers créés par le plugin peuvent être supprimés.')) . '</p></td></tr>';

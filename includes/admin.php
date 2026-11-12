@@ -137,9 +137,9 @@ function tngs_render_module_page( $mod ) {
     echo '<nav class="tngs-sections tngs-modsections" aria-label="Sections">';
     foreach ( $secs as $slug => $pg ) {
         $label = tngs_t( $pg[1] );
-        $pos   = strpos( $label, ' : ' );
+        $pos   = preg_match( '/\s?:\s/u', $label, $mm, PREG_OFFSET_CAPTURE ) ? $mm[0][1] + strlen( $mm[0][0] ) : false; // « Implexe : réglages » (fr) ou « Implexe: settings » (en).
         if ( false !== $pos ) {
-            $label = ucfirst( substr( $label, $pos + 3 ) ); // « Implexe : réglages » → « Réglages » (le nom du module est déjà dans l'onglet).
+            $label = ucfirst( substr( $label, $pos ) ); // « Implexe : réglages » → « Réglages » (le nom du module est déjà dans l'onglet).
         }
         echo '<a href="#' . esc_attr( $slug ) . '" class="tngs-sec" data-panel="' . esc_attr( $slug ) . '">' . esc_html( $label ) . '</a>';
     }
@@ -194,6 +194,8 @@ function tngs_page_modules() {
         'tng-implexe-inbreeding'  => 'implexe',
         'tng-implexe-settings'    => 'implexe',
         'tngbook'                 => 'book',
+        'tngbook-settings'        => 'book',
+        'tngbook-overview'        => 'book',
         'tngfg-generate'          => 'fiche',
         'tngfg'                   => 'fiche',
     );

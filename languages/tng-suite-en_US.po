@@ -3085,6 +3085,39 @@ msgstr "on the"
 msgid "La création du PDF a échoué :"
 msgstr "PDF creation failed:"
 
+msgid "Livre : générer un livre"
+msgstr "Book: generate a book"
+
+msgid "Livre : réglages"
+msgstr "Book: settings"
+
+msgid "Livre : vue d’ensemble des profils"
+msgstr "Book: overview of profiles"
+
+msgid "Nouveau livre"
+msgstr "New book"
+
+msgid "ou chargez un profil ci-dessus pour afficher ses réglages."
+msgstr "or load a profile above to show its settings."
+
+msgid "Réglages enregistrés."
+msgstr "Settings saved."
+
+msgid "Modifier"
+msgstr "Edit"
+
+msgid "Aucun profil pour le moment. Réglez un livre dans l’onglet « Générer un livre », puis enregistrez-le comme profil : la génération automatique se règle dans chaque profil."
+msgstr "No profile yet. Set up a book in the “Generate a book” tab, then save it as a profile: automatic generation is set in each profile."
+
+msgid "La planification se règle dans chaque profil : cliquez sur « Modifier », réglez « Génération automatique de ce profil », puis « Mettre à jour le profil actif »."
+msgstr "Scheduling is set in each profile: click “Edit”, adjust “Automatic generation of this profile”, then “Update active profile”."
+
+msgid "Réglages communs à tous les profils. La planification (fréquence, jour, heure) se règle dans chaque profil."
+msgstr "Settings shared by all profiles. Scheduling (frequency, day, time) is set in each profile."
+
+msgid "Le dossier de destination, le nombre de fichiers conservés et l’e-mail sont communs à tous les profils : voir l’onglet « Réglages »."
+msgstr "The destination folder, the number of files kept and the e-mail are shared by all profiles: see the “Settings” tab."
+
 msgctxt "js"
 msgid " Page "
 msgstr " Page "
