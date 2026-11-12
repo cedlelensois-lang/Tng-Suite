@@ -80,6 +80,9 @@ Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding`
 
 == Changelog ==
 
+= 2.1.0-beta.6 =
+* PDF direct : mise en page des fiches corrigée. Le texte de la fiche passe maintenant à côté de la photo (au lieu de commencer sous la photo en laissant un grand vide) ; la photo est placée dans un bloc flottant et les fiches peuvent se couper entre deux pages, ce que mPDF exige pour ne pas superposer les textes.
+
 = 2.1.0-beta.5 =
 * Livre : la page d'administration est organisée en trois onglets, comme l'éventail : « Générer un livre », « Réglages » et « Vue d'ensemble des profils ». Le tableau récapitulatif de la génération automatique passe dans la vue d'ensemble (avec un bouton « Modifier » par profil) ; les réglages communs (dossier, fichiers conservés, e-mail), les photos, le formulaire public et le statut du PDF direct passent dans « Réglages ».
 * Livre : quand des profils existent, « Générer un livre » n'affiche d'abord que le choix du profil ; le formulaire apparaît en chargeant un profil ou avec « Nouveau livre ». Sans profil, le formulaire complet reste affiché.

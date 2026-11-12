@@ -640,7 +640,10 @@ class TNGBook_Renderer {
             }
         }
         if ($src === '' && $this->o['generic']) $src = $this->avatar($sex);
-        return $src === '' ? '' : '<img class="ph" src="' . esc_attr($src) . '" alt="">';
+        if ($src === '') return '';
+        $img = '<img class="ph" src="' . esc_attr($src) . '" alt="">';
+        // mPDF ne fait pas contourner une image flottante par les paragraphes suivants : la photo est placée dans un bloc flottant (PDF direct uniquement).
+        return $this->mode === 'pdf' ? '<div class="phw">' . $img . '</div>' : $img;
     }
 
     /* ---------- Fiche d'une personne ---------- */
@@ -1983,6 +1986,7 @@ h3.gen { background: $band; text-align: center; color: %title%; font-size: 12.5p
 .cols h3.gen { margin-top: .8em; break-inside: avoid; }
 .fiche { overflow: visible; page-break-inside: auto; break-inside: avoid; margin: 0 0 1em; }
 .fiche img.ph { width: 2.3cm; margin: 0 0 .2cm .3cm; }
+.fiche .phw { width: 2.3cm; }
 .fiche h4 { font-size: 11.5pt; margin: 0 0 .25em; }
 .fiche h4 .nm { color: %head%; font-weight: bold; }
 .fiche p { text-align: left; margin: .2em 0; }
@@ -2000,6 +2004,7 @@ h3.gen { font-size: 11.5pt; letter-spacing: .1em; margin: 1.3em 0 .5em; padding:
 .cols h3.gen { break-inside: avoid; }
 .fiche { margin: 0 0 .7em; overflow: visible; break-inside: avoid; }
 .fiche img.ph { width: 1.8cm; margin: 0 0 .15cm .3cm; }
+.fiche .phw { width: 1.8cm; }
 .fiche h4 { font-size: 10.5pt; }
 .fiche p { margin: .15em 0; text-align: left; }
 CSS;
@@ -2010,6 +2015,7 @@ h2.part-title { text-align: center; border-bottom: 0; font-size: 22pt; letter-sp
 h3.gen { text-align: center; font-size: 13pt; letter-spacing: .08em; border-top: 2px solid %head%; border-bottom: 1px solid %head%; padding: .3em 0; margin: 2em 0 .9em; text-transform: uppercase; letter-spacing: .14em; }
 .fiche { margin: 0 0 1.4em; }
 .fiche img.ph { float: left; margin: 0 .6cm .3cm 0; width: 3cm; }
+.fiche .phw { float: left; width: 3cm; margin: 0 .6cm .3cm 0; }
 .fiche h4 { font-size: 12.5pt; font-variant: small-caps; letter-spacing: .03em; border-bottom: 1px solid #d8cfcf; padding-bottom: .1em; }
 CSS;
         } elseif ($id === 'modern') {
@@ -2018,6 +2024,7 @@ h2.part-title { border-bottom: 3px solid %head%; }
 h3.gen { background: %head%; color: #ffffff; font-size: 12pt; padding: .3em .6em; margin: 1.8em 0 .7em; text-align: center; text-transform: uppercase; letter-spacing: .14em; }
 .fiche { border: 1px solid #ddd; border-left: 4px solid %head%; padding: .3cm .4cm; margin: 0 0 .5cm; overflow: hidden; }
 .fiche img.ph { width: 2.6cm; }
+.fiche .phw { width: 2.6cm; }
 .fiche h4 { font-size: 12pt; }
 .fiche p { text-align: left; }
 .num { color: %head%; }
@@ -2029,7 +2036,9 @@ CSS;
     /** Feuille de style de base. mPDF ne comprend pas la règle @page de l'impression navigateur (avec boîte de marge imbriquée) : elle provoque des milliers de pages blanches. Marges et numéros de page sont donc fixés par mPDF lui-même. */
     private function printRules() {
         $raw = $this->cssRaw();
-        return $this->mode === 'pdf' ? (string) preg_replace('/^@page [^\n]*\n/m', '', $raw, 1) : $raw;
+        if ($this->mode !== 'pdf') return $raw;
+        $raw = (string) preg_replace('/^@page [^\n]*\n/m', '', $raw, 1);
+        return $raw . ".fiche .phw { float: right; width: 3.2cm; margin: 0 0 .3cm .5cm; }\n.fiche .phw img.ph { float: none; margin: 0; display: block; width: 100%; }\ndiv.fiche, div.fiche.hasnotes { page-break-inside: auto; break-inside: auto; }\n";  // mPDF : « page-break-inside: avoid » casse les blocs flottants (textes superposés)
     }
 
     private function cssRaw() {
