@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.37.1
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,7 +80,9 @@ Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding`
 
 == Changelog ==
 
-= 1.37.1 =
+= 2.0.0 =
+* Version 2.0 : première version majeure, validée en production. Aucun changement de réglages ni de shortcodes par rapport à la 1.x : la mise à jour est directe.
+* Au programme de cette version : livre généalogique complet (page patronyme, chronologie familiale, statistiques avec espérance de vie et pyramide des âges, compression d'images réglable, cache de photos protégé), 11 fonds de carte gratuits pour la heatmap, mises à jour automatiques depuis GitHub, audit sécurité / PHP 7.4 à 8.5 / WordPress 7.1 / traductions.
 * Livre : la vignette du conjoint est affichée à côté de l'union même quand le conjoint a sa propre fiche dans le livre.
 
 = 1.36.6 =
