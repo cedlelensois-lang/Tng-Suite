@@ -2845,6 +2845,192 @@ msgstr ""
 msgid "– Général"
 msgstr ""
 
+msgid "Une génération est déjà en cours."
+msgstr ""
+
+msgid "Données inchangées depuis la dernière génération."
+msgstr ""
+
+msgid "Écriture impossible dans le dossier de destination."
+msgstr ""
+
+msgid "Le fichier généré est vide."
+msgstr ""
+
+msgid "Livre généré."
+msgstr ""
+
+msgid "Impossible de créer le dossier de destination :"
+msgstr ""
+
+msgid "Le dossier de destination n’est pas accessible en écriture :"
+msgstr ""
+
+msgid "Indiquez un chemin absolu sur le serveur."
+msgstr ""
+
+msgid "Le chemin ne doit pas contenir « .. »."
+msgstr ""
+
+msgid "Ce dossier est réservé à WordPress ou au plugin : choisissez-en un autre."
+msgstr ""
+
+msgid "Impossible de créer ce dossier."
+msgstr ""
+
+msgid "Ce dossier n’est pas accessible en écriture."
+msgstr ""
+
+msgid "Livre généré"
+msgstr ""
+
+msgid "Échec de la génération du livre"
+msgstr ""
+
+msgid "Profil :"
+msgstr ""
+
+msgid "Résultat :"
+msgstr ""
+
+msgid "Fichier :"
+msgstr ""
+
+msgid "Dossier :"
+msgstr ""
+
+msgid "Fichier introuvable."
+msgstr ""
+
+msgid "Génération automatique"
+msgstr ""
+
+msgid "Bêta"
+msgstr ""
+
+msgid "Génère automatiquement le livre de chaque profil choisi, à intervalle régulier, dans un dossier du serveur (les anciens fichiers sont supprimés au-delà du nombre conservé)."
+msgstr ""
+
+msgid "Enregistrez d’abord un profil de livre (ci-dessus) : la génération automatique se règle profil par profil."
+msgstr ""
+
+msgid "Le planificateur interne de WordPress est désactivé sur ce site : vérifiez qu’une tâche cron du serveur appelle bien wp-cron.php (par exemple toutes les heures)."
+msgstr ""
+
+msgid "Le planificateur de WordPress ne s’exécute que lorsque le site est visité : l’heure choisie est donc approximative. Pour une heure précise, programmez une tâche cron du serveur qui appelle wp-cron.php."
+msgstr ""
+
+msgid "Profil"
+msgstr ""
+
+msgid "Actif"
+msgstr ""
+
+msgid "Fréquence"
+msgstr ""
+
+msgid "Jour"
+msgstr ""
+
+msgid "Heure"
+msgstr ""
+
+msgid "Dernière génération"
+msgstr ""
+
+msgid "PDF direct indisponible (mPDF absent) : la génération échouera."
+msgstr ""
+
+msgid "Jour du mois (1 à 28)"
+msgstr ""
+
+msgid "Jamais"
+msgstr ""
+
+msgid "fichier(s) conservé(s)"
+msgstr ""
+
+msgid "Prochaine :"
+msgstr ""
+
+msgid "Générer maintenant"
+msgstr ""
+
+msgid "Dossier de destination"
+msgstr ""
+
+msgid "Chemin absolu sur le serveur. Vide = dossier protégé dans les téléversements de WordPress (nom aléatoire). Idéalement, choisissez un dossier situé hors du site web. Seuls les fichiers créés par le plugin peuvent être supprimés."
+msgstr ""
+
+msgid "Fichiers conservés par profil"
+msgstr ""
+
+msgid "Seulement si les données ont changé"
+msgstr ""
+
+msgid "Ne pas régénérer si rien n’a été modifié dans la base TNG (personnes, familles, médias) ni dans le profil depuis la dernière fois."
+msgstr ""
+
+msgid "E-mail"
+msgstr ""
+
+msgid "Enregistrer la génération automatique"
+msgstr ""
+
+msgid "Le format demandé n’est pas disponible sur ce serveur :"
+msgstr ""
+
+msgid "Réglages de la génération automatique enregistrés."
+msgstr ""
+
+msgid "Livre généré : voir la colonne « Dernière génération »."
+msgstr ""
+
+msgid "La génération a échoué : voir le message dans la colonne « Dernière génération »."
+msgstr ""
+
+msgid "Génération non lancée : voir le message dans la colonne « Dernière génération »."
+msgstr ""
+
+msgid "Dossier refusé : l’ancien réglage est conservé."
+msgstr ""
+
+msgid "Lundi"
+msgstr ""
+
+msgid "Mardi"
+msgstr ""
+
+msgid "Mercredi"
+msgstr ""
+
+msgid "Jeudi"
+msgstr ""
+
+msgid "Vendredi"
+msgstr ""
+
+msgid "Samedi"
+msgstr ""
+
+msgid "Dimanche"
+msgstr ""
+
+msgid "Chaque jour"
+msgstr ""
+
+msgid "Chaque semaine"
+msgstr ""
+
+msgid "Chaque mois"
+msgstr ""
+
+msgid "En cas d’échec seulement"
+msgstr ""
+
+msgid "À chaque génération"
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""

@@ -2845,6 +2845,192 @@ msgstr ". Original labels:"
 msgid "– Général"
 msgstr "– General"
 
+msgid "Une génération est déjà en cours."
+msgstr "A generation is already running."
+
+msgid "Données inchangées depuis la dernière génération."
+msgstr "Data unchanged since the last generation."
+
+msgid "Écriture impossible dans le dossier de destination."
+msgstr "Cannot write to the destination folder."
+
+msgid "Le fichier généré est vide."
+msgstr "The generated file is empty."
+
+msgid "Livre généré."
+msgstr "Book generated."
+
+msgid "Impossible de créer le dossier de destination :"
+msgstr "Cannot create the destination folder:"
+
+msgid "Le dossier de destination n’est pas accessible en écriture :"
+msgstr "The destination folder is not writable:"
+
+msgid "Indiquez un chemin absolu sur le serveur."
+msgstr "Enter an absolute path on the server."
+
+msgid "Le chemin ne doit pas contenir « .. »."
+msgstr "The path must not contain “..”."
+
+msgid "Ce dossier est réservé à WordPress ou au plugin : choisissez-en un autre."
+msgstr "This folder is reserved for WordPress or the plugin: choose another one."
+
+msgid "Impossible de créer ce dossier."
+msgstr "Cannot create this folder."
+
+msgid "Ce dossier n’est pas accessible en écriture."
+msgstr "This folder is not writable."
+
+msgid "Livre généré"
+msgstr "Book generated"
+
+msgid "Échec de la génération du livre"
+msgstr "Book generation failed"
+
+msgid "Profil :"
+msgstr "Profile:"
+
+msgid "Résultat :"
+msgstr "Result:"
+
+msgid "Fichier :"
+msgstr "File:"
+
+msgid "Dossier :"
+msgstr "Folder:"
+
+msgid "Fichier introuvable."
+msgstr "File not found."
+
+msgid "Génération automatique"
+msgstr "Automatic generation"
+
+msgid "Bêta"
+msgstr "Beta"
+
+msgid "Génère automatiquement le livre de chaque profil choisi, à intervalle régulier, dans un dossier du serveur (les anciens fichiers sont supprimés au-delà du nombre conservé)."
+msgstr "Automatically generates the book of each chosen profile at regular intervals into a server folder (older files are deleted beyond the number kept)."
+
+msgid "Enregistrez d’abord un profil de livre (ci-dessus) : la génération automatique se règle profil par profil."
+msgstr "First save a book profile (above): automatic generation is set up profile by profile."
+
+msgid "Le planificateur interne de WordPress est désactivé sur ce site : vérifiez qu’une tâche cron du serveur appelle bien wp-cron.php (par exemple toutes les heures)."
+msgstr "WordPress’s internal scheduler is disabled on this site: make sure a server cron job calls wp-cron.php (for example every hour)."
+
+msgid "Le planificateur de WordPress ne s’exécute que lorsque le site est visité : l’heure choisie est donc approximative. Pour une heure précise, programmez une tâche cron du serveur qui appelle wp-cron.php."
+msgstr "WordPress’s scheduler only runs when the site is visited, so the chosen time is approximate. For an exact time, set up a server cron job that calls wp-cron.php."
+
+msgid "Profil"
+msgstr "Profile"
+
+msgid "Actif"
+msgstr "Active"
+
+msgid "Fréquence"
+msgstr "Frequency"
+
+msgid "Jour"
+msgstr "Day"
+
+msgid "Heure"
+msgstr "Hour"
+
+msgid "Dernière génération"
+msgstr "Last generation"
+
+msgid "PDF direct indisponible (mPDF absent) : la génération échouera."
+msgstr "Direct PDF unavailable (mPDF missing): generation will fail."
+
+msgid "Jour du mois (1 à 28)"
+msgstr "Day of the month (1 to 28)"
+
+msgid "Jamais"
+msgstr "Never"
+
+msgid "fichier(s) conservé(s)"
+msgstr "file(s) kept"
+
+msgid "Prochaine :"
+msgstr "Next:"
+
+msgid "Générer maintenant"
+msgstr "Generate now"
+
+msgid "Dossier de destination"
+msgstr "Destination folder"
+
+msgid "Chemin absolu sur le serveur. Vide = dossier protégé dans les téléversements de WordPress (nom aléatoire). Idéalement, choisissez un dossier situé hors du site web. Seuls les fichiers créés par le plugin peuvent être supprimés."
+msgstr "Absolute path on the server. Empty = protected folder inside WordPress uploads (random name). Ideally, choose a folder outside the website. Only files created by the plugin can ever be deleted."
+
+msgid "Fichiers conservés par profil"
+msgstr "Files kept per profile"
+
+msgid "Seulement si les données ont changé"
+msgstr "Only if the data has changed"
+
+msgid "Ne pas régénérer si rien n’a été modifié dans la base TNG (personnes, familles, médias) ni dans le profil depuis la dernière fois."
+msgstr "Do not regenerate if nothing has changed in the TNG database (people, families, media) or in the profile since last time."
+
+msgid "E-mail"
+msgstr "Email"
+
+msgid "Enregistrer la génération automatique"
+msgstr "Save automatic generation"
+
+msgid "Le format demandé n’est pas disponible sur ce serveur :"
+msgstr "The requested format is not available on this server:"
+
+msgid "Réglages de la génération automatique enregistrés."
+msgstr "Automatic generation settings saved."
+
+msgid "Livre généré : voir la colonne « Dernière génération »."
+msgstr "Book generated: see the “Last generation” column."
+
+msgid "La génération a échoué : voir le message dans la colonne « Dernière génération »."
+msgstr "Generation failed: see the message in the “Last generation” column."
+
+msgid "Génération non lancée : voir le message dans la colonne « Dernière génération »."
+msgstr "Generation not started: see the message in the “Last generation” column."
+
+msgid "Dossier refusé : l’ancien réglage est conservé."
+msgstr "Folder refused: the previous setting is kept."
+
+msgid "Lundi"
+msgstr "Monday"
+
+msgid "Mardi"
+msgstr "Tuesday"
+
+msgid "Mercredi"
+msgstr "Wednesday"
+
+msgid "Jeudi"
+msgstr "Thursday"
+
+msgid "Vendredi"
+msgstr "Friday"
+
+msgid "Samedi"
+msgstr "Saturday"
+
+msgid "Dimanche"
+msgstr "Sunday"
+
+msgid "Chaque jour"
+msgstr "Every day"
+
+msgid "Chaque semaine"
+msgstr "Every week"
+
+msgid "Chaque mois"
+msgstr "Every month"
+
+msgid "En cas d’échec seulement"
+msgstr "On failure only"
+
+msgid "À chaque génération"
+msgstr "On every generation"
+
 msgctxt "js"
 msgid " Page "
 msgstr " Page "

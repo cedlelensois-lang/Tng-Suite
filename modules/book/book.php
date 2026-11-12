@@ -21,6 +21,7 @@ require_once TNGBOOK_DIR . 'includes/class-map.php';
 require_once TNGBOOK_DIR . 'includes/class-country.php';
 require_once TNGBOOK_DIR . 'includes/trait-stats-view.php';
 require_once TNGBOOK_DIR . 'includes/class-renderer.php';
+require_once TNGBOOK_DIR . 'includes/class-auto.php';
 
 final class TNGBook {
     const OPT = 'tngbook_options';
@@ -105,6 +106,7 @@ final class TNGBook {
 
     const PROFILES = 'tngbook_profiles';
     const MAX_PROFILES = 50;
+    private static $trusted = false;               // vrai uniquement pendant profile_options() (génération automatique)
     const ACTIVE = 'tngbook_profile_active';   // dernier profil chargé ou enregistré
 
     /** Profils enregistrés : nom => paramètres du livre (sans la connexion TNG ni les réglages du formulaire public). */
@@ -156,6 +158,7 @@ final class TNGBook {
         if (($_POST['op'] ?? '') === 'delete') {
             unset($all[$name]);
             update_option(self::PROFILES, $all, false);
+            TNGBook_Auto::forget($name);
             if (get_option(self::ACTIVE, '') === $name) update_option(self::ACTIVE, '', false);
             self::profile_back('deleted');
         }
@@ -241,7 +244,7 @@ final class TNGBook {
         return '';
     }
 
-    private static function mpdf_available() {
+    public static function mpdf_available() {
         $auto = TNGBOOK_DIR . 'vendor/autoload.php';
         if (file_exists($auto)) require_once $auto;
         return class_exists('\Mpdf\Mpdf');
@@ -276,7 +279,7 @@ final class TNGBook {
         $out['title'] = sanitize_text_field($in['title'] ?? '');
         $out['author'] = sanitize_text_field($in['author'] ?? '');
         $out['preface'] = sanitize_textarea_field($in['preface'] ?? '');
-        if (current_user_can('manage_options')) {   // le texte de la page patronyme est rédigé par l'administrateur (jamais par les visiteurs)
+        if (self::$trusted || current_user_can('manage_options')) {   // le texte de la page patronyme est rédigé par l'administrateur (jamais par les visiteurs)
             $out['surname'] = array_key_exists('surname', $in) ? self::surname_kses($in['surname']) : (string) ($base['surname'] ?? '');
             $out['surname_title'] = array_key_exists('surname_title', $in) ? sanitize_text_field($in['surname_title']) : (string) ($base['surname_title'] ?? '');
         }
@@ -519,7 +522,9 @@ final class TNGBook {
         echo '<p><strong>PDF direct :</strong> ' . (self::mpdf_available()
             ? 'disponible (mPDF détecté).'
             : 'non disponible. Le livre s’ouvre en page imprimable (Imprimer → Enregistrer en PDF). Pour un PDF direct, installez mPDF dans le dossier du plugin : <code>composer require mpdf/mpdf</code>.')
-            . '</p></div>';
+            . '</p>';
+        TNGBook_Auto::panel();
+        echo '</div>';
     }
 
     /* ---------- Formulaire public ---------- */
@@ -558,95 +563,132 @@ final class TNGBook {
             $debug = false;
         }
 
-        $pid = $o['personID'];
-        if ($pid === '') wp_die(esc_html(tngs_t('Identifiant de personne manquant.')));
-        $lang = $o['lang'];
-        $up = (int) $o['gen_up'];
-        $down = (int) $o['gen_down'];
-        if ($up + $down === 0) wp_die(esc_html(tngs_t('Choisissez au moins une génération d’ascendants ou de descendants.')));
-        $format = 'html';
-        if ($o['format'] === 'pdf' && self::mpdf_available()) $format = 'pdf';
-        elseif (in_array($o['format'], ['docx', 'odt'], true) && TNGBook_Doc::available()) $format = $o['format'];
-
-        @set_time_limit(300);
-        wp_raise_memory_limit('admin');
-
-        $db = self::db();
-        if (is_wp_error($db)) wp_die(esc_html($db->get_error_message()));
-
         try {
-            $tree = $o['tree'] !== '' ? $o['tree'] : tngs_gedcom();
-            if ($tree === '') {
-                $found = TNGBook_Data::trees($db, $o['prefix'], $pid);
-                if (count($found) === 1) $tree = $found[0];
-                elseif (!$found) throw new Exception(tngs_t('Identifiant') . ' "' . $pid . '" ' . tngs_t('introuvable.'));
-                else throw new Exception(tngs_t('Cet identifiant existe dans plusieurs arbres') . ' (' . implode(', ', $found) . ') : ' . tngs_t('précisez l’arbre.'));
-            }
-
-            $data = new TNGBook_Data($db, $o['prefix'], $tree, $o['living']);
-            if ($up > 0) $data->buildAscendants($pid, $up); else $data->loadPeople([$pid]);
-            if ($down > 0) $data->buildDescendants($pid, $down);
-            $maxP = isset($o['max_people']) ? (int) $o['max_people'] : self::MAX_PEOPLE;
-            if ($maxP > 0 && count($data->sosa) + count($data->desc) > $maxP) {
-                throw new Exception(tngs_t('Le livre dépasse') . ' ' . $maxP . ' ' . tngs_t('personnes : réduisez le nombre de générations, ou augmentez le nombre maximum de personnes dans les réglages.'));
-            }
-            if (!isset($data->people[$pid])) throw new Exception(tngs_t('Personne introuvable.'));
-
-            $opts = [
-                'root' => $pid, 'up' => $up, 'down' => $down,
-                'photos' => (bool) $o['photos'], 'spphotos' => (bool) $o['spphotos'], 'generic' => (bool) $o['generic'],
-                'sources' => (bool) $o['sources'], 'index' => (bool) $o['index'],
-                'notes' => (bool) $o['notes'], 'military' => (bool) $o['military'], 'mpf' => !empty($o['mpf']), 'mini' => !empty($o['mini']), 'imgq' => !empty($o['imgq']), 'trees' => !empty($o['trees']), 'stats' => !empty($o['stats']), 'stats_first' => !empty($o['stats_first']), 'stats_last' => !empty($o['stats_last']), 'desclist' => !empty($o['desclist']), 'chrono' => !empty($o['chrono']), 'map' => !empty($o['map']), 'bapt' => !empty($o['bapt']), 'burial' => !empty($o['burial']), 'verbose' => !empty($o['verbose']), 'country' => !empty($o['country']), 'regions' => !empty($o['regions']), 'asclist' => !empty($o['asclist']), 'resi' => !empty($o['resi']), 'sibs' => !empty($o['sibs']), 'cous' => !empty($o['cous']), 'allunions' => !empty($o['allunions']), 'marrage' => !empty($o['marrage']),
-                'debug' => $debug, 'place_parts' => (int) $o['place_parts'],
-                'title' => $o['title'], 'author' => $o['author'], 'preface' => $o['preface'], 'surname' => (string) ($o['surname'] ?? ''), 'surname_title' => (string) ($o['surname_title'] ?? ''), 'colors' => $o['colors'] ?? [],
-                'template' => $o['template'] ?? 'classic', 'order' => self::clean_order($o['order'] ?? null),
-                'tng_path' => $o['tng_path'], 'photo_folder' => $o['photo_folder'],
-            ];
-            $narr = !empty(TNGBook_Renderer::templates()[$opts['template']]['narr']);
-            $data->finalize($opts['photos'], $opts['sources'], $opts['notes'], $opts['military'], $narr, !empty($opts['sibs']), !empty($opts['allunions']), !empty($opts['mpf']));
-            if ($opts['stats']) $data->loadStatsData();
-            if (!empty($opts['resi'])) $data->loadResidences($data->featured());
-            if (!empty($opts['map'])) { $fp = $data->featured(); $data->loadMapData($fp, TNGBook_Map::allPlaces($data, $fp)); }
-            $isDoc = in_array($format, ['docx', 'odt'], true);
-            $rend = new TNGBook_Renderer($data, $lang, $opts, $isDoc ? 'doc' : $format);
-            $html = $rend->render();
-            if ($isDoc) {
-                $file = TNGBook_Doc::convert($html, array_merge(TNGBook_Renderer::defaultColors(), (array) $opts['colors']), [
-                    'title' => $opts['title'] !== '' ? $opts['title'] : 'Livre généalogique', 'author' => $opts['author'], 'lang' => $lang,
-                    'tpl' => $rend->docSpec(),
-                ], $format);
-            }
+            $b = self::build($o, $debug);
         } catch (Exception $e) {
             wp_die(esc_html($e->getMessage()), esc_html(tngs_t('Erreur')), ['back_link' => true]);
         }
+        $format = $b['format'];
+        $pid = $o['personID'];
 
         nocache_headers();
         if (in_array($format, ['docx', 'odt'], true)) {
             header('Content-Type: ' . ($format === 'docx' ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' : 'application/vnd.oasis.opendocument.text'));
             header('Content-Disposition: attachment; filename="livre-genealogique-' . preg_replace('/[^\w\-.]/', '_', $pid) . '.' . $format . '"');
-            header('Content-Length: ' . filesize($file));
-            readfile($file);
-            wp_delete_file($file);
+            header('Content-Length: ' . filesize($b['doc']));
+            readfile($b['doc']);
+            wp_delete_file($b['doc']);
             exit;
         }
         if ($format === 'pdf') {
-            $up_dir = wp_upload_dir();
-            $tmp = $up_dir['basedir'] . '/tngbook-cache/mpdf';
-            wp_mkdir_p($tmp);
-            $mpdf = new \Mpdf\Mpdf([
-                'mode' => 'utf-8', 'format' => 'A4', 'tempDir' => $tmp, 'default_font' => 'dejavuserif',
-                'margin_left' => 20, 'margin_right' => 20, 'margin_top' => 20, 'margin_bottom' => 22,
-            ]);
-            $mpdf->SetCompression(true);
-            $mpdf->SetFooter('{PAGENO}');
-            $mpdf->WriteHTML($html);
-            $mpdf->Output('livre-genealogique-' . $pid . '.pdf', 'D');
+            self::pdf_output($b['html'], 'livre-genealogique-' . $pid . '.pdf', 'D');
             exit;
         }
         header('Content-Type: text/html; charset=utf-8');
-        echo $html;
+        echo $b['html'];
         exit;
+    }
+
+    /**
+     * Construit le livre à partir de paramètres déjà nettoyés. Sans effet de bord HTTP : sert au téléchargement et à la génération automatique.
+     * $strict : si le format demandé (PDF, Word…) n'est pas disponible, lève une exception au lieu de replier sur le HTML.
+     * Retourne ['format' => html|pdf|docx|odt, 'html' => …, 'doc' => chemin du fichier Word/ODT temporaire ou ''].
+     */
+    public static function build(array $o, $debug = false, $strict = false) {
+        $pid = $o['personID'];
+        if ($pid === '') throw new Exception(tngs_t('Identifiant de personne manquant.'));
+        $lang = $o['lang'];
+        $up = (int) $o['gen_up'];
+        $down = (int) $o['gen_down'];
+        if ($up + $down === 0) throw new Exception(tngs_t('Choisissez au moins une génération d’ascendants ou de descendants.'));
+        $format = 'html';
+        if ($o['format'] === 'pdf' && self::mpdf_available()) $format = 'pdf';
+        elseif (in_array($o['format'], ['docx', 'odt'], true) && TNGBook_Doc::available()) $format = $o['format'];
+        if ($strict && $format !== $o['format']) throw new Exception(tngs_t('Le format demandé n’est pas disponible sur ce serveur :') . ' ' . $o['format']);
+
+        @set_time_limit(300);
+        wp_raise_memory_limit('admin');
+
+        $db = self::db();
+        if (is_wp_error($db)) throw new Exception($db->get_error_message());
+
+        $tree = $o['tree'] !== '' ? $o['tree'] : tngs_gedcom();
+        if ($tree === '') {
+            $found = TNGBook_Data::trees($db, $o['prefix'], $pid);
+            if (count($found) === 1) $tree = $found[0];
+            elseif (!$found) throw new Exception(tngs_t('Identifiant') . ' "' . $pid . '" ' . tngs_t('introuvable.'));
+            else throw new Exception(tngs_t('Cet identifiant existe dans plusieurs arbres') . ' (' . implode(', ', $found) . ') : ' . tngs_t('précisez l’arbre.'));
+        }
+
+        $data = new TNGBook_Data($db, $o['prefix'], $tree, $o['living']);
+        if ($up > 0) $data->buildAscendants($pid, $up); else $data->loadPeople([$pid]);
+        if ($down > 0) $data->buildDescendants($pid, $down);
+        $maxP = isset($o['max_people']) ? (int) $o['max_people'] : self::MAX_PEOPLE;
+        if ($maxP > 0 && count($data->sosa) + count($data->desc) > $maxP) {
+            throw new Exception(tngs_t('Le livre dépasse') . ' ' . $maxP . ' ' . tngs_t('personnes : réduisez le nombre de générations, ou augmentez le nombre maximum de personnes dans les réglages.'));
+        }
+        if (!isset($data->people[$pid])) throw new Exception(tngs_t('Personne introuvable.'));
+
+        $opts = [
+            'root' => $pid, 'up' => $up, 'down' => $down,
+            'photos' => (bool) $o['photos'], 'spphotos' => (bool) $o['spphotos'], 'generic' => (bool) $o['generic'],
+            'sources' => (bool) $o['sources'], 'index' => (bool) $o['index'],
+            'notes' => (bool) $o['notes'], 'military' => (bool) $o['military'], 'mpf' => !empty($o['mpf']), 'mini' => !empty($o['mini']), 'imgq' => !empty($o['imgq']), 'trees' => !empty($o['trees']), 'stats' => !empty($o['stats']), 'stats_first' => !empty($o['stats_first']), 'stats_last' => !empty($o['stats_last']), 'desclist' => !empty($o['desclist']), 'chrono' => !empty($o['chrono']), 'map' => !empty($o['map']), 'bapt' => !empty($o['bapt']), 'burial' => !empty($o['burial']), 'verbose' => !empty($o['verbose']), 'country' => !empty($o['country']), 'regions' => !empty($o['regions']), 'asclist' => !empty($o['asclist']), 'resi' => !empty($o['resi']), 'sibs' => !empty($o['sibs']), 'cous' => !empty($o['cous']), 'allunions' => !empty($o['allunions']), 'marrage' => !empty($o['marrage']),
+            'debug' => $debug, 'place_parts' => (int) $o['place_parts'],
+            'title' => $o['title'], 'author' => $o['author'], 'preface' => $o['preface'], 'surname' => (string) ($o['surname'] ?? ''), 'surname_title' => (string) ($o['surname_title'] ?? ''), 'colors' => $o['colors'] ?? [],
+            'template' => $o['template'] ?? 'classic', 'order' => self::clean_order($o['order'] ?? null),
+            'tng_path' => $o['tng_path'], 'photo_folder' => $o['photo_folder'],
+        ];
+        $narr = !empty(TNGBook_Renderer::templates()[$opts['template']]['narr']);
+        $data->finalize($opts['photos'], $opts['sources'], $opts['notes'], $opts['military'], $narr, !empty($opts['sibs']), !empty($opts['allunions']), !empty($opts['mpf']));
+        if ($opts['stats']) $data->loadStatsData();
+        if (!empty($opts['resi'])) $data->loadResidences($data->featured());
+        if (!empty($opts['map'])) { $fp = $data->featured(); $data->loadMapData($fp, TNGBook_Map::allPlaces($data, $fp)); }
+        $isDoc = in_array($format, ['docx', 'odt'], true);
+        $rend = new TNGBook_Renderer($data, $lang, $opts, $isDoc ? 'doc' : $format);
+        $html = $rend->render();
+        if ($isDoc) {
+            $file = TNGBook_Doc::convert($html, array_merge(TNGBook_Renderer::defaultColors(), (array) $opts['colors']), [
+                'title' => $opts['title'] !== '' ? $opts['title'] : 'Livre généalogique', 'author' => $opts['author'], 'lang' => $lang,
+                'tpl' => $rend->docSpec(),
+            ], $format);
+        }
+
+        return ['format' => $format, 'html' => $html, 'doc' => $isDoc ? $file : ''];
+    }
+
+    /** Écrit le PDF (mPDF) : 'D' = téléchargement, 'F' = fichier $name. */
+    public static function pdf_output($html, $name, $dest) {
+        $up_dir = wp_upload_dir();
+        $tmp = $up_dir['basedir'] . '/tngbook-cache/mpdf';
+        wp_mkdir_p($tmp);
+        $mpdf = new \Mpdf\Mpdf([
+            'mode' => 'utf-8', 'format' => 'A4', 'tempDir' => $tmp, 'default_font' => 'dejavuserif',
+            'margin_left' => 20, 'margin_right' => 20, 'margin_top' => 20, 'margin_bottom' => 22,
+        ]);
+        $mpdf->SetCompression(true);
+        $mpdf->SetFooter('{PAGENO}');
+        $mpdf->WriteHTML($html);
+        $mpdf->Output($name, $dest);
+    }
+
+    /**
+     * Paramètres complets d'un profil enregistré, prêts pour build() (génération automatique, sans utilisateur connecté).
+     * Les profils ne sont enregistrés que par un administrateur : on les traite donc comme tels (texte du patronyme conservé).
+     */
+    public static function profile_options($name) {
+        $all = self::profiles();
+        if (!isset($all[$name])) return null;
+        self::$trusted = true;
+        try {
+            $o = self::sanitize_gen((array) $all[$name], self::opts());
+        } finally {
+            self::$trusted = false;
+        }
+        $o['prefix'] = tngs_prefix();
+        return $o;
     }
 }
 
 TNGBook::init();
+TNGBook_Auto::init();

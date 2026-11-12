@@ -30,5 +30,21 @@ Generates a complete book (ancestry, descendants, indexes, maps, statistics) as 
 - The [tng_book] shortcode opens the generator to logged-in visitors if enabled.
 - Living people are fully included if you choose to show them: do not share the book without consent.
 
+## Automatic generation (beta)
+
+Below the profiles, the **Automatic generation** section produces a profile’s book on its own, every day, week or month.
+
+1. Save a book profile (PDF, Word, OpenDocument or HTML: the profile’s format is used).
+2. In the section, tick **Active** on the profile’s row, then choose the frequency, day and time.
+3. Enter the **destination folder** (absolute path on the server). Left empty, the plugin uses a protected, randomly named folder inside WordPress uploads. To sync with OneDrive, Dropbox, etc., choose a folder your sync tool watches.
+4. Set the number of files kept per profile (older ones are deleted; only files created by the plugin are affected), the **Only if the data has changed** option and the notification email.
+5. **Save**, then **Generate now** to test.
+
+Notes:
+
+- WordPress only runs its tasks when the site is visited, so the time is approximate. For an exact time, set up a server cron job that calls `wp-cron.php` (for example every hour).
+- A direct PDF needs mPDF; without it, generating a PDF profile fails (message in the “Last generation” column).
+- Photos or notes changed without any change to the records are not detected by “only if the data has changed”: use **Generate now**.
+
 ---
 [← Module guide](README.md)

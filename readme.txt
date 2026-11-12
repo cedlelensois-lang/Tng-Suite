@@ -80,6 +80,10 @@ Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding`
 
 == Changelog ==
 
+= 2.1.0-beta.1 =
+* BÊTA — Livre : génération automatique par profil. Pour chaque profil enregistré : fréquence (chaque jour, semaine ou mois), jour et heure ; le livre (PDF, Word, OpenDocument ou HTML, selon le profil) est écrit dans un dossier du serveur, avec rotation (nombre de fichiers conservés réglable), option « seulement si les données ont changé » et e-mail de succès ou d'échec. Bouton « Générer maintenant », téléchargement des fichiers depuis l'administration. Cette pré-version n'est pas proposée en mise à jour automatique : installation manuelle pour la tester.
+* Refonte interne : la construction du livre est séparée de son téléchargement (TNGBook::build).
+
 = 2.0.1 =
 * Heatmap : retrait des fonds CARTO (Positron, Voyager, Dark Matter), qui demandent une inscription ; 8 fonds restent, tous sans clé d'API ni inscription. Le fond par défaut devient « Esri Gris clair » (les sites qui utilisaient CARTO basculent dessus automatiquement).
 * Version 2.0 : première version majeure, validée en production. Aucun changement de réglages ni de shortcodes par rapport à la 1.x : la mise à jour est directe.

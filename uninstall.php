@@ -35,6 +35,9 @@ $options = array(
     'tngbook_options',
     'tngbook_profiles',
     'tngbook_profile_active',
+    'tngbook_auto',
+    'tngbook_auto_jobs',
+    'tngbook_auto_key',
     // Migration
     'tngs_migrated',
 );
