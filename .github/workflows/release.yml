@@ -3,7 +3,12 @@ name: Publier une version
 # Pousser une étiquette « v1.2.3 » crée automatiquement une Release avec le zip prêt à installer.
 on:
   push:
-    tags: ['v*']
+    tags: ['v*', '[0-9]*']      # « v2.1.0 » ou « 2.1.0 », avec ou sans suffixe (-beta.1)
+  workflow_dispatch:             # relance manuelle pour une étiquette existante (Actions > Publier une version > Run workflow)
+    inputs:
+      tag:
+        description: 'Étiquette existante dont il faut (re)construire le zip (ex. v2.1.0-beta.3)'
+        required: true
 
 permissions:
   contents: write
@@ -13,6 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
       - name: Vérifier la syntaxe PHP
         run: find . -name '*.php' -not -path './includes/plugin-update-checker/*' -print0 | xargs -0 -n1 php -l | grep -v '^No syntax errors' || true
       - uses: actions/setup-node@v4
@@ -41,5 +48,6 @@ jobs:
           (cd /tmp/build && zip -qr "$GITHUB_WORKSPACE/tng-suite.zip" tng-suite)
       - uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ inputs.tag || github.ref_name }}
           files: tng-suite.zip
           generate_release_notes: true
