@@ -1036,4 +1036,5 @@ return array(
 	'Réglages communs de la génération automatique enregistrés.' => 'Shared automatic generation settings saved.',
 	'à' => 'at',
 	'le' => 'on the',
+	'La création du PDF a échoué :' => 'PDF creation failed:',
 );

@@ -1964,7 +1964,7 @@ class TNGBook_Renderer {
 
     private function css() {
         $c = $this->colors();
-        return str_replace(['%text%', '%title%', '%head%', '%name%', '%meta%', '%tree%'], [$c['text'], $c['title'], $c['head'], $c['name'], $c['meta'], $c['tree']], $this->cssRaw() . $this->tplCss());
+        return str_replace(['%text%', '%title%', '%head%', '%name%', '%meta%', '%tree%'], [$c['text'], $c['title'], $c['head'], $c['name'], $c['meta'], $c['tree']], $this->printRules() . $this->tplCss());
     }
 
     /** Feuille de style propre au modèle (vide pour le modèle d'origine). */
@@ -2024,6 +2024,12 @@ h3.gen { background: %head%; color: #ffffff; font-size: 12pt; padding: .3em .6em
 CSS;
         }
         return $css;
+    }
+
+    /** Feuille de style de base. mPDF ne comprend pas la règle @page de l'impression navigateur (avec boîte de marge imbriquée) : elle provoque des milliers de pages blanches. Marges et numéros de page sont donc fixés par mPDF lui-même. */
+    private function printRules() {
+        $raw = $this->cssRaw();
+        return $this->mode === 'pdf' ? (string) preg_replace('/^@page [^\n]*\n/m', '', $raw, 1) : $raw;
     }
 
     private function cssRaw() {

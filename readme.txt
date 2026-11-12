@@ -80,6 +80,9 @@ Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding`
 
 == Changelog ==
 
+= 2.1.0-beta.4 =
+* Correction PDF direct : le PDF produit par mPDF était inutilisable (milliers de pages blanches : la règle d'impression @page du navigateur n'est pas comprise par mPDF) et plantait (« erreur critique ») dès que le livre dépassait 1 Mo de HTML (limite pcre.backtrack_limit de PHP). Le livre est maintenant envoyé à mPDF par morceaux, sans règle @page, et une éventuelle erreur de création du PDF s'affiche au lieu d'une erreur critique.
+
 = 2.1.0-beta.3 =
 * Génération automatique : la planification (activer, fréquence, jour, heure) se règle désormais dans chaque profil, sur l'écran du profil chargé, et s'enregistre avec « Enregistrer comme profil » / « Mettre à jour le profil actif ». Le tableau en bas de page devient une vue d'ensemble (planification, dernière génération, fichier, « Générer maintenant ») ; le dossier, le nombre de fichiers conservés et l'e-mail restent des réglages communs.
 

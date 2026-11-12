@@ -584,7 +584,11 @@ final class TNGBook {
             exit;
         }
         if ($format === 'pdf') {
-            self::pdf_output($b['html'], 'livre-genealogique-' . $pid . '.pdf', 'D');
+            try {
+                self::pdf_output($b['html'], 'livre-genealogique-' . $pid . '.pdf', 'D');
+            } catch (Throwable $e) {   // plutôt qu'une « erreur critique » : le motif réel s'affiche
+                wp_die(esc_html(tngs_t('La création du PDF a échoué :') . ' ' . $e->getMessage()), esc_html(tngs_t('Erreur')), ['back_link' => true]);
+            }
             exit;
         }
         header('Content-Type: text/html; charset=utf-8');
@@ -671,8 +675,49 @@ final class TNGBook {
         ]);
         $mpdf->SetCompression(true);
         $mpdf->SetFooter('{PAGENO}');
-        $mpdf->WriteHTML($html);
+        self::pdf_write($mpdf, (string) $html);
         $mpdf->Output($name, $dest);
+    }
+
+    /**
+     * Envoie le livre à mPDF par morceaux : mPDF refuse tout bloc supérieur à pcre.backtrack_limit (1 Mo par défaut), ce que dépasse un livre un peu fourni.
+     * Les coupures se font entre deux balises <div>, jamais à l'intérieur d'un tableau.
+     */
+    private static function pdf_write(\Mpdf\Mpdf $mpdf, $html) {
+        $b0 = stripos($html, '<body');
+        $b1 = $b0 === false ? false : strpos($html, '>', $b0);
+        $b2 = strripos($html, '</body>');
+        if ($b0 === false || $b1 === false || $b2 === false || $b2 < $b1) {   // pas de document complet : envoi tel quel
+            @ini_set('pcre.backtrack_limit', (string) max((int) ini_get('pcre.backtrack_limit'), 2 * strlen($html)));
+            $mpdf->WriteHTML($html);
+            return;
+        }
+        $head = substr($html, 0, $b0);
+        if (preg_match('#<title>(.*?)</title>#is', $head, $t)) $mpdf->SetTitle(html_entity_decode(wp_strip_all_tags($t[1]), ENT_QUOTES, 'UTF-8'));
+        if (preg_match_all('#<style\b[^>]*>(.*?)</style>#is', $head, $css)) {
+            foreach ($css[1] as $c) $mpdf->WriteHTML($c, \Mpdf\HTMLParserMode::HEADER_CSS);
+        }
+        $body = substr($html, $b1 + 1, $b2 - $b1 - 1);
+        $max = 300000;
+        $cuts = [];
+        $last = 0;
+        $tab = 0;
+        if (preg_match_all('#<(/?)(table|div)\b#i', $body, $m, PREG_OFFSET_CAPTURE)) {
+            foreach ($m[0] as $k => $hit) {
+                if (strtolower($m[2][$k][0]) === 'table') { $tab += $m[1][$k][0] === '/' ? -1 : 1; continue; }
+                if ($m[1][$k][0] === '' && $tab === 0 && $hit[1] - $last > $max) { $cuts[] = $hit[1]; $last = $hit[1]; }
+            }
+        }
+        $cuts[] = strlen($body);
+        $from = 0;
+        $widest = 0;
+        foreach ($cuts as $to) { $widest = max($widest, $to - $from); $from = $to; }
+        if ($widest * 2 > (int) ini_get('pcre.backtrack_limit')) @ini_set('pcre.backtrack_limit', (string) ($widest * 2));   // un tableau très long reste d'un seul tenant
+        $from = 0;
+        foreach ($cuts as $n => $to) {
+            $mpdf->WriteHTML(substr($body, $from, $to - $from), \Mpdf\HTMLParserMode::HTML_BODY, $n === 0, $n === count($cuts) - 1);
+            $from = $to;
+        }
     }
 
     /**

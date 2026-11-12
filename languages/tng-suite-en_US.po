@@ -3082,6 +3082,9 @@ msgstr "at"
 msgid "le"
 msgstr "on the"
 
+msgid "La création du PDF a échoué :"
+msgstr "PDF creation failed:"
+
 msgctxt "js"
 msgid " Page "
 msgstr " Page "
