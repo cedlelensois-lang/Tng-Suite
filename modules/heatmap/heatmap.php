@@ -57,13 +57,10 @@ function tng_heatmap_color_sanitizer($default) {
 /** Fonds de carte proposés : tous gratuits et sans clé d'API ni inscription (les fichiers de tuiles correspondants sont décrits dans assets/heatmap.js). */
 function tng_heatmap_providers() {
     return [
-        'carto_light'   => 'CARTO Positron (clair, sobre : idéal pour une heatmap)',
-        'carto_voyager' => 'CARTO Voyager (routes et noms lisibles)',
-        'carto_dark'    => 'CARTO Dark Matter (sombre)',
+        'esri_gray'     => 'Esri Gris clair (très neutre)',
         'osm'           => 'OpenStreetMap (standard)',
         'osm_fr'        => 'OpenStreetMap France (noms de lieux en français)',
         'opentopo'      => 'OpenTopoMap (relief et courbes de niveau)',
-        'esri_gray'     => 'Esri Gris clair (très neutre)',
         'esri_street'   => 'Esri Rues',
         'esri_topo'     => 'Esri Topographique',
         'esri_imagery'  => 'Esri Satellite',
@@ -72,7 +69,7 @@ function tng_heatmap_providers() {
 }
 
 function tng_heatmap_sanitize_provider($v) {
-    return array_key_exists((string) $v, tng_heatmap_providers()) ? (string) $v : 'carto_light';
+    return array_key_exists((string) $v, tng_heatmap_providers()) ? (string) $v : 'esri_gray';
 }
 
 function tng_heatmap_sanitize_opacity($v) {
@@ -151,7 +148,7 @@ function tng_heatmap_settings_row_checkbox($name, $default, $label, $desc = '') 
 function tng_heatmap_settings_page() {
     if (!current_user_can('manage_options')) return;
 
-    $current_provider = get_option('tng_map_provider', 'carto_light');
+    $current_provider = get_option('tng_map_provider', 'esri_gray');
     $cached           = get_transient(TNG_HEATMAP_CACHE_KEY);
     $last_error       = get_option('tng_heatmap_last_error', '');
     ?>
@@ -240,7 +237,7 @@ function tng_heatmap_settings_page() {
                                 <option value="<?php echo esc_attr($pid); ?>" <?php selected($current_provider, $pid); ?>><?php echo esc_html(tngs_t($plabel)); ?></option>
                             <?php endforeach; ?>
                         </select>
-                        <p class="description">Tous ces fonds sont gratuits, sans clé d’API ni inscription. Ils sont chargés depuis le serveur de leur fournisseur ; pour un site à très forte audience, privilégiez CARTO ou Esri plutôt que les serveurs communautaires d’OpenStreetMap.</p>
+                        <p class="description">Tous ces fonds sont gratuits, sans clé d’API ni inscription. Ils sont chargés depuis le serveur de leur fournisseur ; pour un site à très forte audience, privilégiez Esri plutôt que les serveurs communautaires d’OpenStreetMap.</p>
                     </td>
                 </tr>
                 <?php tng_heatmap_settings_row_checkbox('tng_show_number', 0, 'Afficher les chiffres au centre'); ?>
@@ -571,7 +568,7 @@ function tng_heatmap_shortcode() {
 
     if (!$config_printed) {
         $config_printed = true;
-        $provider = tng_heatmap_sanitize_provider(get_option('tng_map_provider', 'carto_light'));
+        $provider = tng_heatmap_sanitize_provider(get_option('tng_map_provider', 'esri_gray'));
         $cfg = [
             'restUrl'       => esc_url_raw(rest_url('tng-heatmap/v1/data')),
             'searchUrl'     => esc_url_raw((string) (get_option('tng_search_url') ?: (tngs_site_url() !== '' ? tngs_site_url() . 'placesearch.php' : '')), ['http', 'https']),

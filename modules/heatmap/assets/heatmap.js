@@ -15,14 +15,10 @@ function tngsT(s) { var d = window.TNGS_I18N; return (d && Object.prototype.hasO
     };
 
     var OSM = '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
-    var CARTO = OSM + ' © <a href="https://carto.com/attributions">CARTO</a>';
     var ESRI = 'Tiles © Esri';
     var ESRI_URL = 'https://server.arcgisonline.com/ArcGIS/rest/services/';
     // Tous gratuits, sans clé d'API. « z » = niveau de zoom maximal réellement fourni (au-delà, la carte est agrandie au lieu de rester vide).
     var TILES = {
-        carto_light:   { url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', attr: CARTO, z: 19 },
-        carto_voyager: { url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', attr: CARTO, z: 19 },
-        carto_dark:    { url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', attr: CARTO, z: 19 },
         osm:           { url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', attr: OSM, z: 19 },
         osm_fr:        { url: 'https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', attr: OSM + ' · <a href="https://www.openstreetmap.fr/">OpenStreetMap France</a>', z: 20 },
         opentopo:      { url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', attr: OSM + ', SRTM · © <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA)', z: 17 },
@@ -87,7 +83,7 @@ function tngsT(s) { var d = window.TNGS_I18N; return (d && Object.prototype.hasO
         var centuryRadios = root.querySelectorAll('.tng-hm-century input[type="radio"]');
 
         var map = L.map(mapEl, { minZoom: 2 }).setView([20, 0], 2);
-        var tile = TILES[CFG.provider] || TILES.carto_light;
+        var tile = TILES[CFG.provider] || TILES.esri_gray;
         L.tileLayer(tile.url, { attribution: tile.attr, maxNativeZoom: tile.z, maxZoom: 18, subdomains: 'abc' }).addTo(map);
 
         var heatLayer = null;

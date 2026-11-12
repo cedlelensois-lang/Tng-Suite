@@ -766,15 +766,6 @@ msgstr "Advanced features (optional modules)"
 msgid "Fond de carte par défaut"
 msgstr "Default base map"
 
-msgid "CARTO Positron (clair, sobre : idéal pour une heatmap)"
-msgstr "CARTO Positron (light, understated: ideal for a heatmap)"
-
-msgid "CARTO Voyager (routes et noms lisibles)"
-msgstr "CARTO Voyager (readable roads and names)"
-
-msgid "CARTO Dark Matter (sombre)"
-msgstr "CARTO Dark Matter (dark)"
-
 msgid "OpenStreetMap (standard)"
 msgstr "OpenStreetMap (standard)"
 
@@ -799,8 +790,8 @@ msgstr "Esri Satellite"
 msgid "Esri Océans"
 msgstr "Esri Oceans"
 
-msgid "Tous ces fonds sont gratuits, sans clé d’API ni inscription. Ils sont chargés depuis le serveur de leur fournisseur ; pour un site à très forte audience, privilégiez CARTO ou Esri plutôt que les serveurs communautaires d’OpenStreetMap."
-msgstr "All these base maps are free, with no API key or sign-up. They are loaded from their provider’s server; for a very high-traffic site, prefer CARTO or Esri over OpenStreetMap’s community servers."
+msgid "Tous ces fonds sont gratuits, sans clé d’API ni inscription. Ils sont chargés depuis le serveur de leur fournisseur ; pour un site à très forte audience, privilégiez Esri plutôt que les serveurs communautaires d’OpenStreetMap."
+msgstr "All these base maps are free, with no API key or sign-up. They are loaded from their provider’s server; for a very high-traffic site, prefer Esri over OpenStreetMap’s community servers."
 
 msgid "Format"
 msgstr "Format"

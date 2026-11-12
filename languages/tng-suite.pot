@@ -766,15 +766,6 @@ msgstr ""
 msgid "Fond de carte par défaut"
 msgstr ""
 
-msgid "CARTO Positron (clair, sobre : idéal pour une heatmap)"
-msgstr ""
-
-msgid "CARTO Voyager (routes et noms lisibles)"
-msgstr ""
-
-msgid "CARTO Dark Matter (sombre)"
-msgstr ""
-
 msgid "OpenStreetMap (standard)"
 msgstr ""
 
@@ -799,7 +790,7 @@ msgstr ""
 msgid "Esri Océans"
 msgstr ""
 
-msgid "Tous ces fonds sont gratuits, sans clé d’API ni inscription. Ils sont chargés depuis le serveur de leur fournisseur ; pour un site à très forte audience, privilégiez CARTO ou Esri plutôt que les serveurs communautaires d’OpenStreetMap."
+msgid "Tous ces fonds sont gratuits, sans clé d’API ni inscription. Ils sont chargés depuis le serveur de leur fournisseur ; pour un site à très forte audience, privilégiez Esri plutôt que les serveurs communautaires d’OpenStreetMap."
 msgstr ""
 
 msgid "Format"
