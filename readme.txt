@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.37.0
+Stable tag: 1.37.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,7 +80,7 @@ Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding`
 
 == Changelog ==
 
-= 1.37.0 =
+= 1.37.1 =
 * Livre : la vignette du conjoint est affichée à côté de l'union même quand le conjoint a sa propre fiche dans le livre.
 
 = 1.36.6 =

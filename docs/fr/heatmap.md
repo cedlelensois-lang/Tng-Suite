@@ -23,6 +23,7 @@ Carte de chaleur des lieux de naissance, mariage, décès… de l’arbre.
 
 ## Remarques
 
+- Fond de carte : 11 choix, tous gratuits et sans clé d’API (CARTO, OpenStreetMap, OpenStreetMap France, OpenTopoMap, Esri). Positron et Esri Gris clair sont les plus sobres pour lire les couleurs de la heatmap ; Voyager et OpenStreetMap France sont les plus lisibles pour les noms de lieux.
 - Les lieux doivent avoir des coordonnées dans TNG.
 
 ---

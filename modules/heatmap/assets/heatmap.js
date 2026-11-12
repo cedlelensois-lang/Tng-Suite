@@ -14,11 +14,23 @@ function tngsT(s) { var d = window.TNGS_I18N; return (d && Object.prototype.hasO
         burial: '#ff9900'
     };
 
+    var OSM = '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
+    var CARTO = OSM + ' © <a href="https://carto.com/attributions">CARTO</a>';
+    var ESRI = 'Tiles © Esri';
+    var ESRI_URL = 'https://server.arcgisonline.com/ArcGIS/rest/services/';
+    // Tous gratuits, sans clé d'API. « z » = niveau de zoom maximal réellement fourni (au-delà, la carte est agrandie au lieu de rester vide).
     var TILES = {
-        carto_light: { url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', attr: '© CartoDB' },
-        carto_dark: { url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', attr: '© CartoDB' },
-        osm: { url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attr: '© OpenStreetMap' },
-        esri_ocean: { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}', attr: '© Esri' }
+        carto_light:   { url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', attr: CARTO, z: 19 },
+        carto_voyager: { url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', attr: CARTO, z: 19 },
+        carto_dark:    { url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', attr: CARTO, z: 19 },
+        osm:           { url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', attr: OSM, z: 19 },
+        osm_fr:        { url: 'https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', attr: OSM + ' · <a href="https://www.openstreetmap.fr/">OpenStreetMap France</a>', z: 20 },
+        opentopo:      { url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', attr: OSM + ', SRTM · © <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA)', z: 17 },
+        esri_gray:     { url: ESRI_URL + 'Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', attr: ESRI + ' — Esri, HERE, Garmin, OpenStreetMap contributors', z: 16 },
+        esri_street:   { url: ESRI_URL + 'World_Street_Map/MapServer/tile/{z}/{y}/{x}', attr: ESRI + ' — Esri, HERE, Garmin, OpenStreetMap contributors', z: 19 },
+        esri_topo:     { url: ESRI_URL + 'World_Topo_Map/MapServer/tile/{z}/{y}/{x}', attr: ESRI + ' — Esri, HERE, Garmin, USGS, OpenStreetMap contributors', z: 19 },
+        esri_imagery:  { url: ESRI_URL + 'World_Imagery/MapServer/tile/{z}/{y}/{x}', attr: ESRI + ' — Esri, Maxar, Earthstar Geographics', z: 19 },
+        esri_ocean:    { url: ESRI_URL + 'Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}', attr: ESRI + ' — Esri, GEBCO, NOAA', z: 13 }
     };
 
     // Les données sont téléchargées une seule fois même avec plusieurs cartes sur la page.
@@ -76,7 +88,7 @@ function tngsT(s) { var d = window.TNGS_I18N; return (d && Object.prototype.hasO
 
         var map = L.map(mapEl, { minZoom: 2 }).setView([20, 0], 2);
         var tile = TILES[CFG.provider] || TILES.carto_light;
-        L.tileLayer(tile.url, { attribution: tile.attr, maxZoom: 18 }).addTo(map);
+        L.tileLayer(tile.url, { attribution: tile.attr, maxNativeZoom: tile.z, maxZoom: 18, subdomains: 'abc' }).addTo(map);
 
         var heatLayer = null;
         var markers = L.layerGroup().addTo(map);
