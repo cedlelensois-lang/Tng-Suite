@@ -80,6 +80,10 @@ Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding`
 
 == Changelog ==
 
+= 2.1.0-beta.2 =
+* PDF direct intégré : le zip publié sur GitHub (Releases) embarque désormais mPDF (polices DejaVu uniquement, environ quelques Mo) : plus aucune installation à faire pour obtenir le PDF direct, ni pour la génération automatique au format PDF. La publication contrôle automatiquement qu'un PDF valide (accents, gras, italique, alphabets grec et cyrillique) est produit avant d'être mise en ligne.
+* Installation depuis le code source : composer install --no-dev dans modules/book (fichier composer.json fourni).
+
 = 2.1.0-beta.1 =
 * BÊTA — Livre : génération automatique par profil. Pour chaque profil enregistré : fréquence (chaque jour, semaine ou mois), jour et heure ; le livre (PDF, Word, OpenDocument ou HTML, selon le profil) est écrit dans un dossier du serveur, avec rotation (nombre de fichiers conservés réglable), option « seulement si les données ont changé » et e-mail de succès ou d'échec. Bouton « Générer maintenant », téléchargement des fichiers depuis l'administration. Cette pré-version n'est pas proposée en mise à jour automatique : installation manuelle pour la tester.
 * Refonte interne : la construction du livre est séparée de son téléchargement (TNGBook::build).

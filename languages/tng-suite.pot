@@ -1909,7 +1909,7 @@ msgstr ""
 msgid "non configurée"
 msgstr ""
 
-msgid "non disponible. Le livre s’ouvre en page imprimable (Imprimer → Enregistrer en PDF). Pour un PDF direct, installez mPDF dans le dossier du plugin :"
+msgid "non disponible. Le livre s’ouvre en page imprimable (Imprimer → Enregistrer en PDF). mPDF est fourni avec le zip des Releases GitHub (réinstallez le plugin depuis ce zip). Installé depuis le code source, lancez dans le dossier modules/book du plugin :"
 msgstr ""
 
 msgid "par défaut)."

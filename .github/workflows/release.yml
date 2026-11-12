@@ -20,6 +20,20 @@ jobs:
           node-version: 20
       - name: Embarquer les bibliothèques JavaScript (aucun CDN dans le zip)
         run: bash tools/fetch-libs.sh
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: gd, mbstring
+          tools: composer:v2
+      - name: Embarquer mPDF (PDF direct, aucune installation à faire)
+        run: |
+          composer install --no-dev --prefer-dist --no-interaction --working-dir=modules/book
+          # Allègement : on ne garde que les polices DejaVu (utilisées par le livre) et on retire tests et documentation.
+          find modules/book/vendor/mpdf/mpdf/ttfonts -type f ! -name 'DejaVu*' -delete
+          find modules/book/vendor \( -iname tests -o -iname test -o -iname docs -o -iname examples -o -name .github \) -type d -prune -exec rm -rf {} +
+          rm -f modules/book/composer.lock
+          php tools/check-mpdf.php
+          du -sh modules/book/vendor
       - name: Construire le zip (dossier tng-suite/)
         run: |
           mkdir -p /tmp/build/tng-suite

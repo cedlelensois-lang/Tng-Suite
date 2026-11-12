@@ -521,7 +521,7 @@ final class TNGBook {
 
         echo '<p><strong>PDF direct :</strong> ' . (self::mpdf_available()
             ? 'disponible (mPDF détecté).'
-            : 'non disponible. Le livre s’ouvre en page imprimable (Imprimer → Enregistrer en PDF). Pour un PDF direct, installez mPDF dans le dossier du plugin : <code>composer require mpdf/mpdf</code>.')
+            : 'non disponible. Le livre s’ouvre en page imprimable (Imprimer → Enregistrer en PDF). mPDF est fourni avec le zip des Releases GitHub (réinstallez le plugin depuis ce zip). Installé depuis le code source, lancez dans le dossier modules/book du plugin : <code>composer install --no-dev</code>.')
             . '</p>';
         TNGBook_Auto::panel();
         echo '</div>';

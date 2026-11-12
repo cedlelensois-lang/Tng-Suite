@@ -1909,8 +1909,8 @@ msgstr "births"
 msgid "non configurée"
 msgstr "not configured"
 
-msgid "non disponible. Le livre s’ouvre en page imprimable (Imprimer → Enregistrer en PDF). Pour un PDF direct, installez mPDF dans le dossier du plugin :"
-msgstr "not available. The book opens as a printable page (Print → Save as PDF). For a direct PDF, install mPDF in the plugin folder:"
+msgid "non disponible. Le livre s’ouvre en page imprimable (Imprimer → Enregistrer en PDF). mPDF est fourni avec le zip des Releases GitHub (réinstallez le plugin depuis ce zip). Installé depuis le code source, lancez dans le dossier modules/book du plugin :"
+msgstr "not available. The book opens as a printable page (Print → Save as PDF). mPDF is bundled with the GitHub Releases zip (reinstall the plugin from that zip). Installed from source, run this in the plugin’s modules/book folder:"
 
 msgid "par défaut)."
 msgstr "default)."

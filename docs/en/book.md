@@ -43,7 +43,7 @@ Below the profiles, the **Automatic generation** section produces a profile’s 
 Notes:
 
 - WordPress only runs its tasks when the site is visited, so the time is approximate. For an exact time, set up a server cron job that calls `wp-cron.php` (for example every hour).
-- A direct PDF needs mPDF; without it, generating a PDF profile fails (message in the “Last generation” column).
+- Direct PDF uses mPDF, already included in the GitHub Releases zip. If the plugin is installed from source, run `composer install --no-dev` in `modules/book`; without mPDF, generating a PDF profile fails (message in the “Last generation” column).
 - Photos or notes changed without any change to the records are not detected by “only if the data has changed”: use **Generate now**.
 
 ---

@@ -43,7 +43,7 @@ Sous les profils, la section **Génération automatique** permet de produire le 
 Remarques :
 
 - WordPress ne lance ses tâches que lorsque le site est visité : l’heure est approximative. Pour une heure précise, programmez une tâche cron du serveur qui appelle `wp-cron.php` (par exemple toutes les heures).
-- Un PDF direct nécessite mPDF ; sans lui, la génération d’un profil au format PDF échoue (message dans la colonne « Dernière génération »).
+- Le PDF direct utilise mPDF, déjà inclus dans le zip des Releases GitHub. Si le plugin est installé depuis le code source, lancez `composer install --no-dev` dans `modules/book` ; sans mPDF, la génération d’un profil au format PDF échoue (message dans la colonne « Dernière génération »).
 - Les photos ou notes modifiées sans changement des fiches ne sont pas détectées par l’option « seulement si les données ont changé » : utilisez **Générer maintenant**.
 
 ---

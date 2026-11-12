@@ -644,7 +644,7 @@ return array(
 	'naissance' => 'birth',
 	'naissances' => 'births',
 	'non configurée' => 'not configured',
-	'non disponible. Le livre s’ouvre en page imprimable (Imprimer → Enregistrer en PDF). Pour un PDF direct, installez mPDF dans le dossier du plugin :' => 'not available. The book opens as a printable page (Print → Save as PDF). For a direct PDF, install mPDF in the plugin folder:',
+	'non disponible. Le livre s’ouvre en page imprimable (Imprimer → Enregistrer en PDF). mPDF est fourni avec le zip des Releases GitHub (réinstallez le plugin depuis ce zip). Installé depuis le code source, lancez dans le dossier modules/book du plugin :' => 'not available. The book opens as a printable page (Print → Save as PDF). mPDF is bundled with the GitHub Releases zip (reinstall the plugin from that zip). Installed from source, run this in the plugin’s modules/book folder:',
 	'par défaut).' => 'default).',
 	'personnes : réduisez le nombre de générations, ou augmentez le nombre maximum de personnes dans les réglages.' => 'people: reduce the number of generations, or raise the maximum number of people in the settings.',
 	'Nombre maximum de personnes' => 'Maximum number of people',

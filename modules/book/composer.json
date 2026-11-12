@@ -1,0 +1,17 @@
+{
+    "name": "tng-suite/book",
+    "description": "Dépendances du module Livre de TNG Suite : mPDF pour le PDF direct. Le zip des Releases GitHub les embarque déjà ; ce fichier ne sert qu'à une installation depuis le code source (composer install --no-dev).",
+    "type": "project",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "php": ">=7.4",
+        "mpdf/mpdf": "^8.2"
+    },
+    "config": {
+        "platform": { "php": "7.4.33" },
+        "platform-check": false,
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    }
+}
