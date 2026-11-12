@@ -80,6 +80,9 @@ Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding`
 
 == Changelog ==
 
+= 2.1.0-beta.7 =
+* PDF direct : le texte des fiches ne touche plus la photo (espace de 6 mm entre les deux).
+
 = 2.1.0-beta.6 =
 * PDF direct : mise en page des fiches corrigée. Le texte de la fiche passe maintenant à côté de la photo (au lieu de commencer sous la photo en laissant un grand vide) ; la photo est placée dans un bloc flottant et les fiches peuvent se couper entre deux pages, ce que mPDF exige pour ne pas superposer les textes.
 

@@ -2015,7 +2015,7 @@ h2.part-title { text-align: center; border-bottom: 0; font-size: 22pt; letter-sp
 h3.gen { text-align: center; font-size: 13pt; letter-spacing: .08em; border-top: 2px solid %head%; border-bottom: 1px solid %head%; padding: .3em 0; margin: 2em 0 .9em; text-transform: uppercase; letter-spacing: .14em; }
 .fiche { margin: 0 0 1.4em; }
 .fiche img.ph { float: left; margin: 0 .6cm .3cm 0; width: 3cm; }
-.fiche .phw { float: left; width: 3cm; margin: 0 .6cm .3cm 0; }
+.fiche .phw { float: left; width: 3cm; margin: 0 0 .3cm 0; padding-right: .6cm; padding-left: 0; }
 .fiche h4 { font-size: 12.5pt; font-variant: small-caps; letter-spacing: .03em; border-bottom: 1px solid #d8cfcf; padding-bottom: .1em; }
 CSS;
         } elseif ($id === 'modern') {
@@ -2038,7 +2038,7 @@ CSS;
         $raw = $this->cssRaw();
         if ($this->mode !== 'pdf') return $raw;
         $raw = (string) preg_replace('/^@page [^\n]*\n/m', '', $raw, 1);
-        return $raw . ".fiche .phw { float: right; width: 3.2cm; margin: 0 0 .3cm .5cm; }\n.fiche .phw img.ph { float: none; margin: 0; display: block; width: 100%; }\ndiv.fiche, div.fiche.hasnotes { page-break-inside: auto; break-inside: auto; }\n";  // mPDF : « page-break-inside: avoid » casse les blocs flottants (textes superposés)
+        return $raw . ".fiche .phw { float: right; width: 3.2cm; margin: 0 0 .3cm 0; padding-left: .6cm; }\n.fiche .phw img.ph { float: none; margin: 0; display: block; width: 100%; }\ndiv.fiche, div.fiche.hasnotes { page-break-inside: auto; break-inside: auto; }\n";  // mPDF : « page-break-inside: avoid » casse les blocs flottants (textes superposés)
     }
 
     private function cssRaw() {
