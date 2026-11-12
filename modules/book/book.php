@@ -33,7 +33,7 @@ final class TNGBook {
     /** Parties du livre, dans l'ordre par défaut : clé => libellé. */
     public static function partLabels() {
         return [
-            'surn' => 'Page sur le patronyme', 'asc' => 'Ascendance', 'desc' => 'Descendance', 'stats' => 'En chiffres', 'cous' => 'Cousinages et implexes', 'map' => 'Carte des lieux de vie',
+            'surn' => 'Page sur le patronyme', 'asc' => 'Ascendance', 'desc' => 'Descendance', 'stats' => 'En chiffres', 'chrono' => 'Chronologie familiale', 'cous' => 'Cousinages et implexes', 'map' => 'Carte des lieux de vie',
             'idxn' => 'Index des noms', 'idxp' => 'Index des lieux', 'src' => 'Sources',
             'alist' => 'Liste des ascendants', 'dlist' => 'Liste des descendants',
         ];
@@ -45,7 +45,11 @@ final class TNGBook {
         $out = [];
         foreach ((array) $v as $k) if (is_string($k) && in_array($k, $def, true) && !in_array($k, $out, true)) $out[] = $k;
         if ($out && !in_array('surn', $out, true)) array_unshift($out, 'surn');   // profils d'avant la page patronyme : elle s'ouvre en tête
-        foreach ($def as $k) if (!in_array($k, $out, true)) $out[] = $k;
+        foreach ($def as $k) {
+            if (in_array($k, $out, true)) continue;
+            $at = $k === 'chrono' ? array_search('stats', $out, true) : false;   // la chronologie s'ajoute après « En chiffres » dans les anciens ordres
+            if ($at !== false) array_splice($out, $at + 1, 0, [$k]); else $out[] = $k;
+        }
         return $out;
     }
 
@@ -73,7 +77,7 @@ final class TNGBook {
             // Paramètres du livre (tous conservés d'une fois sur l'autre)
             'personID' => '', 'tree' => '', 'lang' => tngs_lang(),
             'gen_up' => 6, 'gen_down' => 4, 'max_people' => self::MAX_PEOPLE, 'living' => 'anonymize', 'place_parts' => 2,
-            'photos' => 1, 'spphotos' => 1, 'generic' => 1, 'sources' => 1, 'index' => 1, 'notes' => 0, 'military' => 0, 'mpf' => 1, 'mini' => 0, 'imgq' => 0, 'trees' => 1, 'stats' => 1, 'stats_first' => 1, 'stats_last' => 1, 'desclist' => 1, 'map' => 0, 'bapt' => 0, 'burial' => 1, 'verbose' => 0, 'country' => 0, 'regions' => 0, 'asclist' => 0, 'resi' => 0, 'sibs' => 0, 'marrage' => 0, 'cous' => 1, 'allunions' => 1, 'order' => ['asc', 'desc', 'stats', 'map', 'idxn', 'idxp', 'src', 'alist', 'dlist'],
+            'photos' => 1, 'spphotos' => 1, 'generic' => 1, 'sources' => 1, 'index' => 1, 'notes' => 0, 'military' => 0, 'mpf' => 1, 'mini' => 0, 'imgq' => 0, 'trees' => 1, 'stats' => 1, 'stats_first' => 1, 'stats_last' => 1, 'desclist' => 1, 'chrono' => 0, 'map' => 0, 'bapt' => 0, 'burial' => 1, 'verbose' => 0, 'country' => 0, 'regions' => 0, 'asclist' => 0, 'resi' => 0, 'sibs' => 0, 'marrage' => 0, 'cous' => 1, 'allunions' => 1, 'order' => ['asc', 'desc', 'stats', 'chrono', 'map', 'idxn', 'idxp', 'src', 'alist', 'dlist'],
             'title' => '', 'author' => '', 'preface' => '', 'surname' => '', 'surname_title' => '', 'format' => 'html', 'template' => 'classic',
             'colors' => TNGBook_Renderer::defaultColors(),
         ];
@@ -213,7 +217,7 @@ final class TNGBook {
         if ($in === '') return '';
         $cands = [];
         if (preg_match('#^https?://#i', $in)) {
-            $rel = (string) parse_url($in, PHP_URL_PATH);
+            $rel = (string) wp_parse_url($in, PHP_URL_PATH);
         } else {
             $rel = $in;
             $cands[] = $in;
@@ -265,7 +269,7 @@ final class TNGBook {
         $out['living'] = in_array($in['living'] ?? '', ['exclude', 'anonymize'], true) ? $in['living'] : 'anonymize';
         if (!tngs_hide_living('book')) $out['living'] = 'include';
         $out['place_parts'] = max(0, min(5, (int) ($in['place_parts'] ?? 2)));
-        foreach (['photos', 'spphotos', 'generic', 'sources', 'index', 'notes', 'military', 'mpf', 'mini', 'imgq', 'trees', 'stats', 'stats_first', 'stats_last', 'desclist', 'map', 'bapt', 'burial', 'verbose', 'country', 'regions', 'asclist', 'resi', 'sibs', 'marrage', 'cous', 'allunions'] as $k) {
+        foreach (['photos', 'spphotos', 'generic', 'sources', 'index', 'notes', 'military', 'mpf', 'mini', 'imgq', 'trees', 'stats', 'stats_first', 'stats_last', 'desclist', 'chrono', 'map', 'bapt', 'burial', 'verbose', 'country', 'regions', 'asclist', 'resi', 'sibs', 'marrage', 'cous', 'allunions'] as $k) {
             $out[$k] = empty($in[$k]) ? 0 : 1;
         }
         $out['order'] = self::clean_order($in['order'] ?? null);
@@ -380,6 +384,7 @@ final class TNGBook {
             . self::chk('trees', 'Arbres visuels : un arbre (Nom (code)) en ouverture de l’ascendance et de la descendance, et des arbres classiques en cases (génération en évidence) à chaque génération', $o)
             . self::chk('asclist', 'Liste des ascendants (tableau récapitulatif : n° Sosa, naissance, conjoint, décès, âge), placée avant la liste des descendants', $o)
             . self::chk('desclist', 'Liste des descendants (tableau récapitulatif : n° d’Aboville, naissance, conjoint, décès, âge) à la toute fin du document', $o)
+            . self::chk('chrono', 'Chronologie familiale : naissances, mariages et décès des personnes du livre classés par date et par décennie (position réglable dans « Ordre des parties »)', $o)
             . self::chk('stats', 'Chapitre « En chiffres » (statistiques, histogrammes, complétude de l’ascendance, frise) et chiffres clés sur la page de titre', $o)
             . self::chk('stats_first', '— dans « En chiffres » : prénoms les plus fréquents', $o)
             . self::chk('stats_last', '— dans « En chiffres » : noms de famille les plus fréquents', $o)
@@ -591,7 +596,7 @@ final class TNGBook {
                 'root' => $pid, 'up' => $up, 'down' => $down,
                 'photos' => (bool) $o['photos'], 'spphotos' => (bool) $o['spphotos'], 'generic' => (bool) $o['generic'],
                 'sources' => (bool) $o['sources'], 'index' => (bool) $o['index'],
-                'notes' => (bool) $o['notes'], 'military' => (bool) $o['military'], 'mpf' => !empty($o['mpf']), 'mini' => !empty($o['mini']), 'imgq' => !empty($o['imgq']), 'trees' => !empty($o['trees']), 'stats' => !empty($o['stats']), 'stats_first' => !empty($o['stats_first']), 'stats_last' => !empty($o['stats_last']), 'desclist' => !empty($o['desclist']), 'map' => !empty($o['map']), 'bapt' => !empty($o['bapt']), 'burial' => !empty($o['burial']), 'verbose' => !empty($o['verbose']), 'country' => !empty($o['country']), 'regions' => !empty($o['regions']), 'asclist' => !empty($o['asclist']), 'resi' => !empty($o['resi']), 'sibs' => !empty($o['sibs']), 'cous' => !empty($o['cous']), 'allunions' => !empty($o['allunions']), 'marrage' => !empty($o['marrage']),
+                'notes' => (bool) $o['notes'], 'military' => (bool) $o['military'], 'mpf' => !empty($o['mpf']), 'mini' => !empty($o['mini']), 'imgq' => !empty($o['imgq']), 'trees' => !empty($o['trees']), 'stats' => !empty($o['stats']), 'stats_first' => !empty($o['stats_first']), 'stats_last' => !empty($o['stats_last']), 'desclist' => !empty($o['desclist']), 'chrono' => !empty($o['chrono']), 'map' => !empty($o['map']), 'bapt' => !empty($o['bapt']), 'burial' => !empty($o['burial']), 'verbose' => !empty($o['verbose']), 'country' => !empty($o['country']), 'regions' => !empty($o['regions']), 'asclist' => !empty($o['asclist']), 'resi' => !empty($o['resi']), 'sibs' => !empty($o['sibs']), 'cous' => !empty($o['cous']), 'allunions' => !empty($o['allunions']), 'marrage' => !empty($o['marrage']),
                 'debug' => $debug, 'place_parts' => (int) $o['place_parts'],
                 'title' => $o['title'], 'author' => $o['author'], 'preface' => $o['preface'], 'surname' => (string) ($o['surname'] ?? ''), 'surname_title' => (string) ($o['surname_title'] ?? ''), 'colors' => $o['colors'] ?? [],
                 'template' => $o['template'] ?? 'classic', 'order' => self::clean_order($o['order'] ?? null),
@@ -621,7 +626,7 @@ final class TNGBook {
             header('Content-Disposition: attachment; filename="livre-genealogique-' . preg_replace('/[^\w\-.]/', '_', $pid) . '.' . $format . '"');
             header('Content-Length: ' . filesize($file));
             readfile($file);
-            @unlink($file);
+            wp_delete_file($file);
             exit;
         }
         if ($format === 'pdf') {

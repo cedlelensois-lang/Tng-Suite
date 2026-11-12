@@ -496,7 +496,7 @@ class TNGBook_Renderer {
         if (get_transient('tngbook_cache_purge')) return;
         set_transient('tngbook_cache_purge', 1, HOUR_IN_SECONDS);
         foreach ((array) glob($imgDir . '/*.{jpg,jpeg,png,gif,webp}', GLOB_BRACE) as $f) {
-            if (is_file($f) && filemtime($f) < time() - DAY_IN_SECONDS) @unlink($f);
+            if (is_file($f) && filemtime($f) < time() - DAY_IN_SECONDS) wp_delete_file($f);
         }
     }
 
@@ -562,7 +562,7 @@ class TNGBook_Renderer {
         $dest = $dir . '/img/' . $base . '.jpg';
         $name = $base . '.jpg';
         $mime = 'image/jpeg';
-        if (file_exists($dest) && filesize($dest) < 100) @unlink($dest);   // fichier de cache vide ou tronqué : on le refait
+        if (file_exists($dest) && filesize($dest) < 100) wp_delete_file($dest);   // fichier de cache vide ou tronqué : on le refait
         if (!file_exists($dest)) {
             $done = false;
             $ed = wp_get_image_editor($file);
@@ -1474,7 +1474,7 @@ class TNGBook_Renderer {
         $w = imagesx($g); $h = imagesy($g);
         if ($w > $target) {
             $n = imagescale($g, $target, (int) max(1, round($h * $target / $w)), IMG_BICUBIC);
-            if ($n) { imagedestroy($g); $g = $n; $w = imagesx($g); $h = imagesy($g); }
+            if ($n) { if (PHP_VERSION_ID < 80000) imagedestroy($g); $g = $n; $w = imagesx($g); $h = imagesy($g); }
         }
         $alpha = false;
         if ($mime !== 'image/jpeg') {
@@ -1487,10 +1487,10 @@ class TNGBook_Renderer {
         if ($alpha) { imagesavealpha($g, true); imagepng($g, null, 8); $out = 'image/png'; }
         else {
             $flat = imagecreatetruecolor($w, $h); imagefill($flat, 0, 0, imagecolorallocate($flat, 255, 255, 255)); imagecopy($flat, $g, 0, 0, 0, 0, $w, $h);
-            imagejpeg($flat, null, 80); $out = 'image/jpeg'; imagedestroy($flat);
+            imagejpeg($flat, null, 80); $out = 'image/jpeg'; if (PHP_VERSION_ID < 80000) imagedestroy($flat);   // sans effet depuis PHP 8.0, obsolète en 8.5
         }
         $new = (string) ob_get_clean();
-        imagedestroy($g);
+        if (PHP_VERSION_ID < 80000) imagedestroy($g);
         if ($new === '' || strlen($new) >= strlen($bin)) return $src;   // pas de gain : on garde l'original
         return ['data:' . $out . ';base64,' . base64_encode($new), $w0, $new, $out];
     }
@@ -1845,6 +1845,69 @@ class TNGBook_Renderer {
         return $this->listTable('p-alist', 'al_title', 'al_intro', 'al_num', $rows);
     }
 
+    /** Chronologie familiale : naissances, mariages et décès des personnes du livre, classés par date et regroupés par décennie. */
+    private function chronoPart() {
+        $d = $this->d;
+        $L = $this->L;
+        $ids = [];
+        foreach ($d->sosa as $pid) $ids[$pid] = 'A';
+        foreach ($d->desc as $pid => $info) if (!isset($ids[$pid])) $ids[$pid] = 'D';
+        foreach ($d->dupPid as $pid) if (!isset($ids[$pid])) $ids[$pid] = 'D';
+        $ev = [];
+        $add = function ($tr, $txt, $kind, $html, $sortName, $place, $extra = '') use (&$ev) {
+            $pd = self::pd($tr);
+            if (!$pd) return;
+            $ev[] = ['y' => $pd[0], 'm' => $pd[1], 'd' => $pd[2], 'k' => $kind, 'n' => $sortName, 'date' => $this->dShort($tr, $txt), 'html' => $html, 'place' => $place, 'extra' => $extra];
+        };
+        $who = function ($pid) use ($ids) {
+            $r = $this->refAny($pid, $ids[$pid] ?? 'A');
+            return '<strong>' . $this->e($this->plain($pid)) . '</strong>' . ($r ? ' <span class="cref">(' . $this->link($r) . ')</span>' : '');
+        };
+        $famDone = [];
+        foreach ($ids as $pid => $kind) {
+            $p = $d->people[$pid] ?? null;
+            if (!$p || $d->hidden($pid) || $d->dropped($pid)) continue;
+            $nm = $this->plain($pid);
+            $isB = trim((string) $p['birthdate']) !== '' && self::pd($p['birthdatetr']);
+            $btr = $isB ? $p['birthdatetr'] : ($p['baptdatetr'] ?? '');
+            $btx = $isB ? $p['birthdate'] : ($p['baptdate'] ?? '');
+            $bpl = $isB ? trim((string) $p['birthplace']) : trim((string) ($p['baptplace'] ?? ''));
+            $add($btr, $btx, 1, $this->e($isB ? $L['ch_birth'] : $L['ch_bapt']) . ' ' . $who($pid), $nm, $bpl);
+            $isD = trim((string) $p['deathdate']) !== '' && self::pd($p['deathdatetr']);
+            $dtr = $isD ? $p['deathdatetr'] : ($p['burialdatetr'] ?? '');
+            $dtx = $isD ? $p['deathdate'] : ($p['burialdate'] ?? '');
+            $dpl = $isD ? trim((string) $p['deathplace']) : trim((string) ($p['burialplace'] ?? ''));
+            $age = $this->ageYears($p['birthdatetr'] ?: ($p['baptdatetr'] ?? ''), $dtr);
+            $add($dtr, $dtx, 3, $this->e($isD ? $L['ch_death'] : $L['ch_buried']) . ' ' . $who($pid), $nm, $dpl, $age !== '' ? str_replace('{n}', $age, $L['ch_age']) : '');
+            foreach ($d->famsOf[$pid] ?? [] as $fid) {
+                if (isset($famDone[$fid])) continue;
+                $famDone[$fid] = 1;
+                $f = $d->fams[$fid] ?? null;
+                if (!$f || trim((string) $f['marrdate']) === '') continue;
+                $h = $f['husband']; $w = $f['wife'];
+                if (!$h || !$w || !isset($d->people[$h], $d->people[$w]) || $d->hidden($h) || $d->hidden($w)) continue;
+                $add($f['marrdatetr'], $f['marrdate'], 2, $this->e($L['ch_marr_a']) . ' ' . $who($h) . ' ' . $this->e($L['ch_marr_b']) . ' ' . $who($w), $this->plain($h), $this->placeShort((string) $f['marrplace']));
+            }
+        }
+        if (count($ev) < 2) return '';
+        usort($ev, function ($a, $b) {
+            foreach (['y', 'm', 'd', 'k'] as $k) if ($a[$k] !== $b[$k]) return $a[$k] - $b[$k];
+            return strcmp($a['n'], $b['n']);
+        });
+        $root = $this->plain($this->o['root']);
+        $h = '<div class="part chrono">' . $this->part('p-chrono', $L['ch_title']) . '<p class="src">' . $this->e(str_replace('{name}', $root, $L['ch_intro'])) . '</p>';
+        $h .= '<table class="st"><tr><th>' . $this->e($L['ch_date']) . '</th><th>' . $this->e($L['ch_event']) . '</th></tr>';
+        $dec = null;
+        foreach ($ev as $e) {
+            $dc = (int) (floor($e['y'] / 10) * 10);
+            if ($dc !== $dec) { $dec = $dc; $h .= '<tr class="genrow"><td colspan="2" class="gh">' . $this->e(str_replace('{y}', (string) $dc, $L['ch_decade'])) . '</td></tr>'; }
+            $pl = $this->placeShort((string) $e['place']);
+            $more = trim(($pl !== '' ? $pl : '') . ($e['extra'] !== '' ? ($pl !== '' ? ', ' : '') . $e['extra'] : ''));
+            $h .= '<tr class="k' . (int) $e['k'] . '"><td class="dt">' . $this->e($e['date']) . '</td><td>' . $e['html'] . ($more !== '' ? '<br><span class="un">' . $this->e($more) . '</span>' : '') . '</td></tr>';
+        }
+        return $h . '</table></div>';
+    }
+
     private function refLinks(array $refs) {
         $keys = array_keys($refs);
         usort($keys, function ($a, $b) { return strnatcmp($a, $b); });
@@ -2019,6 +2082,14 @@ p.mpf .fl i:nth-child(3) { background: #c8102e; }
 .dlist table.st td.gh { font-weight: bold; color: %head%; background: #f3eded; border-bottom: 1.5px solid %tree%; padding: 4px; font-size: 9pt; }
 .dlist table.st .un { color: %meta%; font-size: 7.5pt; }
 .dlist table.st tr.genrow { page-break-after: avoid; }
+.chrono table.st { border-collapse: collapse; width: 100%; font-size: 9pt; line-height: 1.3; margin: .3em 0; }
+.chrono table.st th { text-align: left; color: %head%; border-bottom: 1.5px solid %tree%; padding: 2px 4px; }
+.chrono table.st td { padding: 3px 4px; border-bottom: 1px solid #e6dede; vertical-align: top; }
+.chrono table.st td.dt { white-space: nowrap; width: 22%; color: %meta%; }
+.chrono table.st td.gh { font-weight: bold; color: %head%; background: #f3eded; border-bottom: 1.5px solid %tree%; padding: 4px; font-size: 9.5pt; }
+.chrono table.st .un, .chrono .cref { color: %meta%; font-size: 8pt; }
+.chrono table.st tr { page-break-inside: avoid; }
+.chrono table.st tr.genrow { page-break-after: avoid; }
 .stats .chart { text-align: center; margin: .2em 0 .8em; }
 .cover-stats { margin-top: 1.2cm; font-size: 11pt; color: %meta%; }
 .tree .cap { font-size: 9pt; color: %meta%; font-style: italic; text-align: center; margin: .3em 0 0; }
@@ -2083,6 +2154,7 @@ CSS;
         $run('src', function () { return $this->sourcesPart(); });
         if (!empty($o['asclist']) && $o['up'] > 0) $run('alist', function () { return $this->ascListPart(); });
         if (!empty($o['desclist']) && $o['down'] > 0) $run('dlist', function () { return $this->descListPart(); });
+        if (!empty($o['chrono'])) $run('chrono', function () { return $this->chronoPart(); });
         $order = TNGBook::clean_order($o['order'] ?? null);
         $body = ''; $this->toc = $tocPre;
         foreach ($order as $k) {

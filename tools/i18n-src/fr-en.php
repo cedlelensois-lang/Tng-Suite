@@ -832,6 +832,8 @@ return array(
 	'Les siècles avec moins de' => 'Centuries with fewer than',
 	'Personnes nées il y a moins de 100 ans exclues (générations incomplètes).' => 'People born less than 100 years ago are excluded (incomplete generations).',
 	'Page sur le patronyme' => 'Surname page',
+	'Chronologie familiale' => 'Family chronology',
+	'Chronologie familiale : naissances, mariages et décès des personnes du livre classés par date et par décennie (position réglable dans « Ordre des parties »)' => 'Family chronology: births, marriages and deaths of the people in the book, sorted by date and grouped by decade (position adjustable in “Order of parts”)',
 	'Texte de présentation du patronyme (origine, signification, répartition…) : mise en forme, listes, tableaux (mode « Texte ») et images (bouton Ajouter un média). Vide = pas de page. La page fait partie du livre : elle se place dans « Ordre des parties » et s’enregistre dans le profil du livre. Les images (JPEG, PNG, GIF) sont intégrées au PDF, à Word et à OpenDocument.' => 'Introductory text about the surname (origin, meaning, distribution…): formatting, lists, tables (Text mode) and images (Add Media button). Empty = no page. The page is part of the book: it is placed with “Order of the book’s parts” and saved in the book profile. Images (JPEG, PNG, GIF) are embedded in the PDF, Word and OpenDocument files.',
 	'Ordre des parties du livre' => 'Order of the book’s parts',
 	'Les parties désactivées plus haut (statistiques, carte, index, listes…) sont simplement ignorées. Les index sont toujours complets, quelle que soit leur place.' => 'Parts switched off above (statistics, map, indexes, lists…) are simply skipped. The indexes are always complete, wherever they are placed.',

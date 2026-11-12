@@ -70,7 +70,7 @@ $cache  = $upload['basedir'] . '/tngbook-cache';
 if ( is_dir( $cache ) ) {
     $it = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $cache, FilesystemIterator::SKIP_DOTS ), RecursiveIteratorIterator::CHILD_FIRST );
     foreach ( $it as $f ) {
-        $f->isDir() ? @rmdir( $f->getRealPath() ) : @unlink( $f->getRealPath() );
+        $f->isDir() ? @rmdir( $f->getRealPath() ) : wp_delete_file( $f->getRealPath() );
     }
     @rmdir( $cache );
 }
