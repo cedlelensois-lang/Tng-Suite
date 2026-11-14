@@ -22,7 +22,7 @@ $options = array(
     // Galerie
     'tng_mg_cache_minutes', 'tng_mg_thumb_height', 'tng_mg_thumb_width', 'tng_mg_display_mode', 'tng_mg_cache_ver',
     // Random
-    'tri_photo_dir', 'tri_cache_minutes', 'tri_show_photo', 'tri_show_name', 'tri_show_dates', 'tri_cache_version',
+    'tri_photo_dir', 'tri_cache_minutes', 'tri_show_photo', 'tri_show_name', 'tri_show_dates', 'tri_avatar', 'tri_cache_version',
     // Extra
     'tng_exsc_gen',
     // Éventail

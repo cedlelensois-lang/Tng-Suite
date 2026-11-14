@@ -1053,4 +1053,11 @@ return array(
 	'Monter' => 'Move up',
 	'Descendre' => 'Move down',
 	'PDF direct :' => 'Direct PDF:',
+	'Silhouette sans photo' => 'Placeholder without photo',
+	'Portrait (cercle sur fond clair)' => 'Portrait (circle on a light background)',
+	'Rond (sans fond)' => 'Round (no background)',
+	'Image affichée quand l\'individu n\'a pas de photo dans TNG.' => 'Image shown when the individual has no photo in TNG.',
+	'Image affichée quand l’individu n’a pas de photo dans TNG.' => 'Image shown when the individual has no photo in TNG.',
+	'Style des silhouettes génériques' => 'Style of generic silhouettes',
+	'Utilisé quand « Silhouettes génériques » est coché, pour les personnes sans photo.' => 'Used when “Generic silhouettes” is checked, for people without a photo.',
 );

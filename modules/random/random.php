@@ -18,6 +18,7 @@ function tri_defaults() {
         'tri_photo_dir'     => 'photos',
         'tri_cache_minutes' => 720, // 12 h ; 0 = pas de cache
         'tri_show_photo'    => 1,
+        'tri_avatar'        => 'portrait', // silhouette sans photo : portrait (cercle sur fond clair) ou round (rond, sans fond)
         'tri_show_name'     => 1,
         'tri_show_dates'    => 1,
         'tri_cache_version' => 1,
@@ -211,7 +212,8 @@ function tri_render($p) {
             : $base . ($dir !== '' ? $dir . '/' : '') . ltrim($thumb, '/');
     } else {
         $sx  = strtoupper((string) $p['sex']);
-        $src = plugin_dir_url(__FILE__) . 'img/' . ($sx === 'M' ? 'male' : ($sx === 'F' ? 'female' : 'unknown')) . '.jpg';
+        $img = ($sx === 'M' ? 'male' : ($sx === 'F' ? 'female' : 'unknown'));
+        $src = plugin_dir_url(__FILE__) . 'img/' . $img . ('round' === tri_opt('tri_avatar') ? '-round.png' : '.jpg');
     }
 
     $out = '<div class="tri-wrapper">';

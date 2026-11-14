@@ -18,7 +18,7 @@ Affiche une personne tirée au hasard (ou un nom précis).
 
 ## Utilisation
 
-1. Réglez le contenu affiché sur la page du module.
+1. Réglez le contenu affiché sur la page du module (dont le style de la silhouette sans photo : portrait ou rond).
 2. Collez le shortcode ; name limite le tirage à un nom de famille, tree à un arbre.
 
 ## Résultat sur le site

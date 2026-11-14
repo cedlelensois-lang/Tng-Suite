@@ -18,7 +18,7 @@ Shows a random person (or a given surname).
 
 ## How to use
 
-1. Set the displayed content on the module page.
+1. Set the displayed content on the module page (including the style of the placeholder for people without a photo: portrait or round).
 2. Paste the shortcode; name limits the draw to a surname, tree to a tree.
 
 ## Result on the site

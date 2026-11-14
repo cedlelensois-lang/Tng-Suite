@@ -26,7 +26,8 @@ La page comporte trois onglets : **Générer un livre**, **Réglages** et **Vue 
 
 ## Remarques
 
-- Page sur le patronyme : un éditeur (mise en forme, tableaux, images) permet de rédiger une page de présentation du nom ; elle est enregistrée dans le profil du livre et se place dans « Ordre des parties ». Vide = pas de page.
+- Page sur le patronyme : un éditeur (mise en forme, tableaux, images) permet de rédiger une page de présentation du nom ; elle est enregistrée dans le profil du livre et se place dans « Ordre des parties ». Vide = pas de page. Les images alignées à gauche ou à droite dans l’éditeur gardent leur place, avec le texte autour, dans le PDF, le Word et l’OpenDocument.
+- Silhouettes : pour les personnes sans photo, « Style des silhouettes génériques » permet de choisir entre le portrait (cercle sur fond clair) et le rond (sans fond).
 - Chronologie familiale : option à cocher (désactivée par défaut) ; ajoute une partie qui liste, par ordre chronologique et regroupés par décennie, les naissances, mariages et décès des personnes du livre (avec renvoi vers leur fiche, lieu et âge au décès). Les personnes masquées (vivantes) en sont exclues. Elle se place dans « Ordre des parties » comme toutes les autres.
 - Chaque partie commence sur une nouvelle page.
 - Le shortcode [tng_book] ouvre le générateur aux visiteurs connectés si l’option est activée.

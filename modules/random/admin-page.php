@@ -18,6 +18,10 @@ function tri_register_settings() {
         'type' => 'integer', 'sanitize_callback' => 'absint', 'default' => $d['tri_cache_minutes'],
     ]);
 
+    register_setting($g, 'tri_avatar', [
+        'type' => 'string', 'sanitize_callback' => function ($v) { return 'round' === $v ? 'round' : 'portrait'; }, 'default' => $d['tri_avatar'],
+    ]);
+
     foreach (['tri_show_photo', 'tri_show_name', 'tri_show_dates'] as $cb) {
         register_setting($g, $cb, [
             'type' => 'integer',
@@ -141,6 +145,16 @@ function tri_settings_page_html() {
         <h2>Affichage</h2>
         <table class="form-table" role="presentation">
             <tr><th>Afficher photo</th><td><input type="checkbox" name="tri_show_photo" value="1" <?php checked(tri_opt('tri_show_photo'), 1); ?>></td></tr>
+            <tr>
+                <th><label for="tri_avatar">Silhouette sans photo</label></th>
+                <td>
+                    <select id="tri_avatar" name="tri_avatar">
+                        <option value="portrait" <?php selected(tri_opt('tri_avatar'), 'portrait'); ?>>Portrait (cercle sur fond clair)</option>
+                        <option value="round" <?php selected(tri_opt('tri_avatar'), 'round'); ?>>Rond (sans fond)</option>
+                    </select>
+                    <p class="description">Image affichée quand l'individu n'a pas de photo dans TNG.</p>
+                </td>
+            </tr>
             <tr><th>Afficher nom/prénom</th><td><input type="checkbox" name="tri_show_name" value="1" <?php checked(tri_opt('tri_show_name'), 1); ?>></td></tr>
             <tr><th>Afficher dates</th><td><input type="checkbox" name="tri_show_dates" value="1" <?php checked(tri_opt('tri_show_dates'), 1); ?>></td></tr>
         </table>

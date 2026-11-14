@@ -80,6 +80,10 @@ Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding`
 
 == Changelog ==
 
+= 2.2.0-beta.1 =
+* Livre : dans le Word et l'OpenDocument, les images alignées à gauche ou à droite dans le texte de la page patronyme gardent leur place, avec le texte autour (elles étaient recentrées sous le paragraphe).
+* Livre et module « Individu au hasard » : nouveau réglage « Style des silhouettes » pour les personnes sans photo, entre « Portrait » (cercle sur fond clair, comme avant) et « Rond » (sans fond). Par défaut : portrait, rien ne change.
+
 = 2.1.0 =
 * Livre : génération automatique par profil (fonction encore jeune, signalée « Bêta » dans l'écran). Pour chaque profil : fréquence (chaque jour, semaine ou mois), jour et heure ; le livre (PDF, Word, OpenDocument ou HTML, selon le profil) est écrit dans un dossier du serveur (protégé par défaut, ou le dossier de votre choix, par exemple un dossier synchronisé avec OneDrive), avec rotation des anciens fichiers, option « seulement si les données ont changé » et notification par e-mail.
 * Livre : la page d'administration est organisée en trois onglets, comme l'éventail : « Générer un livre », « Réglages » et « Vue d'ensemble des profils ». Quand des profils existent, « Générer un livre » n'affiche d'abord que le choix du profil (formulaire avec « Nouveau livre » ou en chargeant un profil).

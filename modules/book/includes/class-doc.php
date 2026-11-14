@@ -13,6 +13,7 @@ class TNGBook_Doc {
     private $pb = false;           // saut de page avant le prochain paragraphe
     private $pendBm = [];          // signets en attente
     private $pendImg = null;       // photo à ancrer au prochain paragraphe
+    private $pendFloat = [];       // images du texte libre (patronyme) alignées à gauche / à droite : ancrées au prochain paragraphe de texte, le texte les entoure
     private $usedBm = [];
     private $groups = [];         // fiche => clé de la photo (tableau texte | photo)
     private $gid = 0;
@@ -84,6 +85,7 @@ class TNGBook_Doc {
                     if (self::has($n, 'notice')) $c['just'] = true;
                     if (self::has($n, 'toc')) $c['toc'] = true;
                     $this->walk($n, $c);
+                    if (self::has($n, 'surn')) $this->flushFloats($c);   // image flottante restée sans paragraphe : elle prend sa place sous forme d'image seule
                     break;
                 case 'table': $this->tableBlock($n, $c); break;
                 case 'h1': $this->heading($n, 'title', $c); break;
@@ -93,6 +95,7 @@ class TNGBook_Doc {
                 case 'h5': $this->heading($n, 'h4', $c); break;
                 case 'p': $this->paragraph($n, $c); break;
                 case 'img':
+                    if (self::has($n, 'tfloat')) { $this->floatOf($n); break; }
                     if (self::has($n, 'tpng')) {          // schéma d'arbre : image seule, centrée
                         $k = $this->image($n->getAttribute('src'));
                         if ($k) {
@@ -103,6 +106,7 @@ class TNGBook_Doc {
                     }
                     if (!self::has($n, 'ph')) { $this->pendImg = $this->image($n->getAttribute('src')); break; }
                     $this->pendImg = $this->image($n->getAttribute('src'));
+                    if ($this->pendImg && self::has($n, 'rnd')) $this->images[$this->pendImg]['rnd'] = true;   // silhouette ronde : pas de cadre carré autour
                     break;
                 case 'ul': case 'ol': $this->listOf($n, $c, 0); break;
                 default: $this->walk($n, $c);
@@ -199,6 +203,7 @@ class TNGBook_Doc {
             $tag = strtolower($n->tagName);
             $s = $st;
             if ($tag === 'br') { $runs[] = ['br' => true]; continue; }
+            if ($tag === 'img' && self::has($n, 'tfloat')) { $this->floatOf($n); continue; }
             if ($tag === 'svg' || $tag === 'img') continue;
             if ($n->hasAttribute('id')) $this->pendBm[] = self::bmName($n->getAttribute('id'));
             if ($tag === 'strong' || $tag === 'b') $s['b'] = true;
@@ -217,6 +222,20 @@ class TNGBook_Doc {
             foreach ($this->inlineOf($n->childNodes, $ctx, $s) as $r) $runs[] = $r;
         }
         return $runs;
+    }
+
+    /** Image alignée à gauche / à droite dans le texte libre : mise en attente jusqu'au prochain paragraphe de texte. */
+    private function floatOf(DOMElement $n) {
+        $k = $this->image($n->getAttribute('src'));
+        if (!$k) return;
+        $this->pendFloat[] = ['k' => $k, 'cm' => max(1.0, (float) $n->getAttribute('data-cm')), 'side' => $n->getAttribute('data-side') === 'right' ? 'right' : 'left'];
+    }
+
+    private function flushFloats(array $c) {
+        foreach ($this->pendFloat as $f) {
+            $this->blocks[] = ['fig' => $f['k'], 'cm' => $f['cm'], 'cols' => !empty($c['cols']), 'pb' => false, 'bm' => [], 'runs' => [], 'style' => 'body', 'o' => [], 'img' => null];
+        }
+        $this->pendFloat = [];
     }
 
     private function image($src) {
@@ -239,8 +258,9 @@ class TNGBook_Doc {
         $hasText = false;
         foreach ($runs as $r) if (isset($r['t']) || isset($r['br'])) { $hasText = true; break; }
         if (!$hasText && !$this->pendImg) { return; }
-        $b = ['runs' => $runs, 'style' => $style, 'o' => $o, 'cols' => !empty($ctx['cols']), 'pb' => $this->pb, 'bm' => $this->pendBm, 'img' => $this->pendImg];
+        $b = ['runs' => $runs, 'style' => $style, 'o' => $o, 'cols' => !empty($ctx['cols']), 'pb' => $this->pb, 'bm' => $this->pendBm, 'img' => $this->pendImg, 'flt' => ($style === 'body' && $hasText) ? $this->pendFloat : []];
         $this->pb = false; $this->pendBm = []; $this->pendImg = null;
+        if ($style === 'body' && $hasText) $this->pendFloat = [];
         $this->blocks[] = $b;
     }
 
@@ -298,7 +318,7 @@ class TNGBook_Doc {
             $rels .= '<Relationship Id="' . $rid . '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/' . $im['name'] . '"/>';
             $zip->addFromString('word/media/' . $im['name'], $im['bin']);
         }
-        $bmId = 0; $docPr = 0; $body = '';
+        $bmId = 0; $docPr = 0; $relH = 0; $body = '';
         $open = null;
         $gap = '<w:p><w:pPr><w:spacing w:before="0" w:after="60" w:line="120" w:lineRule="exact"/></w:pPr></w:p>';
         $colsOn = false; $secCount = 0; $openCols = false;
@@ -378,6 +398,21 @@ class TNGBook_Doc {
                 if (isset($this->usedBm[$name])) continue;
                 $this->usedBm[$name] = 1; $bmId++;
                 $x .= '<w:bookmarkStart w:id="' . $bmId . '" w:name="' . $name . '"/><w:bookmarkEnd w:id="' . $bmId . '"/>';
+            }
+            foreach ($b['flt'] ?? [] as $f) {   // image à gauche / à droite : ancrée dans le paragraphe, le texte l'entoure
+                $im = $this->images[$f['k']]; $docPr++; $relH++;
+                $cm = min($f['cm'], $colsOn ? 4.0 : 10.0);
+                $cx = (int) round($cm * 360000); $cy = (int) round($cx * $im['h'] / $im['w']);
+                $left = $f['side'] === 'left';
+                $x .= '<w:r><w:drawing><wp:anchor distT="0" distB="72000" distL="' . ($left ? 0 : 216000) . '" distR="' . ($left ? 216000 : 0) . '" simplePos="0" relativeHeight="' . (251650000 + $relH) . '" behindDoc="0" locked="0" layoutInCell="1" allowOverlap="0">'
+                    . '<wp:simplePos x="0" y="0"/><wp:positionH relativeFrom="column"><wp:align>' . ($left ? 'left' : 'right') . '</wp:align></wp:positionH><wp:positionV relativeFrom="paragraph"><wp:posOffset>0</wp:posOffset></wp:positionV>'
+                    . '<wp:extent cx="' . $cx . '" cy="' . $cy . '"/><wp:effectExtent l="0" t="0" r="0" b="0"/><wp:wrapSquare wrapText="bothSides"/>'
+                    . '<wp:docPr id="' . $docPr . '" name="Image ' . $docPr . '"/><wp:cNvGraphicFramePr/>'
+                    . '<a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture">'
+                    . '<pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:nvPicPr><pic:cNvPr id="' . $docPr . '" name="' . $im['name'] . '"/><pic:cNvPicPr/></pic:nvPicPr>'
+                    . '<pic:blipFill><a:blip r:embed="' . $media[$f['k']] . '"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill>'
+                    . '<pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="' . $cx . '" cy="' . $cy . '"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic>'
+                    . '</a:graphicData></a:graphic></wp:anchor></w:drawing></w:r>';
             }
             foreach ($b['runs'] as $r) {
                 if (!empty($r['br'])) { $x .= '<w:r><w:br/></w:r>'; continue; }
@@ -503,7 +538,7 @@ class TNGBook_Doc {
         $photoCell = function ($g, $cols) use (&$frame, $reg) {
             $im = $this->images[$this->groups[$g]]; $frame++;
             $w = $cols ? 2.0 : 3.2; $h = round($w * $im['h'] / $im['w'], 3);
-            return '</table:table-cell><table:table-cell table:style-name="CellB" office:value-type="string"><text:p text:style-name="PhotoP"><draw:frame draw:style-name="fr1" draw:name="Photo' . $frame . '" text:anchor-type="as-char" svg:width="' . $w . 'cm" svg:height="' . $h . 'cm"><draw:image xlink:href="Pictures/' . $im['name'] . '" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/></draw:frame></text:p></table:table-cell></table:table-row></table:table>';
+            return '</table:table-cell><table:table-cell table:style-name="CellB" office:value-type="string"><text:p text:style-name="PhotoP"><draw:frame draw:style-name="' . (!empty($im['rnd']) ? 'fr2' : 'fr1') . '" draw:name="Photo' . $frame . '" text:anchor-type="as-char" svg:width="' . $w . 'cm" svg:height="' . $h . 'cm"><draw:image xlink:href="Pictures/' . $im['name'] . '" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/></draw:frame></text:p></table:table-cell></table:table-row></table:table>';
         };
         foreach ($this->blocks as $b) {
             $g = $b['grp'] ?? null;
@@ -555,6 +590,11 @@ class TNGBook_Doc {
                 $bmUsed[$name] = 1;
                 $inner .= '<text:bookmark text:name="' . $name . '"/>';
             }
+            foreach ($b['flt'] ?? [] as $f) {   // image à gauche / à droite : ancrée au paragraphe, le texte l'entoure
+                $im = $this->images[$f['k']]; $frame++;
+                $cm = min($f['cm'], $colsOn ? 4.0 : 10.0); $hc = round($cm * $im['h'] / $im['w'], 3);
+                $inner .= '<draw:frame draw:style-name="' . ($f['side'] === 'left' ? 'frFL' : 'frFR') . '" draw:name="Image' . $frame . '" text:anchor-type="paragraph" svg:width="' . round($cm, 3) . 'cm" svg:height="' . $hc . 'cm" draw:z-index="' . $frame . '"><draw:image xlink:href="Pictures/' . $im['name'] . '" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/></draw:frame>';
+            }
             foreach ($b['runs'] as $r) {
                 if (!empty($r['br'])) { $inner .= '<text:line-break/>'; continue; }
                 $tp = '';
@@ -578,7 +618,11 @@ class TNGBook_Doc {
         $autoXml = '';
         foreach ($auto as $a) $autoXml .= $a[1];
         $ns = 'xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0" xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0" xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0" xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0" xmlns:draw="urn:oasis:names:tc:opendocument:xmlns:drawing:1.0" xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0"';
-        $fr = '<style:style style:name="fr1" style:family="graphic"><style:graphic-properties style:wrap="none" style:vertical-pos="top" style:vertical-rel="baseline" fo:border="0.5pt solid #bbbbbb"/></style:style>'
+        $fl = 'style:wrap="parallel" style:number-wrapped-paragraphs="no-limit" style:wrap-contour="false" style:vertical-pos="top" style:vertical-rel="paragraph" style:horizontal-rel="paragraph" fo:padding="0cm" fo:border="none"';
+        $fr = '<style:style style:name="frFL" style:family="graphic"><style:graphic-properties ' . $fl . ' style:horizontal-pos="left" fo:margin-left="0cm" fo:margin-right="0.45cm" fo:margin-top="0.05cm" fo:margin-bottom="0.2cm"/></style:style>'
+            . '<style:style style:name="frFR" style:family="graphic"><style:graphic-properties ' . $fl . ' style:horizontal-pos="right" fo:margin-left="0.45cm" fo:margin-right="0cm" fo:margin-top="0.05cm" fo:margin-bottom="0.2cm"/></style:style>'
+            . '<style:style style:name="fr2" style:family="graphic"><style:graphic-properties style:wrap="none" style:vertical-pos="top" style:vertical-rel="baseline" fo:border="none"/></style:style>'
+            . '<style:style style:name="fr1" style:family="graphic"><style:graphic-properties style:wrap="none" style:vertical-pos="top" style:vertical-rel="baseline" fo:border="0.5pt solid #bbbbbb"/></style:style>'
             . '<style:style style:name="Tbl" style:family="table"><style:table-properties style:width="17cm" table:align="left" fo:margin-bottom="0.25cm"/></style:style>'
             . '<style:style style:name="TblA" style:family="table-column"><style:table-column-properties style:column-width="13.6cm"/></style:style>'
             . '<style:style style:name="TblB" style:family="table-column"><style:table-column-properties style:column-width="3.4cm"/></style:style>'

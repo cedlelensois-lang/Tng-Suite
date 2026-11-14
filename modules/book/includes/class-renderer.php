@@ -9,7 +9,7 @@ class TNGBook_Renderer {
     private $d, $L, $lang, $o, $mode;
     use TNGBook_StatsView;
 
-    private $Ls = [], $tpl = [], $names = [], $places = [], $srcNum = [], $srcOrder = [], $toc = [], $av = [], $dbg = [];
+    private $Ls = [], $tpl = [], $names = [], $places = [], $srcNum = [], $srcOrder = [], $toc = [], $av = [], $avRnd = [], $dbg = [];
 
     /** $mode : 'html' (images par URL) ou 'pdf' (images intégrées en base64) */
     public function __construct($d, $lang, array $o, $mode) {
@@ -590,7 +590,13 @@ class TNGBook_Renderer {
     /** Silhouette générique homme / femme / inconnu (PNG généré avec GD, sinon SVG). */
     private function avatar($s) {
         if (isset($this->av[$s])) return $this->av[$s];
-        $f = TNGBOOK_DIR . 'assets/img/' . ($s === 'M' ? 'male' : ($s === 'F' ? 'female' : 'unknown')) . '.jpg';
+        $n = $s === 'M' ? 'male' : ($s === 'F' ? 'female' : 'unknown');
+        $f = TNGBOOK_DIR . 'assets/img/' . $n . '-round.png';
+        if (($this->o['avatar'] ?? '') === 'round' && file_exists($f)) {   // silhouette ronde (PNG à fond transparent)
+            $this->avRnd[$s] = true;
+            return $this->av[$s] = $this->asset($f, TNGBOOK_URL . 'assets/img/' . basename($f), 'image/png');
+        }
+        $f = TNGBOOK_DIR . 'assets/img/' . $n . '.jpg';
         if (file_exists($f)) {
             return $this->av[$s] = $this->asset($f, TNGBOOK_URL . 'assets/img/' . basename($f), 'image/jpeg');
         }
@@ -639,9 +645,13 @@ class TNGBook_Renderer {
                 $src = $this->cachedPhoto($this->d->photos[$pid], $who);
             }
         }
-        if ($src === '' && $this->o['generic']) $src = $this->avatar($sex);
+        $rnd = false;
+        if ($src === '' && $this->o['generic']) {
+            $src = $this->avatar($sex);
+            $rnd = !empty($this->avRnd[$sex]);
+        }
         if ($src === '') return '';
-        $img = '<img class="ph" src="' . esc_attr($src) . '" alt="">';
+        $img = '<img class="ph' . ($rnd ? ' rnd' : '') . '" src="' . esc_attr($src) . '" alt="">';
         // mPDF ne fait pas contourner une image flottante par les paragraphes suivants : la photo est placée dans un bloc flottant (PDF direct uniquement).
         return $this->mode === 'pdf' ? '<div class="phw">' . $img . '</div>' : $img;
     }
@@ -1399,7 +1409,8 @@ class TNGBook_Renderer {
             $px = (float) $im->getAttribute('width');
             $cm = min(15.0, max(1.0, ($px > 0 ? $px : $src[1]) * 0.02646));
             if (!empty($this->o['imgq'])) $src = $this->surnameShrink($src, $cm);   // l'image est ramenée à la taille réellement imprimée (150 ppp) : PDF et Word restent légers
-            $cls = ' ' . strtolower($im->getAttribute('class')) . ' ' . strtolower($im->getAttribute('style')) . ' ' . strtolower($im->getAttribute('align')) . ' ';
+            $pcls = ($im->parentNode instanceof DOMElement && strtolower($im->parentNode->nodeName) === 'figure') ? strtolower($im->parentNode->getAttribute('class')) : '';   // éditeur par blocs : l'alignement est sur <figure>
+            $cls = ' ' . strtolower($im->getAttribute('class')) . ' ' . $pcls . ' ' . strtolower($im->getAttribute('style')) . ' ' . strtolower($im->getAttribute('align')) . ' ';
             $side = (strpos($cls, 'alignleft') !== false || preg_match('/float:\s*left|\sleft\s/', $cls)) ? 'left'
                 : ((strpos($cls, 'alignright') !== false || preg_match('/float:\s*right|\sright\s/', $cls)) ? 'right' : (strpos($cls, 'aligncenter') !== false ? 'center' : ''));
             if ($this->mode !== 'doc') {   // page imprimable / PDF : l'image reste à sa place, le texte l'entoure comme dans l'éditeur
@@ -1410,16 +1421,27 @@ class TNGBook_Renderer {
                 $im->setAttribute('style', $st . 'width:' . round($cm, 2) . 'cm;max-width:' . ($side === 'center' || $side === '' ? '100%' : '60%') . ';height:auto');
                 continue;
             }
+            $par = $im->parentNode;
+            $inCell = false;
+            for ($x = $par; $x && $x !== $root; $x = $x->parentNode) if (in_array(strtolower($x->nodeName), ['td', 'th'], true)) $inCell = true;
+            if (($side === 'left' || $side === 'right') && !$inCell) {
+                // Word / OpenDocument : l'image reste dans son paragraphe, alignée comme dans l'éditeur, et le texte l'entoure.
+                $new = $dom->createElement('img');
+                $new->setAttribute('class', 'tfloat');
+                $new->setAttribute('data-side', $side);
+                $new->setAttribute('data-cm', (string) round(min($cm, 10.0), 2));
+                $new->setAttribute('src', $src[0]);
+                $new->setAttribute('alt', $im->getAttribute('alt'));
+                $par->replaceChild($new, $im);
+                continue;
+            }
             $new = $dom->createElement('img');
             $new->setAttribute('class', 'tpng');
             $new->setAttribute('data-cm', (string) round($cm, 2));
             $new->setAttribute('style', 'display:block;margin:.6em auto;max-width:100%;height:auto');
             $new->setAttribute('src', $src[0]);
             $new->setAttribute('alt', $im->getAttribute('alt'));
-            // l'image passe après le bloc qui la contient (Word / OpenDocument n'acceptent pas les images dans un paragraphe) ; dans une cellule de tableau elle est retirée.
-            $par = $im->parentNode;
-            $inCell = false;
-            for ($x = $par; $x && $x !== $root; $x = $x->parentNode) if (in_array(strtolower($x->nodeName), ['td', 'th'], true)) $inCell = true;
+            // l'image passe après le bloc qui la contient (images non alignées) ; dans une cellule de tableau elle est retirée.
             $im->parentNode->removeChild($im);
             if ($inCell) continue;
             $top = $par;
@@ -2058,6 +2080,7 @@ h3.gen { font-size: 13pt; text-align: center; text-transform: uppercase; letter-
 .fiche img.ph { float: right; width: 3.2cm; height: auto; margin: 0 0 .3cm .5cm; border: 1px solid #bbb; }
 .fiche h4 { margin: 0 0 .3em; font-size: 12.5pt; color: %name%; }
 .fiche p { margin: .25em 0; text-align: justify; }
+.fiche img.ph.rnd { border: 0; }
 .fiche img.ph.sp { float: left; width: 1.5cm; margin: .1cm .25cm .1cm 0; border: 1px solid #bbb; }
 .num { font-weight: bold; color: %head%; margin-right: .3em; }
 .yrs { font-weight: normal; color: %meta%; font-size: 10pt; }

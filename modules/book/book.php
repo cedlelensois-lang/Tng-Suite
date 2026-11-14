@@ -78,7 +78,7 @@ final class TNGBook {
             // Paramètres du livre (tous conservés d'une fois sur l'autre)
             'personID' => '', 'tree' => '', 'lang' => tngs_lang(),
             'gen_up' => 6, 'gen_down' => 4, 'max_people' => self::MAX_PEOPLE, 'living' => 'anonymize', 'place_parts' => 2,
-            'photos' => 1, 'spphotos' => 1, 'generic' => 1, 'sources' => 1, 'index' => 1, 'notes' => 0, 'military' => 0, 'mpf' => 1, 'mini' => 0, 'imgq' => 0, 'trees' => 1, 'stats' => 1, 'stats_first' => 1, 'stats_last' => 1, 'desclist' => 1, 'chrono' => 0, 'map' => 0, 'bapt' => 0, 'burial' => 1, 'verbose' => 0, 'country' => 0, 'regions' => 0, 'asclist' => 0, 'resi' => 0, 'sibs' => 0, 'marrage' => 0, 'cous' => 1, 'allunions' => 1, 'order' => ['asc', 'desc', 'stats', 'chrono', 'map', 'idxn', 'idxp', 'src', 'alist', 'dlist'],
+            'photos' => 1, 'spphotos' => 1, 'generic' => 1, 'avatar' => 'portrait', 'sources' => 1, 'index' => 1, 'notes' => 0, 'military' => 0, 'mpf' => 1, 'mini' => 0, 'imgq' => 0, 'trees' => 1, 'stats' => 1, 'stats_first' => 1, 'stats_last' => 1, 'desclist' => 1, 'chrono' => 0, 'map' => 0, 'bapt' => 0, 'burial' => 1, 'verbose' => 0, 'country' => 0, 'regions' => 0, 'asclist' => 0, 'resi' => 0, 'sibs' => 0, 'marrage' => 0, 'cous' => 1, 'allunions' => 1, 'order' => ['asc', 'desc', 'stats', 'chrono', 'map', 'idxn', 'idxp', 'src', 'alist', 'dlist'],
             'title' => '', 'author' => '', 'preface' => '', 'surname' => '', 'surname_title' => '', 'format' => 'html', 'template' => 'classic',
             'colors' => TNGBook_Renderer::defaultColors(),
         ];
@@ -277,6 +277,7 @@ final class TNGBook {
         $out['living'] = in_array($in['living'] ?? '', ['exclude', 'anonymize'], true) ? $in['living'] : 'anonymize';
         if (!tngs_hide_living('book')) $out['living'] = 'include';
         $out['place_parts'] = max(0, min(5, (int) ($in['place_parts'] ?? 2)));
+        $out['avatar'] = (($in['avatar'] ?? '') === 'round') ? 'round' : 'portrait';
         foreach (['photos', 'spphotos', 'generic', 'sources', 'index', 'notes', 'military', 'mpf', 'mini', 'imgq', 'trees', 'stats', 'stats_first', 'stats_last', 'desclist', 'chrono', 'map', 'bapt', 'burial', 'verbose', 'country', 'regions', 'asclist', 'resi', 'sibs', 'marrage', 'cous', 'allunions'] as $k) {
             $out[$k] = empty($in[$k]) ? 0 : 1;
         }
@@ -369,6 +370,7 @@ final class TNGBook {
             }
         }
         self::select('Niveaux de lieux affichés', 'place_parts', ['1' => 'Commune seule', '2' => 'Commune, département', '3' => '3 niveaux', '0' => 'Lieu complet'], $o['place_parts']);
+        self::select('Style des silhouettes génériques', 'avatar', ['portrait' => 'Portrait (cercle sur fond clair)', 'round' => 'Rond (sans fond)'], $o['avatar'] ?? 'portrait', 'Utilisé quand « Silhouettes génériques » est coché, pour les personnes sans photo.');
         echo '<tr><th>Contenu</th><td>'
             . self::chk('photos', 'Photos TNG (uniquement celles au statut « Photo par défaut »)', $o)
             . self::chk('spphotos', 'Photo du conjoint (petite vignette à côté de l’union)', $o)
@@ -679,7 +681,7 @@ final class TNGBook {
 
         $opts = [
             'root' => $pid, 'up' => $up, 'down' => $down,
-            'photos' => (bool) $o['photos'], 'spphotos' => (bool) $o['spphotos'], 'generic' => (bool) $o['generic'],
+            'photos' => (bool) $o['photos'], 'spphotos' => (bool) $o['spphotos'], 'generic' => (bool) $o['generic'], 'avatar' => ($o['avatar'] ?? '') === 'round' ? 'round' : 'portrait',
             'sources' => (bool) $o['sources'], 'index' => (bool) $o['index'],
             'notes' => (bool) $o['notes'], 'military' => (bool) $o['military'], 'mpf' => !empty($o['mpf']), 'mini' => !empty($o['mini']), 'imgq' => !empty($o['imgq']), 'trees' => !empty($o['trees']), 'stats' => !empty($o['stats']), 'stats_first' => !empty($o['stats_first']), 'stats_last' => !empty($o['stats_last']), 'desclist' => !empty($o['desclist']), 'chrono' => !empty($o['chrono']), 'map' => !empty($o['map']), 'bapt' => !empty($o['bapt']), 'burial' => !empty($o['burial']), 'verbose' => !empty($o['verbose']), 'country' => !empty($o['country']), 'regions' => !empty($o['regions']), 'asclist' => !empty($o['asclist']), 'resi' => !empty($o['resi']), 'sibs' => !empty($o['sibs']), 'cous' => !empty($o['cous']), 'allunions' => !empty($o['allunions']), 'marrage' => !empty($o['marrage']),
             'debug' => $debug, 'place_parts' => (int) $o['place_parts'],

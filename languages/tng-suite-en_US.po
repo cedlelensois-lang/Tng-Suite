@@ -3133,6 +3133,27 @@ msgstr "Move down"
 msgid "PDF direct :"
 msgstr "Direct PDF:"
 
+msgid "Silhouette sans photo"
+msgstr "Placeholder without photo"
+
+msgid "Portrait (cercle sur fond clair)"
+msgstr "Portrait (circle on a light background)"
+
+msgid "Rond (sans fond)"
+msgstr "Round (no background)"
+
+msgid "Image affichée quand l'individu n'a pas de photo dans TNG."
+msgstr "Image shown when the individual has no photo in TNG."
+
+msgid "Image affichée quand l’individu n’a pas de photo dans TNG."
+msgstr "Image shown when the individual has no photo in TNG."
+
+msgid "Style des silhouettes génériques"
+msgstr "Style of generic silhouettes"
+
+msgid "Utilisé quand « Silhouettes génériques » est coché, pour les personnes sans photo."
+msgstr "Used when “Generic silhouettes” is checked, for people without a photo."
+
 msgctxt "js"
 msgid " Page "
 msgstr " Page "

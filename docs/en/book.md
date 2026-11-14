@@ -26,7 +26,8 @@ The page has three tabs: **Generate a book**, **Settings** and **Overview of pro
 
 ## Notes
 
-- Surname page: an editor (formatting, tables, images) lets you write an introduction to the surname; it is saved in the book profile and placed with “Order of the book’s parts”. Empty = no page.
+- Surname page: an editor (formatting, tables, images) lets you write an introduction to the surname; it is saved in the book profile and placed with “Order of the book’s parts”. Empty = no page. Images aligned left or right in the editor keep their place, with the text wrapping around them, in the PDF, Word and OpenDocument outputs.
+- Silhouettes: for people without a photo, “Style of generic silhouettes” lets you choose between the portrait (circle on a light background) and the round version (no background).
 - Family chronology: tick-box option (off by default); adds a part listing the births, marriages and deaths of the people in the book in date order, grouped by decade (with a link to each record, the place and the age at death). Hidden (living) people are left out. It is placed with “Order of the book’s parts” like any other part.
 - Each part starts on a new page.
 - The [tng_book] shortcode opens the generator to logged-in visitors if enabled.
