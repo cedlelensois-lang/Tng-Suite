@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.1.0
+Stable tag: 2.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,7 +80,7 @@ Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding`
 
 == Changelog ==
 
-= 2.2.0-beta.1 =
+= 2.2.0 =
 * Livre : dans le Word et l'OpenDocument, les images alignées à gauche ou à droite dans le texte de la page patronyme gardent leur place, avec le texte autour (elles étaient recentrées sous le paragraphe).
 * Livre et module « Individu au hasard » : nouveau réglage « Style des silhouettes » pour les personnes sans photo, entre « Portrait » (cercle sur fond clair, comme avant) et « Rond » (sans fond). Par défaut : portrait, rien ne change.
 
