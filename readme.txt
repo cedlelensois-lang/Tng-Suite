@@ -80,6 +80,10 @@ Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding`
 
 == Changelog ==
 
+= 2.3.0-beta.1 =
+* Livre : nouveau bouton « Générer en arrière-plan » (et « En arrière-plan » pour chaque profil, dans la vue d'ensemble). Pour un gros livre, que l'hébergeur coupe avant la fin (erreur 500 après une longue attente), le livre est préparé par une tâche planifiée du serveur : un panneau affiche l'état et l'avancement (lecture de la base, mise en page, création du PDF…), propose l'annulation, puis le téléchargement quand le livre est prêt. Une interruption par l'hébergeur est détectée et expliquée (dernière étape atteinte, mémoire utilisée). Fonctionne pour tous les formats ; le fichier est déposé dans le dossier de la génération automatique.
+* Désinstallation : la tâche planifiée de génération automatique et l'état de la génération en arrière-plan sont aussi supprimés.
+
 = 2.2.1 =
 * PDF direct : les gros livres (beaucoup de photos) ne provoquent plus d'erreur 500. Les images sont confiées à mPDF une seule fois chacune (mémoire nettement réduite), le plugin demande plus de mémoire et de temps au serveur quand il l'autorise, et un manque de ressources affiche un message explicite avec la marche à suivre (« Compresser les images », moins de générations, ou Word / OpenDocument).
 * Livre > Réglages : la ligne « PDF direct » explique précisément ce qui manque quand mPDF est absent (installer tng-suite.zip des Assets de la Release, pas « Source code (zip) »).

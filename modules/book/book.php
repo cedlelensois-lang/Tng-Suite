@@ -22,10 +22,18 @@ require_once TNGBOOK_DIR . 'includes/class-country.php';
 require_once TNGBOOK_DIR . 'includes/trait-stats-view.php';
 require_once TNGBOOK_DIR . 'includes/class-renderer.php';
 require_once TNGBOOK_DIR . 'includes/class-auto.php';
+require_once TNGBOOK_DIR . 'includes/class-bg.php';
 
 final class TNGBook {
     const OPT = 'tngbook_options';
+    public static $progress = null;      // rappel (phase, avancement 0..1) appelé pendant la génération en arrière-plan ; peut lever une exception pour l'interrompre
+    public static $unlimited = false;    // génération en arrière-plan : pas de limite de temps imposée par build()
     const MAX_PEOPLE = 4000;   // valeur de départ du réglage « nombre maximum de personnes » (0 = illimité)
+
+    /** Signale l'avancement de la génération (sans effet hors génération en arrière-plan). */
+    public static function beat($phase, $pct = null) {
+        if (self::$progress) call_user_func(self::$progress, $phase, $pct);
+    }
 
     public static function langs() {
         return ['fr' => 'Français', 'en' => 'English (UK)', 'es' => 'Español', 'ca' => 'Català'];
@@ -480,10 +488,11 @@ final class TNGBook {
         if (!current_user_can('manage_options')) return;
         $o = self::opts();
         tngs_admin_header('Livre généalogique', array('module' => 'book'));
+        TNGBook_Bg::panel();
 
         $m = isset($_GET['tngbook_msg']) ? sanitize_key(wp_unslash($_GET['tngbook_msg'])) : '';   // phpcs:ignore WordPress.Security.NonceVerification.Recommended
         $new = isset($_GET['new']);                                                              // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-        $show = !self::profiles() || $new || isset($_GET['settings-updated']) || in_array($m, ['loaded', 'saved', 'noname', 'full'], true);   // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $show = !self::profiles() || $new || isset($_GET['settings-updated']) || in_array($m, ['loaded', 'saved', 'noname', 'full', 'bg_queued', 'bg_busy', 'bg_noid', 'bg_nogen'], true);   // phpcs:ignore WordPress.Security.NonceVerification.Recommended
         $act = $new ? '' : self::active_name();
         self::profile_panel($show);
         if (!$show) {
@@ -505,7 +514,9 @@ final class TNGBook {
             . '<button type="submit" class="button" name="action" value="tngbook_profile_save" formaction="' . esc_url(admin_url('admin-post.php')) . '">' . esc_html(tngs_t('Enregistrer comme profil')) . '</button>'
             . ($act !== '' ? ' <button type="submit" class="button button-primary" name="action" value="tngbook_profile_save" formaction="' . esc_url(admin_url('admin-post.php')) . '" onclick="this.form.insertAdjacentHTML(\'beforeend\',\'<input type=hidden name=tngbook_profile_update value=1>\')">' . esc_html(tngs_t('Mettre à jour le profil actif')) . '</button>' : '')
             . '</span> '
-            . '<button type="submit" class="button button-primary" name="action" value="tngbook_generate" formaction="' . esc_url(admin_url('admin-post.php')) . '" formtarget="_blank">Enregistrer et générer le livre</button></p>';
+            . '<button type="submit" class="button button-primary" name="action" value="tngbook_generate" formaction="' . esc_url(admin_url('admin-post.php')) . '" formtarget="_blank">Enregistrer et générer le livre</button> '
+            . '<button type="submit" class="button" name="action" value="tngbook_bg_start" formaction="' . esc_url(admin_url('admin-post.php')) . '">' . esc_html(tngs_t('Générer en arrière-plan')) . '</button></p>'
+            . '<p class="description" style="max-width:900px">' . esc_html(tngs_t('Pour un gros livre : « Générer en arrière-plan » prépare le livre sur le serveur sans faire attendre cette page (utile quand l’hébergeur coupe les traitements trop longs). Vous suivez l’avancement ici et téléchargez le fichier quand il est prêt.')) . '</p>';
         echo '</form></div>';
     }
 
@@ -662,7 +673,7 @@ final class TNGBook {
         elseif (in_array($o['format'], ['docx', 'odt'], true) && TNGBook_Doc::available()) $format = $o['format'];
         if ($strict && $format !== $o['format']) throw new Exception(tngs_t('Le format demandé n’est pas disponible sur ce serveur :') . ' ' . $o['format']);
 
-        @set_time_limit(300);
+        if (!self::$unlimited) @set_time_limit(300);
         wp_raise_memory_limit('admin');
 
         $db = self::db();
@@ -676,6 +687,7 @@ final class TNGBook {
             else throw new Exception(tngs_t('Cet identifiant existe dans plusieurs arbres') . ' (' . implode(', ', $found) . ') : ' . tngs_t('précisez l’arbre.'));
         }
 
+        self::beat('data');
         $data = new TNGBook_Data($db, $o['prefix'], $tree, $o['living']);
         if ($up > 0) $data->buildAscendants($pid, $up); else $data->loadPeople([$pid]);
         if ($down > 0) $data->buildDescendants($pid, $down);
@@ -700,10 +712,12 @@ final class TNGBook {
         if ($opts['stats']) $data->loadStatsData();
         if (!empty($opts['resi'])) $data->loadResidences($data->featured());
         if (!empty($opts['map'])) { $fp = $data->featured(); $data->loadMapData($fp, TNGBook_Map::allPlaces($data, $fp)); }
+        self::beat('render');
         $isDoc = in_array($format, ['docx', 'odt'], true);
         $rend = new TNGBook_Renderer($data, $lang, $opts, $isDoc ? 'doc' : $format);
         $html = $rend->render();
         if ($isDoc) {
+            self::beat('convert');
             $file = TNGBook_Doc::convert($html, array_merge(TNGBook_Renderer::defaultColors(), (array) $opts['colors']), [
                 'title' => $opts['title'] !== '' ? $opts['title'] : 'Livre généalogique', 'author' => $opts['author'], 'lang' => $lang,
                 'tpl' => $rend->docSpec(),
@@ -725,10 +739,12 @@ final class TNGBook {
         ]);
         $mpdf->SetCompression(true);
         $mpdf->SetFooter('{PAGENO}');
+        self::beat('images');
         $html = self::pdf_images($mpdf, (string) $html);
         self::pdf_write($mpdf, $html);
         $html = '';
         $mpdf->imageVars = [];   // les images sont désormais dans le PDF : mémoire libérée avant l'écriture du fichier
+        self::beat('output');
         $mpdf->Output($name, $dest);
     }
 
@@ -752,7 +768,7 @@ final class TNGBook {
             $why = $mem ? tngs_t('Mémoire insuffisante sur le serveur') : (stripos($e['message'], 'execution time') !== false ? tngs_t('Temps d’exécution dépassé sur le serveur') : tngs_t('Erreur du serveur'));
             if (!headers_sent()) { status_header(500); header('Content-Type: text/html; charset=utf-8'); }
             echo '<!doctype html><meta charset="utf-8"><body style="font-family:sans-serif;max-width:640px;margin:3em auto;line-height:1.5"><h2>' . esc_html(tngs_t('Le PDF n’a pas pu être généré')) . '</h2><p>' . esc_html($why) . '. '
-                . esc_html(tngs_t('Le livre est trop lourd pour ce serveur. Cochez « Compresser les images » (photos réduites : fichier bien plus léger), réduisez le nombre de générations ou de photos, ou choisissez le format Word / OpenDocument.')) . '</p></body>';
+                . esc_html(tngs_t('Le livre est trop lourd pour ce serveur. Cochez « Compresser les images » (photos réduites : fichier bien plus léger), essayez « Générer en arrière-plan », réduisez le nombre de générations ou de photos, ou choisissez le format Word / OpenDocument.')) . '</p></body>';
         });
     }
 
@@ -824,6 +840,7 @@ final class TNGBook {
         if ($widest * 2 > (int) ini_get('pcre.backtrack_limit')) @ini_set('pcre.backtrack_limit', (string) ($widest * 2));   // un tableau très long reste d'un seul tenant
         $from = 0;
         foreach ($cuts as $n => $to) {
+            self::beat('write', $n / count($cuts));
             $mpdf->WriteHTML(substr($body, $from, $to - $from), \Mpdf\HTMLParserMode::HTML_BODY, $n === 0, $n === count($cuts) - 1);
             $from = $to;
         }
@@ -849,3 +866,4 @@ final class TNGBook {
 
 TNGBook::init();
 TNGBook_Auto::init();
+TNGBook_Bg::init();

@@ -48,5 +48,19 @@ Notes:
 - Direct PDF uses mPDF, already included in the GitHub Releases zip. If the plugin is installed from source, run `composer install --no-dev` in `modules/book`; without mPDF, generating a PDF profile fails (message in the “Last generation” column).
 - Photos or notes changed without any change to the records are not detected by “only if the data has changed”: use **Generate now**.
 
+## Background generation (beta)
+
+For a large book (hundreds of pages, many photos), the host may cut the page off before it finishes (“Error 500” after a long wait). The **Generate in the background** button (next to “Save and generate the book”) avoids this: the book is prepared by a scheduled server task, without keeping the page waiting.
+
+1. Set up the book as usual (PDF, Word, OpenDocument or HTML), then click **Generate in the background**. In the **Overview of profiles** tab, the **In the background** button does the same for a saved profile.
+2. A status panel appears at the top of the **Generate a book** tab: waiting, in progress (step and progress), then **Book ready** with the download button. You can leave the page.
+3. The file is placed in the automatic generation folder (**Settings** tab); the **Cancel** button stops a running job.
+
+Notes:
+
+- One job at a time. If the host stops the process, the panel says so (“Generation interrupted”) with the last step reached: tick “Compress images”, reduce the number of generations or choose the Word format.
+- Like automatic generation, the task relies on WP-Cron (see above). If it stays “waiting”, set up a server cron task that calls `wp-cron.php`.
+- An e-mail can be sent at the end (common automatic generation setting).
+
 ---
 [← Module guide](README.md)

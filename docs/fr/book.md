@@ -48,5 +48,19 @@ Remarques :
 - Le PDF direct utilise mPDF, déjà inclus dans le zip des Releases GitHub. Si le plugin est installé depuis le code source, lancez `composer install --no-dev` dans `modules/book` ; sans mPDF, la génération d’un profil au format PDF échoue (message dans la colonne « Dernière génération »).
 - Les photos ou notes modifiées sans changement des fiches ne sont pas détectées par l’option « seulement si les données ont changé » : utilisez **Générer maintenant**.
 
+## Génération en arrière-plan (bêta)
+
+Pour un gros livre (plusieurs centaines de pages, beaucoup de photos), l’hébergeur peut couper la page avant la fin (« Error 500 » après une longue attente). Le bouton **Générer en arrière-plan** (à côté de « Enregistrer et générer le livre ») évite ce piège : le livre est préparé par une tâche planifiée du serveur, sans faire attendre la page.
+
+1. Réglez le livre comme d’habitude (PDF, Word, OpenDocument ou HTML), puis cliquez sur **Générer en arrière-plan**. Dans l’onglet **Vue d’ensemble des profils**, le bouton **En arrière-plan** fait la même chose pour un profil enregistré.
+2. Un panneau d’état s’affiche en haut de l’onglet **Générer un livre** : en attente, en cours (étape et avancement), puis **Livre prêt** avec le bouton de téléchargement. Vous pouvez quitter la page.
+3. Le fichier est déposé dans le dossier de la génération automatique (onglet **Réglages**) ; le bouton **Annuler** arrête un travail en cours.
+
+Remarques :
+
+- Un seul travail à la fois. Si l’hébergeur arrête le traitement, le panneau l’indique (« Génération interrompue ») avec la dernière étape atteinte : cochez « Compresser les images », réduisez le nombre de générations ou choisissez le format Word.
+- Comme la génération automatique, la tâche repose sur WP-Cron (voir ci-dessus). Si elle reste « en attente », programmez une tâche cron du serveur qui appelle `wp-cron.php`.
+- Un e-mail peut être envoyé à la fin (réglage commun de la génération automatique).
+
 ---
 [← Guide des modules](README.md)

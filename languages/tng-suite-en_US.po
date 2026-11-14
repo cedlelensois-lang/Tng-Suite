@@ -3178,8 +3178,119 @@ msgstr "Server error"
 msgid "Le PDF n’a pas pu être généré"
 msgstr "The PDF could not be generated"
 
-msgid "Le livre est trop lourd pour ce serveur. Cochez « Compresser les images » (photos réduites : fichier bien plus léger), réduisez le nombre de générations ou de photos, ou choisissez le format Word / OpenDocument."
-msgstr "The book is too heavy for this server. Check “Compress images” (smaller photos: a much lighter file), reduce the number of generations or photos, or choose the Word / OpenDocument format."
+msgid "Génération annulée."
+msgstr "Generation cancelled."
+
+msgid "Le traitement s’est arrêté sans message"
+msgstr "Processing stopped without any message"
+
+msgid "En attente de démarrage…"
+msgstr "Waiting to start…"
+
+msgid "Le planificateur interne de WordPress est désactivé sur ce site : le travail démarrera au prochain passage de la tâche cron du serveur (wp-cron.php)."
+msgstr "WordPress's internal scheduler is disabled on this site: the job will start the next time the server's cron task (wp-cron.php) runs."
+
+msgid "Le travail démarre dès que WordPress lance ses tâches planifiées (quelques secondes, ou à la prochaine visite du site)."
+msgstr "The job starts as soon as WordPress runs its scheduled tasks (a few seconds, or at the next visit to the site)."
+
+msgid "Toujours en attente ? Les tâches planifiées semblent ne pas s’exécuter : l’hébergeur peut bloquer les appels du site vers lui-même. Programmez une tâche cron du serveur qui appelle wp-cron.php, ou demandez à l’hébergeur."
+msgstr "Still waiting? Scheduled tasks do not seem to run: the host may block the site's calls to itself. Set up a server cron task that calls wp-cron.php, or ask your host."
+
+msgid "Annuler"
+msgstr "Cancel"
+
+msgid "Annulation en cours…"
+msgstr "Cancelling…"
+
+msgid "Génération interrompue"
+msgstr "Generation interrupted"
+
+msgid "Aucun signe d’activité depuis"
+msgstr "No sign of activity for"
+
+msgid "Le serveur a très probablement arrêté le traitement (limite de temps ou de mémoire de l’hébergeur)."
+msgstr "The server most likely stopped the process (the host's time or memory limit)."
+
+msgid "Dernière étape atteinte :"
+msgstr "Last step reached:"
+
+msgid "Pistes : cochez « Compresser les images », réduisez le nombre de générations ou de photos, choisissez le format Word / OpenDocument, ou demandez à l’hébergeur d’allonger la limite de temps des tâches planifiées (ou programmez une tâche cron du serveur qui appelle wp-cron.php)."
+msgstr "Things to try: tick “Compress images”, reduce the number of generations or photos, choose the Word / OpenDocument format, or ask your host to extend the time limit for scheduled tasks (or set up a server cron task that calls wp-cron.php)."
+
+msgid "Effacer ce message"
+msgstr "Dismiss this message"
+
+msgid "En cours"
+msgstr "In progress"
+
+msgid "Vous pouvez quitter cette page : le livre se prépare sur le serveur."
+msgstr "You can leave this page: the book is being prepared on the server."
+
+msgid "en"
+msgstr "in"
+
+msgid "Livre prêt"
+msgstr "Book ready"
+
+msgid "Télécharger"
+msgstr "Download"
+
+msgid "Le fichier est conservé dans le dossier de la génération automatique (onglet « Réglages »)."
+msgstr "The file is kept in the automatic generation folder (“Settings” tab)."
+
+msgid "Échec de la génération"
+msgstr "Generation failed"
+
+msgid "mémoire maximale utilisée :"
+msgstr "peak memory used:"
+
+msgid "Génération en arrière-plan"
+msgstr "Background generation"
+
+msgid "En arrière-plan"
+msgstr "In the background"
+
+msgid "Générer en arrière-plan"
+msgstr "Generate in the background"
+
+msgid "Pour un gros livre : « Générer en arrière-plan » prépare le livre sur le serveur sans faire attendre cette page (utile quand l’hébergeur coupe les traitements trop longs). Vous suivez l’avancement ici et téléchargez le fichier quand il est prêt."
+msgstr "For a large book: “Generate in the background” prepares the book on the server without keeping this page waiting (useful when the host cuts off long processes). You follow the progress here and download the file when it is ready."
+
+msgid "Le livre est trop lourd pour ce serveur. Cochez « Compresser les images » (photos réduites : fichier bien plus léger), essayez « Générer en arrière-plan », réduisez le nombre de générations ou de photos, ou choisissez le format Word / OpenDocument."
+msgstr "The book is too heavy for this server. Tick “Compress images” (reduced photos: a much lighter file), try “Generate in the background”, reduce the number of generations or photos, or choose the Word / OpenDocument format."
+
+msgid "Lecture des personnes dans la base TNG"
+msgstr "Reading people from the TNG database"
+
+msgid "Mise en page du livre"
+msgstr "Laying out the book"
+
+msgid "Création du fichier Word / OpenDocument"
+msgstr "Creating the Word / OpenDocument file"
+
+msgid "Préparation des images"
+msgstr "Preparing images"
+
+msgid "Création des pages du PDF"
+msgstr "Creating the PDF pages"
+
+msgid "Compression et assemblage du PDF"
+msgstr "Compressing and assembling the PDF"
+
+msgid "Écriture du fichier"
+msgstr "Writing the file"
+
+msgid "La génération est lancée en arrière-plan : suivez son avancement ci-dessous."
+msgstr "Generation has started in the background: follow its progress below."
+
+msgid "Une génération en arrière-plan est déjà en cours : attendez qu’elle se termine ou annulez-la."
+msgstr "A background generation is already running: wait for it to finish or cancel it."
+
+msgid "Indiquez l’identifiant de la personne avant de lancer la génération."
+msgstr "Enter the person's ID before starting the generation."
+
+msgid "Génération en arrière-plan annulée ou effacée."
+msgstr "Background generation cancelled or dismissed."
 
 msgctxt "js"
 msgid " Page "

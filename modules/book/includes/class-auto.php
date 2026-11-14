@@ -111,17 +111,22 @@ class TNGBook_Auto {
             $res = ['fail', $e->getMessage()];
         }
         delete_transient(self::LOCK);
+        self::record($name, $res);
+        if (!$manual) self::notify($name, $res);
+        return $res;
+    }
+
+    /** Enregistre le résultat d'une génération dans la tâche du profil (dernière génération, fichier, prochaine échéance). */
+    public static function record($name, array $res) {
         $jobs = self::jobs();
         $j = array_merge(self::job_defaults(), $jobs[$name] ?? []);
         $j['last'] = time();
         $j['status'] = $res[0];
         $j['msg'] = (string) $res[1];
-        if ($res[0] === 'ok') { $j['file'] = (string) $res[2]; $j['size'] = (int) $res[3]; $j['sig'] = (string) $res[4]; }
+        if ($res[0] === 'ok') { $j['file'] = (string) $res[2]; $j['size'] = (int) $res[3]; $j['sig'] = (string) ($res[4] ?? ''); }
         if (!empty($j['on'])) $j['next'] = self::next_run($j);
         $jobs[$name] = $j;
         update_option(self::JOBS, $jobs, false);
-        if (!$manual) self::notify($name, $res);
-        return $res;
     }
 
     private static function do_run($name, $manual) {
@@ -138,10 +143,21 @@ class TNGBook_Auto {
         }
 
         $b = TNGBook::build($o, false, true);
+        [$file, $size] = self::store($b, self::base($name));
+        return ['ok', tngs_t('Livre généré.'), $file, $size, $sig];
+    }
+
+    /**
+     * Écrit le livre $b (résultat de TNGBook::build) dans le dossier de destination sous le nom de base $base,
+     * puis supprime les fichiers les plus anciens. Retourne [nom du fichier, taille].
+     */
+    public static function store(array &$b, $base) {
+        $s = self::settings();
+        $dir = self::dir(true);
         $ext = $b['format'];
-        $base = self::base($name);
         $file = $base . '__' . wp_date('Y-m-d_His') . '.' . $ext;
         $dest = $dir . '/' . $file;
+        TNGBook::beat('save');
         if ($ext === 'pdf') {
             TNGBook::pdf_output($b['html'], $dest, 'F');
         } elseif ($b['doc'] !== '') {
@@ -152,11 +168,11 @@ class TNGBook_Auto {
         }
         if (!is_file($dest) || filesize($dest) < 100) throw new Exception(tngs_t('Le fichier généré est vide.'));
         self::rotate($dir, $base, (int) $s['keep']);
-        return ['ok', tngs_t('Livre généré.'), $file, (int) filesize($dest), $sig];
+        return [$file, (int) filesize($dest)];
     }
 
     /** Empreinte des données du livre : réglages du profil, version du plugin, effectif et dernière modification des tables TNG. */
-    private static function signature(array $o) {
+    public static function signature(array $o) {
         $db = TNGBook::db();
         if (is_wp_error($db)) return '';
         $p = esc_sql($o['prefix']);
@@ -172,7 +188,7 @@ class TNGBook_Auto {
         return md5(implode('~', $parts));
     }
 
-    private static function base($name) {
+    public static function base($name) {
         $slug = trim(preg_replace('/[^a-z0-9]+/', '-', strtolower(remove_accents($name))), '-');
         return ($slug !== '' ? substr($slug, 0, 40) : 'livre') . '-' . substr(md5($name), 0, 6);
     }
@@ -244,7 +260,7 @@ class TNGBook_Auto {
 
     /* ---------- E-mail ---------- */
 
-    private static function notify($name, array $res) {
+    public static function notify($name, array $res) {
         $s = self::settings();
         $to = sanitize_email($s['mail']);
         if ($to === '' || $s['mail_on'] === 'never' || $res[0] === 'skip') return;
@@ -433,6 +449,7 @@ class TNGBook_Auto {
                 echo '<br><a href="' . esc_url($url) . '">' . esc_html($files[0]) . '</a>' . ($j['size'] && $files[0] === $j['file'] ? ' (' . esc_html(size_format((int) $j['size'])) . ')' : '') . ' <span class="description">· ' . (int) count($files) . ' ' . esc_html(tngs_t('fichier(s) conservé(s)')) . '</span>';
             }
             echo '</td><td style="white-space:nowrap"><button type="submit" class="button" name="now" value="' . esc_attr($name) . '" formaction="' . esc_url(admin_url('admin-post.php?action=tngbook_auto_now')) . '">' . esc_html(tngs_t('Générer maintenant')) . '</button> '
+                . '<button type="submit" class="button" name="bg_profile" value="' . esc_attr($name) . '" formaction="' . esc_url(admin_url('admin-post.php?action=tngbook_bg_start')) . '">' . esc_html(tngs_t('En arrière-plan')) . '</button> '
                 . '<button type="submit" class="button" name="tngbook_profile" value="' . esc_attr($name) . '" formaction="' . esc_url(admin_url('admin-post.php?action=tngbook_profile_apply')) . '">' . esc_html(tngs_t('Modifier')) . '</button></td></tr>';
         }
         echo '</tbody></table></form></div>';

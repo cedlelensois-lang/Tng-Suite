@@ -38,6 +38,7 @@ $options = array(
     'tngbook_auto',
     'tngbook_auto_jobs',
     'tngbook_auto_key',
+    'tngbook_bg_job',
     // Migration
     'tngs_migrated',
 );
@@ -45,11 +46,15 @@ foreach ( $options as $option ) {
     delete_option( $option );
 }
 
-foreach ( array( 'tngs_db_down', 'tng_heatmap_data_v2', 'tng_heatmap_recent_error', 'tng_heatmap_build_lock' ) as $transient ) {
+foreach ( array( 'tngs_db_down', 'tng_heatmap_data_v2', 'tng_heatmap_recent_error', 'tng_heatmap_build_lock', 'tngbook_auto_lock', 'tngbook_auto_why' ) as $transient ) {
     delete_transient( $transient );
 }
 
 wp_clear_scheduled_hook( 'tng_heatmap_cron_refresh' );
+wp_clear_scheduled_hook( 'tngbook_auto_tick' );
+if ( function_exists( 'wp_unschedule_hook' ) ) {
+    wp_unschedule_hook( 'tngbook_bg_run' );
+}
 
 // Transients dont le nom est un préfixe + empreinte (on ne touche qu'aux nôtres).
 global $wpdb;
