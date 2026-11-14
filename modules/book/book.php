@@ -540,10 +540,16 @@ final class TNGBook {
         echo '</table>';
         echo '<p class="submit"><button type="submit" class="button button-primary">' . esc_html(tngs_t('Enregistrer les réglages')) . '</button></p></form>';
 
-        echo '<p><strong>PDF direct :</strong> ' . (self::mpdf_available()
-            ? 'disponible (mPDF détecté).'
-            : 'non disponible. Le livre s’ouvre en page imprimable (Imprimer → Enregistrer en PDF). mPDF est fourni avec le zip des Releases GitHub (réinstallez le plugin depuis ce zip). Installé depuis le code source, lancez dans le dossier modules/book du plugin : <code>composer install --no-dev</code>.')
-            . '</p>';
+        if (self::mpdf_available()) {
+            $pdf = tngs_t('disponible (mPDF détecté).');
+            if (!extension_loaded('mbstring')) $pdf .= ' ' . tngs_t('Attention : l’extension PHP mbstring est absente, le PDF risque d’échouer.');
+        } elseif (file_exists(TNGBOOK_DIR . 'vendor/autoload.php')) {
+            $pdf = tngs_t('mPDF est présent mais ne se charge pas (version de PHP trop ancienne ou extension manquante) : voir le journal d’erreurs PHP.');
+        } else {
+            $pdf = tngs_t('non disponible : ce plugin ne contient pas mPDF. Installez le fichier tng-suite.zip de la Release GitHub (section « Assets », et non « Source code (zip) »). En attendant, le livre s’ouvre en page imprimable (Imprimer → Enregistrer en PDF).')
+                . ' ' . tngs_t('Installation depuis le code source : lancez « composer install --no-dev » dans le dossier modules/book du plugin.');
+        }
+        echo '<p><strong>' . esc_html(tngs_t('PDF direct :')) . '</strong> ' . esc_html($pdf) . '</p>';
         TNGBook_Auto::settings_form();
         echo '</div>';
     }
@@ -708,7 +714,8 @@ final class TNGBook {
     }
 
     /** Écrit le PDF (mPDF) : 'D' = téléchargement, 'F' = fichier $name. */
-    public static function pdf_output($html, $name, $dest) {
+    public static function pdf_output(&$html, $name, $dest) {   // $html passé par référence : la copie de l'appelant est libérée dès que les images sont extraites
+        self::pdf_prepare();
         $up_dir = wp_upload_dir();
         $tmp = $up_dir['basedir'] . '/tngbook-cache/mpdf';
         wp_mkdir_p($tmp);
@@ -718,8 +725,67 @@ final class TNGBook {
         ]);
         $mpdf->SetCompression(true);
         $mpdf->SetFooter('{PAGENO}');
-        self::pdf_write($mpdf, (string) $html);
+        $html = self::pdf_images($mpdf, (string) $html);
+        self::pdf_write($mpdf, $html);
+        $html = '';
+        $mpdf->imageVars = [];   // les images sont désormais dans le PDF : mémoire libérée avant l'écriture du fichier
         $mpdf->Output($name, $dest);
+    }
+
+    /**
+     * Prépare un PDF volumineux : le serveur reçoit plus de mémoire et de temps quand il l'autorise, et un manque de ressources
+     * affiche un message explicite (au lieu d'une page « Erreur 500 » de l'hébergeur).
+     */
+    public static function pdf_prepare() {
+        if (function_exists('wp_raise_memory_limit')) wp_raise_memory_limit('admin');
+        $mem = function_exists('wp_convert_hr_to_bytes') ? wp_convert_hr_to_bytes((string) ini_get('memory_limit')) : 0;
+        if ($mem > 0 && $mem < 512 * MB_IN_BYTES) @ini_set('memory_limit', '512M');
+        if (function_exists('set_time_limit')) @set_time_limit(0);
+        @ignore_user_abort(true);
+        $GLOBALS['tngbook_reserve'] = str_repeat('x', 262144);   // mémoire de secours pour afficher le message en cas d'épuisement
+        if (function_exists('wp_doing_cron') && wp_doing_cron()) return;   // génération automatique : l'erreur est enregistrée par la planification, pas affichée
+        register_shutdown_function(function () {
+            $e = error_get_last();
+            if (!$e || !in_array($e['type'], [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR], true)) return;
+            unset($GLOBALS['tngbook_reserve']);
+            $mem = stripos($e['message'], 'memory') !== false;
+            $why = $mem ? tngs_t('Mémoire insuffisante sur le serveur') : (stripos($e['message'], 'execution time') !== false ? tngs_t('Temps d’exécution dépassé sur le serveur') : tngs_t('Erreur du serveur'));
+            if (!headers_sent()) { status_header(500); header('Content-Type: text/html; charset=utf-8'); }
+            echo '<!doctype html><meta charset="utf-8"><body style="font-family:sans-serif;max-width:640px;margin:3em auto;line-height:1.5"><h2>' . esc_html(tngs_t('Le PDF n’a pas pu être généré')) . '</h2><p>' . esc_html($why) . '. '
+                . esc_html(tngs_t('Le livre est trop lourd pour ce serveur. Cochez « Compresser les images » (photos réduites : fichier bien plus léger), réduisez le nombre de générations ou de photos, ou choisissez le format Word / OpenDocument.')) . '</p></body>';
+        });
+    }
+
+    /**
+     * Les images intégrées au HTML (data:) sont confiées à mPDF une seule fois chacune, sous forme de variables (src="var:…") :
+     * le HTML envoyé à mPDF ne pèse plus que quelques centaines de Ko et la mémoire utilisée est nettement plus faible.
+     */
+    private static function pdf_images(\Mpdf\Mpdf $mpdf, $html) {
+        $out = '';
+        $pos = 0;
+        while (($i = strpos($html, 'src="data:image/', $pos)) !== false) {
+            $b = strpos($html, ';base64,', $i);
+            $q = strpos($html, '"', $i + 5);
+            if ($b === false || $q === false || $b > $q) {
+                $out .= substr($html, $pos, $i + 5 - $pos);
+                $pos = $i + 5;
+                continue;
+            }
+            $data = substr($html, $b + 8, $q - $b - 8);
+            $key = 'i' . md5($data);
+            if (!isset($mpdf->imageVars[$key])) {
+                $bin = base64_decode($data, true);
+                if ($bin === false || $bin === '') {   // image illisible : laissée telle quelle
+                    $out .= substr($html, $pos, $q - $pos);
+                    $pos = $q;
+                    continue;
+                }
+                $mpdf->imageVars[$key] = $bin;
+            }
+            $out .= substr($html, $pos, $i + 5 - $pos) . 'var:' . $key;
+            $pos = $q;
+        }
+        return $out . substr($html, $pos);
     }
 
     /**

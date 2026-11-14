@@ -1060,4 +1060,13 @@ return array(
 	'Image affichée quand l’individu n’a pas de photo dans TNG.' => 'Image shown when the individual has no photo in TNG.',
 	'Style des silhouettes génériques' => 'Style of generic silhouettes',
 	'Utilisé quand « Silhouettes génériques » est coché, pour les personnes sans photo.' => 'Used when “Generic silhouettes” is checked, for people without a photo.',
+	'Attention : l’extension PHP mbstring est absente, le PDF risque d’échouer.' => 'Warning: the PHP mbstring extension is missing, the PDF may fail.',
+	'mPDF est présent mais ne se charge pas (version de PHP trop ancienne ou extension manquante) : voir le journal d’erreurs PHP.' => 'mPDF is present but cannot be loaded (PHP version too old or missing extension): see the PHP error log.',
+	'non disponible : ce plugin ne contient pas mPDF. Installez le fichier tng-suite.zip de la Release GitHub (section « Assets », et non « Source code (zip) »). En attendant, le livre s’ouvre en page imprimable (Imprimer → Enregistrer en PDF).' => 'not available: this plugin does not include mPDF. Install the tng-suite.zip file from the GitHub Release (“Assets” section, not “Source code (zip)”). Meanwhile, the book opens as a printable page (Print → Save as PDF).',
+	'Installation depuis le code source : lancez « composer install --no-dev » dans le dossier modules/book du plugin.' => 'Installing from source code: run “composer install --no-dev” in the plugin\'s modules/book folder.',
+	'Mémoire insuffisante sur le serveur' => 'Not enough memory on the server',
+	'Temps d’exécution dépassé sur le serveur' => 'Execution time exceeded on the server',
+	'Erreur du serveur' => 'Server error',
+	'Le PDF n’a pas pu être généré' => 'The PDF could not be generated',
+	'Le livre est trop lourd pour ce serveur. Cochez « Compresser les images » (photos réduites : fichier bien plus léger), réduisez le nombre de générations ou de photos, ou choisissez le format Word / OpenDocument.' => 'The book is too heavy for this server. Check “Compress images” (smaller photos: a much lighter file), reduce the number of generations or photos, or choose the Word / OpenDocument format.',
 );

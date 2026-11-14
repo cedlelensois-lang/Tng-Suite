@@ -3154,6 +3154,33 @@ msgstr ""
 msgid "Utilisé quand « Silhouettes génériques » est coché, pour les personnes sans photo."
 msgstr ""
 
+msgid "Attention : l’extension PHP mbstring est absente, le PDF risque d’échouer."
+msgstr ""
+
+msgid "mPDF est présent mais ne se charge pas (version de PHP trop ancienne ou extension manquante) : voir le journal d’erreurs PHP."
+msgstr ""
+
+msgid "non disponible : ce plugin ne contient pas mPDF. Installez le fichier tng-suite.zip de la Release GitHub (section « Assets », et non « Source code (zip) »). En attendant, le livre s’ouvre en page imprimable (Imprimer → Enregistrer en PDF)."
+msgstr ""
+
+msgid "Installation depuis le code source : lancez « composer install --no-dev » dans le dossier modules/book du plugin."
+msgstr ""
+
+msgid "Mémoire insuffisante sur le serveur"
+msgstr ""
+
+msgid "Temps d’exécution dépassé sur le serveur"
+msgstr ""
+
+msgid "Erreur du serveur"
+msgstr ""
+
+msgid "Le PDF n’a pas pu être généré"
+msgstr ""
+
+msgid "Le livre est trop lourd pour ce serveur. Cochez « Compresser les images » (photos réduites : fichier bien plus léger), réduisez le nombre de générations ou de photos, ou choisissez le format Word / OpenDocument."
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""

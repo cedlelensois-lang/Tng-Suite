@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.2.0
+Stable tag: 2.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,10 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.2.1 =
+* PDF direct : les gros livres (beaucoup de photos) ne provoquent plus d'erreur 500. Les images sont confiées à mPDF une seule fois chacune (mémoire nettement réduite), le plugin demande plus de mémoire et de temps au serveur quand il l'autorise, et un manque de ressources affiche un message explicite avec la marche à suivre (« Compresser les images », moins de générations, ou Word / OpenDocument).
+* Livre > Réglages : la ligne « PDF direct » explique précisément ce qui manque quand mPDF est absent (installer tng-suite.zip des Assets de la Release, pas « Source code (zip) »).
 
 = 2.2.0 =
 * Livre : dans le Word et l'OpenDocument, les images alignées à gauche ou à droite dans le texte de la page patronyme gardent leur place, avec le texte autour (elles étaient recentrées sous le paragraphe).
