@@ -828,7 +828,10 @@ final class TNGBook {
         ob_start(); imagepng($im); $png = ob_get_clean();
         imagedestroy($im);
         $mpdf->imageVars['tngframe'] = $png;
-        return str_replace('</style>', '@page { background: url(var:tngframe) no-repeat 0 0; background-image-resize: 6; } @page :first { background: none; }</style>', $html);
+        // une règle @page fait perdre à mPDF son pied de page : la numérotation est donc redéclarée par ces règles (à l'intérieur du cadre)
+        $ft = 'odd-footer-name: html_tngpf; even-footer-name: html_tngpf; margin-footer: 14mm;';
+        $html = str_replace('</style>', '@page { background: url(var:tngframe) no-repeat 0 0; background-image-resize: 6; ' . $ft . ' } @page :first { background: none; ' . $ft . ' }</style>', $html);
+        return preg_replace('/<body[^>]*>/', '$0<htmlpagefooter name="tngpf"><div style="text-align:center;font-size:9pt;color:#666666">{PAGENO}</div></htmlpagefooter>', $html, 1);
     }
 
     /** Nouveau document mPDF (réglages communs au PDF direct et à la génération en arrière-plan). */

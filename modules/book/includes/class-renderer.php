@@ -1450,7 +1450,13 @@ class TNGBook_Renderer {
 
     private function part($id, $title, $level = 1) {
         $this->toc[] = [$id, $title, $level];
-        return '<h2 class="part-title" id="' . esc_attr($id) . '">' . $this->e($title) . '</h2>';
+        return $this->tocTag($title, $level) . '<h2 class="part-title" id="' . esc_attr($id) . '">' . $this->e($title) . '</h2>';
+    }
+
+    /** PDF : repère de la table des matières native de mPDF (elle donne les numéros de page) ; rien ailleurs. */
+    private function tocTag($title, $level) {
+        if ($this->mode !== 'pdf') return '';
+        return '<tocentry content="' . htmlspecialchars((string) $title, ENT_QUOTES, 'UTF-8') . '" level="' . max(0, (int) $level - 1) . '" />';
     }
 
     /** Page de présentation du patronyme : texte libre de l'administrateur (profil du livre), avec tableaux et images. */
@@ -1606,7 +1612,7 @@ class TNGBook_Renderer {
             ksort($list);
             $id = 'Ag' . $g;
             $this->toc[] = [$id, $this->genLabel('A', $g), 2];
-            $gh = '<h3 class="gen" id="' . $id . '">' . $this->e($this->genLabel('A', $g)) . '</h3>';
+            $gh = $this->tocTag($this->genLabel('A', $g), 2) . '<h3 class="gen" id="' . $id . '">' . $this->e($this->genLabel('A', $g)) . '</h3>';
             $gt = $g >= 2 ? $this->tree('A', $g) : '';
             if ($cols && $gt !== '') { $h .= $gh . $gt . '<div class="cols">'; }
             elseif ($cols) { $h .= '<div class="cols">' . $gh; }
@@ -1758,7 +1764,7 @@ class TNGBook_Renderer {
         foreach ($d->descGen as $g => $list) {
             $id = 'Dg' . $g;
             $this->toc[] = [$id, $this->genLabel('D', $g), 2];
-            $gh = '<h3 class="gen" id="' . $id . '">' . $this->e($this->genLabel('D', $g)) . '</h3>';
+            $gh = $this->tocTag($this->genLabel('D', $g), 2) . '<h3 class="gen" id="' . $id . '">' . $this->e($this->genLabel('D', $g)) . '</h3>';
             $gt = $g >= 2 ? $this->tree('D', $g) : '';
             $cols = !empty($this->tpl['cols']);
             if ($cols && $gt !== '') { $h .= $gh . $gt . '<div class="cols">'; }
@@ -2258,7 +2264,7 @@ p.mpf .fl i:nth-child(3) { background: #c8102e; }
 ul.kids { margin: .1em 0 .4em 1.2em; padding: 0; list-style: none; }
 .src { font-size: 9pt; color: %meta%; }
 .anon h4 { font-weight: normal; color: #666; }
-.toc p { margin: .2em 0; } .toc .l2 { margin-left: 1.5em; font-size: 10pt; }
+.toc p { margin: .2em 0; } div.mpdf_toc_level_0 { margin: .25em 0 0 0; font-weight: bold; font-family: dejavuserif; } div.mpdf_toc_level_1 { margin: 0 0 0 1.5em; font-size: 10pt; font-weight: normal; font-style: normal; font-family: dejavuserif; } a.mpdf_toc_a { color: %text%; text-decoration: none; } .toc .l2 { margin-left: 1.5em; font-size: 10pt; }
 .notice p { text-align: justify; }
 .surn table { border-collapse: collapse; margin: .6em 0; max-width: 100%; }
 .surn th, .surn td { border: 1px solid #999; padding: .25em .5em; font-size: 10pt; vertical-align: top; }
@@ -2329,6 +2335,9 @@ CSS;
             $toc .= '<p class="l' . (int) $t[2] . '"><a href="#' . esc_attr($t[0]) . '">' . $this->e($t[1]) . '</a></p>';
         }
         $toc .= '</div>';
+        if ($this->mode === 'pdf') {   // table des matières native de mPDF, avec numéros de page
+            $toc = '<tocpagebreak links="on" toc-preHTML="' . htmlspecialchars('<h2 class="part-title">' . $this->e($L['toc']) . '</h2>', ENT_QUOTES, 'UTF-8') . '" />';
+        }
 
         $bar = '';
         if ($this->mode === 'html') {

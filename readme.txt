@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.7.0
+Stable tag: 2.7.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.7.1 =
+* Livre, PDF : (1) les numéros de page avaient disparu quand « Cadre autour des pages » était activé ; ils sont rétablis, à l'intérieur du cadre. (2) La table des matières du PDF affiche maintenant les numéros de page (points de conduite, niveaux Parties / Générations, liens cliquables).
 
 = 2.7.0 =
 * Livre : option « Contexte historique dans les fiches » (décochée par défaut). Une ligne en italique ajoute, sous la fiche, « Contexte historique : naissance pendant la Première Guerre mondiale ; décès pendant la Seconde Guerre mondiale » quand la date tombe dans une guerre ou une période marquante du pays de naissance (9 pays). Une date imprécise (année seule) n'est retenue que si toute l'année est dans la période.
