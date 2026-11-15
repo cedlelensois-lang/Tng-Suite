@@ -3505,8 +3505,17 @@ msgstr "None (two lines around the title)"
 msgid "Fleurons au-dessus et au-dessous du titre"
 msgstr "Flourishes above and below the title"
 
-msgid "Arbre de vie, puis titre et fleuron"
-msgstr "Tree of life, then title and flourish"
+msgid "Arbre : chêne ample, puis titre et fleuron"
+msgstr "Tree: broad oak, then title and flourish"
+
+msgid "Arbre : penché, aux branches légères"
+msgstr "Tree: leaning, light branches"
+
+msgid "Arbre : saule pleureur"
+msgstr "Tree: weeping willow"
+
+msgid "Arbre : sans feuilles, ses racines dessinées dessous"
+msgstr "Tree: bare, with its roots drawn below"
 
 msgid "Dessinée par le plugin dans la couleur du livre (« en-têtes et liens »), sans fichier à installer."
 msgstr "Drawn by the plugin in the book colour (“headings and links”), with no file to install."
@@ -3531,6 +3540,42 @@ msgstr "Name cloud, birthdays & random individual"
 
 msgid "[tng_stat_genre] [tng_stat_vivants] [tng_stat_demi_siecle] [tng_stat_mois] … (TNG Suite > Analyses > Stats : graphiques)"
 msgstr "[tng_stat_genre] [tng_stat_vivants] [tng_stat_demi_siecle] [tng_stat_mois] … (TNG Suite > Analyses > Stats: charts)"
+
+msgid "(actuellement :"
+msgstr "(currently:"
+
+msgid "❌ Constantes absentes :"
+msgstr "❌ Missing constants:"
+
+msgid "⚠️ Attention, RGPD :"
+msgstr "⚠️ Warning, GDPR:"
+
+msgid "⚠️ Attention, RGPD"
+msgstr "⚠️ Warning, GDPR"
+
+msgid "⚠️ RGPD"
+msgstr "⚠️ GDPR"
+
+msgid "Hauteur (px)"
+msgstr "Height (px)"
+
+msgid "Mode d'affichage"
+msgstr "Display mode"
+
+msgid "Conjoint(e) :"
+msgstr "Spouse:"
+
+msgid "💍 Mariage :"
+msgstr "💍 Marriage:"
+
+msgid ") fonctionne aussi."
+msgstr ") also works."
+
+msgid ") restent prioritaires."
+msgstr ") take priority."
+
+msgid "aucun"
+msgstr "none"
 
 msgctxt "js"
 msgid " Page "

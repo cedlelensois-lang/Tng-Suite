@@ -24,6 +24,7 @@ Listes d’ascendants et de descendants et fiche individuelle, en PDF, Excel ou 
 
 ## Remarques
 
+- `[tng_fiche]` est un ancien nom du même outil : il affiche aujourd’hui la même chose que `[tng_listes]`.
 - Dans l’administration, la langue suit Général (français ou anglais), sauf catalan/espagnol choisis dans les réglages.
 
 ---

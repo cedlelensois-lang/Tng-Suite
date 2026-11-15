@@ -49,9 +49,9 @@ class TNGBook_Art {
         ], 4, $col);
     }
 
-    /** Feuille effilée, $len de long. */
-    private static function leaf($im, $x, $y, $ang, $len, $col) {
-        $wd = $len * 0.34;
+    /** Feuille effilée, $len de long, de largeur $wr × longueur. */
+    private static function leaf($im, $x, $y, $ang, $len, $col, $wr = 0.34) {
+        $wd = $len * $wr;
         $ca = cos($ang); $sa = sin($ang);
         $pts = [];
         foreach ([[0, 0], [0.18, -0.55], [0.45, -1], [0.75, -0.7], [1, 0], [0.72, 0.62], [0.42, 0.95], [0.16, 0.5]] as $p) {
@@ -64,17 +64,19 @@ class TNGBook_Art {
 
     /** Une feuille semi-transparente, posée seulement dans la silhouette de la cime, dans l'une des trois teintes. */
     private static function drop($im, $x, $y, $ang, $depth, &$seed, $c) {
+        if (!empty($c['bare'])) return;
         $dx = ($x - $c['cx']) / $c['rx']; $dy = ($y - $c['cy']) / $c['ry'];
         $out = $dx * $dx + $dy * $dy;
         if ($out > 1.0 && self::rnd($seed) < min(0.95, 0.5 + ($out - 1.0))) return;
         $t = self::rnd($seed);
         $col = $t < 0.4 ? $c['l1'] : ($t < 0.78 ? $c['l2'] : $c['l3']);
-        self::leaf($im, $x, $y, $ang, (10 + self::rnd($seed) * 9) * $c['S'], $col);
+        self::leaf($im, $x, $y, $ang, ($c['ls'][0] + self::rnd($seed) * ($c['ls'][1] - $c['ls'][0])) * $c['S'], $col, $c['lw']);
     }
 
     /**
      * Branche courbe qui s'effile et se ramifie ; les rameaux fins portent des feuilles
      * (trois teintes semi-transparentes qui se superposent, comme une aquarelle).
+     * Réglages de silhouette dans $c : droop (retombée), pull (cap préféré), lp (densité de feuilles), lenf (longueur relative).
      */
     private static function limb($im, $x, $y, $ang, $len, $th, $depth, &$seed, $c) {
         $S = $c['S'];
@@ -83,9 +85,11 @@ class TNGBook_Art {
         $thEnd = max(1.1 * $S, $th * 0.66);
         $px = $x; $py = $y; $a = $ang;
         $pts = array();
+        imagefilledellipse($im, (int) round($x), (int) round($y), (int) max(1, round($th)), (int) max(1, round($th)), $c['wood']);   // départ arrondi
         for ($k = 1; $k <= $segs; $k++) {
             $a += $bend / $segs + (self::rnd($seed) - 0.5) * 0.16;
-            if ($depth >= 4) $a += 0.025;
+            if ($depth >= $c['droopFrom']) $a += $c['droop'] * cos($a) / $segs;   // retombée : plus la branche est horizontale, plus elle plie
+            elseif ($depth >= 4) $a += 0.025;
             $nx = $px + cos($a) * $len / $segs; $ny = $py + sin($a) * $len / $segs;
             $w1 = $th + ($thEnd - $th) * (($k - 1) / $segs); $w2 = $th + ($thEnd - $th) * ($k / $segs);
             self::stroke($im, $px, $py, $nx, $ny, $w1, $w2, $c['wood']);
@@ -93,24 +97,26 @@ class TNGBook_Art {
             $pts[] = array($nx, $ny, $a);
             $px = $nx; $py = $ny;
         }
-        if ($depth >= 3) {
+        if ($depth >= $c['leafFrom']) {
             foreach ($pts as $p) {
-                if (self::rnd($seed) < 0.42) {
+                if (self::rnd($seed) < $c['lp']) {
                     $side = self::rnd($seed) > .5 ? 1 : -1;
                     self::drop($im, $p[0], $p[1], $p[2] + $side * (0.5 + self::rnd($seed) * 0.7), $depth, $seed, $c);
                 }
             }
         }
         if ($depth >= $c['max']) {
-            for ($k = 0; $k < 2; $k++) self::drop($im, $px, $py, $a + (self::rnd($seed) - 0.5) * 1.8, $depth, $seed, $c);
+            for ($k = 0; $k < $c['tips']; $k++) self::drop($im, $px, $py, $a + (self::rnd($seed) - 0.5) * 1.8, $depth, $seed, $c);
             return;
         }
         $n = ($depth < 2 || self::rnd($seed) > 0.7) ? 3 : 2;
+        if ($depth < 1 && !empty($c['fork2'])) $n = 2;
         for ($i = 0; $i < $n; $i++) {
             $na = $a + ($i - ($n - 1) / 2) * (0.55 + self::rnd($seed) * 0.25) + (self::rnd($seed) - 0.5) * 0.25;
-            $na += (-M_PI / 2 - $na) * ($depth < 3 ? 0.12 : 0.04);
-            $na += ($px < $c['cx'] ? -1 : 1) * ($depth < 4 ? 0.06 : 0.0);
-            self::limb($im, $px, $py, $na, $len * (0.7 + self::rnd($seed) * 0.1), $thEnd, $depth + 1, $seed, $c);
+            $pull = $c['pull'] === null ? -M_PI / 2 : $c['pull'];
+            $na += ($pull - $na) * ($depth < 3 ? $c['pullf'] : 0.04);
+            if ($c['pull'] === null) $na += ($px < $c['cx'] ? -1 : 1) * ($depth < 4 ? 0.06 : 0.0);
+            self::limb($im, $px, $py, $na, $len * ($c['lenf'] + self::rnd($seed) * 0.1), $thEnd, $depth + 1, $seed, $c);
         }
         if ($depth >= 1 && $depth < $c['max'] - 1 && self::rnd($seed) > 0.45) {   // rameau latéral à mi-longueur
             $side = self::rnd($seed) > .5 ? 1 : -1;
@@ -118,16 +124,18 @@ class TNGBook_Art {
         }
     }
 
-    /** Racine : courbe épaisse à la base qui s'effile en rampant sur le sol. */
+    /** Racine : courbe arrondie, épaisse à la base, qui s'effile en ondulant sur le sol. */
     private static function root($im, $x, $y, $ang, $len, $th, &$seed, $col, $S) {
-        $segs = 9; $a = $ang; $px = $x; $py = $y;
-        $bend = (self::rnd($seed) - 0.5) * 0.7;
+        $segs = 12; $a = $ang; $px = $x; $py = $y;
+        imagefilledellipse($im, (int) round($x), (int) round($y), (int) round($th), (int) round($th), $col);
+        $flat = cos($ang) >= 0 ? 0.12 : M_PI - 0.12;   // la racine s'aplatit peu à peu vers l'horizontale
         for ($k = 1; $k <= $segs; $k++) {
-            $a += $bend / $segs + (self::rnd($seed) - 0.5) * 0.1;
-            $nx = $px + cos($a) * $len / $segs; $ny = $py + sin($a) * $len / $segs * 0.5;
-            $f1 = pow(1 - ($k - 1) / $segs, 0.85); $f2 = pow(1 - $k / $segs, 0.85);
-            self::stroke($im, $px, $py, $nx, $ny, max(1.2 * $S, $th * $f1), max(1.2 * $S, $th * $f2), $col);
-            imagefilledellipse($im, (int) round($nx), (int) round($ny), (int) max(1, round($th * $f2)), (int) max(1, round($th * $f2)), $col);
+            $a += ($flat - $a) * 0.16 + (self::rnd($seed) - 0.5) * 0.16;
+            $nx = $px + cos($a) * $len / $segs; $ny = $py + sin($a) * $len / $segs;
+            $f1 = pow(1 - ($k - 1) / $segs, 0.6); $f2 = pow(1 - $k / $segs, 0.6);
+            $w1 = max(2.4 * $S, $th * $f1); $w2 = max(2.4 * $S, $th * $f2);
+            self::stroke($im, $px, $py, $nx, $ny, $w1, $w2, $col);
+            imagefilledellipse($im, (int) round($nx), (int) round($ny), (int) round($w2), (int) round($w2), $col);   // bouts arrondis
             $px = $nx; $py = $ny;
         }
     }
@@ -167,54 +175,82 @@ class TNGBook_Art {
         imagedestroy($big);
     }
 
-    /** Arbre de vie à l'aquarelle (cime ample de feuilles, tronc, racines apparentes), PNG transparent de $w × $h pixels. */
-    public static function tree($hex, $w = 900, $h = 760) {
+    /** Valeurs du réglage « illustration de couverture » : none, ornament, puis un arbre (tree = chêne, olive, willow, winter). */
+    public static function cover_choices() {
+        return array('none', 'ornament', 'tree', 'olive', 'willow', 'winter');
+    }
+
+    /** Style d'arbre correspondant à une valeur du réglage (tree → oak). */
+    public static function style_of($art) {
+        return $art === 'tree' ? 'oak' : (in_array($art, self::tree_styles(), true) ? $art : 'oak');
+    }
+
+    /** Styles d'arbre proposés pour la couverture. */
+    public static function tree_styles() {
+        return array('oak', 'olive', 'willow', 'winter');
+    }
+
+    /**
+     * Arbre à l'aquarelle, PNG transparent de $w × $h pixels, dans la couleur $hex.
+     * $style : oak (chêne ample), olive (arbre penché aux branches légères), willow (saule pleureur),
+     * winter (arbre sans feuilles, ses racines dessinées sous le sol comme un arbre généalogique).
+     */
+    public static function tree($hex, $w = 900, $h = 760, $style = 'oak') {
+        if (!in_array($style, self::tree_styles(), true)) $style = 'oak';
         $S = 2;
         $W = $w * $S; $H = $h * $S;
         $im = self::canvas($W, $H);
-        $seed = 20240611;
+        $seed = array('oak' => 31337, 'olive' => 777, 'willow' => 4242, 'winter' => 1189)[$style];
         $c = array(
-            'S' => $S, 'max' => 7,
-            'wood' => self::rgb($im, $hex, 0),
+            'S' => $S, 'max' => 7, 'wood' => self::rgb($im, $hex, 0),
             'l1' => self::rgb($im, $hex, 108), 'l2' => self::rgb($im, $hex, 90), 'l3' => self::rgb($im, $hex, 64),
-            'cx' => $W / 2, 'cy' => $H * 0.38, 'rx' => $W * 0.47, 'ry' => $H * 0.33,
+            'cx' => $W / 2, 'cy' => $H * 0.4, 'rx' => $W * 0.47, 'ry' => $H * 0.3,
+            'droop' => 0, 'droopFrom' => 99, 'pull' => null, 'pullf' => 0.12, 'lp' => 0.42, 'leafFrom' => 3, 'tips' => 2,
+            'lenf' => 0.7, 'ls' => array(10, 19), 'lw' => 0.34, 'bare' => false, 'fork2' => false,
         );
-        $ground = $H * 0.88;
+        $ground = $H * 0.88; $tx = $W / 2; $tang = -M_PI / 2 + 0.02; $tlen = $H * 0.17; $tth = 40 * $S; $tbase = 14 * $S;
+        $wash = 0.24; $nb = 38; $roots = true; $mirror = false;
+        if ($style === 'olive') {
+            $c = array_merge($c, array('max' => 6, 'pull' => -0.3, 'pullf' => 0.16, 'droop' => 0.35, 'droopFrom' => 3, 'lp' => 0.3, 'leafFrom' => 2,
+                'ls' => array(15, 24), 'lw' => 0.27, 'lenf' => 0.7, 'cx' => $W * 0.52, 'cy' => $H * 0.38, 'rx' => $W * 0.46, 'ry' => $H * 0.3, 'fork2' => true,
+                'l1' => self::rgb($im, $hex, 96), 'l2' => self::rgb($im, $hex, 78), 'l3' => self::rgb($im, $hex, 52)));
+            $tx = $W * 0.27; $tang = -M_PI / 2 + 0.33; $tlen = $H * 0.17; $tth = 42 * $S; $wash = 0.16; $nb = 14;
+        } elseif ($style === 'willow') {
+            $c = array_merge($c, array('max' => 6, 'droop' => 1.05, 'droopFrom' => 2, 'lp' => 0.75, 'leafFrom' => 2, 'tips' => 3,
+                'ls' => array(14, 22), 'lw' => 0.2, 'lenf' => 0.74, 'pullf' => 0.2, 'cx' => $W * 0.47, 'cy' => $H * 0.52, 'rx' => $W * 0.47, 'ry' => $H * 0.4,
+                'l1' => self::rgb($im, $hex, 104), 'l2' => self::rgb($im, $hex, 84), 'l3' => self::rgb($im, $hex, 58)));
+            $tx = $W * 0.47; $tang = -M_PI / 2 + 0.06; $tlen = $H * 0.16; $tth = 40 * $S; $wash = 0.2; $nb = 26;
+        } elseif ($style === 'winter') {
+            $c = array_merge($c, array('bare' => true, 'max' => 6, 'lenf' => 0.7, 'cy' => $H * 0.3, 'ry' => $H * 0.28));
+            $ground = $H * 0.6; $tlen = $H * 0.13; $tth = 30 * $S; $tbase = 0; $wash = 0.14; $nb = 20; $roots = false; $mirror = true;
+        }
         // lavis de la cime et ombre au sol
         $blobs = array();
-        for ($k = 0; $k < 38; $k++) {
+        for ($k = 0; $k < $nb; $k++) {
             $t = self::rnd($seed) * 2 * M_PI; $r = sqrt(self::rnd($seed));
             $blobs[] = array($c['cx'] + cos($t) * $r * $c['rx'] * 0.7, $c['cy'] + sin($t) * $r * $c['ry'] * 0.7, (60 + self::rnd($seed) * 70) * $S, (50 + self::rnd($seed) * 55) * $S, 0.3 + self::rnd($seed) * 0.4);
         }
         for ($k = 0; $k < 5; $k++) {
-            $blobs[] = array($c['cx'] + (self::rnd($seed) - 0.5) * 220 * $S, $ground + 8 * $S, (90 + self::rnd($seed) * 70) * $S, (10 + self::rnd($seed) * 8) * $S, 0.7);
+            $blobs[] = array($tx + (self::rnd($seed) - 0.5) * 220 * $S, $ground + 8 * $S, (90 + self::rnd($seed) * 70) * $S, (10 + self::rnd($seed) * 8) * $S, 0.7);
         }
-        self::wash($im, $W, $H, $hex, $blobs, 0.24);
-        // racines apparentes de part et d'autre du tronc, puis évasement du pied
-        foreach (array(-1, 1) as $side) {
-            foreach (array(0.12, 0.42, 0.75) as $i => $o) {
-                self::root($im, $c['cx'] + $side * (14 + $i * 5) * $S, $ground - 22 * $S + $i * 6 * $S, $side > 0 ? $o : M_PI - $o, (110 + self::rnd($seed) * 90 - $i * 25) * $S, (24 - $i * 4) * $S, $seed, $c['wood'], $S);
+        self::wash($im, $W, $H, $hex, $blobs, $wash);
+        if ($roots) {
+            foreach (array(-1, 1) as $side) {
+                foreach (array(0.9, 0.6, 0.3) as $i => $o) {   // plus l'angle de départ est grand, plus la racine plonge d'abord
+                    self::root($im, $tx + $side * (16 + $i * 6) * $S, $ground - (44 - $i * 12) * $S, $side > 0 ? $o : M_PI - $o, (80 + self::rnd($seed) * 70 - $i * 14) * $S, (24 - $i * 4) * $S, $seed, $c['wood'], $S);
+                }
             }
+            imagefilledellipse($im, (int) $tx, (int) ($ground - 14 * $S), (int) (104 * $S), (int) (46 * $S), $c['wood']);   // pied arrondi
         }
-        $flare = array();
-        foreach (array(-1, 1) as $side) {
-            for ($k = 0; $k <= 12; $k++) {
-                $t = $k / 12;                                  // 0 = sol, 1 = haut du pied
-                $x = $c['cx'] + $side * (46 - 28 * pow($t, 0.55)) * $S;
-                $y = $ground + 4 * $S - 84 * $S * $t;
-                $flare[$side][] = array($x, $y);
-            }
+        self::limb($im, $tx, $ground - $tbase, $tang, $tlen, $tth, 0, $seed, $c);
+        if ($mirror) {   // racines : l'image du houppier, plus fine, sous la ligne de sol
+            $rc = array_merge($c, array('max' => 5, 'cy' => $ground + $H * 0.2, 'lenf' => 0.72, 'pull' => M_PI / 2, 'pullf' => 0.1, 'droopFrom' => 99));
+            self::limb($im, $tx, $ground - 2 * $S, M_PI / 2, $H * 0.12, 26 * $S, 1, $seed, $rc);
         }
-        $poly = array();
-        foreach ($flare[-1] as $p) { $poly[] = (int) round($p[0]); $poly[] = (int) round($p[1]); }
-        foreach (array_reverse($flare[1]) as $p) { $poly[] = (int) round($p[0]); $poly[] = (int) round($p[1]); }
-        imagefilledpolygon($im, $poly, count($poly) / 2, $c['wood']);
-        // tronc et cime
-        self::limb($im, $c['cx'], $ground - 40 * $S, -M_PI / 2 + 0.02, $H * 0.17, 34 * $S, 0, $seed, $c);
         // quelques feuilles qui tombent
-        for ($k = 0; $k < 7; $k++) {
-            $x = $c['cx'] + (self::rnd($seed) - 0.3) * 520 * $S; $y = $H * (0.6 + self::rnd($seed) * 0.26);
-            self::leaf($im, $x, $y, self::rnd($seed) * 6.28, (9 + self::rnd($seed) * 6) * $S, $c['l2']);
+        for ($k = 0; $k < ($style === 'winter' ? 4 : 7); $k++) {
+            $x = $tx + (self::rnd($seed) - 0.3) * 520 * $S; $y = $H * ($style === 'winter' ? 0.45 + self::rnd($seed) * 0.12 : 0.6 + self::rnd($seed) * 0.26);
+            self::leaf($im, $x, $y, self::rnd($seed) * 6.28, (9 + self::rnd($seed) * 6) * $S, $c['l2'], 0.34);
         }
         $out = imagecreatetruecolor($w, $h);
         imagealphablending($out, false); imagesavealpha($out, true);

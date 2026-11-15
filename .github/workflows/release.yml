@@ -34,7 +34,8 @@ jobs:
           tools: composer:v2
       - name: Embarquer mPDF (PDF direct, aucune installation à faire)
         run: |
-          composer install --no-dev --prefer-dist --no-interaction --working-dir=modules/book
+          # mPDF est versionné dans le dépôt (modules/book/vendor) ; on ne le réinstalle que s'il manque.
+          [ -f modules/book/vendor/autoload.php ] || composer install --no-dev --prefer-dist --no-interaction --working-dir=modules/book
           # Allègement : on ne garde que les polices DejaVu (utilisées par le livre) et on retire tests et documentation.
           find modules/book/vendor/mpdf/mpdf/ttfonts -type f ! -name 'DejaVu*' -delete
           find modules/book/vendor \( -iname tests -o -iname test -o -iname docs -o -iname examples -o -name .github \) -type d -prune -exec rm -rf {} +

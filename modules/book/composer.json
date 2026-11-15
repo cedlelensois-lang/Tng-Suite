@@ -1,6 +1,6 @@
 {
     "name": "tng-suite/book",
-    "description": "Dépendances du module Livre de TNG Suite : mPDF pour le PDF direct. Le zip des Releases GitHub les embarque déjà.",
+    "description": "Dépendances du module Livre de TNG Suite : mPDF pour le PDF direct. Le dépôt (dossier vendor/) et le zip des Releases les embarquent déjà.",
     "type": "project",
     "license": "GPL-2.0-or-later",
     "require": {

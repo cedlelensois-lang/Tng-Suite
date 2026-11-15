@@ -297,8 +297,8 @@ LIVRE : MODÈLES DE MISE EN PAGE (TNG Suite > Livre généalogique > Modèle de 
  - Moderne : police sans empattement, bandeaux pleins, fiches en cartes (cartes en HTML/PDF seulement ; Word et
    OpenDocument reprennent la police et les bandeaux).
  Les polices sont standard (Garamond, Cambria, Palatino, Calibri) ; si elles manquent, le logiciel en substitue une
- proche. Le PDF à téléchargement direct (mPDF) n'a pas été testé avec les modèles à 2 colonnes : la page imprimable
- (« Enregistrer en PDF ») donne un résultat garanti.
+ proche. Le PDF à téléchargement direct (mPDF) est produit avec tous les modèles ; la page imprimable
+ (« Enregistrer en PDF ») reste une alternative.
 
 
 MODULE FICHE & LISTES DE DOCUMENTS (TNG Suite > Fiche & documents)
@@ -358,7 +358,7 @@ NOUVEAUX MODULES : POINTS D'ATTENTION
  - Livre généalogique (TNG Suite > Livre généalogique) : afficher les vivants en entier se règle dans
    TNG Suite > Général > Modules > Livre généalogique > « Afficher (⚠️ RGPD) ». L'arbre et le préfixe viennent des
    réglages communs ; le dossier de TNG sur le disque est déduit de l'URL de TNG s'il est laissé vide.
-   PDF direct : installez mPDF avec « composer require mpdf/mpdf » dans modules/book/ (sinon page imprimable).
+   PDF direct : mPDF est inclus dans le plugin (modules/book/vendor/) ; s'il a été supprimé, « composer install --no-dev » dans modules/book/ le remet (sinon page imprimable).
  - Implexe & consanguinité (TNG Suite > Implexe : analyse / consanguinité / réglages) : le masquage des vivants
    suit la case commune. Le calcul de consanguinité écrit dans une table de la base WordPress
    (<préfixe WP>tngi_inbreeding), supprimée à la désinstallation de la suite. Chart.js et vis-network sont chargés

@@ -2299,7 +2299,7 @@ CSS;
         $img = function ($bin, $cm, $cls) { return '<img class="tpng cart ' . $cls . '" data-cm="' . $cm . '" src="data:image/png;base64,' . base64_encode($bin) . '" alt="">'; };
         if ($art !== 'none' && function_exists('imagecreatetruecolor')) {
             $fl = $img(TNGBook_Art::flourish($head), 12, 'fl');
-            $front = '<div class="cover art-' . $art . '">' . ($art === 'tree' ? $img(TNGBook_Art::tree($head), 9, 'tr') : $fl)
+            $front = '<div class="cover art-' . ($art === 'ornament' ? 'ornament' : 'tree') . '">' . ($art === 'ornament' ? $fl : $img(TNGBook_Art::tree($head, 900, 760, TNGBook_Art::style_of($art)), 9, 'tr'))
                 . '<h1>' . $this->e($title) . '</h1>' . $fl;
         } else {
             $front = '<div class="cover"><div class="rule"></div><h1>' . $this->e($title) . '</h1><div class="rule"></div>';

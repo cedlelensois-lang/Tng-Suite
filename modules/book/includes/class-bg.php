@@ -263,17 +263,33 @@ class TNGBook_Bg {
         [$mpdf, $pieces] = TNGBook::pdf_stage_init($b['html']);
         $b = null;
         $file = TNGBook_Auto::new_name($base, 'pdf');
-        if (file_put_contents($w . '/pieces.ser', serialize($pieces)) === false) throw new Exception(tngs_t('Écriture impossible dans le dossier de destination.'));
+        if (!self::put_signed($w . '/pieces.ser', serialize($pieces))) throw new Exception(tngs_t('Écriture impossible dans le dossier de destination.'));
         self::patch(['stage' => 'pdf', 'total' => count($pieces), 'pos' => 0, 'pfile' => $file, 'pbase' => $base, 'psig' => $sig]);
         return self::pdf_work($j['id'], $mpdf, $pieces, 0, 'pdf', $t0);
+    }
+
+    /**
+     * Fichiers d'état de la reprise : signés (HMAC avec les clés secrètes du site) avant d'être relus par unserialize(),
+     * pour qu'un fichier déposé ou modifié dans le dossier de travail ne soit jamais désérialisé.
+     */
+    private static function put_signed($path, $data) {
+        return file_put_contents($path, hash_hmac('sha256', $data, wp_salt('auth')) . $data) !== false;
+    }
+
+    private static function get_signed($path) {
+        $raw = is_file($path) ? (string) file_get_contents($path) : '';
+        if (strlen($raw) <= 64) return false;
+        $data = substr($raw, 64);
+        if (!hash_equals(hash_hmac('sha256', $data, wp_salt('auth')), substr($raw, 0, 64))) return false;
+        return @unserialize($data);
     }
 
     /** Reprise suivante : le document est rechargé tel qu'il avait été mis en pause. */
     private static function pdf_resume(array $j, $t0) {
         if (!TNGBook::mpdf_available()) throw new Exception(tngs_t('Le format demandé n’est pas disponible sur ce serveur :') . ' PDF');   // la bibliothèque doit être chargée avant de relire le document
         $w = self::workdir($j['id']);
-        $st = is_file($w . '/state.ser') ? @unserialize((string) file_get_contents($w . '/state.ser')) : false;
-        $pieces = is_file($w . '/pieces.ser') ? @unserialize((string) file_get_contents($w . '/pieces.ser')) : false;
+        $st = self::get_signed($w . '/state.ser');
+        $pieces = self::get_signed($w . '/pieces.ser');
         if (!is_array($st) || !isset($st['mpdf']) || !is_array($pieces)) throw new Exception(tngs_t('Impossible de reprendre le PDF : l’état enregistré est illisible.'));
         return self::pdf_work($j['id'], $st['mpdf'], $pieces, (int) $st['pos'], (string) $st['stage'], $t0);
     }
@@ -308,7 +324,7 @@ class TNGBook_Bg {
     private static function pdf_pause($id, \Mpdf\Mpdf $mpdf, $pos, $stage) {
         $w = self::workdir($id);
         $tmp = $w . '/state.tmp';
-        if (file_put_contents($tmp, serialize(['mpdf' => $mpdf, 'pos' => $pos, 'stage' => $stage])) === false || !@rename($tmp, $w . '/state.ser')) {
+        if (!self::put_signed($tmp, serialize(['mpdf' => $mpdf, 'pos' => $pos, 'stage' => $stage])) || !@rename($tmp, $w . '/state.ser')) {
             throw new Exception(tngs_t('Écriture impossible dans le dossier de destination.'));
         }
         self::patch(['stage' => $stage]);

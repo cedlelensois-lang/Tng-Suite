@@ -24,6 +24,7 @@ Ancestor and descendant lists and an individual sheet, as PDF, Excel or Word. Tw
 
 ## Notes
 
+- `[tng_fiche]` is an old name for the same tool: it now shows the same thing as `[tng_listes]`.
 - In the admin, the language follows General (French or English), unless Catalan/Spanish is set in the settings.
 
 ---

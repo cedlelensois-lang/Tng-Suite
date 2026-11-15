@@ -333,7 +333,7 @@ final class TNGBook {
         $fr = (string) ($in['frame'] ?? 'none');
         $out['frame'] = in_array($fr, ['single', 'double', 'ornate'], true) ? $fr : 'none';
         $ca = (string) ($in['cover_art'] ?? 'tree');
-        $out['cover_art'] = in_array($ca, ['none', 'ornament', 'tree'], true) ? $ca : 'tree';
+        $out['cover_art'] = in_array($ca, TNGBook_Art::cover_choices(), true) ? $ca : 'tree';
         $f = $in['format'] ?? '';
         $out['format'] = in_array($f, ['pdf', 'docx', 'odt'], true) ? $f : 'html';
         // couleurs des textes (sélecteurs de couleur) ; case « par défaut » = retour aux couleurs d'origine
@@ -524,7 +524,10 @@ final class TNGBook {
         self::select('Illustration de couverture', 'cover_art', [
             'none' => 'Aucune (deux filets autour du titre)',
             'ornament' => 'Fleurons au-dessus et au-dessous du titre',
-            'tree' => 'Arbre de vie, puis titre et fleuron',
+            'tree' => 'Arbre : chêne ample, puis titre et fleuron',
+            'olive' => 'Arbre : penché, aux branches légères',
+            'willow' => 'Arbre : saule pleureur',
+            'winter' => 'Arbre : sans feuilles, ses racines dessinées dessous',
         ], $o['cover_art'] ?? 'tree', 'Dessinée par le plugin dans la couleur du livre (« en-têtes et liens »), sans fichier à installer.');
         $hco = [];
         foreach (TNGBook_History::countries() as $code => $nm) $hco[$code] = $nm[0];
@@ -760,7 +763,7 @@ final class TNGBook {
             'notes' => (bool) $o['notes'], 'military' => (bool) $o['military'], 'mpf' => !empty($o['mpf']), 'mini' => !empty($o['mini']), 'imgq' => !empty($o['imgq']), 'trees' => !empty($o['trees']), 'stats' => !empty($o['stats']), 'stats_first' => !empty($o['stats_first']), 'stats_last' => !empty($o['stats_last']), 'desclist' => !empty($o['desclist']), 'chrono' => !empty($o['chrono']), 'map' => !empty($o['map']), 'bapt' => !empty($o['bapt']), 'burial' => !empty($o['burial']), 'verbose' => !empty($o['verbose']), 'country' => !empty($o['country']), 'regions' => !empty($o['regions']), 'asclist' => !empty($o['asclist']), 'resi' => !empty($o['resi']), 'sibs' => !empty($o['sibs']), 'cous' => !empty($o['cous']), 'allunions' => !empty($o['allunions']), 'marrage' => !empty($o['marrage']),
             'debug' => $debug, 'place_parts' => (int) $o['place_parts'],
             'title' => $o['title'], 'author' => $o['author'], 'preface' => $o['preface'], 'surname' => (string) ($o['surname'] ?? ''), 'surname_title' => (string) ($o['surname_title'] ?? ''), 'colors' => $o['colors'] ?? [],
-            'template' => $o['template'] ?? 'classic', 'frame' => in_array($o['frame'] ?? '', ['single', 'double', 'ornate'], true) ? $o['frame'] : 'none', 'cover_art' => in_array($o['cover_art'] ?? 'tree', ['none', 'ornament', 'tree'], true) ? $o['cover_art'] : 'tree', 'kids' => !empty($o['kids']), 'histfiche' => !empty($o['histfiche']), 'history' => !empty($o['history']), 'history_country' => (string) ($o['history_country'] ?? 'FR'), 'history_custom' => (string) ($o['history_custom'] ?? ''), 'order' => self::clean_order($o['order'] ?? null),
+            'template' => $o['template'] ?? 'classic', 'frame' => in_array($o['frame'] ?? '', ['single', 'double', 'ornate'], true) ? $o['frame'] : 'none', 'cover_art' => in_array($o['cover_art'] ?? 'tree', TNGBook_Art::cover_choices(), true) ? $o['cover_art'] : 'tree', 'kids' => !empty($o['kids']), 'histfiche' => !empty($o['histfiche']), 'history' => !empty($o['history']), 'history_country' => (string) ($o['history_country'] ?? 'FR'), 'history_custom' => (string) ($o['history_custom'] ?? ''), 'order' => self::clean_order($o['order'] ?? null),
             'tng_path' => $o['tng_path'], 'photo_folder' => $o['photo_folder'],
         ];
         $narr = !empty(TNGBook_Renderer::templates()[$opts['template']]['narr']);

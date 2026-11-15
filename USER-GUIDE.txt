@@ -249,8 +249,8 @@ FAMILY BOOK: LAYOUT TEMPLATES (TNG Suite > Family book > Layout template)
  - Modern: sans-serif font, solid generation banners, each entry as a card (cards are HTML/PDF only; Word and
    OpenDocument get the font and the banners).
  Fonts are standard ones (Garamond, Cambria, Palatino, Calibri); if they are not installed the viewer substitutes a
- close font. PDF written by the direct-download option (mPDF) was not tested with the 2-column templates: use the
- printable page ("Save as PDF") for a guaranteed result.
+ close font. The direct-download PDF (mPDF) is produced with every template; the printable page
+ ("Save as PDF") remains an alternative.
 
 
 FICHE & DOCUMENT LISTS MODULE (TNG Suite > Fiche & documents)
@@ -363,7 +363,7 @@ NEW MODULES: THINGS TO KNOW
  - Family book (TNG Suite > Family book): showing living people in full is set in
    TNG Suite > General > Modules > Family book > "Show (⚠️ GDPR)". The tree and the prefix come from the shared
    settings; the TNG folder on disk is derived from the TNG URL if left empty.
-   Direct PDF: install mPDF with "composer require mpdf/mpdf" in modules/book/ (otherwise a printable page).
+   Direct PDF: mPDF is included in the plugin (modules/book/vendor/); if it was removed, "composer install --no-dev" in modules/book/ restores it (otherwise a printable page).
  - Implex & inbreeding (TNG Suite > Implex: analysis / inbreeding / settings): the hiding of living people
    follows the shared box. The inbreeding calculation writes to a table of the WordPress database
    (<WP prefix>tngi_inbreeding), which is removed when the suite is uninstalled. Chart.js and vis-network are

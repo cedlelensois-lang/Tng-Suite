@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.8.1
+Stable tag: 2.8.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -57,6 +57,8 @@ To display charts, graphs and maps, the plugin needs these JavaScript/CSS librar
 
 The vis-timeline library (8.5.4, MIT or Apache-2.0) is bundled in `modules/timeline/assets/` and is not loaded from any external site.
 
+The PDF engine mPDF 8.3.1 (GPL-2.0-only) and its dependencies (setasign/fpdi, myclabs/deep-copy, psr/log and others, MIT), with the DejaVu fonts (free Bitstream Vera / DejaVu licence), are bundled in `modules/book/vendor/` (licence files included). They run on your own server: no external request is made to build a PDF.
+
 == Installation ==
 
 1. Upload the `tng-suite` folder to `/wp-content/plugins/`, or install the zip from the Plugins screen.
@@ -79,6 +81,12 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.8.2 =
+* Livre : quatre arbres de couverture au choix (chêne ample, arbre penché aux branches légères, saule pleureur, arbre sans feuilles avec ses racines dessinées dessous) ; racines arrondies.
+* Sécurité : les fichiers d'état de la génération en arrière-plan sont signés (HMAC) avant d'être relus, un fichier modifié ou déposé dans le dossier de travail n'est jamais désérialisé.
+* Traductions : une douzaine de libellés manquants en anglais (avertissements RGPD, « Hauteur (px) », « Mode d'affichage », arbre : « Conjoint(e) », « Mariage »…).
+* Documentation : mPDF inclus (guides), alias `[tng_fiche]`, section « Services externes » complétée (mPDF et polices DejaVu) ; capture d'écran égarée retirée du dépôt ; le workflow de Release n'exécute composer que si mPDF manque.
 
 = 2.8.1 =
 * Correctif : l'aperçu en direct et l'export PDF de l'éventail (« Générer une roue ») ne s'affichaient plus depuis le nouveau menu ; les scripts des sections sont de nouveau chargés.
