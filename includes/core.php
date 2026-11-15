@@ -210,7 +210,7 @@ function tngs_modules() {
         'stats'    => array( 'Statistiques & graphiques', '[tng_stat_genre] [tng_stat_vivants] [tng_stat_demi_siecle] [tng_stat_mois] … (TNG Suite > Statistiques)', 'Seuls des totaux sont publiés : « Masquer » cache le nom des personnes privées dans la liste des centenaires.' ),
         'gallery'  => array( 'Galerie de médias', '[tng_media_gallery]', 'Médias liés à des personnes vivantes ou privées.' ),
         'random'   => array( 'Individu au hasard', '[tng_random_individual]', 'Tirage au sort parmi les personnes vivantes ou privées.' ),
-        'extra'    => array( 'Nuage de noms & anniversaires', '[tng_name_cloud] [tng_births_today] [tng_marriages_today] [tng_deaths_today]', 'Noms de famille et anniversaires du jour des personnes vivantes ou privées.' ),
+        'extra'    => array( 'Nuage de noms & anniversaires', '[tng_name_cloud] [tng_births_today] [tng_marriages_today] [tng_deaths_today] [tng_recent_updates]', 'Noms de famille et anniversaires du jour des personnes vivantes ou privées.' ),
         'implexe'  => array( 'Implexe & consanguinité', '[tng_implexe] [tng_consanguinite]', 'Noms des personnes vivantes ou privées dans les graphes et les listes.' ),
         'book'     => array( 'Livre généalogique', '[tng_book] (et génération depuis l\'administration)', 'Personnes vivantes ou privées dans le livre (noms, dates, photos).' ),
         'fiche'    => array( 'Fiche & listes de documents', '[tng_listes]', 'Noms et dates des personnes vivantes ou privées dans les listes et les fiches individuelles.' ),

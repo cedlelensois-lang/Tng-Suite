@@ -24,6 +24,12 @@ Cloud of surnames and today’s anniversaries (births, marriages, deaths). No se
 [tng_deaths_today]
 ```
 
+```
+[tng_recent_updates limit="10"]
+```
+
+Latest individuals updated in TNG (bold name, last modification date on the right), newest first. Parameters: `limit` (1 to 100, default 10), `tree` (TNG tree, defaults to the one in the common settings), `date` (`yes`/`no`), `date_format` (PHP codes, for example `d/m/Y` or `j F Y`), `link` (`yes`/`no`, link to the TNG record) and `title` (heading above the list). Living or private people are excluded by default; the list is cached for one hour.
+
 ## How to use
 
 1. Paste the wanted shortcode into a page or widget.

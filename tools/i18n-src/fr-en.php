@@ -1109,4 +1109,13 @@ return array(
 	'L’échelle est automatique (logarithmique) : « faible » colore les lieux à peu d’événements, « forte » le plus gros foyer de la sélection affichée, « moyenne » ce qui se trouve entre les deux.' => 'The scale is automatic (logarithmic): “low” colours places with few events, “high” the biggest hotspot of the displayed selection, and “medium” everything in between.',
 	'Revenir à la palette recommandée' => 'Restore the recommended palette',
 	'Orange clair, orange foncé, rouge sombre. Pensez à enregistrer ensuite.' => 'Light orange, dark orange, dark red. Remember to save afterwards.',
+	'Aucune mise à jour récente.' => 'No recent updates.',
+	'Les derniers individus mis à jour dans TNG (date de dernière modification), le plus récent en premier.' => 'The most recently updated individuals in TNG (last modification date), newest first.',
+	'Nombre d’individus affichés (1 à 100).' => 'Number of individuals displayed (1 to 100).',
+	'Identifiant de l’arbre TNG (vide = arbre des réglages communs, sinon tous).' => 'TNG tree ID (empty = tree from the common settings, otherwise all trees).',
+	'yes ou no : afficher la date de mise à jour.' => 'yes or no: show the update date.',
+	'Format de la date (codes PHP, par exemple d/m/Y ou j F Y). Vide : jj/mm/aaaa en français, mm/dd/yyyy en anglais.' => 'Date format (PHP codes, for example d/m/Y or j F Y). Empty: dd/mm/yyyy in French, mm/dd/yyyy in English.',
+	'yes ou no : lier chaque nom à sa fiche TNG.' => 'yes or no: link each name to its TNG record.',
+	'Titre affiché au-dessus de la liste (vide = aucun).' => 'Title shown above the list (empty = none).',
+	'Les listes d’anniversaires sont mises en cache pour la journée ; la liste des dernières mises à jour, pour une heure.' => 'Anniversary lists are cached for the day; the list of latest updates, for one hour.',
 );

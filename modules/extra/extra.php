@@ -33,8 +33,16 @@ add_action('admin_menu', function () {
                 array('code' => '[tng_births_today]', 'desc' => 'Les naissances survenues le même jour et le même mois, toutes années confondues.', 'atts' => array()),
                 array('code' => '[tng_marriages_today]', 'desc' => 'Les mariages célébrés le même jour et le même mois.', 'atts' => array()),
                 array('code' => '[tng_deaths_today]', 'desc' => 'Les décès survenus le même jour et le même mois.', 'atts' => array()),
+                array('code' => '[tng_recent_updates limit="10"]', 'desc' => 'Les derniers individus mis à jour dans TNG (date de dernière modification), le plus récent en premier.', 'atts' => array(
+                    array('limit', 'Nombre d’individus affichés (1 à 100).', '10'),
+                    array('tree', 'Identifiant de l’arbre TNG (vide = arbre des réglages communs, sinon tous).', ''),
+                    array('date', 'yes ou no : afficher la date de mise à jour.', 'yes'),
+                    array('date_format', 'Format de la date (codes PHP, par exemple d/m/Y ou j F Y). Vide : jj/mm/aaaa en français, mm/dd/yyyy en anglais.', ''),
+                    array('link', 'yes ou no : lier chaque nom à sa fiche TNG.', 'yes'),
+                    array('title', 'Titre affiché au-dessus de la liste (vide = aucun).', ''),
+                )),
             ),
-            array('Les listes d’anniversaires sont mises en cache pour la journée.')
+            array('Les listes d’anniversaires sont mises en cache pour la journée ; la liste des dernières mises à jour, pour une heure.')
         );
     });
 });

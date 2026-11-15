@@ -3,6 +3,40 @@
     display: none !important;
 }
 
+/* Derniers individus mis à jour : nom en gras à gauche, date à droite, filet fin entre les lignes */
+.tng-recent ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.tng-recent li {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0 1em;
+    margin: 0;
+    padding: .7em 0;
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+}
+.tng-recent li:last-child {
+    border-bottom: 0;
+}
+.tng-recent .tng-recent-name,
+.tng-recent .tng-recent-name a {
+    font-weight: 700;
+    color: inherit;
+    text-decoration: none;
+}
+.tng-recent .tng-recent-name a:hover,
+.tng-recent .tng-recent-name a:focus {
+    text-decoration: underline;
+}
+.tng-recent .tng-recent-date {
+    opacity: .7;
+    white-space: nowrap;
+}
+
 /* Bouton de dépliage : aspect d'un lien */
 .tng-events-toggle {
     background: none;

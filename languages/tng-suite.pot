@@ -3301,6 +3301,33 @@ msgstr ""
 msgid "Orange clair, orange foncé, rouge sombre. Pensez à enregistrer ensuite."
 msgstr ""
 
+msgid "Aucune mise à jour récente."
+msgstr ""
+
+msgid "Les derniers individus mis à jour dans TNG (date de dernière modification), le plus récent en premier."
+msgstr ""
+
+msgid "Nombre d’individus affichés (1 à 100)."
+msgstr ""
+
+msgid "Identifiant de l’arbre TNG (vide = arbre des réglages communs, sinon tous)."
+msgstr ""
+
+msgid "yes ou no : afficher la date de mise à jour."
+msgstr ""
+
+msgid "Format de la date (codes PHP, par exemple d/m/Y ou j F Y). Vide : jj/mm/aaaa en français, mm/dd/yyyy en anglais."
+msgstr ""
+
+msgid "yes ou no : lier chaque nom à sa fiche TNG."
+msgstr ""
+
+msgid "Titre affiché au-dessus de la liste (vide = aucun)."
+msgstr ""
+
+msgid "Les listes d’anniversaires sont mises en cache pour la journée ; la liste des dernières mises à jour, pour une heure."
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""

@@ -24,6 +24,12 @@ Nuage des noms de famille et anniversaires du jour (naissances, mariages, décè
 [tng_deaths_today]
 ```
 
+```
+[tng_recent_updates limit="10"]
+```
+
+Derniers individus mis à jour dans TNG (nom en gras, date de dernière modification à droite), le plus récent en premier. Paramètres : `limit` (1 à 100, défaut 10), `tree` (arbre TNG, par défaut celui des réglages communs), `date` (`yes`/`no`), `date_format` (codes PHP, par exemple `d/m/Y` ou `j F Y`), `link` (`yes`/`no`, lien vers la fiche TNG) et `title` (titre au-dessus de la liste). Les personnes vivantes ou privées sont exclues par défaut ; la liste est mise en cache une heure.
+
 ## Utilisation
 
 1. Collez le shortcode voulu dans une page ou un widget.

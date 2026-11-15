@@ -198,7 +198,7 @@ function tngs_shortcode_tags() {
     return array(
         'arbre_tng', 'enfants_tng', 'patronyme_tng', 'liste_enfants_tng', 'stats_descendants_tng', 'lien_fiche_tng',
         'tng_link', 'tng_timeline', 'tng_heatmap', 'tng_media_gallery', 'tng_random_individual',
-        'tng_name_cloud', 'tng_births_today', 'tng_marriages_today', 'tng_deaths_today',
+        'tng_name_cloud', 'tng_births_today', 'tng_marriages_today', 'tng_deaths_today', 'tng_recent_updates',
         'tng_implexe', 'tng_consanguinite', 'tng_stat', 'tng_book', 'tng_fan', 'tng_roue',
     );
 }

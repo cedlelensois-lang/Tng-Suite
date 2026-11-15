@@ -16,6 +16,7 @@ class TNG_Extra_Shortcodes {
         add_shortcode('tng_births_today', [$this, 'shortcode_births_today']);
         add_shortcode('tng_marriages_today', [$this, 'shortcode_marriages_today']);
         add_shortcode('tng_deaths_today', [$this, 'shortcode_deaths_today']);
+        add_shortcode('tng_recent_updates', [$this, 'shortcode_recent_updates']);
     }
 
     /* ------------------------------------------------------------------
@@ -226,6 +227,113 @@ class TNG_Extra_Shortcodes {
             __('Mariages du jour', 'tng-suite'),
             __('Aucun mariage aujourd’hui.', 'tng-suite')
         );
+    }
+
+    /* ------------------------------------------------------------------
+     * Derniers individus mis à jour
+     * ---------------------------------------------------------------- */
+
+    /** La colonne « préfixe du nom » (de, van…) n'existe que dans les versions récentes de TNG. */
+    protected function has_lnprefix() {
+        static $has = null;
+        if ($has === null) {
+            $db  = TNG_Extra_DB::get();
+            $res = $db ? $db->get_results('SHOW COLUMNS FROM ' . TNG_Extra_DB::table('people') . " LIKE 'lnprefix'") : null;
+            $has = !empty($res);
+        }
+        return $has;
+    }
+
+    /**
+     * [tng_recent_updates limit="10" tree="" date="yes" date_format="" link="yes" title=""]
+     * Les personnes les plus récemment modifiées dans TNG (date de dernière modification), la plus récente d'abord.
+     * Les personnes vivantes ou privées sont exclues, sauf réglage contraire de ce module.
+     */
+    public function shortcode_recent_updates($atts) {
+
+        $atts = shortcode_atts([
+            'limit'       => 10,
+            'tree'        => '',
+            'date'        => 'yes',
+            'date_format' => '',
+            'link'        => 'yes',
+            'title'       => '',
+        ], $atts, 'tng_recent_updates');
+
+        $limit     = min(100, max(1, absint($atts['limit'])));
+        $tree      = preg_replace('/[^A-Za-z0-9_\-]/', '', (string) $atts['tree']);
+        $tree      = $tree !== '' ? $tree : tngs_gedcom();
+        $show_date = !in_array(strtolower(trim((string) $atts['date'])), ['no', 'non', '0', 'false'], true);
+        $link      = !in_array(strtolower(trim((string) $atts['link'])), ['no', 'non', '0', 'false'], true);
+        $hide      = tngs_hide_living('extra');
+
+        // Mise en cache courte : une modification dans TNG apparaît en moins d'une heure.
+        $rows = $this->cached('recent_' . $limit . '_' . md5($tree . '|' . (int) $hide), HOUR_IN_SECONDS, function () use ($limit, $tree, $hide) {
+
+            $db = TNG_Extra_DB::get();
+            if (!$db) {
+                return null;
+            }
+
+            $prefix = $this->has_lnprefix() ? 'lnprefix' : "'' AS lnprefix";
+            $where  = "changedate IS NOT NULL AND changedate > '1900-01-01'";
+            $args   = [];
+            if ($hide) {
+                $where .= ' AND Living = 0 AND private = 0';
+            }
+            if ($tree !== '') {
+                $where .= ' AND gedcom = %s';
+                $args[] = $tree;
+            }
+            $args[] = $limit;
+
+            $sql = $db->prepare(
+                "SELECT personID, gedcom, firstname, $prefix, lastname, changedate
+                 FROM " . TNG_Extra_DB::table('people') . "
+                 WHERE $where
+                 ORDER BY changedate DESC, personID DESC
+                 LIMIT %d",
+                $args
+            );
+            return TNG_Extra_DB::results($sql);
+        });
+
+        if ($rows === null) {
+            return $this->error_html();
+        }
+        if (empty($rows)) {
+            return '<p>' . esc_html(tngs_t('Aucune mise à jour récente.')) . '</p>';
+        }
+
+        $format = trim((string) $atts['date_format']);
+        if ($format === '') {
+            $format = (function_exists('tngs_lang') && tngs_lang() === 'en') ? 'm/d/Y' : 'd/m/Y';
+        }
+
+        wp_enqueue_style('tng-suite');
+
+        $out = '<div class="tng-recent">';
+        if (trim((string) $atts['title']) !== '') {
+            $out .= '<h3>' . esc_html($atts['title']) . '</h3>';
+        }
+        $out .= '<ul>';
+        foreach ($rows as $r) {
+            $last  = mb_strtoupper(trim(trim((string) $r->lnprefix) . ' ' . trim((string) $r->lastname)));
+            $name  = trim($last . ' ' . trim((string) $r->firstname));
+            $label = esc_html($name !== '' ? $name : $r->personID);
+            $url   = $link ? $this->tng_url('getperson.php', ['personID' => $r->personID, 'tree' => $r->gedcom]) : '';
+            $text  = $url !== '' ? '<a href="' . esc_url($url) . '">' . $label . '</a>' : $label;
+
+            $date = '';
+            if ($show_date) {
+                $ts = strtotime($r->changedate . ' UTC');   // date TNG en heure locale : on la formate telle quelle, sans décalage
+                if ($ts) {
+                    $date = '<span class="tng-recent-date">(' . esc_html(wp_date($format, $ts, new DateTimeZone('UTC'))) . ')</span>';
+                }
+            }
+            $out .= '<li><span class="tng-recent-name">' . $text . '</span>' . $date . '</li>';
+        }
+        return $out . '</ul></div>';
     }
 
     /* ------------------------------------------------------------------

@@ -3301,6 +3301,33 @@ msgstr "Restore the recommended palette"
 msgid "Orange clair, orange foncé, rouge sombre. Pensez à enregistrer ensuite."
 msgstr "Light orange, dark orange, dark red. Remember to save afterwards."
 
+msgid "Aucune mise à jour récente."
+msgstr "No recent updates."
+
+msgid "Les derniers individus mis à jour dans TNG (date de dernière modification), le plus récent en premier."
+msgstr "The most recently updated individuals in TNG (last modification date), newest first."
+
+msgid "Nombre d’individus affichés (1 à 100)."
+msgstr "Number of individuals displayed (1 to 100)."
+
+msgid "Identifiant de l’arbre TNG (vide = arbre des réglages communs, sinon tous)."
+msgstr "TNG tree ID (empty = tree from the common settings, otherwise all trees)."
+
+msgid "yes ou no : afficher la date de mise à jour."
+msgstr "yes or no: show the update date."
+
+msgid "Format de la date (codes PHP, par exemple d/m/Y ou j F Y). Vide : jj/mm/aaaa en français, mm/dd/yyyy en anglais."
+msgstr "Date format (PHP codes, for example d/m/Y or j F Y). Empty: dd/mm/yyyy in French, mm/dd/yyyy in English."
+
+msgid "yes ou no : lier chaque nom à sa fiche TNG."
+msgstr "yes or no: link each name to its TNG record."
+
+msgid "Titre affiché au-dessus de la liste (vide = aucun)."
+msgstr "Title shown above the list (empty = none)."
+
+msgid "Les listes d’anniversaires sont mises en cache pour la journée ; la liste des dernières mises à jour, pour une heure."
+msgstr "Anniversary lists are cached for the day; the list of latest updates, for one hour."
+
 msgctxt "js"
 msgid " Page "
 msgstr " Page "

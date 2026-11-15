@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.3.0
+Stable tag: 2.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.4.0 =
+* Nouveau shortcode [tng_recent_updates limit="10"] (module « Nuage de noms & anniversaires ») : liste des derniers individus mis à jour dans TNG, le plus récent en premier, avec la date de dernière modification. Réglages du shortcode : limit (nombre d'individus, 1 à 100), tree, date, date_format, link et title. Les personnes vivantes ou privées sont exclues par défaut (réglage « vivants / privés » du module) ; la liste est mise en cache une heure.
 
 = 2.3.0 =
 * Livre : nouveau bouton « Générer en arrière-plan » (et « En arrière-plan » pour chaque profil, dans la vue d'ensemble). Pour un gros livre, que l'hébergeur coupe avant la fin (erreur 500 après une longue attente), le livre est préparé par une tâche planifiée du serveur : un panneau affiche l'état et l'avancement (lecture de la base, mise en page, création du PDF…), propose l'annulation, puis le téléchargement quand le livre est prêt. Une interruption par l'hébergeur est détectée et expliquée (dernière étape atteinte, mémoire utilisée). Fonctionne pour tous les formats ; le fichier est déposé dans le dossier de la génération automatique.

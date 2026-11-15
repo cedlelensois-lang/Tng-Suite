@@ -18,6 +18,7 @@ One plugin instead of eleven:
   TNG Random Individual 2.0              Random individual          [tng_random_individual]
   TNG Extra Shortcodes 2.0               Name cloud & birthdays     [tng_name_cloud] [tng_births_today]
                                                                     [tng_marriages_today] [tng_deaths_today]
+                                                                    [tng_recent_updates]
   TNG Stats 1.0                          Statistics & charts        [tng_stat_genre] [tng_stat_vivants]
                                                                     [tng_stat_centenaires] [tng_stat_age_union]
                                                                     [tng_stat_distance] [tng_stat_demi_siecle]
