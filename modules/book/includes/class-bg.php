@@ -270,6 +270,7 @@ class TNGBook_Bg {
 
     /** Reprise suivante : le document est rechargé tel qu'il avait été mis en pause. */
     private static function pdf_resume(array $j, $t0) {
+        if (!TNGBook::mpdf_available()) throw new Exception(tngs_t('Le format demandé n’est pas disponible sur ce serveur :') . ' PDF');   // la bibliothèque doit être chargée avant de relire le document
         $w = self::workdir($j['id']);
         $st = is_file($w . '/state.ser') ? @unserialize((string) file_get_contents($w . '/state.ser')) : false;
         $pieces = is_file($w . '/pieces.ser') ? @unserialize((string) file_get_contents($w . '/pieces.ser')) : false;
