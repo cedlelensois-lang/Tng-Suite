@@ -577,7 +577,8 @@ class TNGBook_Doc {
             if (isset($b['fig'])) {
                 $im = $this->images[$b['fig']]; $frame++;
                 $cm = min($b['cm'], $colsOn ? 8.0 : 17.0); $hc = round($cm * $im['h'] / $im['w'], 3);
-                $ps = $reg('p', '<style:paragraph-properties fo:text-align="center" fo:margin-top="0.2cm" fo:margin-bottom="0.2cm"' . ($b['pb'] ? ' fo:break-before="page"' : '') . '/>', ' style:parent-style-name="Standard"');
+                $ps = $reg('p', '<style:paragraph-properties fo:text-align="center" fo:margin-top="0.2cm" fo:margin-bottom="0.2cm"' . ($b['pb'] ? ' fo:break-before="page"' : '') . '/>', ' style:parent-style-name="Standard"' . ($firstBlock && $this->frame ? ' style:master-page-name="First"' : ''));
+                $firstBlock = false;
                 $bk = '';
                 foreach ($b['bm'] ?? [] as $name) { if (isset($bmUsed[$name])) continue; $bmUsed[$name] = 1; $bk .= '<text:bookmark text:name="' . $name . '"/>'; }
                 $body .= '<text:p text:style-name="' . $ps . '">' . $bk . '<draw:frame draw:style-name="fr1" draw:name="Arbre' . $frame . '" text:anchor-type="as-char" svg:width="' . round($cm, 3) . 'cm" svg:height="' . $hc . 'cm"><draw:image xlink:href="Pictures/' . $im['name'] . '" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/></draw:frame></text:p>';

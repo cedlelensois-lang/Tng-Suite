@@ -1,6 +1,6 @@
 # Bouton vers la fiche
 
-Un bouton qui renvoie vers la fiche d’une personne dans TNG.
+Un bouton qui renvoie vers la fiche d’une personne dans TNG. Réglages : onglet **Arbres & visualisations**, section **Bouton vers la fiche** ; activé avec le module Arbres & descendance.
 
 ## Dans l’administration
 

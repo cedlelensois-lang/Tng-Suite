@@ -1,6 +1,6 @@
 # Random individual
 
-Shows a random person (or a given surname).
+Shows a random person (or a given surname). Settings: **Media & widgets** tab, **Random individual** section; switched on and protected (living / private) with the Name cloud & birthdays module.
 
 ## In the admin
 

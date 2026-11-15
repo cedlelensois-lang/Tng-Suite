@@ -40,8 +40,8 @@ function tngs_add_subpage( $page_title, $menu_title, $slug, $callback ) {
         if ( tngs_module_primary( $mod ) !== $slug ) {
             return; // page secondaire : affichée comme section dans la page du module.
         }
-        $mods       = tngs_modules();
-        $menu_title = isset( $mods[ $mod ] ) ? $mods[ $mod ][0] : $menu_title;
+        $fams       = tngs_families();
+        $menu_title = isset( $fams[ $mod ] ) ? $fams[ $mod ][0] : $menu_title;
         $page_title = $menu_title;
         $callback   = function () use ( $mod ) {
             tngs_render_module_page( $mod );
@@ -62,19 +62,39 @@ function tngs_merge_enabled() {
     return (bool) apply_filters( 'tngs_merge_module_pages', true );
 }
 
-/** Module dont la page $slug est fusionnée avec d'autres (module qui a plusieurs pages), sinon ''. */
+/** Famille (onglet) dont la page $slug est une section, sinon '' (fusion désactivée ou page inconnue). */
 function tngs_merged_module( $slug ) {
-    $map = tngs_page_modules();
+    $map = tngs_page_groups();
     if ( ! tngs_merge_enabled() || ! isset( $map[ $slug ] ) ) {
         return '';
     }
-    $mod = $map[ $slug ];
-    return count( array_keys( $map, $mod, true ) ) > 1 ? $mod : '';
+    return $map[ $slug ];
 }
 
-/** Page principale d'un module (la première de la carte). */
-function tngs_module_primary( $mod ) {
-    $k = array_search( $mod, tngs_page_modules(), true );
+/** Modules réellement chargés (activés et sans ancien plugin en doublon) : seuls leurs pages existent. */
+function tngs_loaded_modules() {
+    if ( isset( $GLOBALS['tngs_loaded'] ) && is_array( $GLOBALS['tngs_loaded'] ) ) {
+        return $GLOBALS['tngs_loaded'];
+    }
+    $out = array();
+    foreach ( array_keys( tngs_modules() ) as $m ) {
+        if ( tngs_module_enabled( $m ) ) {
+            $out[] = $m;
+        }
+    }
+    return $out;
+}
+
+/** Page principale d'une famille : la première page d'un module chargé (c'est elle qui est dans le menu). */
+function tngs_module_primary( $group ) {
+    $loaded = tngs_loaded_modules();
+    $mods   = tngs_page_modules();
+    foreach ( tngs_page_groups() as $slug => $g ) {
+        if ( $g === $group && in_array( $mods[ $slug ], $loaded, true ) ) {
+            return $slug;
+        }
+    }
+    $k = array_search( $group, tngs_page_groups(), true );
     return false === $k ? '' : $k;
 }
 
@@ -94,7 +114,18 @@ add_action(
         $page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
         $mod  = '' !== $page ? tngs_merged_module( $page ) : '';
         if ( '' !== $mod && tngs_module_primary( $mod ) !== $page ) {
-            wp_safe_redirect( tngs_page_url( $page ) );
+            $url  = tngs_page_url( $page );
+            $args = array();
+            foreach ( $_GET as $k => $v ) { // phpcs:ignore WordPress.Security.NonceVerification
+                if ( 'page' !== $k && is_scalar( $v ) ) {
+                    $args[ sanitize_key( $k ) ] = rawurlencode( (string) wp_unslash( $v ) ); // conserve « settings-updated » et les messages de retour.
+                }
+            }
+            if ( $args ) {
+                $parts = explode( '#', $url, 2 );
+                $url   = add_query_arg( $args, $parts[0] ) . ( isset( $parts[1] ) ? '#' . $parts[1] : '' );
+            }
+            wp_safe_redirect( $url );
             exit;
         }
     }
@@ -124,24 +155,29 @@ add_action(
 /**
  * Page d'un module à plusieurs pages : un seul écran, une section par page d'origine (réglages, outils…).
  */
-function tngs_render_module_page( $mod ) {
+function tngs_render_module_page( $group ) {
     global $tngs_pages;
-    $mods = tngs_modules();
+    $fams = tngs_families();
     $secs = array();
-    foreach ( tngs_page_modules() as $slug => $m ) {
-        if ( $m === $mod && isset( $tngs_pages[ $slug ] ) ) {
+    foreach ( tngs_page_groups() as $slug => $g ) {
+        if ( $g === $group && isset( $tngs_pages[ $slug ] ) ) {
             $secs[ $slug ] = $tngs_pages[ $slug ];
         }
     }
-    tngs_admin_header( isset( $mods[ $mod ] ) ? $mods[ $mod ][0] : $mod, array( 'module' => $mod ) );
+    $codes = array();
+    $all   = tngs_modules();
+    if ( isset( $fams[ $group ] ) ) {
+        foreach ( $fams[ $group ][1] as $m ) {
+            if ( isset( $all[ $m ] ) && tngs_module_enabled( $m ) ) {
+                preg_match_all( '/\[[a-z_]+[^\]]*\]/i', (string) $all[ $m ][1], $mm );
+                $codes = array_merge( $codes, $mm[0] );
+            }
+        }
+    }
+    tngs_admin_header( isset( $fams[ $group ] ) ? $fams[ $group ][0] : $group, array( 'shortcodes' => $codes ) );
     echo '<nav class="tngs-sections tngs-modsections" aria-label="Sections">';
     foreach ( $secs as $slug => $pg ) {
-        $label = tngs_t( $pg[1] );
-        $pos   = preg_match( '/\s?:\s/u', $label, $mm, PREG_OFFSET_CAPTURE ) ? $mm[0][1] + strlen( $mm[0][0] ) : false; // « Implexe : réglages » (fr) ou « Implexe: settings » (en).
-        if ( false !== $pos ) {
-            $label = ucfirst( substr( $label, $pos ) ); // « Implexe : réglages » → « Réglages » (le nom du module est déjà dans l'onglet).
-        }
-        echo '<a href="#' . esc_attr( $slug ) . '" class="tngs-sec" data-panel="' . esc_attr( $slug ) . '">' . esc_html( $label ) . '</a>';
+        echo '<a href="#' . esc_attr( $slug ) . '" class="tngs-sec" data-panel="' . esc_attr( $slug ) . '">' . esc_html( tngs_t( $pg[1] ) ) . '</a>'; // libellé complet : plusieurs modules par onglet.
     }
     echo '</nav>';
     foreach ( $secs as $slug => $pg ) {
@@ -201,12 +237,40 @@ function tngs_page_modules() {
     );
 }
 
-/** Pages d'un module : [ slug => libellé ], dans l'ordre d'enregistrement. */
-function tngs_module_pages( $module ) {
+/** Famille (onglet) de chaque page, dans l'ordre : famille, puis module, puis page. */
+function tngs_page_groups() {
+    $map = tngs_page_modules();
+    $out = array();
+    foreach ( tngs_families() as $key => $f ) {
+        foreach ( $f[1] as $m ) {
+            foreach ( $map as $slug => $pm ) {
+                if ( $pm === $m ) {
+                    $out[ $slug ] = $key;
+                }
+            }
+        }
+    }
+    return $out;
+}
+
+/** Pages d'une famille : [ slug => libellé ], dans l'ordre. */
+function tngs_module_pages( $group ) {
+    global $tngs_tabs;
+    $out = array();
+    foreach ( tngs_page_groups() as $slug => $g ) {
+        if ( $g === $group && is_array( $tngs_tabs ) && isset( $tngs_tabs[ $slug ] ) ) {
+            $out[ $slug ] = $tngs_tabs[ $slug ];
+        }
+    }
+    return $out;
+}
+
+/** Pages d'un module (ou de ses modules fusionnés : link avec tree, random avec extra) : [ slug => libellé ]. */
+function tngs_own_pages( $module ) {
     global $tngs_tabs;
     $out = array();
     foreach ( tngs_page_modules() as $slug => $m ) {
-        if ( $m === $module && is_array( $tngs_tabs ) && isset( $tngs_tabs[ $slug ] ) ) {
+        if ( tngs_module_root( $m ) === $module && is_array( $tngs_tabs ) && isset( $tngs_tabs[ $slug ] ) ) {
             $out[ $slug ] = $tngs_tabs[ $slug ];
         }
     }
@@ -221,12 +285,8 @@ function tngs_sort_submenu() {
     }
     $rank = array( 'tng-suite' => 0 );
     $i    = 1;
-    foreach ( array_keys( tngs_modules() ) as $mod ) {
-        foreach ( tngs_page_modules() as $slug => $m ) {
-            if ( $m === $mod ) {
-                $rank[ $slug ] = $i++;
-            }
-        }
+    foreach ( array_keys( tngs_page_groups() ) as $slug ) {
+        $rank[ $slug ] = $i++;
     }
     usort(
         $submenu['tng-suite'],
@@ -476,9 +536,9 @@ function tngs_render_general_page() {
 
         <h2>Vos modules</h2>
         <table class="widefat striped tngs-overview"><thead><tr><th>Module</th><th>État</th><th>Vivants / privés</th><th>Réglages</th></tr></thead><tbody>
-        <?php foreach ( tngs_modules() as $slug => $info ) :
+        <?php foreach ( tngs_modules_ui() as $slug => $info ) :
             $on    = ! empty( $s['modules'][ $slug ] );
-            $pages = $on ? tngs_module_pages( $slug ) : array();
+            $pages = $on ? tngs_own_pages( $slug ) : array();
             ?>
             <tr>
                 <td><strong><?php echo esc_html( $info[0] ); ?></strong></td>
@@ -488,7 +548,7 @@ function tngs_render_general_page() {
                     <?php
                     $links = array();
                     foreach ( $pages as $pg => $label ) {
-                        $links[] = '<a href="' . esc_url( admin_url( 'admin.php?page=' . $pg ) ) . '">' . esc_html( $label ) . '</a>';
+                        $links[] = '<a href="' . esc_url( tngs_page_url( $pg ) ) . '">' . esc_html( $label ) . '</a>';
                     }
                     echo $links ? implode( ' · ', $links ) : '<span class="description">Pas de page propre : réglages dans le shortcode.</span>'; // phpcs:ignore WordPress.Security.EscapeOutput
                     ?>
@@ -566,7 +626,17 @@ function tngs_render_general_page() {
             <table class="widefat striped" id="tngs-modules" style="max-width:980px">
                 <thead><tr><th>Module</th><th style="width:90px">Activé</th><th>Vivants / privés</th></tr></thead>
                 <tbody>
-                <?php foreach ( tngs_modules() as $slug => $info ) :
+                <?php
+                $ui = tngs_modules_ui();
+                foreach ( tngs_families() as $fam ) :
+                    ?>
+                    <tr class="tngs-fam"><th colspan="3" style="background:#f0f0f1;font-size:13px"><?php echo esc_html( $fam[0] ); ?></th></tr>
+                    <?php
+                    foreach ( $fam[1] as $slug ) :
+                    if ( ! isset( $ui[ $slug ] ) ) {
+                        continue;
+                    }
+                    $info      = $ui[ $slug ];
                     $mode      = tngs_privacy_mode( $slug );
                     $eff_show  = ! tngs_hide_living( $slug );
                     ?>
@@ -592,6 +662,7 @@ function tngs_render_general_page() {
                             <?php endif; ?>
                         </td>
                     </tr>
+                    <?php endforeach; ?>
                 <?php endforeach; ?>
                 </tbody>
             </table>
@@ -747,9 +818,9 @@ function tngs_admin_header( $title, $args = array() ) {
  */
 function tngs_admin_tabs() {
     $current = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : 'tng-suite'; // phpcs:ignore WordPress.Security.NonceVerification
-    $map     = tngs_page_modules();
+    $map     = tngs_page_groups();
     $cur_mod = isset( $map[ $current ] ) ? $map[ $current ] : '';
-    $mods    = tngs_modules();
+    $mods    = tngs_families();
     echo '<nav class="nav-tab-wrapper tngs-tabs" aria-label="TNG Suite">';
     printf(
         '<a class="nav-tab%s" href="%s"%s>%s</a>',

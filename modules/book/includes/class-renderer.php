@@ -2196,6 +2196,7 @@ body { font-family: Georgia, "DejaVu Serif", serif; font-size: 11pt; line-height
 a { color: inherit; text-decoration: none; }
 a.ref { color: %head%; }
 .cover { text-align: center; padding-top: 4.5cm; page-break-after: always; }
+.cover.art-tree, .cover.art-ornament { padding-top: 2.2cm; } .cover img.cart { display: block; margin: 0 auto; } .cover img.tr { width: 9cm; } .cover img.fl { width: 12cm; margin: .2cm auto; } .cover.art-tree h1, .cover.art-ornament h1 { margin: .35em 0 .25em; }
 .cover .rule { width: 70%; margin: 0 auto; height: 4px; border-top: 3px solid %head%; border-bottom: 1px solid %head%; }
 .cover h1 { font-size: 42pt; margin: .45em 0 .45em; line-height: 1.15; color: %head%; letter-spacing: .02em; }
 .cover .author { font-size: 14pt; margin-top: 2em; }
@@ -2293,7 +2294,16 @@ CSS;
         $title = $o['title'] !== '' ? $o['title'] : str_replace('{name}', $rootName, $L['title_default']);
         $today = $this->dt(gmdate('Y-m-d'), '');
 
-        $front = '<div class="cover"><div class="rule"></div><h1>' . $this->e($title) . '</h1><div class="rule"></div>';
+        $art = (string) ($o['cover_art'] ?? 'tree');
+        $head = $this->colors()['head'];
+        $img = function ($bin, $cm, $cls) { return '<img class="tpng cart ' . $cls . '" data-cm="' . $cm . '" src="data:image/png;base64,' . base64_encode($bin) . '" alt="">'; };
+        if ($art !== 'none' && function_exists('imagecreatetruecolor')) {
+            $fl = $img(TNGBook_Art::flourish($head), 12, 'fl');
+            $front = '<div class="cover art-' . $art . '">' . ($art === 'tree' ? $img(TNGBook_Art::tree($head), 9, 'tr') : $fl)
+                . '<h1>' . $this->e($title) . '</h1>' . $fl;
+        } else {
+            $front = '<div class="cover"><div class="rule"></div><h1>' . $this->e($title) . '</h1><div class="rule"></div>';
+        }
         if ($o['author'] !== '') $front .= '<div class="author">' . $this->e($o['author']) . '</div>';
         $front .= $this->coverStats();
         $front .= '<div class="gen-date">' . $this->e(str_replace('{date}', $today, $L['generated'])) . '</div></div>';
@@ -2353,7 +2363,7 @@ CSS;
         }
 
         $fr = (string) ($this->o['frame'] ?? 'none');
-        if (!in_array($fr, ['single', 'double'], true)) $fr = 'none';
+        if (!in_array($fr, ['single', 'double', 'ornate'], true)) $fr = 'none';
         $mark = '';
         $frameDiv = '';
         $frameCss = '';
@@ -2361,8 +2371,10 @@ CSS;
             $mark = '<meta name="tng-frame" content="' . $fr . ' ' . $this->colors()['head'] . '">';
         } elseif ($fr !== 'none' && $this->mode === 'html') {   // page imprimable : cadre fixe répété sur chaque page à l'impression
             $col = $this->colors()['head'];
-            $frameCss = '.pageframe { display: none; } @media print { .pageframe { display: block; position: fixed; top: -.8cm; left: -.8cm; right: -.8cm; bottom: -1cm; '
-                . ($fr === 'double' ? 'border: 3px double ' : 'border: 1.5pt solid ') . $col . '; pointer-events: none; } }';
+            $look = $fr === 'ornate' && function_exists('imagecreatetruecolor')
+                ? 'background: url(data:image/png;base64,' . base64_encode(TNGBook_Art::frame('ornate', $col, true)) . ') center / 100% 100% no-repeat;'
+                : ($fr === 'single' ? 'border: 1.5pt solid ' : 'border: 3px double ') . $col . ';';
+            $frameCss = '.pageframe { display: none; } @media print { .pageframe { display: block; position: fixed; top: -.8cm; left: -.8cm; right: -.8cm; bottom: -1cm; ' . $look . ' pointer-events: none; -webkit-print-color-adjust: exact; print-color-adjust: exact; } }';
             $frameDiv = '<div class="pageframe"></div>';
         }
         return '<!DOCTYPE html><html lang="' . esc_attr($this->lang) . '"><head><meta charset="utf-8"><title>' . $this->e($title)

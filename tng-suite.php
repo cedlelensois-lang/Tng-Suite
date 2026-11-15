@@ -2,7 +2,7 @@
 /**
  * Plugin Name: TNG Suite
  * Description: Suite unifiée pour TNG : arbres et descendance, bouton vers la fiche, frise chronologique, heatmap des lieux, galerie de médias, individu au hasard, nuage de noms et anniversaires, statistiques et graphiques, éventail (roue de parenté), implexe et consanguinité, livre généalogique, fiche et listes de documents. Un seul réglage de connexion (wp-config.php ou saisie dans le plugin), de préfixe et d'URL, et un réglage « vivants / privés » par module, en français ou en anglais.
- * Version: 2.7.1
+ * Version: 2.8.0
  * Requires PHP: 7.4
  * Requires at least: 5.8
  * Author: Cédric Malvache
@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'TNGSUITE_VERSION', '2.7.1' );
+define( 'TNGSUITE_VERSION', '2.8.0' );
 define( 'TNGSUITE_FILE', __FILE__ );
 define( 'TNGSUITE_DIR', plugin_dir_path( __FILE__ ) );
 define( 'TNGSUITE_URL', plugin_dir_url( __FILE__ ) );
@@ -64,6 +64,7 @@ function tngs_boot() {
         'fiche'    => array( 'modules/fiche/fiche.php',       'function:tngfg_defaults',                  'TNG Fiche Généalogique' ),
     );
 
+    $GLOBALS['tngs_loaded'] = array();
     foreach ( $modules as $slug => $m ) {
         list( $type, $name ) = explode( ':', $m[1] );
         $legacy_loaded = ( 'class' === $type ) ? class_exists( $name, false ) : function_exists( $name );
@@ -74,7 +75,10 @@ function tngs_boot() {
         if ( ! tngs_module_enabled( $slug ) ) {
             continue;
         }
-        require_once TNGSUITE_DIR . $m[0];
+        $GLOBALS['tngs_loaded'][] = $slug;
+    }
+    foreach ( $GLOBALS['tngs_loaded'] as $slug ) { // d'abord la liste complète (menu), puis le chargement.
+        require_once TNGSUITE_DIR . $modules[ $slug ][0];
     }
 }
 add_action( 'plugins_loaded', 'tngs_boot' );

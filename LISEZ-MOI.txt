@@ -49,6 +49,16 @@ INSTALLATION / MIGRATION
  - Connexion à la base TNG : TNG Suite > Général propose trois modes (voir ci-dessous). Vos constantes
    DB_*TNG de wp-config.php restent valables ; DB_PREFIXTNG n'est plus nécessaire (le préfixe se règle dans Général).
 
+LE MENU : CINQ ENTRÉES (depuis la 2.8.0)
+ Le menu « TNG Suite » compte Général et quatre familles ; chaque ancienne sous-page est maintenant une section (barre en haut de la page) :
+  - Arbres & visualisations : Arbres & descendance, Bouton vers la fiche, Frise chronologique, Éventail.
+  - Analyses : Statistiques & graphiques, Heatmap des lieux, Implexe & consanguinité.
+  - Documents : Livre généalogique, Fiche & listes de documents.
+  - Médias & widgets : Galerie de médias, Nuage de noms & anniversaires, Individu au hasard.
+ Quand ce guide indique « TNG Suite > Stats : graphiques » ou « TNG Suite > Livre généalogique », ouvrez l'onglet de la famille, puis la section du même nom.
+ « Bouton vers la fiche » est activé avec « Arbres & descendance », et « Individu au hasard » avec « Nuage de noms & anniversaires » : une case
+ et un réglage « Vivants / privés » pour chaque couple. Les shortcodes et les réglages enregistrés ne changent pas.
+
 CONNEXION À LA BASE TNG : TROIS MODES (TNG Suite > Général)
 -----------------------------------------------------------
  1. Via wp-config.php (recommandé) : constantes DB_HOSTTNG, DB_NAMETNG, DB_USERTNG, DB_PASSWORDTNG

@@ -53,6 +53,16 @@ DON'T FORGET
    wp-config.php remain valid; DB_PREFIXTNG is no longer needed (the prefix is set in General).
 
 
+THE MENU: FIVE ENTRIES (since 2.8.0)
+ The "TNG Suite" menu has General plus four families; every former sub-page is now a section (bar at the top of the page):
+  - Trees & visualisations: Trees & descendants, Record link button, Timeline, Fan chart.
+  - Analyses: Statistics & charts, Places heatmap, Implex & inbreeding.
+  - Documents: Family book, Fiche & document lists.
+  - Media & widgets: Media gallery, Name cloud & birthdays, Random individual.
+ Where this guide says "TNG Suite > Stats: charts" or "TNG Suite > Family book", open the family tab, then the section of that name.
+ "Record link button" is switched on with "Trees & descendants", and "Random individual" with "Name cloud & birthdays": one box and
+ one "Living / private" setting for each pair. Shortcodes and saved settings are unchanged.
+
 CONNECTION TO THE TNG DATABASE: THREE MODES (TNG Suite > General)
 -----------------------------------------------------------------
  1. Via wp-config.php (recommended): constants DB_HOSTTNG, DB_NAMETNG, DB_USERTNG, DB_PASSWORDTNG

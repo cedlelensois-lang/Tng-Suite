@@ -1615,7 +1615,7 @@ msgstr ""
 msgid "TNG Suite > Général > Modules"
 msgstr ""
 
-msgid "TNG Suite > Implexe : consanguinité"
+msgid "TNG Suite > Analyses > Implexe : consanguinité"
 msgstr ""
 
 msgid "TNG Suite – Général"
@@ -3491,6 +3491,45 @@ msgid "Contexte historique dans les fiches : « Contexte historique : naissance 
 msgstr ""
 
 msgid "Utilisé pour les personnes dont le lieu de naissance ne nomme aucun pays connu (ex. « Lille » ou « Lille, Nord »). Une personne née en Espagne reçoit les événements d’Espagne, etc. ; un pays n’est retenu dans la chronologie que s’il compte au moins deux personnes du livre (ou 3 %)."
+msgstr ""
+
+msgid "Cadre orné (angles creusés, PDF et page imprimable ; double filet dans Word et OpenDocument)"
+msgstr ""
+
+msgid "Illustration de couverture"
+msgstr ""
+
+msgid "Aucune (deux filets autour du titre)"
+msgstr ""
+
+msgid "Fleurons au-dessus et au-dessous du titre"
+msgstr ""
+
+msgid "Arbre de vie, puis titre et fleuron"
+msgstr ""
+
+msgid "Dessinée par le plugin dans la couleur du livre (« en-têtes et liens »), sans fichier à installer."
+msgstr ""
+
+msgid "Arbres & visualisations"
+msgstr ""
+
+msgid "Analyses"
+msgstr ""
+
+msgid "Documents"
+msgstr ""
+
+msgid "Médias & widgets"
+msgstr ""
+
+msgid "Arbres, descendance & bouton vers la fiche"
+msgstr ""
+
+msgid "Nuage de noms, anniversaires & individu au hasard"
+msgstr ""
+
+msgid "[tng_stat_genre] [tng_stat_vivants] [tng_stat_demi_siecle] [tng_stat_mois] … (TNG Suite > Analyses > Stats : graphiques)"
 msgstr ""
 
 msgctxt "js"

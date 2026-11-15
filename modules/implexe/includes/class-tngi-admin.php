@@ -167,7 +167,7 @@ class TNGI_Admin {
 			<h2>Utilisation</h2>
 			<p>Insérez le shortcode <code>[tng_implexe]</code> dans une page, avec en option :
 				<code>[tng_implexe tree="monarbre" person="I1" generations="20" network_generations="6"]</code>.<br>
-				Classement de consanguinité : <code>[tng_consanguinite tree="monarbre" per_page="50"]</code> (le calcul se lance depuis la page <em>TNG Suite &gt; Implexe : consanguinité</em>).</p>
+				Classement de consanguinité : <code>[tng_consanguinite tree="monarbre" per_page="50"]</code> (le calcul se lance depuis la page <em>TNG Suite &gt; Analyses &gt; Implexe : consanguinité</em>).</p>
 		</div>
 		<?php
 	}

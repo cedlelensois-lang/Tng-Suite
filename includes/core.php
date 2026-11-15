@@ -207,13 +207,66 @@ function tngs_modules() {
         'timeline' => array( 'Frise chronologique', '[tng_timeline]', 'Événements des personnes vivantes ou privées dans la frise.' ),
         'heatmap'  => array( 'Heatmap des lieux', '[tng_heatmap]', 'Lieux et dates des personnes vivantes ou privées dans la carte.' ),
         'fan'      => array( 'Éventail / roue de parenté', '[tng_fan person="I1"] [tng_roue]', 'Noms, dates et lieux des personnes vivantes ou privées dans le graphique. Le paramètre living="show" du shortcode permet de les afficher sur une roue précise, sauf si « Toujours masquer » est choisi ici.' ),
-        'stats'    => array( 'Statistiques & graphiques', '[tng_stat_genre] [tng_stat_vivants] [tng_stat_demi_siecle] [tng_stat_mois] … (TNG Suite > Statistiques)', 'Seuls des totaux sont publiés : « Masquer » cache le nom des personnes privées dans la liste des centenaires.' ),
+        'stats'    => array( 'Statistiques & graphiques', '[tng_stat_genre] [tng_stat_vivants] [tng_stat_demi_siecle] [tng_stat_mois] … (TNG Suite > Analyses > Stats : graphiques)', 'Seuls des totaux sont publiés : « Masquer » cache le nom des personnes privées dans la liste des centenaires.' ),
         'gallery'  => array( 'Galerie de médias', '[tng_media_gallery]', 'Médias liés à des personnes vivantes ou privées.' ),
         'random'   => array( 'Individu au hasard', '[tng_random_individual]', 'Tirage au sort parmi les personnes vivantes ou privées.' ),
         'extra'    => array( 'Nuage de noms & anniversaires', '[tng_name_cloud] [tng_births_today] [tng_marriages_today] [tng_deaths_today] [tng_recent_updates]', 'Noms de famille et anniversaires du jour des personnes vivantes ou privées.' ),
         'implexe'  => array( 'Implexe & consanguinité', '[tng_implexe] [tng_consanguinite]', 'Noms des personnes vivantes ou privées dans les graphes et les listes.' ),
         'book'     => array( 'Livre généalogique', '[tng_book] (et génération depuis l\'administration)', 'Personnes vivantes ou privées dans le livre (noms, dates, photos).' ),
         'fiche'    => array( 'Fiche & listes de documents', '[tng_listes]', 'Noms et dates des personnes vivantes ou privées dans les listes et les fiches individuelles.' ),
+    );
+}
+
+/**
+ * Modules fusionnés dans un autre pour l'utilisateur : alias => module principal.
+ * Les clés d'origine (link, random) restent valables partout (shortcodes, réglages enregistrés, dossiers) ;
+ * seuls l'activation, la confidentialité et l'affichage des réglages suivent le module principal.
+ */
+function tngs_module_aliases() {
+    return array( 'link' => 'tree', 'random' => 'extra' );
+}
+
+/** Module principal d'un module (lui-même s'il n'est pas fusionné). */
+function tngs_module_root( $slug ) {
+    $a = tngs_module_aliases();
+    return isset( $a[ $slug ] ) ? $a[ $slug ] : $slug;
+}
+
+/** Modules tels que l'utilisateur les voit : 10 lignes (link et random sont regroupés avec tree et extra). */
+function tngs_modules_ui() {
+    $all   = tngs_modules();
+    $label = array(
+        'tree'  => 'Arbres, descendance & bouton vers la fiche',
+        'extra' => 'Nuage de noms, anniversaires & individu au hasard',
+    );
+    $out = array();
+    foreach ( $all as $slug => $info ) {
+        if ( tngs_module_root( $slug ) !== $slug ) {
+            continue;
+        }
+        foreach ( tngs_module_aliases() as $al => $root ) {
+            if ( $root === $slug && isset( $all[ $al ] ) ) {
+                $info[1] .= ' ' . $all[ $al ][1];
+            }
+        }
+        if ( isset( $label[ $slug ] ) ) {
+            $info[0] = $label[ $slug ];
+        }
+        $out[ $slug ] = $info;
+    }
+    return $out;
+}
+
+/**
+ * Familles du menu d'administration : clé => [ libellé, [ modules ] ].
+ * Un onglet par famille ; chaque page de ses modules y devient une section.
+ */
+function tngs_families() {
+    return array(
+        'trees'   => array( 'Arbres & visualisations', array( 'tree', 'link', 'timeline', 'fan' ) ),
+        'analyse' => array( 'Analyses', array( 'stats', 'heatmap', 'implexe' ) ),
+        'docs'    => array( 'Documents', array( 'book', 'fiche' ) ),
+        'media'   => array( 'Médias & widgets', array( 'gallery', 'extra', 'random' ) ),
     );
 }
 
@@ -267,14 +320,16 @@ function tngs_sanitize_settings( $in ) {
     $out['cache_hours'] = isset( $in['cache_hours'] ) ? min( 720, absint( $in['cache_hours'] ) ) : 12;
 
     foreach ( array_keys( $d['modules'] ) as $m ) {
-        $out['modules'][ $m ] = empty( $in['modules'][ $m ] ) ? 0 : 1;
+        $r                    = tngs_module_root( $m );
+        $out['modules'][ $m ] = empty( $in['modules'][ $r ] ) ? 0 : 1; // link suit tree, random suit extra.
     }
 
     $lang        = isset( $in['lang'] ) ? (string) $in['lang'] : 'auto';
     $out['lang'] = in_array( $lang, array( 'auto', 'fr', 'en' ), true ) ? $lang : 'auto';
 
     foreach ( $d['privacy'] as $m => $def ) {
-        $v                  = isset( $in['privacy'][ $m ] ) ? (string) $in['privacy'][ $m ] : $def;
+        $r                  = tngs_module_root( $m );
+        $v                  = isset( $in['privacy'][ $r ] ) ? (string) $in['privacy'][ $r ] : $def;
         $out['privacy'][ $m ] = in_array( $v, array( 'default', 'hide', 'show' ), true ) ? $v : $def;
     }
 
@@ -357,7 +412,7 @@ function tngs_setting( $key ) {
 
 function tngs_module_enabled( $slug ) {
     $s = tngs_settings();
-    return ! empty( $s['modules'][ $slug ] );
+    return ! empty( $s['modules'][ tngs_module_root( $slug ) ] );
 }
 
 function tngs_prefix() {
@@ -371,8 +426,9 @@ function tngs_gedcom() {
 
 /** Réglage « vivants / privés » d'un module : default | hide | show. */
 function tngs_privacy_mode( $slug ) {
-    $p = tngs_setting( 'privacy' );
-    $m = ( is_array( $p ) && isset( $p[ $slug ] ) ) ? (string) $p[ $slug ] : 'default';
+    $p    = tngs_setting( 'privacy' );
+    $slug = tngs_module_root( $slug );
+    $m    = ( is_array( $p ) && isset( $p[ $slug ] ) ) ? (string) $p[ $slug ] : 'default';
     return in_array( $m, array( 'hide', 'show' ), true ) ? $m : 'default';
 }
 
@@ -397,7 +453,7 @@ function tngs_hide_living( $slug = '' ) {
 /** Libellés des modules actifs qui affichent des personnes vivantes ou privées. */
 function tngs_living_exposed_modules() {
     $out = array();
-    foreach ( tngs_modules() as $slug => $info ) {
+    foreach ( tngs_modules_ui() as $slug => $info ) {
         if ( $info[2] && tngs_module_enabled( $slug ) && ! tngs_hide_living( $slug ) ) {
             $out[] = $info[0];
         }

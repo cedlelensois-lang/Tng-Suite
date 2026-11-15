@@ -1,6 +1,6 @@
 # Individu au hasard
 
-Affiche une personne tirée au hasard (ou un nom précis).
+Affiche une personne tirée au hasard (ou un nom précis). Réglages : onglet **Médias & widgets**, section **Individu au hasard** ; activé et protégé (vivants / privés) avec le module Nuage de noms & anniversaires.
 
 ## Dans l’administration
 

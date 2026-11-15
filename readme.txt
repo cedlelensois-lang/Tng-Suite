@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.7.1
+Stable tag: 2.8.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,11 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.8.0 =
+* Livre : illustration de couverture (arbre de vie, ou fleurons au-dessus et au-dessous du titre), dessinée par le plugin dans la couleur du livre ; nouveau « Cadre orné » (angles creusés et filet intérieur) pour le cadre autour des pages. PDF, Word, OpenDocument et page imprimable.
+* Menu d'administration simplifié : 4 onglets de familles (Arbres & visualisations, Analyses, Documents, Médias & widgets) en plus de « Général », chaque ancienne page devenant une section. Le tableau « Modules » est groupé par famille.
+* « Bouton vers la fiche » est regroupé avec « Arbres & descendance », et « Individu au hasard » avec « Nuage de noms & anniversaires » : une seule case d'activation et un seul réglage « Vivants / privés » pour chaque couple. Les shortcodes et les réglages enregistrés ne changent pas.
 
 = 2.7.1 =
 * Livre, PDF : (1) les numéros de page avaient disparu quand « Cadre autour des pages » était activé ; ils sont rétablis, à l'intérieur du cadre. (2) La table des matières du PDF affiche maintenant les numéros de page (points de conduite, niveaux Parties / Générations, liens cliquables).

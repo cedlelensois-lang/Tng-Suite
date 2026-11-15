@@ -20,6 +20,7 @@ require_once TNGBOOK_DIR . 'includes/class-stats.php';
 require_once TNGBOOK_DIR . 'includes/class-map.php';
 require_once TNGBOOK_DIR . 'includes/class-country.php';
 require_once TNGBOOK_DIR . 'includes/class-history.php';
+require_once TNGBOOK_DIR . 'includes/class-art.php';
 require_once TNGBOOK_DIR . 'includes/trait-stats-view.php';
 require_once TNGBOOK_DIR . 'includes/class-renderer.php';
 require_once TNGBOOK_DIR . 'includes/class-auto.php';
@@ -88,7 +89,7 @@ final class TNGBook {
             'personID' => '', 'tree' => '', 'lang' => tngs_lang(),
             'gen_up' => 6, 'gen_down' => 4, 'max_people' => self::MAX_PEOPLE, 'living' => 'anonymize', 'place_parts' => 2,
             'photos' => 1, 'spphotos' => 1, 'generic' => 1, 'avatar' => 'portrait', 'sources' => 1, 'index' => 1, 'notes' => 0, 'military' => 0, 'mpf' => 1, 'mini' => 0, 'imgq' => 0, 'trees' => 1, 'stats' => 1, 'stats_first' => 1, 'stats_last' => 1, 'desclist' => 1, 'chrono' => 0, 'kids' => 1, 'histfiche' => 0, 'map' => 0, 'bapt' => 0, 'burial' => 1, 'verbose' => 0, 'country' => 0, 'regions' => 0, 'asclist' => 0, 'resi' => 0, 'sibs' => 0, 'marrage' => 0, 'cous' => 1, 'allunions' => 1, 'order' => ['asc', 'desc', 'stats', 'chrono', 'map', 'idxn', 'idxp', 'src', 'alist', 'dlist'],
-            'title' => '', 'author' => '', 'preface' => '', 'surname' => '', 'surname_title' => '', 'format' => 'html', 'template' => 'classic', 'frame' => 'none', 'history' => 0, 'history_country' => 'FR', 'history_custom' => '',
+            'title' => '', 'author' => '', 'preface' => '', 'surname' => '', 'surname_title' => '', 'format' => 'html', 'template' => 'classic', 'frame' => 'none', 'cover_art' => 'tree', 'history' => 0, 'history_country' => 'FR', 'history_custom' => '',
             'colors' => TNGBook_Renderer::defaultColors(),
         ];
     }
@@ -330,7 +331,9 @@ final class TNGBook {
         $out['history_country'] = isset(TNGBook_History::countries()[$hc]) ? $hc : 'FR';
         $out['history_custom'] = substr(sanitize_textarea_field((string) ($in['history_custom'] ?? '')), 0, 4000);
         $fr = (string) ($in['frame'] ?? 'none');
-        $out['frame'] = in_array($fr, ['single', 'double'], true) ? $fr : 'none';
+        $out['frame'] = in_array($fr, ['single', 'double', 'ornate'], true) ? $fr : 'none';
+        $ca = (string) ($in['cover_art'] ?? 'tree');
+        $out['cover_art'] = in_array($ca, ['none', 'ornament', 'tree'], true) ? $ca : 'tree';
         $f = $in['format'] ?? '';
         $out['format'] = in_array($f, ['pdf', 'docx', 'odt'], true) ? $f : 'html';
         // couleurs des textes (sélecteurs de couleur) ; case « par défaut » = retour aux couleurs d'origine
@@ -516,7 +519,13 @@ final class TNGBook {
             'none' => 'Aucun',
             'single' => 'Filet simple',
             'double' => 'Double filet',
+            'ornate' => 'Cadre orné (angles creusés, PDF et page imprimable ; double filet dans Word et OpenDocument)',
         ], $o['frame'] ?? 'none', 'Un liseré autour de chaque page, pour une impression en livre : couleur du livre (« en-têtes et liens »), pas de cadre sur la couverture.');
+        self::select('Illustration de couverture', 'cover_art', [
+            'none' => 'Aucune (deux filets autour du titre)',
+            'ornament' => 'Fleurons au-dessus et au-dessous du titre',
+            'tree' => 'Arbre de vie, puis titre et fleuron',
+        ], $o['cover_art'] ?? 'tree', 'Dessinée par le plugin dans la couleur du livre (« en-têtes et liens »), sans fichier à installer.');
         $hco = [];
         foreach (TNGBook_History::countries() as $code => $nm) $hco[$code] = $nm[0];
         self::select('Contexte historique : pays par défaut', 'history_country', $hco, $o['history_country'] ?? 'FR', 'Utilisé pour les personnes dont le lieu de naissance ne nomme aucun pays connu (ex. « Lille » ou « Lille, Nord »). Une personne née en Espagne reçoit les événements d’Espagne, etc. ; un pays n’est retenu dans la chronologie que s’il compte au moins deux personnes du livre (ou 3 %).');
@@ -751,7 +760,7 @@ final class TNGBook {
             'notes' => (bool) $o['notes'], 'military' => (bool) $o['military'], 'mpf' => !empty($o['mpf']), 'mini' => !empty($o['mini']), 'imgq' => !empty($o['imgq']), 'trees' => !empty($o['trees']), 'stats' => !empty($o['stats']), 'stats_first' => !empty($o['stats_first']), 'stats_last' => !empty($o['stats_last']), 'desclist' => !empty($o['desclist']), 'chrono' => !empty($o['chrono']), 'map' => !empty($o['map']), 'bapt' => !empty($o['bapt']), 'burial' => !empty($o['burial']), 'verbose' => !empty($o['verbose']), 'country' => !empty($o['country']), 'regions' => !empty($o['regions']), 'asclist' => !empty($o['asclist']), 'resi' => !empty($o['resi']), 'sibs' => !empty($o['sibs']), 'cous' => !empty($o['cous']), 'allunions' => !empty($o['allunions']), 'marrage' => !empty($o['marrage']),
             'debug' => $debug, 'place_parts' => (int) $o['place_parts'],
             'title' => $o['title'], 'author' => $o['author'], 'preface' => $o['preface'], 'surname' => (string) ($o['surname'] ?? ''), 'surname_title' => (string) ($o['surname_title'] ?? ''), 'colors' => $o['colors'] ?? [],
-            'template' => $o['template'] ?? 'classic', 'frame' => in_array($o['frame'] ?? '', ['single', 'double'], true) ? $o['frame'] : 'none', 'kids' => !empty($o['kids']), 'histfiche' => !empty($o['histfiche']), 'history' => !empty($o['history']), 'history_country' => (string) ($o['history_country'] ?? 'FR'), 'history_custom' => (string) ($o['history_custom'] ?? ''), 'order' => self::clean_order($o['order'] ?? null),
+            'template' => $o['template'] ?? 'classic', 'frame' => in_array($o['frame'] ?? '', ['single', 'double', 'ornate'], true) ? $o['frame'] : 'none', 'cover_art' => in_array($o['cover_art'] ?? 'tree', ['none', 'ornament', 'tree'], true) ? $o['cover_art'] : 'tree', 'kids' => !empty($o['kids']), 'histfiche' => !empty($o['histfiche']), 'history' => !empty($o['history']), 'history_country' => (string) ($o['history_country'] ?? 'FR'), 'history_custom' => (string) ($o['history_custom'] ?? ''), 'order' => self::clean_order($o['order'] ?? null),
             'tng_path' => $o['tng_path'], 'photo_folder' => $o['photo_folder'],
         ];
         $narr = !empty(TNGBook_Renderer::templates()[$opts['template']]['narr']);
@@ -768,7 +777,7 @@ final class TNGBook {
             $file = TNGBook_Doc::convert($html, array_merge(TNGBook_Renderer::defaultColors(), (array) $opts['colors']), [
                 'title' => $opts['title'] !== '' ? $opts['title'] : 'Livre généalogique', 'author' => $opts['author'], 'lang' => $lang,
                 'tpl' => $rend->docSpec(),
-                'frame' => $opts['frame'] !== 'none' ? ['style' => $opts['frame'], 'color' => array_merge(TNGBook_Renderer::defaultColors(), (array) $opts['colors'])['head']] : null,
+                'frame' => $opts['frame'] !== 'none' ? ['style' => $opts['frame'] === 'ornate' ? 'double' : $opts['frame'], 'color' => array_merge(TNGBook_Renderer::defaultColors(), (array) $opts['colors'])['head']] : null,
             ], $format);
         }
 
@@ -810,23 +819,10 @@ final class TNGBook {
      * de la page, posée en fond de toutes les pages sauf la première (couverture). Le repère <meta name="tng-frame"> du HTML est retiré.
      */
     public static function pdf_frame(\Mpdf\Mpdf $mpdf, $html) {
-        if (!preg_match('/<meta name="tng-frame" content="(single|double) (#[0-9a-f]{6})">/', $html, $m)) return $html;
+        if (!preg_match('/<meta name="tng-frame" content="(single|double|ornate) (#[0-9a-f]{6})">/', $html, $m)) return $html;
         $html = str_replace($m[0], '', $html);
         if (!function_exists('imagecreatetruecolor')) return $html;
-        $dpi = 200; $w = (int) round(210 / 25.4 * $dpi); $h = (int) round(297 / 25.4 * $dpi);
-        $im = imagecreatetruecolor($w, $h);
-        imagealphablending($im, false); imagesavealpha($im, true);
-        imagefill($im, 0, 0, imagecolorallocatealpha($im, 255, 255, 255, 127));
-        $col = imagecolorallocate($im, hexdec(substr($m[2], 1, 2)), hexdec(substr($m[2], 3, 2)), hexdec(substr($m[2], 5, 2)));
-        $mm = function ($v) use ($dpi) { return (int) round($v / 25.4 * $dpi); };
-        $rect = function ($off, $th) use ($im, $col, $w, $h, $mm) {
-            $o = $mm($off);
-            for ($k = 0; $k < $th; $k++) imagerectangle($im, $o + $k, $o + $k, $w - 1 - $o - $k, $h - 1 - $o - $k, $col);
-        };
-        $rect(12, 5);
-        if ($m[1] === 'double') $rect(14.2, 2);
-        ob_start(); imagepng($im); $png = ob_get_clean();
-        imagedestroy($im);
+        $png = TNGBook_Art::frame($m[1], $m[2]);
         $mpdf->imageVars['tngframe'] = $png;
         // une règle @page fait perdre à mPDF son pied de page : la numérotation est donc redéclarée par ces règles (à l'intérieur du cadre)
         $ft = 'odd-footer-name: html_tngpf; even-footer-name: html_tngpf; margin-footer: 14mm;';

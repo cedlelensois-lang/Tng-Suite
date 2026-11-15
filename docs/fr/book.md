@@ -14,7 +14,7 @@ Génère un livre complet (ascendance, descendance, index, cartes, statistiques)
 
 ## Utilisation
 
-La page comporte trois onglets : **Générer un livre**, **Réglages** et **Vue d’ensemble des profils**. Quand des profils existent, l’onglet « Générer un livre » n’affiche d’abord que le choix du profil : chargez un profil ou cliquez sur **Nouveau livre** pour afficher le formulaire (sans profil, il s’affiche directement). Les photos, le formulaire public et les réglages de la génération automatique sont dans l’onglet **Réglages**.
+La page (onglet **Documents**) comporte trois sections : **Livre : générer un livre**, **Livre : réglages** et **Livre : vue d’ensemble des profils**. Quand des profils existent, la section « Générer un livre » n’affiche d’abord que le choix du profil : chargez un profil ou cliquez sur **Nouveau livre** pour afficher le formulaire (sans profil, il s’affiche directement). Les photos, le formulaire public et les réglages de la génération automatique sont dans la section **Réglages**.
 
 1. Saisissez l’identifiant de la personne, l’arbre et le nombre de générations.
 2. Cochez le contenu voulu, ordonnez les parties, choisissez couleurs et modèle de mise en page.
@@ -33,7 +33,8 @@ La page comporte trois onglets : **Générer un livre**, **Réglages** et **Vue 
 - Contexte historique dans les fiches : option à cocher (désactivée par défaut). Sous la fiche d’une personne, une ligne en italique du type « Contexte historique : naissance pendant la Première Guerre mondiale ; décès pendant la Seconde Guerre mondiale » apparaît quand la naissance (ou le baptême), un mariage ou le décès (ou l’inhumation) tombe dans une guerre ou une période marquante du pays de naissance. Une date imprécise n’est retenue que si toutes ses possibilités sont dans la période (une naissance « 1914 » n’est pas comptée dans la guerre qui commence en août). Indépendant de la chronologie.
 - Chronologie familiale : option à cocher (désactivée par défaut) ; ajoute une partie qui liste, par ordre chronologique et regroupés par décennie, les naissances, mariages et décès des personnes du livre (avec renvoi vers leur fiche, lieu et âge au décès). Les personnes masquées (vivantes) en sont exclues. Elle se place dans « Ordre des parties » comme toutes les autres.
 - Contexte historique : réglage « Chronologie : avec contexte historique » qui insère dans la chronologie, en italique, les grands événements du pays de naissance de chaque personne (France, Belgique, Suisse, Espagne, Italie, Allemagne, Royaume-Uni, États-Unis, Canada). Le pays est lu dans le dernier élément du lieu de naissance (ou de baptême) : « Madrid, Espagne » reçoit les événements d’Espagne ; un lieu sans pays connu (ex. « Lille, Nord ») est rattaché au pays par défaut des réglages (France) ; un pays étranger sans liste (ex. Pologne) n’ajoute rien. Un pays n’est retenu que s’il compte au moins deux personnes du livre (ou 3 %), et seulement pour la période où ses personnes ont vécu ; quand plusieurs pays sont retenus, chaque événement porte son pays entre parenthèses. Vous pouvez ajouter vos propres événements, un par ligne : `1914-08-02 | Départ de mon arrière-grand-père | FR` (date AAAA, AAAA-MM ou AAAA-MM-JJ ; pays facultatif).
-- Cadre autour des pages : « Aucun », « Filet simple » ou « Double filet », dans la couleur du livre (« en-têtes et liens »). Valable pour la page imprimable, le PDF, Word et OpenDocument ; la couverture n’a pas de cadre.
+- Cadre autour des pages : « Aucun », « Filet simple », « Double filet » ou « Cadre orné » (angles creusés et filet intérieur, dessiné par le plugin), dans la couleur du livre (« en-têtes et liens »). Valable pour la page imprimable, le PDF, Word et OpenDocument (le cadre orné devient un double filet dans Word et OpenDocument) ; la couverture n’a pas de cadre.
+- Illustration de couverture : « Aucune » (deux filets autour du titre), « Fleurons au-dessus et au-dessous du titre » ou « Arbre de vie, puis titre et fleuron ». Le dessin est généré par le plugin dans la couleur du livre ; aucun fichier à installer.
 - Table des matières : dans le PDF, elle affiche les numéros de page (table native de mPDF, entrées cliquables). Dans la page imprimable, Word et OpenDocument, les entrées renvoient à leur titre sans numéro de page.
 - Chaque partie commence sur une nouvelle page.
 - Le shortcode [tng_book] ouvre le générateur aux visiteurs connectés si l’option est activée.
@@ -46,7 +47,7 @@ Chaque profil peut être généré automatiquement, chaque jour, chaque semaine 
 1. Chargez (ou créez) un profil de livre. Son format (PDF, Word, OpenDocument ou HTML) est celui utilisé.
 2. Dans la section **Génération automatique de ce profil** du formulaire, cochez **Générer automatiquement**, puis choisissez la fréquence, le jour et l’heure.
 3. Cliquez sur **Mettre à jour le profil actif** (ou **Enregistrer comme profil**) : la planification est enregistrée avec le profil.
-4. L’onglet **Vue d’ensemble des profils** montre l’ensemble des profils (planification, dernière génération, dernier fichier, boutons **Générer maintenant** pour tester et **Modifier** pour charger le profil). L’onglet **Réglages** regroupe les réglages communs : **dossier de destination** (chemin absolu sur le serveur ; vide = dossier protégé, au nom aléatoire, dans les téléversements de WordPress ; pour synchroniser avec OneDrive, Dropbox, etc., choisissez un dossier que votre outil de synchronisation surveille), nombre de fichiers conservés par profil (les plus anciens sont supprimés ; seuls les fichiers créés par le plugin sont concernés), option **Seulement si les données ont changé** et e-mail de notification.
+4. La section **Vue d’ensemble des profils** montre l’ensemble des profils (planification, dernière génération, dernier fichier, boutons **Générer maintenant** pour tester et **Modifier** pour charger le profil). La section **Réglages** regroupe les réglages communs : **dossier de destination** (chemin absolu sur le serveur ; vide = dossier protégé, au nom aléatoire, dans les téléversements de WordPress ; pour synchroniser avec OneDrive, Dropbox, etc., choisissez un dossier que votre outil de synchronisation surveille), nombre de fichiers conservés par profil (les plus anciens sont supprimés ; seuls les fichiers créés par le plugin sont concernés), option **Seulement si les données ont changé** et e-mail de notification.
 
 Remarques :
 
@@ -58,9 +59,9 @@ Remarques :
 
 Pour un gros livre (plusieurs centaines de pages, beaucoup de photos), l’hébergeur peut couper la page avant la fin (« Error 500 » après une longue attente). Le bouton **Générer en arrière-plan** (à côté de « Enregistrer et générer le livre ») évite ce piège : le livre est préparé par une tâche planifiée du serveur, sans faire attendre la page.
 
-1. Réglez le livre comme d’habitude (PDF, Word, OpenDocument ou HTML), puis cliquez sur **Générer en arrière-plan**. Dans l’onglet **Vue d’ensemble des profils**, le bouton **En arrière-plan** fait la même chose pour un profil enregistré.
-2. Un panneau d’état s’affiche en haut de l’onglet **Générer un livre** : en attente, en cours (étape et avancement), puis **Livre prêt** avec le bouton de téléchargement. Vous pouvez quitter la page.
-3. Le fichier est déposé dans le dossier de la génération automatique (onglet **Réglages**) ; le bouton **Annuler** arrête un travail en cours.
+1. Réglez le livre comme d’habitude (PDF, Word, OpenDocument ou HTML), puis cliquez sur **Générer en arrière-plan**. Dans la section **Vue d’ensemble des profils**, le bouton **En arrière-plan** fait la même chose pour un profil enregistré.
+2. Un panneau d’état s’affiche en haut de la section **Générer un livre** : en attente, en cours (étape et avancement), puis **Livre prêt** avec le bouton de téléchargement. Vous pouvez quitter la page.
+3. Le fichier est déposé dans le dossier de la génération automatique (section **Réglages**) ; le bouton **Annuler** arrête un travail en cours.
 
 Remarques :
 

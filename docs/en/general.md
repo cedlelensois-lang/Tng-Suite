@@ -12,11 +12,11 @@ Start page: it sets everything shared by the modules.
 2. Enter the TNG URL and the default tree (gedcom).
 3. Choose the language of the interface and of public texts (French or English).
 4. For each module, decide whether living or private people are hidden (recommended, GDPR) or shown.
-5. Turn modules on or off in the Modules section.
+5. Turn modules on or off in the Modules section, grouped by family (Trees & visualisations, Analyses, Documents, Media & widgets). “Record link button” follows “Trees & descendants” and “Random individual” follows “Name cloud & birthdays”.
 
 ## Notes
 
-- Each module has its own page; the connection never has to be entered again.
+- Modules are set in the tab of their family, one section per former page (the menu has five entries: General and four families); the connection never has to be entered again.
 
 ---
 [← Module guide](README.md)

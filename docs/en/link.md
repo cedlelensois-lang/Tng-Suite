@@ -1,6 +1,6 @@
 # Record link button
 
-A button that links to a person’s page in TNG.
+A button that links to a person’s page in TNG. Settings: **Trees & visualisations** tab, **Record link button** section; switched on with the Trees & descendants module.
 
 ## In the admin
 
