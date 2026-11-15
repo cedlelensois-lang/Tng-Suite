@@ -87,7 +87,7 @@ final class TNGBook {
             // Paramètres du livre (tous conservés d'une fois sur l'autre)
             'personID' => '', 'tree' => '', 'lang' => tngs_lang(),
             'gen_up' => 6, 'gen_down' => 4, 'max_people' => self::MAX_PEOPLE, 'living' => 'anonymize', 'place_parts' => 2,
-            'photos' => 1, 'spphotos' => 1, 'generic' => 1, 'avatar' => 'portrait', 'sources' => 1, 'index' => 1, 'notes' => 0, 'military' => 0, 'mpf' => 1, 'mini' => 0, 'imgq' => 0, 'trees' => 1, 'stats' => 1, 'stats_first' => 1, 'stats_last' => 1, 'desclist' => 1, 'chrono' => 0, 'map' => 0, 'bapt' => 0, 'burial' => 1, 'verbose' => 0, 'country' => 0, 'regions' => 0, 'asclist' => 0, 'resi' => 0, 'sibs' => 0, 'marrage' => 0, 'cous' => 1, 'allunions' => 1, 'order' => ['asc', 'desc', 'stats', 'chrono', 'map', 'idxn', 'idxp', 'src', 'alist', 'dlist'],
+            'photos' => 1, 'spphotos' => 1, 'generic' => 1, 'avatar' => 'portrait', 'sources' => 1, 'index' => 1, 'notes' => 0, 'military' => 0, 'mpf' => 1, 'mini' => 0, 'imgq' => 0, 'trees' => 1, 'stats' => 1, 'stats_first' => 1, 'stats_last' => 1, 'desclist' => 1, 'chrono' => 0, 'kids' => 1, 'map' => 0, 'bapt' => 0, 'burial' => 1, 'verbose' => 0, 'country' => 0, 'regions' => 0, 'asclist' => 0, 'resi' => 0, 'sibs' => 0, 'marrage' => 0, 'cous' => 1, 'allunions' => 1, 'order' => ['asc', 'desc', 'stats', 'chrono', 'map', 'idxn', 'idxp', 'src', 'alist', 'dlist'],
             'title' => '', 'author' => '', 'preface' => '', 'surname' => '', 'surname_title' => '', 'format' => 'html', 'template' => 'classic', 'frame' => 'none', 'history' => 0, 'history_country' => 'FR', 'history_custom' => '',
             'colors' => TNGBook_Renderer::defaultColors(),
         ];
@@ -287,7 +287,7 @@ final class TNGBook {
         if (!tngs_hide_living('book')) $out['living'] = 'include';
         $out['place_parts'] = max(0, min(5, (int) ($in['place_parts'] ?? 2)));
         $out['avatar'] = (($in['avatar'] ?? '') === 'round') ? 'round' : 'portrait';
-        foreach (['photos', 'spphotos', 'generic', 'sources', 'index', 'notes', 'military', 'mpf', 'mini', 'imgq', 'trees', 'stats', 'stats_first', 'stats_last', 'desclist', 'chrono', 'history', 'map', 'bapt', 'burial', 'verbose', 'country', 'regions', 'asclist', 'resi', 'sibs', 'marrage', 'cous', 'allunions'] as $k) {
+        foreach (['photos', 'spphotos', 'generic', 'sources', 'index', 'notes', 'military', 'mpf', 'mini', 'imgq', 'trees', 'stats', 'stats_first', 'stats_last', 'desclist', 'kids', 'chrono', 'history', 'map', 'bapt', 'burial', 'verbose', 'country', 'regions', 'asclist', 'resi', 'sibs', 'marrage', 'cous', 'allunions'] as $k) {
             $out[$k] = empty($in[$k]) ? 0 : 1;
         }
         $out['order'] = self::clean_order($in['order'] ?? null);
@@ -410,6 +410,7 @@ final class TNGBook {
             . self::chk('trees', 'Arbres visuels : un arbre (Nom (code)) en ouverture de l’ascendance et de la descendance, et des arbres classiques en cases (génération en évidence) à chaque génération', $o)
             . self::chk('asclist', 'Liste des ascendants (tableau récapitulatif : n° Sosa, naissance, conjoint, décès, âge), placée avant la liste des descendants', $o)
             . self::chk('desclist', 'Liste des descendants (tableau récapitulatif : n° d’Aboville, naissance, conjoint, décès, âge) à la toute fin du document', $o)
+            . self::chk('kids', 'Enfants des couples dans l’ascendance : « X et Y ont N enfants : » suivi de la liste (modèles Classique, Élégant et Moderne ; le modèle Récit les présente déjà)', $o)
             . self::chk('chrono', 'Chronologie familiale : naissances, mariages et décès des personnes du livre classés par date et par décennie (position réglable dans « Ordre des parties »)', $o)
             . self::chk('history', 'Contexte historique dans la chronologie : guerres, révolutions, épidémies et grandes dates du pays de naissance des personnes (France, Belgique, Suisse, Espagne, Italie, Allemagne, Royaume-Uni, États-Unis, Canada), insérées en italique (active aussi la chronologie familiale) ; réglages plus bas', $o)
             . self::chk('stats', 'Chapitre « En chiffres » (statistiques, histogrammes, complétude de l’ascendance, frise) et chiffres clés sur la page de titre', $o)
@@ -721,11 +722,11 @@ final class TNGBook {
             'notes' => (bool) $o['notes'], 'military' => (bool) $o['military'], 'mpf' => !empty($o['mpf']), 'mini' => !empty($o['mini']), 'imgq' => !empty($o['imgq']), 'trees' => !empty($o['trees']), 'stats' => !empty($o['stats']), 'stats_first' => !empty($o['stats_first']), 'stats_last' => !empty($o['stats_last']), 'desclist' => !empty($o['desclist']), 'chrono' => !empty($o['chrono']), 'map' => !empty($o['map']), 'bapt' => !empty($o['bapt']), 'burial' => !empty($o['burial']), 'verbose' => !empty($o['verbose']), 'country' => !empty($o['country']), 'regions' => !empty($o['regions']), 'asclist' => !empty($o['asclist']), 'resi' => !empty($o['resi']), 'sibs' => !empty($o['sibs']), 'cous' => !empty($o['cous']), 'allunions' => !empty($o['allunions']), 'marrage' => !empty($o['marrage']),
             'debug' => $debug, 'place_parts' => (int) $o['place_parts'],
             'title' => $o['title'], 'author' => $o['author'], 'preface' => $o['preface'], 'surname' => (string) ($o['surname'] ?? ''), 'surname_title' => (string) ($o['surname_title'] ?? ''), 'colors' => $o['colors'] ?? [],
-            'template' => $o['template'] ?? 'classic', 'frame' => in_array($o['frame'] ?? '', ['single', 'double'], true) ? $o['frame'] : 'none', 'history' => !empty($o['history']), 'history_country' => (string) ($o['history_country'] ?? 'FR'), 'history_custom' => (string) ($o['history_custom'] ?? ''), 'order' => self::clean_order($o['order'] ?? null),
+            'template' => $o['template'] ?? 'classic', 'frame' => in_array($o['frame'] ?? '', ['single', 'double'], true) ? $o['frame'] : 'none', 'kids' => !empty($o['kids']), 'history' => !empty($o['history']), 'history_country' => (string) ($o['history_country'] ?? 'FR'), 'history_custom' => (string) ($o['history_custom'] ?? ''), 'order' => self::clean_order($o['order'] ?? null),
             'tng_path' => $o['tng_path'], 'photo_folder' => $o['photo_folder'],
         ];
         $narr = !empty(TNGBook_Renderer::templates()[$opts['template']]['narr']);
-        $data->finalize($opts['photos'], $opts['sources'], $opts['notes'], $opts['military'], $narr, !empty($opts['sibs']), !empty($opts['allunions']), !empty($opts['mpf']));
+        $data->finalize($opts['photos'], $opts['sources'], $opts['notes'], $opts['military'], $narr || !empty($opts['kids']), !empty($opts['sibs']), !empty($opts['allunions']), !empty($opts['mpf']));
         if ($opts['stats']) $data->loadStatsData();
         if (!empty($opts['resi'])) $data->loadResidences($data->featured());
         if (!empty($opts['map'])) { $fp = $data->featured(); $data->loadMapData($fp, TNGBook_Map::allPlaces($data, $fp)); }

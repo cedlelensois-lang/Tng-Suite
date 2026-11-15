@@ -3397,6 +3397,9 @@ msgstr ""
 msgid "Facultatif, un par ligne : <code>date | texte | pays</code> (date AAAA, AAAA-MM ou AAAA-MM-JJ ; pays = code à deux lettres FR, BE, CH, ES, IT, DE, GB, US, CA, ou vide pour tous les pays). Ajoutés à la chronologie quand « Contexte historique » est coché."
 msgstr ""
 
+msgid "Enfants des couples dans l’ascendance : « X et Y ont N enfants : » suivi de la liste (modèles Classique, Élégant et Moderne ; le modèle Récit les présente déjà)"
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""

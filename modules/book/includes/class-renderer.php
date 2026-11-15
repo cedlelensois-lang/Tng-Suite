@@ -942,7 +942,32 @@ class TNGBook_Renderer {
             $li[] = '<li>' . $label . ' ' . $txt . '</li>';
         }
         if (!$li) return '';
-        return '<p class="kidshead">' . $this->e($L['children'] . $L['colon']) . '</p><ul class="kids">' . implode('', $li) . '</ul>';
+        return '<p class="kidshead">' . $this->kidsLead($fid, count($li)) . '</p><ul class="kids">' . implode('', $li) . '</ul>';
+    }
+
+    /** « X et Y ont N enfants : » (à défaut « Enfants : »), déjà échappé. */
+    private function kidsLead($fid, $n) {
+        $L = $this->L;
+        $nm = $this->coupleNames($fid);
+        if (!$nm) return $this->e($L['children'] . $L['colon']);
+        return implode(' ' . $L['tpl_and'] . ' ', $nm) . ' ' . $this->e($L['tpl_have'][count($nm) > 1 ? 1 : 0] . ' ' . $n . ' ' . $L['tpl_child'][$n === 1 ? 0 : 1] . preg_replace('/^ /u', "\u{00A0}", rtrim($L['colon'])));
+    }
+
+    /** Modèle classique, ascendance : les enfants du couple (ceux de la lignée renvoient vers leur fiche). */
+    private function ancestorKids($fid) {
+        $d = $this->d;
+        $li = [];
+        foreach ($d->kidsOf[$fid] ?? [] as $kid) {
+            if (!isset($d->people[$kid]) || $d->dropped($kid)) continue;
+            if ($d->hidden($kid)) { $li[] = '<li>' . $this->e($this->L['living']) . '</li>'; continue; }
+            $txt = $this->e($this->plain($kid));
+            $yr = $this->years($kid);
+            if ($yr) $txt .= ' ' . $this->e($yr);
+            $ref = isset($d->sosaOf[$kid]) ? 'A' . $d->sosaOf[$kid] : '';
+            $li[] = '<li>' . ($ref !== '' ? $this->link($ref) . ' ' : '') . $txt . '</li>';
+        }
+        if (!$li) return '';
+        return '<p class="kidshead">' . $this->kidsLead($fid, count($li)) . '</p><ul class="kids">' . implode('', $li) . '</ul>';
     }
 
     /** $unions : liste d'identifiants de familles à décrire. */
@@ -1105,6 +1130,13 @@ class TNGBook_Renderer {
                 $html .= $this->famEvNotes($fid, ['MARR']);
                 $html .= $this->famNotes($fid);
                 if ($prefer === 'D') $html .= $narr ? $this->narrKids($fid, $ref, 'D') : $this->childrenList($fid);
+                elseif (!$narr && !empty($this->o['kids'])) {   // ascendance : liste des enfants, dans la fiche du mari (ou du seul conjoint présent)
+                    $fam = $d->fams[$fid] ?? null;
+                    if ($fam) {
+                        $sp = ($fam['husband'] === $pid) ? $fam['wife'] : $fam['husband'];
+                        if ($fam['husband'] === $pid || $sp === '' || !isset($d->sosaOf[$sp]) || $d->dropped($sp)) $html .= $this->ancestorKids($fid);
+                    }
+                }
             }
         }
 

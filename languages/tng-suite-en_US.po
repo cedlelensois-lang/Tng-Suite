@@ -3397,6 +3397,9 @@ msgstr "Custom historical events"
 msgid "Facultatif, un par ligne : <code>date | texte | pays</code> (date AAAA, AAAA-MM ou AAAA-MM-JJ ; pays = code à deux lettres FR, BE, CH, ES, IT, DE, GB, US, CA, ou vide pour tous les pays). Ajoutés à la chronologie quand « Contexte historique » est coché."
 msgstr "Optional, one per line: <code>date | text | country</code> (date YYYY, YYYY-MM or YYYY-MM-DD; country = two-letter code FR, BE, CH, ES, IT, DE, GB, US, CA, or empty for all countries). Added to the chronology when “Historical background” is ticked."
 
+msgid "Enfants des couples dans l’ascendance : « X et Y ont N enfants : » suivi de la liste (modèles Classique, Élégant et Moderne ; le modèle Récit les présente déjà)"
+msgstr "Children of couples in the ascendancy: “X and Y have N children:” followed by the list (Classic, Elegant and Modern templates; the Narrative template already shows them)"
+
 msgctxt "js"
 msgid " Page "
 msgstr " Page "
