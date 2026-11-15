@@ -2196,7 +2196,7 @@ body { font-family: Georgia, "DejaVu Serif", serif; font-size: 11pt; line-height
 a { color: inherit; text-decoration: none; }
 a.ref { color: %head%; }
 .cover { text-align: center; padding-top: 4.5cm; page-break-after: always; }
-.cover.art-tree, .cover.art-ornament { padding-top: 2.2cm; } .cover img.cart { display: block; margin: 0 auto; } .cover img.tr { width: 9cm; } .cover img.fl { width: 12cm; margin: .2cm auto; } .cover.art-tree h1, .cover.art-ornament h1 { margin: .35em 0 .25em; }
+.cover.art-tree, .cover.art-ornament { padding-top: 2.2cm; } .cover img.cart { display: block; margin: 0 auto; } .cover img.tr { width: 9cm; } .cover img.trw { width: 14cm; } .cover img.fl { width: 12cm; margin: .2cm auto; } .cover.art-tree h1, .cover.art-ornament h1 { margin: .35em 0 .25em; }
 .cover .rule { width: 70%; margin: 0 auto; height: 4px; border-top: 3px solid %head%; border-bottom: 1px solid %head%; }
 .cover h1 { font-size: 42pt; margin: .45em 0 .45em; line-height: 1.15; color: %head%; letter-spacing: .02em; }
 .cover .author { font-size: 14pt; margin-top: 2em; }
@@ -2299,7 +2299,8 @@ CSS;
         $img = function ($bin, $cm, $cls) { return '<img class="tpng cart ' . $cls . '" data-cm="' . $cm . '" src="data:image/png;base64,' . base64_encode($bin) . '" alt="">'; };
         if ($art !== 'none' && function_exists('imagecreatetruecolor')) {
             $fl = $img(TNGBook_Art::flourish($head), 12, 'fl');
-            $front = '<div class="cover art-' . ($art === 'ornament' ? 'ornament' : 'tree') . '">' . ($art === 'ornament' ? $fl : $img(TNGBook_Art::tree($head, 900, 760, TNGBook_Art::style_of($art)), 9, 'tr'))
+            $wide = TNGBook_Art::style_of($art) === 'color' && $art !== 'ornament';   // arbre en couleurs : image large (≈1,5 × 1)
+            $front = '<div class="cover art-' . ($art === 'ornament' ? 'ornament' : 'tree') . '">' . ($art === 'ornament' ? $fl : ($wide ? $img(TNGBook_Art::tree($head, 1000, 680, 'color'), 14, 'trw') : $img(TNGBook_Art::tree($head, 900, 760, TNGBook_Art::style_of($art)), 9, 'tr')))
                 . '<h1>' . $this->e($title) . '</h1>' . $fl;
         } else {
             $front = '<div class="cover"><div class="rule"></div><h1>' . $this->e($title) . '</h1><div class="rule"></div>';

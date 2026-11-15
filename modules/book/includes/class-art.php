@@ -97,6 +97,7 @@ class TNGBook_Art {
             $pts[] = array($nx, $ny, $a);
             $px = $nx; $py = $ny;
         }
+        if (isset($c['med']) && $depth >= 3 && $depth <= 5) $c['med'][] = array($pts[2][0], $pts[2][1]);   // emplacements possibles de médaillons
         if ($depth >= $c['leafFrom']) {
             foreach ($pts as $p) {
                 if (self::rnd($seed) < $c['lp']) {
@@ -177,7 +178,7 @@ class TNGBook_Art {
 
     /** Valeurs du réglage « illustration de couverture » : none, ornament, puis un arbre (tree = chêne, olive, willow, roots). */
     public static function cover_choices() {
-        return array('none', 'ornament', 'tree', 'olive', 'willow', 'roots');
+        return array('none', 'ornament', 'tree', 'olive', 'willow', 'roots', 'color');
     }
 
     /** Style d'arbre correspondant à une valeur du réglage (tree → oak). */
@@ -188,7 +189,7 @@ class TNGBook_Art {
 
     /** Styles d'arbre proposés pour la couverture. */
     public static function tree_styles() {
-        return array('oak', 'olive', 'willow', 'roots');
+        return array('oak', 'olive', 'willow', 'roots', 'color');
     }
 
     /**
@@ -198,6 +199,7 @@ class TNGBook_Art {
      */
     public static function tree($hex, $w = 900, $h = 760, $style = 'oak') {
         if (!in_array($style, self::tree_styles(), true)) $style = 'oak';
+        if ($style === 'color') return self::tree_color($hex, $w, $h);
         $S = 2;
         $W = $w * $S; $H = $h * $S;
         $im = self::canvas($W, $H);
@@ -262,6 +264,132 @@ class TNGBook_Art {
         imagecopyresampled($out, $im, 0, 0, 0, 0, $w, $h, $W, $H);
         imagedestroy($im);
         return self::png($out);
+    }
+
+    private static function col($im, $r, $g, $b, $a = 0) {
+        return imagecolorallocatealpha($im, $r, $g, $b, $a);
+    }
+
+    /** Hauteur de la crête du terre-plein en x relatif t (-1 à 1). */
+    private static function mound($t, $y0, $H) {
+        return $y0 + 0.07 * $H * $t * $t;
+    }
+
+    /**
+     * Arbre en couleurs sur un îlot de terre en coupe (herbe, couches de terre, cailloux), feuillage vert,
+     * tronc brun, racines dans la terre et médaillons vides (cadres ronds de la couleur du livre) posés sur les branches.
+     * Image large (environ 1,6 × 1) : $w × $h pixels, fond transparent.
+     */
+    private static function tree_color($hex, $w, $h) {
+        $S = 2;
+        $w = max($w, 1000); $h = (int) round($w * 0.68);
+        $W = $w * $S; $H = $h * $S;
+        $im = self::canvas($W, $H);
+        $seed = 5150;
+        $cx = $W / 2; $hw = $W * 0.46; $y0 = $H * 0.66; $depth = $H * 0.28;
+        $med = new ArrayObject();
+        $c = array(
+            'S' => $S, 'max' => 7, 'wood' => self::col($im, 92, 62, 40), 'med' => $med,
+            'l1' => self::col($im, 108, 170, 66, 8), 'l2' => self::col($im, 70, 148, 62, 4), 'l3' => self::col($im, 40, 112, 52, 0),
+            'cx' => $cx, 'cy' => $H * 0.3, 'rx' => $W * 0.45, 'ry' => $H * 0.27,
+            'droop' => 0.1, 'droopFrom' => 4, 'pull' => null, 'pullf' => 0.12, 'lp' => 0.85, 'leafFrom' => 2, 'tips' => 4,
+            'lenf' => 0.8, 'lenf0' => 1.4, 'ls' => array(16, 28), 'lw' => 0.4, 'bare' => false, 'fork2' => false,
+        );
+        // halo vert derrière le houppier
+        $blobs = array();
+        for ($k = 0; $k < 22; $k++) {
+            $t = self::rnd($seed) * 2 * M_PI; $r = sqrt(self::rnd($seed));
+            $blobs[] = array($cx + cos($t) * $r * $c['rx'] * 0.7, $c['cy'] + sin($t) * $r * $c['ry'] * 0.7, (70 + self::rnd($seed) * 70) * $S, (55 + self::rnd($seed) * 50) * $S, 0.4 + self::rnd($seed) * 0.4);
+        }
+        self::wash($im, $W, $H, '8cc152', $blobs, 0.2);
+        // îlot de terre : contour (crête) puis fond arrondi
+        $top = array(); $bot = array(); $N = 60;
+        for ($i = 0; $i <= $N; $i++) {
+            $t = -1 + 2 * $i / $N;
+            $top[] = array($cx + $t * $hw, self::mound($t, $y0, $H));
+            $bot[] = array($cx + $t * $hw, self::mound($t, $y0, $H) + $depth * sqrt(max(0, 1 - $t * $t)));
+        }
+        $poly = function ($upper, $lower, $off) {
+            $pts = array(); $n = count($upper);
+            for ($i = 0; $i < $n; $i++) { $y = min($upper[$i][1] + $off, $lower[$i][1]); $pts[] = (int) round($upper[$i][0]); $pts[] = (int) round($y); }
+            for ($i = $n - 1; $i >= 0; $i--) { $pts[] = (int) round($lower[$i][0]); $pts[] = (int) round($lower[$i][1]); }
+            return $pts;
+        };
+        $fill = function ($off, $col) use ($im, $top, $bot, $poly) { $p = $poly($top, $bot, $off); imagefilledpolygon($im, $p, count($p) / 2, $col); };
+        $fill(0, self::col($im, 126, 86, 56));
+        $fill(0.1 * $H, self::col($im, 106, 71, 46));
+        $fill(0.19 * $H, self::col($im, 84, 56, 38));
+        for ($k = 0; $k < 40; $k++) {   // cailloux et graviers
+            $t = (self::rnd($seed) - 0.5) * 1.8; $yt = self::mound($t, $y0, $H);
+            $yb = $yt + $depth * sqrt(max(0, 1 - $t * $t));
+            $y = $yt + (0.05 + self::rnd($seed) * 0.8) * ($yb - $yt);
+            $d = (4 + self::rnd($seed) * 9) * $S;
+            $g = 120 + (int) (self::rnd($seed) * 60);
+            imagefilledellipse($im, (int) ($cx + $t * $hw), (int) $y, (int) $d, (int) ($d * 0.7), self::col($im, $g, (int) ($g * 0.82), (int) ($g * 0.66), 60));
+        }
+        // racines dans la terre, de part et d'autre, puis rognées au contour de l'îlot
+        $rc = array_merge($c, array('bare' => true, 'max' => 5, 'lenf' => 0.76, 'lenf0' => 1.15, 'pull' => M_PI / 2, 'pullf' => 0.1, 'droopFrom' => 99, 'wood' => self::col($im, 62, 40, 26)));
+        unset($rc['med']);
+        foreach (array(-1, 1) as $side) {
+            foreach (array(0.4, 0.95) as $o) {
+                self::limb($im, $cx + $side * 6 * $S, $y0 + 0.01 * $H, M_PI / 2 - $side * $o, $H * 0.085, (18 - $o * 4) * $S, 1, $seed, $rc);
+            }
+        }
+        imagealphablending($im, false);
+        $clear = self::col($im, 0, 0, 0, 127);
+        $out = array();
+        foreach ($bot as $p) { $out[] = (int) round($p[0]); $out[] = (int) round($p[1]); }
+        array_push($out, (int) $W, (int) $H, 0, (int) $H);
+        imagefilledpolygon($im, $out, count($out) / 2, $clear);
+        imagefilledrectangle($im, 0, (int) $y0, (int) ($cx - $hw), $H, $clear);
+        imagefilledrectangle($im, (int) ($cx + $hw), (int) $y0, $W, $H, $clear);
+        imagealphablending($im, true);
+        // herbe (bande suivant la crête) et brins
+        $g1 = self::col($im, 112, 160, 60); $g2 = self::col($im, 82, 132, 48);
+        for ($i = 0; $i < $N; $i++) {
+            imagefilledpolygon($im, array((int) $top[$i][0], (int) $top[$i][1], (int) $top[$i + 1][0], (int) $top[$i + 1][1], (int) $top[$i + 1][0], (int) ($top[$i + 1][1] + 18 * $S), (int) $top[$i][0], (int) ($top[$i][1] + 18 * $S)), 4, $g1);
+            imagefilledpolygon($im, array((int) $top[$i][0], (int) ($top[$i][1] + 14 * $S), (int) $top[$i + 1][0], (int) ($top[$i + 1][1] + 14 * $S), (int) $top[$i + 1][0], (int) ($top[$i + 1][1] + 24 * $S), (int) $top[$i][0], (int) ($top[$i][1] + 24 * $S)), 4, $g2);
+        }
+        for ($k = 0; $k < 70; $k++) {
+            $t = (self::rnd($seed) - 0.5) * 1.96; $x = $cx + $t * $hw; $y = self::mound($t, $y0, $H) + 2 * $S;
+            $hgt = (8 + self::rnd($seed) * 12) * $S; $lean = (self::rnd($seed) - 0.5) * 8 * $S;
+            imagefilledpolygon($im, array((int) ($x - 2 * $S), (int) $y, (int) ($x + 2 * $S), (int) $y, (int) ($x + $lean), (int) ($y - $hgt)), 3, $g1);
+        }
+        // pied du tronc : racines apparentes, puis tronc et houppier
+        $wood = $c['wood'];
+        foreach (array(-1, 1) as $side) {
+            foreach (array(0.15, 0.5) as $i => $o) {
+                self::root($im, $cx + $side * (14 + $i * 8) * $S, $y0 - 18 * $S, $side > 0 ? $o : M_PI - $o, (70 + self::rnd($seed) * 50) * $S, (22 - $i * 6) * $S, $seed, $wood, $S);
+            }
+        }
+        imagefilledellipse($im, (int) $cx, (int) ($y0 - 8 * $S), (int) (100 * $S), (int) (40 * $S), $wood);
+        self::limb($im, $cx, $y0 - 4 * $S, -M_PI / 2 + 0.02, $H * 0.085, 56 * $S, 0, $seed, $c);
+        // médaillons : on garde ceux qui sont dans la cime, bien espacés
+        $cands = $med->getArrayCopy();
+        $pick = array();
+        $minD = 74 * $S;
+        for ($k = count($cands) - 1; $k > 0; $k--) { $j = (int) (self::rnd($seed) * ($k + 1)); $tmp = $cands[$k]; $cands[$k] = $cands[$j]; $cands[$j] = $tmp; }
+        foreach ($cands as $p) {
+            if ($p[1] > $y0 - 0.24 * $H || $p[1] < 0.08 * $H) continue;
+            $ok = true;
+            foreach ($pick as $q) { if (hypot($p[0] - $q[0], $p[1] - $q[1]) < $minD) { $ok = false; break; } }
+            if ($ok) $pick[] = $p;
+            if (count($pick) >= 9) break;
+        }
+        $ring = self::rgb($im, $hex); $cream = self::col($im, 250, 244, 226); $rim = self::col($im, 233, 222, 190);
+        foreach ($pick as $p) {
+            $d = 48 * $S;
+            imagefilledellipse($im, (int) $p[0], (int) $p[1], (int) ($d + 8 * $S), (int) ($d + 8 * $S), self::col($im, 0, 0, 0, 100));   // ombre portée légère
+            imagefilledellipse($im, (int) $p[0], (int) $p[1], (int) $d, (int) $d, $ring);
+            imagefilledellipse($im, (int) $p[0], (int) $p[1], (int) ($d - 7 * $S), (int) ($d - 7 * $S), $rim);
+            imagefilledellipse($im, (int) $p[0], (int) $p[1], (int) ($d - 11 * $S), (int) ($d - 11 * $S), $cream);
+        }
+        $outim = imagecreatetruecolor($w, $h);
+        imagealphablending($outim, false); imagesavealpha($outim, true);
+        imagefill($outim, 0, 0, imagecolorallocatealpha($outim, 255, 255, 255, 127));
+        imagecopyresampled($outim, $im, 0, 0, 0, 0, $w, $h, $W, $H);
+        imagedestroy($im);
+        return self::png($outim);
     }
 
     /** Fleuron séparateur : filets qui s'effilent, losanges et points autour d'un motif central. */

@@ -3517,6 +3517,9 @@ msgstr "Tree: weeping willow"
 msgid "Arbre : feuillu, ses racines dessinées dessous"
 msgstr "Tree: leafy, with its roots drawn below"
 
+msgid "Arbre en couleurs : feuillage vert, tronc brun, racines dans la terre et médaillons"
+msgstr "Colour tree: green foliage, brown trunk, roots in the soil and medallions"
+
 msgid "Dessinée par le plugin dans la couleur du livre (« en-têtes et liens »), sans fichier à installer."
 msgstr "Drawn by the plugin in the book colour (“headings and links”), with no file to install."
 

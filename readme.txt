@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.8.3
+Stable tag: 2.8.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,6 +81,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.8.4 =
+* Livre : nouvelle illustration de couverture « Arbre en couleurs » (feuillage vert, tronc brun, racines dans l'îlot de terre, médaillons ronds vides sur les branches), image large de 14 cm. Dessin original généré par le plugin.
 
 = 2.8.3 =
 * Livre : l'arbre à racines de la couverture est maintenant feuillu (houppier à l'aquarelle, deux maîtresses racines symétriques dessinées sous le sol, comme un arbre généalogique). Le réglage « sans feuilles » de la 2.8.2 devient ce choix.

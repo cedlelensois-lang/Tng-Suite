@@ -529,6 +529,7 @@ final class TNGBook {
             'olive' => 'Arbre : penché, aux branches légères',
             'willow' => 'Arbre : saule pleureur',
             'roots' => 'Arbre : feuillu, ses racines dessinées dessous',
+            'color' => 'Arbre en couleurs : feuillage vert, tronc brun, racines dans la terre et médaillons',
         ], $o['cover_art'] ?? 'tree', 'Dessinée par le plugin dans la couleur du livre (« en-têtes et liens »), sans fichier à installer.');
         $hco = [];
         foreach (TNGBook_History::countries() as $code => $nm) $hco[$code] = $nm[0];

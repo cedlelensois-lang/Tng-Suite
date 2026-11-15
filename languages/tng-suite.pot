@@ -3517,6 +3517,9 @@ msgstr ""
 msgid "Arbre : feuillu, ses racines dessinées dessous"
 msgstr ""
 
+msgid "Arbre en couleurs : feuillage vert, tronc brun, racines dans la terre et médaillons"
+msgstr ""
+
 msgid "Dessinée par le plugin dans la couleur du livre (« en-têtes et liens »), sans fichier à installer."
 msgstr ""
 
