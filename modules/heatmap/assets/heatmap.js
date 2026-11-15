@@ -66,6 +66,7 @@ function tngsT(s) { var d = window.TNGS_I18N; return (d && Object.prototype.hasO
         return CFG.searchUrl + sep + 'psearch=' + encodeURIComponent(place);
     }
 
+    var NUMBER_MIN_ZOOM = 9;      // zoom à partir duquel les chiffres au centre des ronds s'affichent
     var HEAT_FLOOR = 0.4;         // intensité d'un lieu à un seul événement (= début de la couleur « faible »)
     var HEAT_MIN_OPACITY = 0.3;   // opacité minimale d'une tache de chaleur
 
@@ -91,6 +92,15 @@ function tngsT(s) { var d = window.TNGS_I18N; return (d && Object.prototype.hasO
 
         var heatLayer = null;
         var markers = L.layerGroup().addTo(map);
+        // Chiffres au centre des ronds : ils n'apparaissent qu'à partir d'un zoom suffisant (échelle d'un département),
+        // sinon ils se chevauchent et deviennent illisibles. Le nombre reste toujours dans l'infobulle au survol.
+        var numbers = L.layerGroup();
+        function syncNumbers() {
+            var show = map.getZoom() >= NUMBER_MIN_ZOOM;
+            if (show && !map.hasLayer(numbers)) map.addLayer(numbers);
+            if (!show && map.hasLayer(numbers)) map.removeLayer(numbers);
+        }
+        map.on('zoomend', syncNumbers);
 
         // Regroupe les lieux partageant les mêmes coordonnées.
         var groups = [];
@@ -110,6 +120,7 @@ function tngsT(s) { var d = window.TNGS_I18N; return (d && Object.prototype.hasO
         function draw() {
             if (heatLayer) { map.removeLayer(heatLayer); heatLayer = null; }
             markers.clearLayers();
+            numbers.clearLayers();
 
             var typeFilter = evSelect ? evSelect.value : 'all';
             var typeIdx = typeFilter === 'all' ? -1 : types.indexOf(typeFilter);
@@ -219,9 +230,10 @@ function tngsT(s) { var d = window.TNGS_I18N; return (d && Object.prototype.hasO
                         iconSize: [radius * 2, radius * 2],
                         iconAnchor: [radius, radius]
                     });
-                    L.marker([c.grp.lat, c.grp.lng], { icon: icon, interactive: false }).addTo(markers);
+                    L.marker([c.grp.lat, c.grp.lng], { icon: icon, interactive: false }).addTo(numbers);
                 }
             });
+            syncNumbers();
         }
 
         // Listes de suggestions (construites une seule fois, triées).

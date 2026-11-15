@@ -3328,6 +3328,21 @@ msgstr "Title shown above the list (empty = none)."
 msgid "Les listes d’anniversaires sont mises en cache pour la journée ; la liste des dernières mises à jour, pour une heure."
 msgstr "Anniversary lists are cached for the day; the list of latest updates, for one hour."
 
+msgid "Seulement à fort zoom (échelle d’un département ou moins) ; le nombre reste toujours visible dans l’infobulle au survol."
+msgstr "Only when zoomed in (county scale or closer); the number is always visible in the tooltip on hover."
+
+msgid "Durée de travail avant l’arrêt :"
+msgstr "Working time before the stop:"
+
+msgid "Réglages du serveur :"
+msgstr "Server settings:"
+
+msgid "Mémoire maximale utilisée :"
+msgstr "Peak memory used:"
+
+msgid "Dernier signe d’activité il y a"
+msgstr "Last sign of activity"
+
 msgctxt "js"
 msgid " Page "
 msgstr " Page "

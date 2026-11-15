@@ -261,7 +261,7 @@ function tng_heatmap_settings_page() {
                         <p class="description">Tous ces fonds sont gratuits, sans clé d’API ni inscription. Ils sont chargés depuis le serveur de leur fournisseur ; pour un site à très forte audience, privilégiez Esri plutôt que les serveurs communautaires d’OpenStreetMap.</p>
                     </td>
                 </tr>
-                <?php tng_heatmap_settings_row_checkbox('tng_show_number', 0, 'Afficher les chiffres au centre'); ?>
+                <?php tng_heatmap_settings_row_checkbox('tng_show_number', 0, 'Afficher les chiffres au centre', 'Seulement à fort zoom (échelle d’un département ou moins) ; le nombre reste toujours visible dans l’infobulle au survol.'); ?>
             </table>
 
             <h2>Style par défaut des ronds (si couleur distincte désactivée)</h2>

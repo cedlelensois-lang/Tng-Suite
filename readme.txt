@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.4.0
+Stable tag: 2.4.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,10 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.4.1 =
+* Livre, génération en arrière-plan : un travail qui ne donne plus signe de vie est signalé au bout de 5 minutes (au lieu de 10). Le message d'interruption indique la durée de travail avant l'arrêt, les limites du serveur (temps, mémoire, PHP) et la mémoire maximale utilisée, pour identifier la limite de l'hébergeur ; le panneau « en cours » affiche l'âge du dernier signe d'activité quand il dépasse une minute.
+* Heatmap : l'option « Afficher les chiffres au centre » ne montre plus les chiffres qu'à fort zoom (à partir de l'échelle d'un département). Vus de loin ils se chevauchaient et devenaient illisibles ; le nombre reste toujours visible dans l'infobulle au survol.
 
 = 2.4.0 =
 * Nouveau shortcode [tng_recent_updates limit="10"] (module « Nuage de noms & anniversaires ») : liste des derniers individus mis à jour dans TNG, le plus récent en premier, avec la date de dernière modification. Réglages du shortcode : limit (nombre d'individus, 1 à 100), tree, date, date_format, link et title. Les personnes vivantes ou privées sont exclues par défaut (réglage « vivants / privés » du module) ; la liste est mise en cache une heure.

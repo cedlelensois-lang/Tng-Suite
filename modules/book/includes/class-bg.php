@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) exit;
 class TNGBook_Bg {
     const JOB   = 'tngbook_bg_job';
     const HOOK  = 'tngbook_bg_run';
-    const STALE = 600;   // secondes sans signe de vie avant de considérer le travail comme interrompu
+    const STALE = 300;   // secondes sans signe de vie avant de considérer le travail comme interrompu
 
     private static $last_beat = 0;
     private static $last_phase = '';
@@ -156,6 +156,8 @@ class TNGBook_Bg {
         @ignore_user_abort(true);
         TNGBook::$unlimited = true;
         TNGBook::pdf_prepare();   // mémoire et temps relevés quand le serveur l'autorise
+        $j['limits'] = 'max_execution_time=' . ini_get('max_execution_time') . ' s · memory_limit=' . ini_get('memory_limit') . ' · PHP ' . PHP_VERSION . ' · ' . PHP_SAPI;
+        self::save($j);
         TNGBook::$progress = [__CLASS__, 'beat'];
         register_shutdown_function([__CLASS__, 'shutdown'], $id);
 
@@ -271,7 +273,13 @@ class TNGBook_Bg {
             $h = '<p>' . $head . '<span style="color:#b32d2e">●</span> <strong>' . esc_html(tngs_t('Génération interrompue')) . '</strong></p>';
             $h .= '<p>' . esc_html(tngs_t('Aucun signe d’activité depuis')) . ' ' . esc_html(self::mins($now - (int) $j['beat'])) . '. ' . esc_html(tngs_t('Le serveur a très probablement arrêté le traitement (limite de temps ou de mémoire de l’hébergeur).'));
             if ($ph !== '') $h .= ' ' . esc_html(tngs_t('Dernière étape atteinte :')) . ' <em>' . esc_html(tngs_t($ph)) . '</em>.';
-            $h .= '</p><p class="description">' . esc_html(tngs_t('Pistes : cochez « Compresser les images », réduisez le nombre de générations ou de photos, choisissez le format Word / OpenDocument, ou demandez à l’hébergeur d’allonger la limite de temps des tâches planifiées (ou programmez une tâche cron du serveur qui appelle wp-cron.php).')) . '</p>';
+            $h .= '</p>';
+            if ((int) $j['started'] > 0 && (int) $j['beat'] >= (int) $j['started']) {
+                $h .= '<p class="description">' . esc_html(tngs_t('Durée de travail avant l’arrêt :')) . ' <strong>' . esc_html(self::mins((int) $j['beat'] - (int) $j['started'])) . '</strong>'
+                    . (!empty($j['limits']) ? ' · ' . esc_html(tngs_t('Réglages du serveur :')) . ' ' . esc_html($j['limits']) : '')
+                    . ' · ' . esc_html(tngs_t('Mémoire maximale utilisée :')) . ' ' . esc_html(size_format((int) $j['peak'])) . '</p>';
+            }
+            $h .= '<p class="description">' . esc_html(tngs_t('Pistes : cochez « Compresser les images », réduisez le nombre de générations ou de photos, choisissez le format Word / OpenDocument, ou demandez à l’hébergeur d’allonger la limite de temps des tâches planifiées (ou programmez une tâche cron du serveur qui appelle wp-cron.php).')) . '</p>';
             return $h . self::btn(tngs_t('Effacer ce message'));
         }
         if ($j['state'] === 'running') {
@@ -279,7 +287,9 @@ class TNGBook_Bg {
             $pct = max(1, min(99, (int) $j['pct']));
             $h = '<p>' . $head . '<span style="color:#2271b1">●</span> ' . esc_html(tngs_t('En cours')) . ' — ' . esc_html(tngs_t($ph)) . ' <span class="description">(' . (int) $pct . ' %, ' . esc_html(self::mins($now - (int) $j['started'])) . ')</span></p>';
             $h .= '<div style="height:10px;max-width:520px;background:#dcdcde;border-radius:5px;overflow:hidden"><div style="height:100%;width:' . (int) $pct . '%;background:#2271b1"></div></div>';
-            $h .= '<p class="description">' . esc_html(tngs_t('Vous pouvez quitter cette page : le livre se prépare sur le serveur.')) . '</p>';
+            $age = $now - (int) $j['beat'];
+            $h .= '<p class="description">' . esc_html(tngs_t('Vous pouvez quitter cette page : le livre se prépare sur le serveur.'))
+                . ($age >= 60 ? ' ' . esc_html(tngs_t('Dernier signe d’activité il y a')) . ' ' . esc_html(self::mins($age)) . '.' : '') . '</p>';
             return $h . self::btn(tngs_t('Annuler'));
         }
         $dur = $j['finished'] && $j['started'] ? ' ' . esc_html(tngs_t('en')) . ' ' . esc_html(self::mins((int) $j['finished'] - (int) $j['started'])) : '';

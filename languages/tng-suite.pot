@@ -3328,6 +3328,21 @@ msgstr ""
 msgid "Les listes d’anniversaires sont mises en cache pour la journée ; la liste des dernières mises à jour, pour une heure."
 msgstr ""
 
+msgid "Seulement à fort zoom (échelle d’un département ou moins) ; le nombre reste toujours visible dans l’infobulle au survol."
+msgstr ""
+
+msgid "Durée de travail avant l’arrêt :"
+msgstr ""
+
+msgid "Réglages du serveur :"
+msgstr ""
+
+msgid "Mémoire maximale utilisée :"
+msgstr ""
+
+msgid "Dernier signe d’activité il y a"
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""
