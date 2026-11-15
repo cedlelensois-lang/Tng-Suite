@@ -3208,9 +3208,6 @@ msgstr ""
 msgid "Aucun signe d’activité depuis"
 msgstr ""
 
-msgid "Le serveur a très probablement arrêté le traitement (limite de temps ou de mémoire de l’hébergeur)."
-msgstr ""
-
 msgid "Dernière étape atteinte :"
 msgstr ""
 
@@ -3341,6 +3338,18 @@ msgid "Mémoire maximale utilisée :"
 msgstr ""
 
 msgid "Dernier signe d’activité il y a"
+msgstr ""
+
+msgid "Dernier morceau du PDF lancé :"
+msgstr ""
+
+msgid "mémoire en cours :"
+msgstr ""
+
+msgid "Morceau du PDF en cours :"
+msgstr ""
+
+msgid "Le traitement s’est arrêté sans pouvoir se signaler : limite de l’hébergeur (temps, mémoire, processus) ou plantage de PHP."
 msgstr ""
 
 msgctxt "js"

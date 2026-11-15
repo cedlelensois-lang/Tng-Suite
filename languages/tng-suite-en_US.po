@@ -3208,9 +3208,6 @@ msgstr "Generation interrupted"
 msgid "Aucun signe d’activité depuis"
 msgstr "No sign of activity for"
 
-msgid "Le serveur a très probablement arrêté le traitement (limite de temps ou de mémoire de l’hébergeur)."
-msgstr "The server most likely stopped the process (the host's time or memory limit)."
-
 msgid "Dernière étape atteinte :"
 msgstr "Last step reached:"
 
@@ -3342,6 +3339,18 @@ msgstr "Peak memory used:"
 
 msgid "Dernier signe d’activité il y a"
 msgstr "Last sign of activity"
+
+msgid "Dernier morceau du PDF lancé :"
+msgstr "Last PDF chunk started:"
+
+msgid "mémoire en cours :"
+msgstr "current memory:"
+
+msgid "Morceau du PDF en cours :"
+msgstr "PDF chunk in progress:"
+
+msgid "Le traitement s’est arrêté sans pouvoir se signaler : limite de l’hébergeur (temps, mémoire, processus) ou plantage de PHP."
+msgstr "The process stopped without being able to report: host limit (time, memory, processes) or a PHP crash."
 
 msgctxt "js"
 msgid " Page "

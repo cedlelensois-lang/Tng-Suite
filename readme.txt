@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.4.1
+Stable tag: 2.4.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.4.2 =
+* Livre, génération en arrière-plan : le journal d'avancement indique maintenant, pour le PDF, le morceau du livre en cours (numéro, taille, début du texte) et la mémoire utilisée, et l'interruption d'un travail affiche ces informations pour identifier ce qui l'arrête. Le moteur PDF travaille sans le compilateur JIT de PCRE (aucun effet sur la vitesse), ce qui écarte un plantage silencieux de PHP sur les très gros livres.
 
 = 2.4.1 =
 * Livre, génération en arrière-plan : un travail qui ne donne plus signe de vie est signalé au bout de 5 minutes (au lieu de 10). Le message d'interruption indique la durée de travail avant l'arrêt, les limites du serveur (temps, mémoire, PHP) et la mémoire maximale utilisée, pour identifier la limite de l'hébergeur ; le panneau « en cours » affiche l'âge du dernier signe d'activité quand il dépasse une minute.

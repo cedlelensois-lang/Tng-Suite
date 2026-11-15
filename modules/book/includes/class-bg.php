@@ -199,9 +199,9 @@ class TNGBook_Bg {
     }
 
     /** Point de contrôle : enregistre l'avancement (au plus toutes les 3 s) et s'interrompt si le travail a été annulé. */
-    public static function beat($phase, $pct = null) {
+    public static function beat($phase, $pct = null, $detail = '') {
         $now = time();
-        if ($phase === self::$last_phase && $now - self::$last_beat < 3) return;
+        if ($detail === '' && $phase === self::$last_phase && $now - self::$last_beat < 3) return;   // un point précis (morceau du PDF) est toujours consigné
         self::$last_phase = $phase;
         self::$last_beat = $now;
         wp_cache_delete(self::JOB, 'options');
@@ -212,6 +212,8 @@ class TNGBook_Bg {
         $j['beat'] = $now;
         if ($ph) $j['pct'] = (int) round($ph[1] + $ph[2] * max(0, min(1, (float) $pct)));
         $j['peak'] = memory_get_peak_usage(true);
+        $j['mem'] = memory_get_usage(true);
+        if ($detail !== '') $j['detail'] = $detail;
         self::save($j);
     }
 
@@ -271,13 +273,17 @@ class TNGBook_Bg {
         if (self::stale($j)) {
             $ph = self::phases()[$j['phase']][0] ?? '';
             $h = '<p>' . $head . '<span style="color:#b32d2e">●</span> <strong>' . esc_html(tngs_t('Génération interrompue')) . '</strong></p>';
-            $h .= '<p>' . esc_html(tngs_t('Aucun signe d’activité depuis')) . ' ' . esc_html(self::mins($now - (int) $j['beat'])) . '. ' . esc_html(tngs_t('Le serveur a très probablement arrêté le traitement (limite de temps ou de mémoire de l’hébergeur).'));
+            $h .= '<p>' . esc_html(tngs_t('Aucun signe d’activité depuis')) . ' ' . esc_html(self::mins($now - (int) $j['beat'])) . '. ' . esc_html(tngs_t('Le traitement s’est arrêté sans pouvoir se signaler : limite de l’hébergeur (temps, mémoire, processus) ou plantage de PHP.'));
             if ($ph !== '') $h .= ' ' . esc_html(tngs_t('Dernière étape atteinte :')) . ' <em>' . esc_html(tngs_t($ph)) . '</em>.';
             $h .= '</p>';
             if ((int) $j['started'] > 0 && (int) $j['beat'] >= (int) $j['started']) {
                 $h .= '<p class="description">' . esc_html(tngs_t('Durée de travail avant l’arrêt :')) . ' <strong>' . esc_html(self::mins((int) $j['beat'] - (int) $j['started'])) . '</strong>'
                     . (!empty($j['limits']) ? ' · ' . esc_html(tngs_t('Réglages du serveur :')) . ' ' . esc_html($j['limits']) : '')
                     . ' · ' . esc_html(tngs_t('Mémoire maximale utilisée :')) . ' ' . esc_html(size_format((int) $j['peak'])) . '</p>';
+            }
+            if (!empty($j['detail'])) {
+                $h .= '<p class="description">' . esc_html(tngs_t('Dernier morceau du PDF lancé :')) . ' ' . esc_html($j['detail'])
+                    . (!empty($j['mem']) ? ' · ' . esc_html(tngs_t('mémoire en cours :')) . ' ' . esc_html(size_format((int) $j['mem'])) : '') . '</p>';
             }
             $h .= '<p class="description">' . esc_html(tngs_t('Pistes : cochez « Compresser les images », réduisez le nombre de générations ou de photos, choisissez le format Word / OpenDocument, ou demandez à l’hébergeur d’allonger la limite de temps des tâches planifiées (ou programmez une tâche cron du serveur qui appelle wp-cron.php).')) . '</p>';
             return $h . self::btn(tngs_t('Effacer ce message'));
@@ -287,6 +293,7 @@ class TNGBook_Bg {
             $pct = max(1, min(99, (int) $j['pct']));
             $h = '<p>' . $head . '<span style="color:#2271b1">●</span> ' . esc_html(tngs_t('En cours')) . ' — ' . esc_html(tngs_t($ph)) . ' <span class="description">(' . (int) $pct . ' %, ' . esc_html(self::mins($now - (int) $j['started'])) . ')</span></p>';
             $h .= '<div style="height:10px;max-width:520px;background:#dcdcde;border-radius:5px;overflow:hidden"><div style="height:100%;width:' . (int) $pct . '%;background:#2271b1"></div></div>';
+            if (!empty($j['detail'])) $h .= '<p class="description">' . esc_html(tngs_t('Morceau du PDF en cours :')) . ' ' . esc_html($j['detail']) . '</p>';
             $age = $now - (int) $j['beat'];
             $h .= '<p class="description">' . esc_html(tngs_t('Vous pouvez quitter cette page : le livre se prépare sur le serveur.'))
                 . ($age >= 60 ? ' ' . esc_html(tngs_t('Dernier signe d’activité il y a')) . ' ' . esc_html(self::mins($age)) . '.' : '') . '</p>';

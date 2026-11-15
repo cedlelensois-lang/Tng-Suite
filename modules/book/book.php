@@ -31,8 +31,8 @@ final class TNGBook {
     const MAX_PEOPLE = 4000;   // valeur de départ du réglage « nombre maximum de personnes » (0 = illimité)
 
     /** Signale l'avancement de la génération (sans effet hors génération en arrière-plan). */
-    public static function beat($phase, $pct = null) {
-        if (self::$progress) call_user_func(self::$progress, $phase, $pct);
+    public static function beat($phase, $pct = null, $detail = '') {
+        if (self::$progress) call_user_func(self::$progress, $phase, $pct, $detail);
     }
 
     public static function langs() {
@@ -753,6 +753,7 @@ final class TNGBook {
      * affiche un message explicite (au lieu d'une page « Erreur 500 » de l'hébergeur).
      */
     public static function pdf_prepare() {
+        @ini_set('pcre.jit', '0');   // évite un plantage silencieux de PHP (JIT PCRE) sur de très gros documents ; sans effet mesurable sur la vitesse
         if (function_exists('wp_raise_memory_limit')) wp_raise_memory_limit('admin');
         $mem = function_exists('wp_convert_hr_to_bytes') ? wp_convert_hr_to_bytes((string) ini_get('memory_limit')) : 0;
         if ($mem > 0 && $mem < 512 * MB_IN_BYTES) @ini_set('memory_limit', '512M');
@@ -840,7 +841,8 @@ final class TNGBook {
         if ($widest * 2 > (int) ini_get('pcre.backtrack_limit')) @ini_set('pcre.backtrack_limit', (string) ($widest * 2));   // un tableau très long reste d'un seul tenant
         $from = 0;
         foreach ($cuts as $n => $to) {
-            self::beat('write', $n / count($cuts));
+            $txt = trim(preg_replace('/\s+/u', ' ', wp_strip_all_tags(substr($body, $from, min($to - $from, 4000)))));
+            self::beat('write', $n / count($cuts), sprintf('%d/%d · %d Ko · « %s »', $n + 1, count($cuts), (int) round(($to - $from) / 1024), mb_substr($txt, 0, 70)));
             $mpdf->WriteHTML(substr($body, $from, $to - $from), \Mpdf\HTMLParserMode::HTML_BODY, $n === 0, $n === count($cuts) - 1);
             $from = $to;
         }

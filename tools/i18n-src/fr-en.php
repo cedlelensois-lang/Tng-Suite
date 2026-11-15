@@ -1078,7 +1078,6 @@ return array(
 	'Annulation en cours…' => 'Cancelling…',
 	'Génération interrompue' => 'Generation interrupted',
 	'Aucun signe d’activité depuis' => 'No sign of activity for',
-	'Le serveur a très probablement arrêté le traitement (limite de temps ou de mémoire de l’hébergeur).' => 'The server most likely stopped the process (the host\'s time or memory limit).',
 	'Dernière étape atteinte :' => 'Last step reached:',
 	'Pistes : cochez « Compresser les images », réduisez le nombre de générations ou de photos, choisissez le format Word / OpenDocument, ou demandez à l’hébergeur d’allonger la limite de temps des tâches planifiées (ou programmez une tâche cron du serveur qui appelle wp-cron.php).' => 'Things to try: tick “Compress images”, reduce the number of generations or photos, choose the Word / OpenDocument format, or ask your host to extend the time limit for scheduled tasks (or set up a server cron task that calls wp-cron.php).',
 	'Effacer ce message' => 'Dismiss this message',
@@ -1123,4 +1122,8 @@ return array(
 	'Réglages du serveur :' => 'Server settings:',
 	'Mémoire maximale utilisée :' => 'Peak memory used:',
 	'Dernier signe d’activité il y a' => 'Last sign of activity',
+	'Dernier morceau du PDF lancé :' => 'Last PDF chunk started:',
+	'mémoire en cours :' => 'current memory:',
+	'Morceau du PDF en cours :' => 'PDF chunk in progress:',
+	'Le traitement s’est arrêté sans pouvoir se signaler : limite de l’hébergeur (temps, mémoire, processus) ou plantage de PHP.' => 'The process stopped without being able to report: host limit (time, memory, processes) or a PHP crash.',
 );
