@@ -13,6 +13,10 @@ class TNGBook_Bg {
     const JOB   = 'tngbook_bg_job';
     const HOOK  = 'tngbook_bg_run';
     const STALE = 300;   // secondes sans signe de vie avant de considérer le travail comme interrompu
+    const WAIT  = 900;   // idem entre deux reprises d'un PDF (le travail attend que WordPress relance ses tâches planifiées)
+    const BUDGET = 12;   // PDF : durée de travail (s) d'une reprise avant de mettre le document en pause ; beaucoup d'hébergeurs coupent un processus long
+
+    private static $handover = false;
 
     private static $last_beat = 0;
     private static $last_phase = '';
@@ -42,7 +46,7 @@ class TNGBook_Bg {
     }
 
     public static function stale(array $j) {
-        return in_array($j['state'], ['running', 'cancel'], true) && (time() - (int) $j['beat']) > self::STALE;
+        return in_array($j['state'], ['running', 'cancel'], true) && (time() - (int) $j['beat']) > (!empty($j['wait']) ? self::WAIT : self::STALE);
     }
 
     /** Phases : libellé, début et étendue (en %) dans la barre d'avancement. */
@@ -103,6 +107,9 @@ class TNGBook_Bg {
             $opts = $o;
         }
 
+        foreach ((array) glob(TNGBook_Auto::dir(true) . '/work-*', GLOB_ONLYDIR) as $d) {   // dossiers de travail abandonnés (travail interrompu, effacé)
+            if (filemtime($d) < time() - DAY_IN_SECONDS) { foreach ((array) glob($d . '/*') as $f) if (is_file($f)) wp_delete_file($f); @rmdir($d); }
+        }
         $id = strtolower(wp_generate_password(12, false, false));
         self::save([
             'id' => $id, 'state' => 'queued', 'profile' => $profile, 'label' => $label, 'format' => $format,
@@ -127,11 +134,12 @@ class TNGBook_Bg {
         $j = self::job();
         if ($j) {
             wp_clear_scheduled_hook(self::HOOK, [$j['id']]);
-            if ($j['state'] === 'running' && !self::stale($j)) {
+            if ($j['state'] === 'running' && !self::stale($j) && empty($j['wait'])) {
                 $j['state'] = 'cancel';   // le travail s'arrête à son prochain point de contrôle
                 self::save($j);
             } else {
-                if (self::stale($j)) delete_transient(TNGBook_Auto::LOCK);
+                if (self::stale($j) || !empty($j['wait'])) delete_transient(TNGBook_Auto::LOCK);
+                self::cleanup($j['id']);
                 delete_option(self::JOB);
             }
         }
@@ -142,15 +150,25 @@ class TNGBook_Bg {
 
     public static function run($id) {
         $j = self::job();
-        if (!$j || $j['id'] !== $id || $j['state'] !== 'queued') return;
-        if (get_transient(TNGBook_Auto::LOCK)) {   // une génération automatique est en cours : on réessaie dans deux minutes
-            wp_schedule_single_event(time() + 120, self::HOOK, [$id]);
-            return;
+        if (!$j || $j['id'] !== $id) return;
+        $cont = $j['state'] === 'running' && !empty($j['stage']);   // reprise d'un PDF mis en pause
+        if ($j['state'] !== 'queued' && !$cont) return;
+        if ($cont && !empty($j['busy']) && time() - (int) $j['busy'] < 120) return;   // doublon de la tâche planifiée
+        $t0 = microtime(true);
+        if (!$cont) {
+            if (get_transient(TNGBook_Auto::LOCK)) {   // une génération automatique est en cours : on réessaie dans deux minutes
+                wp_schedule_single_event(time() + 120, self::HOOK, [$id]);
+                return;
+            }
+            set_transient(TNGBook_Auto::LOCK, 1, 2 * HOUR_IN_SECONDS);
+            $j['state'] = 'running';
+            $j['started'] = time();
+            $j['phase'] = 'data';
         }
-        set_transient(TNGBook_Auto::LOCK, 1, 2 * HOUR_IN_SECONDS);
-        $j['state'] = 'running';
-        $j['started'] = $j['beat'] = time();
-        $j['phase'] = 'data';
+        $j['beat'] = time();
+        $j['busy'] = time();
+        $j['wait'] = 0;
+        $j['runs'] = (int) ($j['runs'] ?? 0) + 1;
         self::save($j);
 
         @ignore_user_abort(true);
@@ -159,22 +177,41 @@ class TNGBook_Bg {
         $j['limits'] = 'max_execution_time=' . ini_get('max_execution_time') . ' s · memory_limit=' . ini_get('memory_limit') . ' · PHP ' . PHP_VERSION . ' · ' . PHP_SAPI;
         self::save($j);
         TNGBook::$progress = [__CLASS__, 'beat'];
+        self::$handover = false;
         register_shutdown_function([__CLASS__, 'shutdown'], $id);
 
         try {
-            $res = self::build($j);
+            $res = $cont ? self::pdf_resume($j, $t0) : self::build($j, $t0);
         } catch (Throwable $e) {
             $res = ['fail', $e->getMessage()];
         }
         TNGBook::$progress = null;
-        delete_transient(TNGBook_Auto::LOCK);
 
+        if ($res[0] === 'more') {   // PDF mis en pause : la suite sera écrite par une nouvelle tâche, dans un autre processus
+            $j = self::job();
+            if (!$j || $j['id'] !== $id) return;
+            self::$handover = true;
+            $j['busy'] = 0;
+            $j['wait'] = time();
+            $j['beat'] = time();
+            $j['peak'] = max((int) $j['peak'], memory_get_peak_usage(true));
+            self::save($j);
+            wp_schedule_single_event(time(), self::HOOK, [$id]);
+            delete_transient('doing_cron');   // le verrou de WP-Cron est encore pris par ce processus : on le libère pour que la suite démarre tout de suite
+            self::spawn();
+            return;
+        }
+
+        delete_transient(TNGBook_Auto::LOCK);
         $j = self::job();
+        self::cleanup($id);
         if (!$j || $j['id'] !== $id) return;   // effacé entre-temps
         if ($j['state'] === 'cancel' && $res[0] === 'fail') { delete_option(self::JOB); return; }   // annulé par l'administrateur : rien à signaler
         $j['finished'] = time();
-        $j['peak'] = memory_get_peak_usage(true);
+        $j['peak'] = max((int) $j['peak'], memory_get_peak_usage(true));
         $j['opts'] = [];
+        $j['stage'] = '';
+        $j['busy'] = 0;
         $j['state'] = $res[0];
         $j['msg'] = (string) $res[1];
         if ($res[0] === 'ok') { $j['file'] = (string) $res[2]; $j['size'] = (int) $res[3]; $j['pct'] = 100; }
@@ -183,7 +220,7 @@ class TNGBook_Bg {
         TNGBook_Auto::notify($j['label'], $res);
     }
 
-    private static function build(array $j) {
+    private static function build(array $j, $t0) {
         if ($j['profile'] !== '') {
             $o = TNGBook::profile_options($j['profile']);
             if ($o === null) throw new Exception(tngs_t('Profil introuvable.'));
@@ -193,9 +230,87 @@ class TNGBook_Bg {
             $base = TNGBook_Auto::base('livre-' . $o['personID']);
         }
         $b = TNGBook::build($o, false, true);
-        [$file, $size] = TNGBook_Auto::store($b, $base);
         $sig = $j['profile'] !== '' ? TNGBook_Auto::signature($o) : '';
+        if ($b['format'] === 'pdf') return self::pdf_begin($j, $b, $base, $sig, $t0);
+        [$file, $size] = TNGBook_Auto::store($b, $base);
         return ['ok', tngs_t('Livre généré.'), $file, $size, $sig];
+    }
+
+    /* ---------- PDF par reprises ---------- */
+
+    /** Dossier de travail d'un PDF en cours (dans le dossier protégé de la génération automatique). */
+    private static function workdir($id) {
+        return TNGBook_Auto::dir(true) . '/work-' . preg_replace('/[^a-z0-9]/', '', $id);
+    }
+
+    private static function cleanup($id) {
+        $d = self::workdir($id);
+        if (!is_dir($d)) return;
+        foreach ((array) glob($d . '/*') as $f) { if (is_file($f)) wp_delete_file($f); }
+        @rmdir($d);
+    }
+
+    private static function patch(array $new) {
+        wp_cache_delete(self::JOB, 'options');
+        $j = self::job();
+        if ($j) self::save(array_merge($j, $new));
+    }
+
+    /** Première reprise : le livre est prêt en HTML ; le document PDF est préparé puis commencé. */
+    private static function pdf_begin(array $j, array $b, $base, $sig, $t0) {
+        $w = self::workdir($j['id']);
+        if (!wp_mkdir_p($w)) throw new Exception(tngs_t('Écriture impossible dans le dossier de destination.'));
+        [$mpdf, $pieces] = TNGBook::pdf_stage_init($b['html']);
+        $b = null;
+        $file = TNGBook_Auto::new_name($base, 'pdf');
+        if (file_put_contents($w . '/pieces.ser', serialize($pieces)) === false) throw new Exception(tngs_t('Écriture impossible dans le dossier de destination.'));
+        self::patch(['stage' => 'pdf', 'total' => count($pieces), 'pos' => 0, 'pfile' => $file, 'pbase' => $base, 'psig' => $sig]);
+        return self::pdf_work($j['id'], $mpdf, $pieces, 0, 'pdf', $t0);
+    }
+
+    /** Reprise suivante : le document est rechargé tel qu'il avait été mis en pause. */
+    private static function pdf_resume(array $j, $t0) {
+        $w = self::workdir($j['id']);
+        $st = is_file($w . '/state.ser') ? @unserialize((string) file_get_contents($w . '/state.ser')) : false;
+        $pieces = is_file($w . '/pieces.ser') ? @unserialize((string) file_get_contents($w . '/pieces.ser')) : false;
+        if (!is_array($st) || !isset($st['mpdf']) || !is_array($pieces)) throw new Exception(tngs_t('Impossible de reprendre le PDF : l’état enregistré est illisible.'));
+        return self::pdf_work($j['id'], $st['mpdf'], $pieces, (int) $st['pos'], (string) $st['stage'], $t0);
+    }
+
+    /** Écrit des morceaux tant que la durée d'une reprise n'est pas atteinte, puis met en pause (« more ») ou termine le PDF. */
+    private static function pdf_work($id, \Mpdf\Mpdf $mpdf, array $pieces, $pos, $stage, $t0) {
+        $total = count($pieces);
+        if ($stage === 'pdf') {
+            $budget = defined('TNGBOOK_BG_BUDGET') ? (float) TNGBOOK_BG_BUDGET : self::BUDGET;
+            while ($pos < $total) {   // au moins un morceau par reprise
+                TNGBook::pdf_feed($mpdf, $pieces, $pos);
+                $pos++;
+                self::patch(['pos' => $pos]);
+                if (microtime(true) - $t0 >= $budget) break;
+            }
+            if ($pos < $total || (microtime(true) - $t0) > 5) {   // la sortie du fichier a droit à une reprise à elle quand celle-ci a déjà beaucoup travaillé
+                self::pdf_pause($id, $mpdf, $pos, $pos < $total ? 'pdf' : 'out');
+                return ['more'];
+            }
+        }
+        $j = self::job();
+        $file = (string) $j['pfile'];
+        $dest = TNGBook_Auto::dir(true) . '/' . $file;
+        $mpdf->imageVars = [];
+        TNGBook::beat('output');
+        $mpdf->Output($dest, 'F');
+        TNGBook::beat('save');
+        [$f, $size] = TNGBook_Auto::finish($file, (string) $j['pbase']);
+        return ['ok', tngs_t('Livre généré.'), $f, $size, (string) $j['psig']];
+    }
+
+    private static function pdf_pause($id, \Mpdf\Mpdf $mpdf, $pos, $stage) {
+        $w = self::workdir($id);
+        $tmp = $w . '/state.tmp';
+        if (file_put_contents($tmp, serialize(['mpdf' => $mpdf, 'pos' => $pos, 'stage' => $stage])) === false || !@rename($tmp, $w . '/state.ser')) {
+            throw new Exception(tngs_t('Écriture impossible dans le dossier de destination.'));
+        }
+        self::patch(['stage' => $stage]);
     }
 
     /** Point de contrôle : enregistre l'avancement (au plus toutes les 3 s) et s'interrompt si le travail a été annulé. */
@@ -219,10 +334,11 @@ class TNGBook_Bg {
 
     /** Fin brutale du processus (mémoire, temps, erreur fatale) : l'état est consigné avec le motif. */
     public static function shutdown($id) {
+        if (self::$handover) return;   // pause volontaire d'un PDF : la suite est déjà planifiée
         $j = self::job();
         if (!$j || $j['id'] !== $id || !in_array($j['state'], ['running', 'cancel'], true)) return;
         unset($GLOBALS['tngbook_reserve']);
-        if ($j['state'] === 'cancel') { delete_option(self::JOB); delete_transient(TNGBook_Auto::LOCK); return; }
+        if ($j['state'] === 'cancel') { delete_option(self::JOB); delete_transient(TNGBook_Auto::LOCK); self::cleanup($id); return; }
         $e = error_get_last();
         $fatal = $e && in_array($e['type'], [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR], true);
         if ($fatal && stripos($e['message'], 'memory') !== false) $why = tngs_t('Mémoire insuffisante sur le serveur');
@@ -294,6 +410,7 @@ class TNGBook_Bg {
             $h = '<p>' . $head . '<span style="color:#2271b1">●</span> ' . esc_html(tngs_t('En cours')) . ' — ' . esc_html(tngs_t($ph)) . ' <span class="description">(' . (int) $pct . ' %, ' . esc_html(self::mins($now - (int) $j['started'])) . ')</span></p>';
             $h .= '<div style="height:10px;max-width:520px;background:#dcdcde;border-radius:5px;overflow:hidden"><div style="height:100%;width:' . (int) $pct . '%;background:#2271b1"></div></div>';
             if (!empty($j['detail'])) $h .= '<p class="description">' . esc_html(tngs_t('Morceau du PDF en cours :')) . ' ' . esc_html($j['detail']) . '</p>';
+            if (!empty($j['total']) && !empty($j['runs'])) $h .= '<p class="description">' . esc_html(tngs_t('Le PDF est écrit par étapes courtes (chaque étape reprend là où la précédente s’est arrêtée) : étape')) . ' ' . (int) $j['runs'] . (!empty($j['wait']) ? ' — ' . esc_html(tngs_t('en attente de la suivante (WordPress relance ses tâches planifiées)')) : '') . '.</p>';
             $age = $now - (int) $j['beat'];
             $h .= '<p class="description">' . esc_html(tngs_t('Vous pouvez quitter cette page : le livre se prépare sur le serveur.'))
                 . ($age >= 60 ? ' ' . esc_html(tngs_t('Dernier signe d’activité il y a')) . ' ' . esc_html(self::mins($age)) . '.' : '') . '</p>';
@@ -318,7 +435,7 @@ class TNGBook_Bg {
         check_ajax_referer('tngbook_bg', '_n');
         $j = self::job();
         if (!$j) wp_send_json_success(['html' => '', 'active' => false]);
-        if ($j['state'] === 'queued') self::spawn();
+        if ($j['state'] === 'queued' || (!empty($j['wait']) && time() - (int) $j['wait'] > 8)) self::spawn();
         wp_send_json_success(['html' => self::status_html($j), 'active' => self::active($j)]);
     }
 

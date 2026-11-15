@@ -58,6 +58,7 @@ Pour un gros livre (plusieurs centaines de pages, beaucoup de photos), l’hébe
 
 Remarques :
 
+- Un PDF est écrit en plusieurs étapes courtes (environ 12 s chacune) : le document est mis en pause sur le serveur puis repris par une nouvelle tâche planifiée, ce qui évite les hébergeurs qui coupent un processus trop long. Le panneau indique l’étape en cours.
 - Un seul travail à la fois. Si l’hébergeur arrête le traitement, le panneau l’indique (« Génération interrompue ») avec la dernière étape atteinte : cochez « Compresser les images », réduisez le nombre de générations ou choisissez le format Word.
 - Comme la génération automatique, la tâche repose sur WP-Cron (voir ci-dessus). Si elle reste « en attente », programmez une tâche cron du serveur qui appelle `wp-cron.php`.
 - Un e-mail peut être envoyé à la fin (réglage commun de la génération automatique).

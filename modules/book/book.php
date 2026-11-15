@@ -727,9 +727,8 @@ final class TNGBook {
         return ['format' => $format, 'html' => $html, 'doc' => $isDoc ? $file : ''];
     }
 
-    /** Écrit le PDF (mPDF) : 'D' = téléchargement, 'F' = fichier $name. */
-    public static function pdf_output(&$html, $name, $dest) {   // $html passé par référence : la copie de l'appelant est libérée dès que les images sont extraites
-        self::pdf_prepare();
+    /** Nouveau document mPDF (réglages communs au PDF direct et à la génération en arrière-plan). */
+    private static function pdf_make() {
         $up_dir = wp_upload_dir();
         $tmp = $up_dir['basedir'] . '/tngbook-cache/mpdf';
         wp_mkdir_p($tmp);
@@ -739,6 +738,13 @@ final class TNGBook {
         ]);
         $mpdf->SetCompression(true);
         $mpdf->SetFooter('{PAGENO}');
+        return $mpdf;
+    }
+
+    /** Écrit le PDF (mPDF) : 'D' = téléchargement, 'F' = fichier $name. */
+    public static function pdf_output(&$html, $name, $dest) {   // $html passé par référence : la copie de l'appelant est libérée dès que les images sont extraites
+        self::pdf_prepare();
+        $mpdf = self::pdf_make();
         self::beat('images');
         $html = self::pdf_images($mpdf, (string) $html);
         self::pdf_write($mpdf, $html);
@@ -746,6 +752,20 @@ final class TNGBook {
         $mpdf->imageVars = [];   // les images sont désormais dans le PDF : mémoire libérée avant l'écriture du fichier
         self::beat('output');
         $mpdf->Output($name, $dest);
+    }
+
+    /**
+     * Génération en arrière-plan par reprises : prépare le document et le découpe en morceaux. Retourne [mPDF, morceaux] ;
+     * l'appelant écrit les morceaux au fil de plusieurs processus courts (le document mPDF se sérialise entre deux reprises).
+     */
+    public static function pdf_stage_init(&$html) {
+        $mpdf = self::pdf_make();
+        self::beat('images');
+        $html = self::pdf_images($mpdf, (string) $html);
+        $pieces = self::pdf_pieces($mpdf, $html);
+        $html = '';
+        if ($pieces === null) throw new Exception(tngs_t('Le livre n’a pas pu être découpé pour le PDF.'));
+        return [$mpdf, $pieces];
     }
 
     /**
@@ -810,25 +830,52 @@ final class TNGBook {
      * Les coupures se font entre deux balises <div> et, dans les longs tableaux de liste, entre deux lignes (le tableau est refermé puis rouvert).
      */
     private static function pdf_write(\Mpdf\Mpdf $mpdf, $html) {
-        $b0 = stripos($html, '<body');
-        $b1 = $b0 === false ? false : strpos($html, '>', $b0);
-        $b2 = strripos($html, '</body>');
-        if ($b0 === false || $b1 === false || $b2 === false || $b2 < $b1) {   // pas de document complet : envoi tel quel
+        $pieces = self::pdf_pieces($mpdf, $html);
+        if ($pieces === null) {   // pas de document complet : envoi tel quel
             @ini_set('pcre.backtrack_limit', (string) max((int) ini_get('pcre.backtrack_limit'), 2 * strlen($html)));
             $mpdf->WriteHTML($html);
             return;
         }
+        foreach ($pieces as $n => $_) self::pdf_feed($mpdf, $pieces, $n);
+    }
+
+    /** Écrit le morceau $n du livre dans mPDF (journal d'avancement compris) ; retourne la durée en secondes. */
+    public static function pdf_feed(\Mpdf\Mpdf $mpdf, array $pieces, $n) {
+        $count = count($pieces);
+        $piece = $pieces[$n];
+        $need = 2 * strlen($piece);
+        if ($need > (int) ini_get('pcre.backtrack_limit')) @ini_set('pcre.backtrack_limit', (string) $need);
+        $txt = trim(preg_replace('/\s+/u', ' ', wp_strip_all_tags(substr($piece, 0, 4000))));
+        self::beat('write', $n / $count, sprintf('%d/%d · %d Ko%s · « %s »%s', $n + 1, $count, (int) round(strlen($piece) / 1024), strncasecmp($piece, '<table', 6) === 0 ? ' (' . tngs_t('suite de tableau') . ')' : '', mb_substr($txt, 0, 70), self::$took));
+        $t0 = microtime(true);
+        $mpdf->WriteHTML($piece, \Mpdf\HTMLParserMode::HTML_BODY, $n === 0, $n === $count - 1);
+        $d = microtime(true) - $t0;
+        self::$took = sprintf(' · %s %.1f s', tngs_t('précédent :'), $d);
+        return $d;
+    }
+
+    private static $took = '';
+
+    /**
+     * Prépare le corps du livre pour mPDF : feuilles de style et titre confiés à $mpdf, puis liste des morceaux à écrire
+     * (null si le HTML n'est pas un document complet).
+     */
+    private static function pdf_pieces(\Mpdf\Mpdf $mpdf, $html) {
+        $b0 = stripos($html, '<body');
+        $b1 = $b0 === false ? false : strpos($html, '>', $b0);
+        $b2 = strripos($html, '</body>');
+        if ($b0 === false || $b1 === false || $b2 === false || $b2 < $b1) return null;
         $head = substr($html, 0, $b0);
         if (preg_match('#<title>(.*?)</title>#is', $head, $t)) $mpdf->SetTitle(html_entity_decode(wp_strip_all_tags($t[1]), ENT_QUOTES, 'UTF-8'));
         if (preg_match_all('#<style\b[^>]*>(.*?)</style>#is', $head, $css)) {
             foreach ($css[1] as $c) $mpdf->WriteHTML($c, \Mpdf\HTMLParserMode::HEADER_CSS);
         }
         $body = substr($html, $b1 + 1, $b2 - $b1 - 1);
-        /* Découpage : coupures entre deux <div> (150 Ko au plus entre deux coupures) et, dans un long tableau « st »
-           (listes, chronologie), entre deux lignes (100 Ko au plus) : le tableau est refermé puis rouvert avec sa ligne d'en-tête,
+        /* Découpage : coupures entre deux <div> (100 Ko au plus entre deux coupures) et, dans un long tableau « st »
+           (listes, chronologie), entre deux lignes (80 Ko au plus) : le tableau est refermé puis rouvert avec sa ligne d'en-tête,
            ce qui garde des colonnes alignées. Un morceau géant (plusieurs centaines de Ko) est ce qui épuise mPDF. */
-        $max = 150000;
-        $tmax = 100000;
+        $max = 100000;
+        $tmax = 80000;
         $cuts = [];   // chaque coupure : [position, fermeture ajoutée au morceau qui finit, ouverture ajoutée au suivant]
         $last = 0;
         $tab = 0;
@@ -862,25 +909,15 @@ final class TNGBook {
             }
         }
         $cuts[] = [strlen($body), '', ''];
-        $from = 0;
-        $widest = 0;
-        $pre = '';
-        foreach ($cuts as $c) { $widest = max($widest, $c[0] - $from + strlen($pre) + strlen($c[1])); $from = $c[0]; $pre = $c[2]; }
-        if ($widest * 2 > (int) ini_get('pcre.backtrack_limit')) @ini_set('pcre.backtrack_limit', (string) ($widest * 2));
+        $pieces = [];
         $from = 0;
         $pre = '';
-        $count = count($cuts);
-        $took = '';
-        foreach ($cuts as $n => $c) {
-            $piece = $pre . substr($body, $from, $c[0] - $from) . $c[1];
-            $txt = trim(preg_replace('/\s+/u', ' ', wp_strip_all_tags(substr($piece, 0, 4000))));
-            self::beat('write', $n / $count, sprintf('%d/%d · %d Ko%s · « %s »%s', $n + 1, $count, (int) round(strlen($piece) / 1024), $pre !== '' ? ' (' . tngs_t('suite de tableau') . ')' : '', mb_substr($txt, 0, 70), $took));
-            $t0 = microtime(true);
-            $mpdf->WriteHTML($piece, \Mpdf\HTMLParserMode::HTML_BODY, $n === 0, $n === $count - 1);
-            $took = sprintf(' · %s %.1f s', tngs_t('précédent :'), microtime(true) - $t0);
+        foreach ($cuts as $c) {
+            $pieces[] = $pre . substr($body, $from, $c[0] - $from) . $c[1];
             $from = $c[0];
             $pre = $c[2];
         }
+        return $pieces;
     }
 
     /**

@@ -171,6 +171,21 @@ class TNGBook_Auto {
         return [$file, (int) filesize($dest)];
     }
 
+    /** Nom de fichier d'un nouveau livre (génération en plusieurs reprises : le nom est fixé au début). */
+    public static function new_name($base, $ext) {
+        return $base . '__' . wp_date('Y-m-d_His') . '.' . $ext;
+    }
+
+    /** Termine un fichier déjà écrit dans le dossier de destination : contrôle, rotation des anciens fichiers. Retourne [nom, taille]. */
+    public static function finish($file, $base) {
+        $s = self::settings();
+        $dir = self::dir(true);
+        $dest = $dir . '/' . $file;
+        if (!is_file($dest) || filesize($dest) < 100) throw new Exception(tngs_t('Le fichier généré est vide.'));
+        self::rotate($dir, $base, (int) $s['keep']);
+        return [$file, (int) filesize($dest)];
+    }
+
     /** Empreinte des données du livre : réglages du profil, version du plugin, effectif et dernière modification des tables TNG. */
     public static function signature(array $o) {
         $db = TNGBook::db();

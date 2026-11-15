@@ -3343,6 +3343,18 @@ msgstr "Last sign of activity"
 msgid "Dernier morceau du PDF lancé :"
 msgstr "Last PDF chunk started:"
 
+msgid "Le PDF est écrit par étapes courtes (chaque étape reprend là où la précédente s’est arrêtée) : étape"
+msgstr "The PDF is written in short steps (each step resumes where the previous one stopped): step"
+
+msgid "en attente de la suivante (WordPress relance ses tâches planifiées)"
+msgstr "waiting for the next one (WordPress is restarting its scheduled tasks)"
+
+msgid "Impossible de reprendre le PDF : l’état enregistré est illisible."
+msgstr "Cannot resume the PDF: the saved state is unreadable."
+
+msgid "Le livre n’a pas pu être découpé pour le PDF."
+msgstr "The book could not be split for the PDF."
+
 msgid "suite de tableau"
 msgstr "table continued"
 

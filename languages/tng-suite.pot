@@ -3343,6 +3343,18 @@ msgstr ""
 msgid "Dernier morceau du PDF lancé :"
 msgstr ""
 
+msgid "Le PDF est écrit par étapes courtes (chaque étape reprend là où la précédente s’est arrêtée) : étape"
+msgstr ""
+
+msgid "en attente de la suivante (WordPress relance ses tâches planifiées)"
+msgstr ""
+
+msgid "Impossible de reprendre le PDF : l’état enregistré est illisible."
+msgstr ""
+
+msgid "Le livre n’a pas pu être découpé pour le PDF."
+msgstr ""
+
 msgid "suite de tableau"
 msgstr ""
 
