@@ -1,6 +1,6 @@
 /* i18n : window.TNGS_I18N est fourni par TNG Suite quand la langue est l'anglais */
 function tngsT(s) { var d = window.TNGS_I18N; return (d && Object.prototype.hasOwnProperty.call(d, s)) ? d[s] : s; }
-/* TNG Ancestors Heatmap 1.22 - front */
+/* TNG Ancestors Heatmap 1.23 - front */
 (function () {
     'use strict';
 
@@ -66,7 +66,7 @@ function tngsT(s) { var d = window.TNGS_I18N; return (d && Object.prototype.hasO
         return CFG.searchUrl + sep + 'psearch=' + encodeURIComponent(place);
     }
 
-    var NUMBER_MIN_ZOOM = 9;      // zoom à partir duquel les chiffres au centre des ronds s'affichent
+    var NUMBER_MIN_ZOOM = 8;      // zoom à partir duquel les chiffres au centre des ronds s'affichent (sans chevauchement)
     var HEAT_FLOOR = 0.4;         // intensité d'un lieu à un seul événement (= début de la couleur « faible »)
     var HEAT_MIN_OPACITY = 0.3;   // opacité minimale d'une tache de chaleur
 
@@ -95,12 +95,42 @@ function tngsT(s) { var d = window.TNGS_I18N; return (d && Object.prototype.hasO
         // Chiffres au centre des ronds : ils n'apparaissent qu'à partir d'un zoom suffisant (échelle d'un département),
         // sinon ils se chevauchent et deviennent illisibles. Le nombre reste toujours dans l'infobulle au survol.
         var numbers = L.layerGroup();
+        var numberItems = [];   // [{lat, lng, count}] des lieux de la sélection en cours
+        // Les chiffres ne sont posés que s'ils ne se chevauchent pas : les plus gros nombres d'abord, un chiffre qui en recouvrirait
+        // un autre est omis (il réapparaît en zoomant, et reste toujours dans l'infobulle au survol).
         function syncNumbers() {
-            var show = map.getZoom() >= NUMBER_MIN_ZOOM;
-            if (show && !map.hasLayer(numbers)) map.addLayer(numbers);
-            if (!show && map.hasLayer(numbers)) map.removeLayer(numbers);
+            numbers.clearLayers();
+            if (map.getZoom() < NUMBER_MIN_ZOOM) { if (map.hasLayer(numbers)) map.removeLayer(numbers); return; }
+            if (!map.hasLayer(numbers)) map.addLayer(numbers);
+            var zoom = map.getZoom();
+            var size = map.getSize();
+            var tl = map.getPixelBounds().min;
+            var list = numberItems.map(function (it) {
+                var pt = map.project([it.lat, it.lng], zoom);
+                var fs = 11 + Math.min(Math.floor(Math.log(it.count + 1) * 1.3), 4);
+                var w = String(it.count).length * fs * 0.62 + 6;
+                return { it: it, x: pt.x, y: pt.y, w: w, h: fs + 4, fs: fs };
+            }).filter(function (b) {   // hors de l'écran : inutile
+                var sx = b.x - tl.x, sy = b.y - tl.y;
+                return sx > -40 && sy > -40 && sx < size.x + 40 && sy < size.y + 40;
+            });
+            list.sort(function (a, b) { return b.it.count - a.it.count; });
+            var placed = [];
+            list.forEach(function (b) {
+                for (var k = 0; k < placed.length; k++) {
+                    var o = placed[k];
+                    if (Math.abs(b.x - o.x) < (b.w + o.w) / 2 + 2 && Math.abs(b.y - o.y) < (b.h + o.h) / 2 + 1) return;
+                }
+                placed.push(b);
+                var box = document.createElement('div');
+                box.style.lineHeight = b.h + 'px';
+                box.style.fontSize = b.fs + 'px';
+                box.textContent = String(b.it.count);
+                var icon = L.divIcon({ className: 'tng-map-number', html: box, iconSize: [b.w, b.h], iconAnchor: [b.w / 2, b.h / 2] });
+                L.marker([b.it.lat, b.it.lng], { icon: icon, interactive: false }).addTo(numbers);
+            });
         }
-        map.on('zoomend', syncNumbers);
+        map.on('zoomend moveend', syncNumbers);
 
         // Regroupe les lieux partageant les mêmes coordonnées.
         var groups = [];
@@ -121,6 +151,7 @@ function tngsT(s) { var d = window.TNGS_I18N; return (d && Object.prototype.hasO
             if (heatLayer) { map.removeLayer(heatLayer); heatLayer = null; }
             markers.clearLayers();
             numbers.clearLayers();
+            numberItems = [];
 
             var typeFilter = evSelect ? evSelect.value : 'all';
             var typeIdx = typeFilter === 'all' ? -1 : types.indexOf(typeFilter);
@@ -219,19 +250,7 @@ function tngsT(s) { var d = window.TNGS_I18N; return (d && Object.prototype.hasO
                     circle.on('click', function () { window.open(url, '_blank', 'noopener'); });
                 }
 
-                if (CFG.showNumber === 1) {
-                    var box = document.createElement('div');
-                    box.style.lineHeight = (radius * 2) + 'px';
-                    box.style.fontSize = (10 + Math.min(count, 6)) + 'px';
-                    box.textContent = String(count);
-                    var icon = L.divIcon({
-                        className: 'tng-map-number',
-                        html: box,
-                        iconSize: [radius * 2, radius * 2],
-                        iconAnchor: [radius, radius]
-                    });
-                    L.marker([c.grp.lat, c.grp.lng], { icon: icon, interactive: false }).addTo(numbers);
-                }
+                if (CFG.showNumber === 1) numberItems.push({ lat: c.grp.lat, lng: c.grp.lng, count: count });
             });
             syncNumbers();
         }

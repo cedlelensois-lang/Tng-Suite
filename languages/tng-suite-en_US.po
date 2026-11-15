@@ -3325,8 +3325,8 @@ msgstr "Title shown above the list (empty = none)."
 msgid "Les listes d’anniversaires sont mises en cache pour la journée ; la liste des dernières mises à jour, pour une heure."
 msgstr "Anniversary lists are cached for the day; the list of latest updates, for one hour."
 
-msgid "Seulement à fort zoom (échelle d’un département ou moins) ; le nombre reste toujours visible dans l’infobulle au survol."
-msgstr "Only when zoomed in (county scale or closer); the number is always visible in the tooltip on hover."
+msgid "Seulement quand la carte est assez zoomée, et sans chevauchement (un chiffre qui en recouvrirait un autre est omis jusqu’au zoom suivant) ; le nombre reste toujours visible dans l’infobulle au survol."
+msgstr "Only when the map is zoomed in enough, and without overlap (a number that would cover another one is left out until the next zoom level); the number is always visible in the tooltip on hover."
 
 msgid "Durée de travail avant l’arrêt :"
 msgstr "Working time before the stop:"

@@ -1117,7 +1117,7 @@ return array(
 	'yes ou no : lier chaque nom à sa fiche TNG.' => 'yes or no: link each name to its TNG record.',
 	'Titre affiché au-dessus de la liste (vide = aucun).' => 'Title shown above the list (empty = none).',
 	'Les listes d’anniversaires sont mises en cache pour la journée ; la liste des dernières mises à jour, pour une heure.' => 'Anniversary lists are cached for the day; the list of latest updates, for one hour.',
-	'Seulement à fort zoom (échelle d’un département ou moins) ; le nombre reste toujours visible dans l’infobulle au survol.' => 'Only when zoomed in (county scale or closer); the number is always visible in the tooltip on hover.',
+	'Seulement quand la carte est assez zoomée, et sans chevauchement (un chiffre qui en recouvrirait un autre est omis jusqu’au zoom suivant) ; le nombre reste toujours visible dans l’infobulle au survol.' => 'Only when the map is zoomed in enough, and without overlap (a number that would cover another one is left out until the next zoom level); the number is always visible in the tooltip on hover.',
 	'Durée de travail avant l’arrêt :' => 'Working time before the stop:',
 	'Réglages du serveur :' => 'Server settings:',
 	'Mémoire maximale utilisée :' => 'Peak memory used:',
