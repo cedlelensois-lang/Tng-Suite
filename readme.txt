@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.8.0
+Stable tag: 2.8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,11 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.8.1 =
+* Correctif : l'aperçu en direct et l'export PDF de l'éventail (« Générer une roue ») ne s'affichaient plus depuis le nouveau menu ; les scripts des sections sont de nouveau chargés.
+* mPDF (PDF direct) est maintenant inclus dans le code source du dépôt : le « Source code (zip) » de GitHub contient lui aussi le moteur PDF, plus de message « ce plugin ne contient pas mPDF ».
+* Livre : nouvel arbre de couverture, plus fourni et plus doux (cime de feuilles semi-transparentes à l'aquarelle, lavis, tronc évasé, racines, quelques feuilles qui tombent).
 
 = 2.8.0 =
 * Livre : illustration de couverture (arbre de vie, ou fleurons au-dessus et au-dessous du titre), dessinée par le plugin dans la couleur du livre ; nouveau « Cadre orné » (angles creusés et filet intérieur) pour le cadre autour des pages. PDF, Word, OpenDocument et page imprimable.

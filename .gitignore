@@ -2,5 +2,4 @@
 Thumbs.db
 *.zip
 node_modules/
-modules/book/vendor/
 modules/book/composer.lock

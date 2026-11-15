@@ -142,7 +142,7 @@ add_action(
             return;
         }
         $busy = true;
-        foreach ( tngs_page_modules() as $slug => $m ) {
+        foreach ( tngs_page_groups() as $slug => $m ) {
             if ( $m === $mod && $slug !== $page ) {
                 do_action( 'admin_enqueue_scripts', 'tng-suite_page_' . $slug );
             }
