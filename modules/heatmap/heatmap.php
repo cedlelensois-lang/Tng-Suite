@@ -7,6 +7,10 @@
 if (!defined('ABSPATH')) exit; // Sécurité
 
 define('TNG_HEATMAP_VERSION', TNGSUITE_VERSION);
+// Palette par défaut de la chaleur : faible = orange clair, moyenne = orange foncé, forte = rouge sombre.
+define('TNG_HEATMAP_COLOR_LOW',  '#FFA500');
+define('TNG_HEATMAP_COLOR_MED',  '#F0590C');
+define('TNG_HEATMAP_COLOR_HIGH', '#B30000');
 define('TNG_HEATMAP_DIR', plugin_dir_path(__FILE__));
 define('TNG_HEATMAP_URL', plugin_dir_url(__FILE__));
 
@@ -77,12 +81,27 @@ function tng_heatmap_sanitize_opacity($v) {
     return max(0.1, min(1.0, $f));
 }
 
-function tng_heatmap_sanitize_threshold($v) {
-    return max(1, absint($v));
-}
-
 function tng_heatmap_sanitize_url($v) {
     return esc_url_raw(trim((string) $v), ['http', 'https']);
+}
+
+/**
+ * Nouvelle palette par défaut (orange clair / orange foncé / rouge sombre) : appliquée une seule fois aux sites qui avaient
+ * gardé l'ancienne palette d'origine (bleu / jaune / rouge). Une palette personnalisée n'est jamais modifiée.
+ */
+add_action('init', 'tng_heatmap_migrate_palette');
+function tng_heatmap_migrate_palette() {
+    if (get_option('tng_heatmap_palette') === '2') return;
+    $old = ['tng_color_low' => '#0000ff', 'tng_color_med' => '#ffff00', 'tng_color_high' => '#ff0000'];
+    $same = true;
+    foreach ($old as $opt => $def) {
+        $v = get_option($opt, null);
+        if ($v !== null && strtolower((string) $v) !== $def) { $same = false; break; }
+    }
+    if ($same) {
+        foreach (array_keys($old) as $opt) delete_option($opt);
+    }
+    update_option('tng_heatmap_palette', '2', false);
 }
 
 add_action('admin_init', 'tng_heatmap_settings_init');
@@ -97,13 +116,11 @@ function tng_heatmap_settings_init() {
         register_setting($g, $opt, ['sanitize_callback' => 'tng_heatmap_sanitize_bool']);
     }
 
-    register_setting($g, 'tng_color_low',  ['sanitize_callback' => tng_heatmap_color_sanitizer('#0000ff')]);
-    register_setting($g, 'tng_color_med',  ['sanitize_callback' => tng_heatmap_color_sanitizer('#ffff00')]);
-    register_setting($g, 'tng_color_high', ['sanitize_callback' => tng_heatmap_color_sanitizer('#ff0000')]);
+    register_setting($g, 'tng_color_low',  ['sanitize_callback' => tng_heatmap_color_sanitizer(TNG_HEATMAP_COLOR_LOW)]);
+    register_setting($g, 'tng_color_med',  ['sanitize_callback' => tng_heatmap_color_sanitizer(TNG_HEATMAP_COLOR_MED)]);
+    register_setting($g, 'tng_color_high', ['sanitize_callback' => tng_heatmap_color_sanitizer(TNG_HEATMAP_COLOR_HIGH)]);
     register_setting($g, 'tng_solid_circle_color', ['sanitize_callback' => tng_heatmap_color_sanitizer('#3388ff')]);
 
-    register_setting($g, 'tng_threshold_low', ['sanitize_callback' => 'tng_heatmap_sanitize_threshold']);
-    register_setting($g, 'tng_threshold_med', ['sanitize_callback' => 'tng_heatmap_sanitize_threshold']);
     register_setting($g, 'tng_solid_circle_opacity', ['sanitize_callback' => 'tng_heatmap_sanitize_opacity']);
 
     // Auto-réparation de la planification du rafraîchissement du cache
@@ -119,7 +136,11 @@ function tng_heatmap_admin_scripts($hook) {
     if (strpos((string) $hook, 'tng-heatmap-settings') === false) return;
     wp_enqueue_style('wp-color-picker');
     wp_enqueue_script('wp-color-picker');
-    wp_add_inline_script('wp-color-picker', 'jQuery(function($){ $(".tng-color-picker").wpColorPicker(); });');
+    wp_add_inline_script('wp-color-picker', 'jQuery(function($){ $(".tng-color-picker").wpColorPicker();'
+        . ' $("#tng-hm-palette-reset").on("click", function(e){ e.preventDefault();'
+        . ' $("input[name=tng_color_low]").wpColorPicker("color", ' . wp_json_encode(TNG_HEATMAP_COLOR_LOW) . ');'
+        . ' $("input[name=tng_color_med]").wpColorPicker("color", ' . wp_json_encode(TNG_HEATMAP_COLOR_MED) . ');'
+        . ' $("input[name=tng_color_high]").wpColorPicker("color", ' . wp_json_encode(TNG_HEATMAP_COLOR_HIGH) . '); }); });');
 }
 
 // Bouton « Purger et régénérer le cache »
@@ -241,8 +262,6 @@ function tng_heatmap_settings_page() {
                     </td>
                 </tr>
                 <?php tng_heatmap_settings_row_checkbox('tng_show_number', 0, 'Afficher les chiffres au centre'); ?>
-                <tr><th scope="row">Seuil faible max</th><td><input type="number" min="1" name="tng_threshold_low" value="<?php echo esc_attr(get_option('tng_threshold_low', '10')); ?>" /></td></tr>
-                <tr><th scope="row">Seuil moyen max</th><td><input type="number" min="1" name="tng_threshold_med" value="<?php echo esc_attr(get_option('tng_threshold_med', '50')); ?>" /></td></tr>
             </table>
 
             <h2>Style par défaut des ronds (si couleur distincte désactivée)</h2>
@@ -253,11 +272,13 @@ function tng_heatmap_settings_page() {
             </table>
 
             <h2>Couleurs de la chaleur (heatmap)</h2>
+            <p class="description">L’échelle est automatique (logarithmique) : « faible » colore les lieux à peu d’événements, « forte » le plus gros foyer de la sélection affichée, « moyenne » ce qui se trouve entre les deux.</p>
             <table class="form-table">
-                <tr><th scope="row">Intensité faible</th><td><input type="text" name="tng_color_low" class="tng-color-picker" value="<?php echo esc_attr(get_option('tng_color_low', '#0000ff')); ?>" /></td></tr>
-                <tr><th scope="row">Intensité moyenne</th><td><input type="text" name="tng_color_med" class="tng-color-picker" value="<?php echo esc_attr(get_option('tng_color_med', '#ffff00')); ?>" /></td></tr>
-                <tr><th scope="row">Intensité forte</th><td><input type="text" name="tng_color_high" class="tng-color-picker" value="<?php echo esc_attr(get_option('tng_color_high', '#ff0000')); ?>" /></td></tr>
+                <tr><th scope="row">Intensité faible</th><td><input type="text" name="tng_color_low" class="tng-color-picker" value="<?php echo esc_attr(get_option('tng_color_low', TNG_HEATMAP_COLOR_LOW)); ?>" /></td></tr>
+                <tr><th scope="row">Intensité moyenne</th><td><input type="text" name="tng_color_med" class="tng-color-picker" value="<?php echo esc_attr(get_option('tng_color_med', TNG_HEATMAP_COLOR_MED)); ?>" /></td></tr>
+                <tr><th scope="row">Intensité forte</th><td><input type="text" name="tng_color_high" class="tng-color-picker" value="<?php echo esc_attr(get_option('tng_color_high', TNG_HEATMAP_COLOR_HIGH)); ?>" /></td></tr>
             </table>
+            <p><button type="button" class="button" id="tng-hm-palette-reset">Revenir à la palette recommandée</button> <span class="description">Orange clair, orange foncé, rouge sombre. Pensez à enregistrer ensuite.</span></p>
 
             <?php submit_button(); ?>
         </form>
@@ -577,11 +598,9 @@ function tng_heatmap_shortcode() {
             'useSolid'      => (int) get_option('tng_use_solid_circles', 0),
             'solidColor'    => tng_heatmap_color_sanitizer('#3388ff')(get_option('tng_solid_circle_color', '#3388ff')),
             'solidOpacity'  => tng_heatmap_sanitize_opacity(get_option('tng_solid_circle_opacity', 0.4)),
-            'colorLow'      => tng_heatmap_color_sanitizer('#0000ff')(get_option('tng_color_low', '#0000ff')),
-            'colorMed'      => tng_heatmap_color_sanitizer('#ffff00')(get_option('tng_color_med', '#ffff00')),
-            'colorHigh'     => tng_heatmap_color_sanitizer('#ff0000')(get_option('tng_color_high', '#ff0000')),
-            'thresholdLow'  => tng_heatmap_sanitize_threshold(get_option('tng_threshold_low', 10)),
-            'thresholdMed'  => tng_heatmap_sanitize_threshold(get_option('tng_threshold_med', 50)),
+            'colorLow'      => tng_heatmap_color_sanitizer(TNG_HEATMAP_COLOR_LOW)(get_option('tng_color_low', TNG_HEATMAP_COLOR_LOW)),
+            'colorMed'      => tng_heatmap_color_sanitizer(TNG_HEATMAP_COLOR_MED)(get_option('tng_color_med', TNG_HEATMAP_COLOR_MED)),
+            'colorHigh'     => tng_heatmap_color_sanitizer(TNG_HEATMAP_COLOR_HIGH)(get_option('tng_color_high', TNG_HEATMAP_COLOR_HIGH)),
             'distinctColors'=> (int) get_option('tng_enable_distinct_colors', 1),
         ];
         wp_add_inline_script(

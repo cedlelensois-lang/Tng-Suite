@@ -24,6 +24,7 @@ Carte de chaleur des lieux de naissance, mariage, décès… de l’arbre.
 ## Remarques
 
 - Fond de carte : 8 choix, tous gratuits et sans clé d’API ni inscription (OpenStreetMap, OpenStreetMap France, OpenTopoMap, Esri). Esri Gris clair est le plus sobre pour lire les couleurs de la heatmap ; Esri Rues et OpenStreetMap France sont les plus lisibles pour les noms de lieux.
+- Couleurs de la chaleur : par défaut orange clair (faible), orange foncé (moyenne) et rouge sombre (forte), modifiables dans les réglages du module ; le bouton **Revenir à la palette recommandée** les rétablit. L’échelle est automatique (logarithmique) : les lieux à peu d’événements restent bien visibles, et seul le plus gros foyer de la sélection affichée (filtres compris) atteint la couleur forte.
 - Les lieux doivent avoir des coordonnées dans TNG.
 
 ---

@@ -1106,4 +1106,7 @@ return array(
 	'Une génération en arrière-plan est déjà en cours : attendez qu’elle se termine ou annulez-la.' => 'A background generation is already running: wait for it to finish or cancel it.',
 	'Indiquez l’identifiant de la personne avant de lancer la génération.' => 'Enter the person\'s ID before starting the generation.',
 	'Génération en arrière-plan annulée ou effacée.' => 'Background generation cancelled or dismissed.',
+	'L’échelle est automatique (logarithmique) : « faible » colore les lieux à peu d’événements, « forte » le plus gros foyer de la sélection affichée, « moyenne » ce qui se trouve entre les deux.' => 'The scale is automatic (logarithmic): “low” colours places with few events, “high” the biggest hotspot of the displayed selection, and “medium” everything in between.',
+	'Revenir à la palette recommandée' => 'Restore the recommended palette',
+	'Orange clair, orange foncé, rouge sombre. Pensez à enregistrer ensuite.' => 'Light orange, dark orange, dark red. Remember to save afterwards.',
 );

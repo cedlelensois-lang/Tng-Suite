@@ -1,6 +1,6 @@
 /* i18n : window.TNGS_I18N est fourni par TNG Suite quand la langue est l'anglais */
 function tngsT(s) { var d = window.TNGS_I18N; return (d && Object.prototype.hasOwnProperty.call(d, s)) ? d[s] : s; }
-/* TNG Ancestors Heatmap 1.21 - front */
+/* TNG Ancestors Heatmap 1.22 - front */
 (function () {
     'use strict';
 
@@ -65,6 +65,9 @@ function tngsT(s) { var d = window.TNGS_I18N; return (d && Object.prototype.hasO
         var sep = CFG.searchUrl.indexOf('?') === -1 ? '?' : '&';
         return CFG.searchUrl + sep + 'psearch=' + encodeURIComponent(place);
     }
+
+    var HEAT_FLOOR = 0.4;         // intensité d'un lieu à un seul événement (= début de la couleur « faible »)
+    var HEAT_MIN_OPACITY = 0.3;   // opacité minimale d'une tache de chaleur
 
     function calculateRadius(count) {
         return Math.min(60, 8 + (Math.sqrt(count) * 4));
@@ -144,24 +147,30 @@ function tngsT(s) { var d = window.TNGS_I18N; return (d && Object.prototype.hasO
                 a.typeCounts[row[2]] += row[4];
             }
 
+            // Intensité sur une échelle logarithmique : un lieu à 3 événements reste bien visible à côté d'un foyer de 300,
+            // et le plus gros foyer de la sélection en cours (filtres compris) est le seul à atteindre la couleur « forte ».
             var heatPoints = [];
             var circles = [];
+            var maxCnt = 1;
+            for (var mi = 0; mi < agg.length; mi++) {
+                if (agg[mi] && agg[mi].count > maxCnt) maxCnt = agg[mi].count;
+            }
+            var logMax = Math.log(1 + maxCnt);
             for (var gi = 0; gi < agg.length; gi++) {
                 if (!agg[gi]) continue;
                 var grp = groups[gi];
                 var cnt = agg[gi].count;
-                var intensity = 0.2;
-                if (cnt >= CFG.thresholdMed) intensity = 1.0;
-                else if (cnt >= CFG.thresholdLow) intensity = 0.6;
+                var intensity = HEAT_FLOOR + (1 - HEAT_FLOOR) * (Math.log(1 + cnt) / logMax);
                 heatPoints.push([grp.lat, grp.lng, intensity]);
                 circles.push({ grp: grp, agg: agg[gi] });
             }
 
             var gradient = {};
-            gradient[0.2] = CFG.colorLow;
-            gradient[0.6] = CFG.colorMed;
+            gradient[HEAT_FLOOR] = CFG.colorLow;
+            gradient[0.7] = CFG.colorMed;
             gradient[1.0] = CFG.colorHigh;
-            heatLayer = L.heatLayer(heatPoints, { radius: 25, blur: 15, maxZoom: 10, gradient: gradient }).addTo(map);
+            // minOpacity : même un lieu isolé, vu de loin, reste coloré (par défaut la bibliothèque le rend presque invisible).
+            heatLayer = L.heatLayer(heatPoints, { radius: 25, blur: 15, maxZoom: 10, minOpacity: HEAT_MIN_OPACITY, gradient: gradient }).addTo(map);
 
             circles.forEach(function (c) {
                 var count = c.agg.count;

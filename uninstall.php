@@ -16,7 +16,7 @@ $options = array(
     'tng_timeline_settings', 'tngft_cache_ver',
     // Heatmap
     'tng_search_url', 'tng_map_provider', 'tng_show_number', 'tng_color_low', 'tng_color_med', 'tng_color_high',
-    'tng_threshold_low', 'tng_threshold_med', 'tng_use_solid_circles', 'tng_solid_circle_color', 'tng_solid_circle_opacity',
+    'tng_threshold_low', 'tng_threshold_med', 'tng_heatmap_palette', 'tng_use_solid_circles', 'tng_solid_circle_color', 'tng_solid_circle_opacity',
     'tng_enable_century_filter', 'tng_enable_surname_filter', 'tng_enable_place_filter', 'tng_enable_distinct_colors',
     'tng_include_private', 'tng_heatmap_last_error',
     // Galerie

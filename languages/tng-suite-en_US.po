@@ -3292,6 +3292,15 @@ msgstr "Enter the person's ID before starting the generation."
 msgid "Génération en arrière-plan annulée ou effacée."
 msgstr "Background generation cancelled or dismissed."
 
+msgid "L’échelle est automatique (logarithmique) : « faible » colore les lieux à peu d’événements, « forte » le plus gros foyer de la sélection affichée, « moyenne » ce qui se trouve entre les deux."
+msgstr "The scale is automatic (logarithmic): “low” colours places with few events, “high” the biggest hotspot of the displayed selection, and “medium” everything in between."
+
+msgid "Revenir à la palette recommandée"
+msgstr "Restore the recommended palette"
+
+msgid "Orange clair, orange foncé, rouge sombre. Pensez à enregistrer ensuite."
+msgstr "Light orange, dark orange, dark red. Remember to save afterwards."
+
 msgctxt "js"
 msgid " Page "
 msgstr " Page "
