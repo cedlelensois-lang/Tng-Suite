@@ -3514,8 +3514,8 @@ msgstr "Tree: leaning, light branches"
 msgid "Arbre : saule pleureur"
 msgstr "Tree: weeping willow"
 
-msgid "Arbre : sans feuilles, ses racines dessinées dessous"
-msgstr "Tree: bare, with its roots drawn below"
+msgid "Arbre : feuillu, ses racines dessinées dessous"
+msgstr "Tree: leafy, with its roots drawn below"
 
 msgid "Dessinée par le plugin dans la couleur du livre (« en-têtes et liens »), sans fichier à installer."
 msgstr "Drawn by the plugin in the book colour (“headings and links”), with no file to install."

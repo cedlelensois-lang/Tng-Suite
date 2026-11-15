@@ -1180,7 +1180,7 @@ return array(
 	'Arbre : chêne ample, puis titre et fleuron' => 'Tree: broad oak, then title and flourish',
 	'Arbre : penché, aux branches légères' => 'Tree: leaning, light branches',
 	'Arbre : saule pleureur' => 'Tree: weeping willow',
-	'Arbre : sans feuilles, ses racines dessinées dessous' => 'Tree: bare, with its roots drawn below',
+	'Arbre : feuillu, ses racines dessinées dessous' => 'Tree: leafy, with its roots drawn below',
 	'Dessinée par le plugin dans la couleur du livre (« en-têtes et liens »), sans fichier à installer.' => 'Drawn by the plugin in the book colour (“headings and links”), with no file to install.',
 	'Arbres & visualisations' => 'Trees & visualisations',
 	'Analyses' => 'Analyses',

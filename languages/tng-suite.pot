@@ -3514,7 +3514,7 @@ msgstr ""
 msgid "Arbre : saule pleureur"
 msgstr ""
 
-msgid "Arbre : sans feuilles, ses racines dessinées dessous"
+msgid "Arbre : feuillu, ses racines dessinées dessous"
 msgstr ""
 
 msgid "Dessinée par le plugin dans la couleur du livre (« en-têtes et liens »), sans fichier à installer."

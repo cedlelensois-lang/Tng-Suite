@@ -333,6 +333,7 @@ final class TNGBook {
         $fr = (string) ($in['frame'] ?? 'none');
         $out['frame'] = in_array($fr, ['single', 'double', 'ornate'], true) ? $fr : 'none';
         $ca = (string) ($in['cover_art'] ?? 'tree');
+        if ($ca === 'winter') $ca = 'roots';   // ancien nom (2.8.2)
         $out['cover_art'] = in_array($ca, TNGBook_Art::cover_choices(), true) ? $ca : 'tree';
         $f = $in['format'] ?? '';
         $out['format'] = in_array($f, ['pdf', 'docx', 'odt'], true) ? $f : 'html';
@@ -527,7 +528,7 @@ final class TNGBook {
             'tree' => 'Arbre : chêne ample, puis titre et fleuron',
             'olive' => 'Arbre : penché, aux branches légères',
             'willow' => 'Arbre : saule pleureur',
-            'winter' => 'Arbre : sans feuilles, ses racines dessinées dessous',
+            'roots' => 'Arbre : feuillu, ses racines dessinées dessous',
         ], $o['cover_art'] ?? 'tree', 'Dessinée par le plugin dans la couleur du livre (« en-têtes et liens »), sans fichier à installer.');
         $hco = [];
         foreach (TNGBook_History::countries() as $code => $nm) $hco[$code] = $nm[0];

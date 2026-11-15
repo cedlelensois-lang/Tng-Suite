@@ -116,7 +116,7 @@ class TNGBook_Art {
             $pull = $c['pull'] === null ? -M_PI / 2 : $c['pull'];
             $na += ($pull - $na) * ($depth < 3 ? $c['pullf'] : 0.04);
             if ($c['pull'] === null) $na += ($px < $c['cx'] ? -1 : 1) * ($depth < 4 ? 0.06 : 0.0);
-            self::limb($im, $px, $py, $na, $len * ($c['lenf'] + self::rnd($seed) * 0.1), $thEnd, $depth + 1, $seed, $c);
+            self::limb($im, $px, $py, $na, $len * ($c['lenf'] + self::rnd($seed) * 0.1) * ($depth === 0 && isset($c['lenf0']) ? $c['lenf0'] : 1), $thEnd, $depth + 1, $seed, $c);
         }
         if ($depth >= 1 && $depth < $c['max'] - 1 && self::rnd($seed) > 0.45) {   // rameau latéral à mi-longueur
             $side = self::rnd($seed) > .5 ? 1 : -1;
@@ -175,32 +175,33 @@ class TNGBook_Art {
         imagedestroy($big);
     }
 
-    /** Valeurs du réglage « illustration de couverture » : none, ornament, puis un arbre (tree = chêne, olive, willow, winter). */
+    /** Valeurs du réglage « illustration de couverture » : none, ornament, puis un arbre (tree = chêne, olive, willow, roots). */
     public static function cover_choices() {
-        return array('none', 'ornament', 'tree', 'olive', 'willow', 'winter');
+        return array('none', 'ornament', 'tree', 'olive', 'willow', 'roots');
     }
 
     /** Style d'arbre correspondant à une valeur du réglage (tree → oak). */
     public static function style_of($art) {
+        if ($art === 'winter') $art = 'roots';   // ancien nom (2.8.2)
         return $art === 'tree' ? 'oak' : (in_array($art, self::tree_styles(), true) ? $art : 'oak');
     }
 
     /** Styles d'arbre proposés pour la couverture. */
     public static function tree_styles() {
-        return array('oak', 'olive', 'willow', 'winter');
+        return array('oak', 'olive', 'willow', 'roots');
     }
 
     /**
      * Arbre à l'aquarelle, PNG transparent de $w × $h pixels, dans la couleur $hex.
      * $style : oak (chêne ample), olive (arbre penché aux branches légères), willow (saule pleureur),
-     * winter (arbre sans feuilles, ses racines dessinées sous le sol comme un arbre généalogique).
+     * roots (arbre feuillu dont les racines nues sont dessinées sous le sol, comme un arbre généalogique).
      */
     public static function tree($hex, $w = 900, $h = 760, $style = 'oak') {
         if (!in_array($style, self::tree_styles(), true)) $style = 'oak';
         $S = 2;
         $W = $w * $S; $H = $h * $S;
         $im = self::canvas($W, $H);
-        $seed = array('oak' => 31337, 'olive' => 777, 'willow' => 4242, 'winter' => 1189)[$style];
+        $seed = array('oak' => 31337, 'olive' => 777, 'willow' => 4242, 'roots' => 1189)[$style];
         $c = array(
             'S' => $S, 'max' => 7, 'wood' => self::rgb($im, $hex, 0),
             'l1' => self::rgb($im, $hex, 108), 'l2' => self::rgb($im, $hex, 90), 'l3' => self::rgb($im, $hex, 64),
@@ -220,9 +221,9 @@ class TNGBook_Art {
                 'ls' => array(14, 22), 'lw' => 0.2, 'lenf' => 0.74, 'pullf' => 0.2, 'cx' => $W * 0.47, 'cy' => $H * 0.52, 'rx' => $W * 0.47, 'ry' => $H * 0.4,
                 'l1' => self::rgb($im, $hex, 104), 'l2' => self::rgb($im, $hex, 84), 'l3' => self::rgb($im, $hex, 58)));
             $tx = $W * 0.47; $tang = -M_PI / 2 + 0.06; $tlen = $H * 0.16; $tth = 40 * $S; $wash = 0.2; $nb = 26;
-        } elseif ($style === 'winter') {
-            $c = array_merge($c, array('bare' => true, 'max' => 6, 'lenf' => 0.7, 'cy' => $H * 0.3, 'ry' => $H * 0.28));
-            $ground = $H * 0.6; $tlen = $H * 0.13; $tth = 30 * $S; $tbase = 0; $wash = 0.14; $nb = 20; $roots = false; $mirror = true;
+        } elseif ($style === 'roots') {
+            $c = array_merge($c, array('max' => 6, 'lenf' => 0.72, 'lenf0' => 1.7, 'lp' => 0.5, 'cy' => $H * 0.3, 'rx' => $W * 0.44, 'ry' => $H * 0.27));
+            $ground = $H * 0.6; $tlen = $H * 0.085; $tth = 36 * $S; $tbase = 0; $wash = 0.2; $nb = 26; $roots = false; $mirror = true;
         }
         // lavis de la cime et ombre au sol
         $blobs = array();
@@ -244,12 +245,15 @@ class TNGBook_Art {
         }
         self::limb($im, $tx, $ground - $tbase, $tang, $tlen, $tth, 0, $seed, $c);
         if ($mirror) {   // racines : l'image du houppier, plus fine, sous la ligne de sol
-            $rc = array_merge($c, array('max' => 5, 'cy' => $ground + $H * 0.2, 'lenf' => 0.72, 'pull' => M_PI / 2, 'pullf' => 0.1, 'droopFrom' => 99));
-            self::limb($im, $tx, $ground - 2 * $S, M_PI / 2, $H * 0.12, 26 * $S, 1, $seed, $rc);
+            $rc = array_merge($c, array('bare' => true, 'max' => 5, 'cy' => $ground + $H * 0.2, 'lenf' => 0.76, 'lenf0' => 1.2, 'pull' => M_PI / 2, 'pullf' => 0.1, 'droopFrom' => 99));
+            imagefilledellipse($im, (int) $tx, (int) $ground, (int) (40 * $S), (int) (26 * $S), $c['wood']);
+            foreach (array(-1, 1) as $side) {   // deux maîtresses racines symétriques, chacune ramifiée
+                self::limb($im, $tx + $side * 4 * $S, $ground - 2 * $S, M_PI / 2 - $side * 0.55, $H * 0.1, 26 * $S, 1, $seed, $rc);
+            }
         }
         // quelques feuilles qui tombent
-        for ($k = 0; $k < ($style === 'winter' ? 4 : 7); $k++) {
-            $x = $tx + (self::rnd($seed) - 0.3) * 520 * $S; $y = $H * ($style === 'winter' ? 0.45 + self::rnd($seed) * 0.12 : 0.6 + self::rnd($seed) * 0.26);
+        for ($k = 0; $k < ($style === 'roots' ? 4 : 7); $k++) {
+            $x = $tx + (self::rnd($seed) - 0.3) * 520 * $S; $y = $H * ($style === 'roots' ? 0.45 + self::rnd($seed) * 0.12 : 0.6 + self::rnd($seed) * 0.26);
             self::leaf($im, $x, $y, self::rnd($seed) * 6.28, (9 + self::rnd($seed) * 6) * $S, $c['l2'], 0.34);
         }
         $out = imagecreatetruecolor($w, $h);
