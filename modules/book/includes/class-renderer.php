@@ -2239,7 +2239,7 @@ CSS;
         $run('src', function () { return $this->sourcesPart(); });
         if (!empty($o['asclist']) && $o['up'] > 0) $run('alist', function () { return $this->ascListPart(); });
         if (!empty($o['desclist']) && $o['down'] > 0) $run('dlist', function () { return $this->descListPart(); });
-        if (!empty($o['chrono'])) $run('chrono', function () { return $this->chronoPart(); });
+        if (!empty($o['chrono']) || !empty($o['history'])) $run('chrono', function () { return $this->chronoPart(); });
         $order = TNGBook::clean_order($o['order'] ?? null);
         $body = ''; $this->toc = $tocPre;
         foreach ($order as $k) {

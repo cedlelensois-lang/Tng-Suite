@@ -3382,8 +3382,8 @@ msgstr "Double line"
 msgid "Un liseré autour de chaque page, pour une impression en livre : couleur du livre (« en-têtes et liens »), pas de cadre sur la couverture."
 msgstr "A border around every page, for book printing: uses the book colour (“headings and links”); no frame on the cover."
 
-msgid "Contexte historique dans la chronologie : guerres, révolutions, épidémies et grandes dates du pays de naissance des personnes (France, Belgique, Suisse, Espagne, Italie, Allemagne, Royaume-Uni, États-Unis, Canada), insérées en italique ; réglages plus bas"
-msgstr "Historical background in the chronology: wars, revolutions, epidemics and key dates of each person’s country of birth (France, Belgium, Switzerland, Spain, Italy, Germany, United Kingdom, United States, Canada), inserted in italics; settings further down"
+msgid "Contexte historique dans la chronologie : guerres, révolutions, épidémies et grandes dates du pays de naissance des personnes (France, Belgique, Suisse, Espagne, Italie, Allemagne, Royaume-Uni, États-Unis, Canada), insérées en italique (active aussi la chronologie familiale) ; réglages plus bas"
+msgstr "Historical background in the chronology: wars, revolutions, epidemics and key dates of each person’s country of birth (France, Belgium, Switzerland, Spain, Italy, Germany, United Kingdom, United States, Canada), inserted in italics (also turns on the family chronology); settings further down"
 
 msgid "Contexte historique : pays par défaut"
 msgstr "Historical background: default country"

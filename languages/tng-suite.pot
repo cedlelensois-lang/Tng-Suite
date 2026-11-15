@@ -3382,7 +3382,7 @@ msgstr ""
 msgid "Un liseré autour de chaque page, pour une impression en livre : couleur du livre (« en-têtes et liens »), pas de cadre sur la couverture."
 msgstr ""
 
-msgid "Contexte historique dans la chronologie : guerres, révolutions, épidémies et grandes dates du pays de naissance des personnes (France, Belgique, Suisse, Espagne, Italie, Allemagne, Royaume-Uni, États-Unis, Canada), insérées en italique ; réglages plus bas"
+msgid "Contexte historique dans la chronologie : guerres, révolutions, épidémies et grandes dates du pays de naissance des personnes (France, Belgique, Suisse, Espagne, Italie, Allemagne, Royaume-Uni, États-Unis, Canada), insérées en italique (active aussi la chronologie familiale) ; réglages plus bas"
 msgstr ""
 
 msgid "Contexte historique : pays par défaut"

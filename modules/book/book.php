@@ -291,6 +291,7 @@ final class TNGBook {
             $out[$k] = empty($in[$k]) ? 0 : 1;
         }
         $out['order'] = self::clean_order($in['order'] ?? null);
+        if (!empty($out['history'])) $out['chrono'] = 1;   // le contexte historique s'affiche dans la chronologie : elle est donc générée
         $out['title'] = sanitize_text_field($in['title'] ?? '');
         $out['author'] = sanitize_text_field($in['author'] ?? '');
         $out['preface'] = sanitize_textarea_field($in['preface'] ?? '');
@@ -410,7 +411,7 @@ final class TNGBook {
             . self::chk('asclist', 'Liste des ascendants (tableau récapitulatif : n° Sosa, naissance, conjoint, décès, âge), placée avant la liste des descendants', $o)
             . self::chk('desclist', 'Liste des descendants (tableau récapitulatif : n° d’Aboville, naissance, conjoint, décès, âge) à la toute fin du document', $o)
             . self::chk('chrono', 'Chronologie familiale : naissances, mariages et décès des personnes du livre classés par date et par décennie (position réglable dans « Ordre des parties »)', $o)
-            . self::chk('history', 'Contexte historique dans la chronologie : guerres, révolutions, épidémies et grandes dates du pays de naissance des personnes (France, Belgique, Suisse, Espagne, Italie, Allemagne, Royaume-Uni, États-Unis, Canada), insérées en italique ; réglages plus bas', $o)
+            . self::chk('history', 'Contexte historique dans la chronologie : guerres, révolutions, épidémies et grandes dates du pays de naissance des personnes (France, Belgique, Suisse, Espagne, Italie, Allemagne, Royaume-Uni, États-Unis, Canada), insérées en italique (active aussi la chronologie familiale) ; réglages plus bas', $o)
             . self::chk('stats', 'Chapitre « En chiffres » (statistiques, histogrammes, complétude de l’ascendance, frise) et chiffres clés sur la page de titre', $o)
             . self::chk('stats_first', '— dans « En chiffres » : prénoms les plus fréquents', $o)
             . self::chk('stats_last', '— dans « En chiffres » : noms de famille les plus fréquents', $o)
