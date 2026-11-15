@@ -7,6 +7,7 @@
 if (!defined('ABSPATH')) exit;
 
 class TNGBook_Doc {
+    private $frame = null;
     private $blocks = [];
     private $images = [];          // [ ['name'=>, 'ext'=>, 'mime'=>, 'bin'=>, 'w'=>px, 'h'=>px] ]
     private $c;                    // couleurs
@@ -28,6 +29,7 @@ class TNGBook_Doc {
         $d = new self();
         $d->c = $colors;
         $d->tpl = isset($meta['tpl']) && is_array($meta['tpl']) ? $meta['tpl'] : [];
+        $d->frame = (!empty($meta['frame']) && is_array($meta['frame'])) ? $meta['frame'] : null;   // cadre autour des pages : ['style' => single|double, 'color' => #rrggbb]
         $d->parse($html);
         if (!function_exists('wp_tempnam')) require_once ABSPATH . 'wp-admin/includes/file.php';
         $tmp = wp_tempnam('tngbook-doc');
@@ -276,7 +278,7 @@ class TNGBook_Doc {
         $c = $this->c;
         $t = [
             'body' => ['sz' => 11, 'b' => false, 'i' => false, 'c' => $c['text'], 'bf' => 0, 'af' => 4],
-            'title' => ['sz' => 30, 'b' => true, 'i' => false, 'c' => $c['title'], 'bf' => 170, 'af' => 18],
+            'title' => ['sz' => 38, 'b' => true, 'i' => false, 'c' => $c['head'], 'bf' => 150, 'af' => 18],
             'author' => ['sz' => 14, 'b' => false, 'i' => false, 'c' => $c['text'], 'bf' => 40, 'af' => 0],
             'gendate' => ['sz' => 10, 'b' => false, 'i' => false, 'c' => $c['meta'], 'bf' => 130, 'af' => 0],
             'h1' => ['sz' => 22, 'b' => true, 'i' => false, 'c' => $c['title'], 'bf' => 0, 'af' => 14, 'lvl' => 1],
@@ -322,9 +324,16 @@ class TNGBook_Doc {
         $open = null;
         $gap = '<w:p><w:pPr><w:spacing w:before="0" w:after="60" w:line="120" w:lineRule="exact"/></w:pPr></w:p>';
         $colsOn = false; $secCount = 0; $openCols = false;
-        $sect = function ($cols, $cont) {
+        $framed = false;   // le cadre commence après la couverture (première section sans bordure : fiable dans Word comme dans LibreOffice)
+        $sect = function ($cols, $cont) use (&$framed) {
+            $pgb = '';
+            if ($this->frame && $framed) {   // cadre autour des pages : pas sur la première page (couverture)
+                $dbl = ($this->frame['style'] ?? '') === 'double';
+                $side = function ($n) use ($dbl) { return '<w:' . $n . ' w:val="' . ($dbl ? 'double' : 'single') . '" w:sz="' . ($dbl ? 6 : 12) . '" w:space="24" w:color="' . self::hex($this->frame['color']) . '"/>'; };
+                $pgb = '<w:pgBorders w:offsetFrom="page">' . $side('top') . $side('left') . $side('bottom') . $side('right') . '</w:pgBorders>';
+            }
             return '<w:sectPr><w:footerReference w:type="default" r:id="rIdFooter"/>' . ($cont ? '<w:type w:val="continuous"/>' : '')
-                . '<w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1247" w:left="1134" w:header="567" w:footer="567" w:gutter="0"/>'
+                . '<w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1247" w:left="1134" w:header="567" w:footer="567" w:gutter="0"/>' . $pgb
                 . ($cols ? '<w:cols w:num="2" w:space="567"/>' : '') . '</w:sectPr>';
         };
         $closeTbl = function ($g, $cols) use (&$docPr, $media) {
@@ -341,6 +350,12 @@ class TNGBook_Doc {
         foreach ($this->blocks as $b) {
             $g = $b['grp'] ?? null;
             $bc = !empty($b['cols']) && !empty($this->tpl['cols']);
+            if ($this->frame && !$framed) {
+                if ($body !== '' && !empty($b['pb']) && $open === null && !$colsOn) {   // fin de la couverture : section sans cadre
+                    $body .= '<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="20" w:lineRule="exact"/>' . $sect(false, false) . '</w:pPr></w:p>';
+                    $framed = true;
+                } elseif ($body !== '' && !empty($b['pb'])) $framed = true;
+            }
             if ($g !== $open && $open !== null) { $body .= $closeTbl($open, $openCols) . $gap; $open = null; }
             // changement de mise en colonnes : fin de section (continue, sans saut de page)
             if ($bc !== $colsOn) {
@@ -500,7 +515,7 @@ class TNGBook_Doc {
         return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
             . '<w:docDefaults><w:rPrDefault><w:rPr>' . $font . '<w:sz w:val="' . (int) round($this->spec('body')['sz'] * 2) . '"/><w:szCs w:val="' . (int) round($this->spec('body')['sz'] * 2) . '"/><w:lang w:val="fr-FR"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="80" w:line="276" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults>'
             . '<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/><w:rPr><w:color w:val="' . self::hex($c['text']) . '"/></w:rPr></w:style>'
-            . $st('Title', 'Title', $this->spec('title'), '<w:jc w:val="center"/>')
+            . $st('Title', 'Title', $this->spec('title'), '<w:jc w:val="center"/><w:pBdr><w:top w:val="single" w:sz="24" w:space="12" w:color="' . self::hex($c['head']) . '"/><w:bottom w:val="single" w:sz="6" w:space="12" w:color="' . self::hex($c['head']) . '"/></w:pBdr>')
             . $st('Heading1', 'heading 1', $this->spec('h1'), '<w:keepNext/>' . $border)
             . $st('Heading2', 'heading 2', $this->spec('h2'), '<w:keepNext/>')
             . $st('Heading3', 'heading 3', $this->spec('h3'), '<w:keepNext/>')
@@ -540,6 +555,7 @@ class TNGBook_Doc {
             $w = $cols ? 2.0 : 3.2; $h = round($w * $im['h'] / $im['w'], 3);
             return '</table:table-cell><table:table-cell table:style-name="CellB" office:value-type="string"><text:p text:style-name="PhotoP"><draw:frame draw:style-name="' . (!empty($im['rnd']) ? 'fr2' : 'fr1') . '" draw:name="Photo' . $frame . '" text:anchor-type="as-char" svg:width="' . $w . 'cm" svg:height="' . $h . 'cm"><draw:image xlink:href="Pictures/' . $im['name'] . '" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/></draw:frame></text:p></table:table-cell></table:table-row></table:table>';
         };
+        $firstBlock = true;
         foreach ($this->blocks as $b) {
             $g = $b['grp'] ?? null;
             $bc = !empty($b['cols']) && !empty($this->tpl['cols']);
@@ -583,7 +599,8 @@ class TNGBook_Doc {
             }
             if (!isset($names[$b['style']])) $pp .= ' fo:margin-top="' . round($sp['bf'] * 0.0353, 3) . 'cm" fo:margin-bottom="' . round($sp['af'] * 0.0353, 3) . 'cm"';
             $parent = $names[$b['style']] ?? 'Standard';
-            $pstyle = $reg('p', '<style:paragraph-properties' . $pp . '/>' . (isset($names[$b['style']]) ? $genTp : '<style:text-properties fo:font-size="' . $sp['sz'] . 'pt"' . ($sp['b'] ? ' fo:font-weight="bold"' : '') . ($sp['i'] ? ' fo:font-style="italic"' : '') . ' fo:color="' . $sp['c'] . '"/>'), ' style:parent-style-name="' . $parent . '"');
+            $pstyle = $reg('p', '<style:paragraph-properties' . $pp . '/>' . (isset($names[$b['style']]) ? $genTp : '<style:text-properties fo:font-size="' . $sp['sz'] . 'pt"' . ($sp['b'] ? ' fo:font-weight="bold"' : '') . ($sp['i'] ? ' fo:font-style="italic"' : '') . ' fo:color="' . $sp['c'] . '"/>'), ' style:parent-style-name="' . $parent . '"' . ($firstBlock && $this->frame ? ' style:master-page-name="First"' : ''));
+            $firstBlock = false;
             $inner = '';
             foreach ($b['bm'] as $name) {
                 if (isset($bmUsed[$name])) continue;
@@ -678,18 +695,29 @@ class TNGBook_Doc {
                 . '<style:paragraph-properties fo:margin-top="' . round($sp['bf'] * 0.0353, 3) . 'cm" fo:margin-bottom="' . round($sp['af'] * 0.0353, 3) . 'cm"' . (isset($sp['lvl']) ? ' fo:keep-with-next="always"' : '') . $extra . '/>'
                 . '<style:text-properties fo:font-size="' . $sp['sz'] . 'pt" fo:font-weight="' . ($sp['b'] ? 'bold' : 'normal') . '" fo:color="' . $sp['c'] . '"/></style:style>';
         };
+        $foot = '<style:footer-style><style:header-footer-properties fo:min-height="0.6cm" fo:margin-top="0.4cm"/></style:footer-style>';
+        $footer = '<style:footer><text:p text:style-name="Footer"><text:page-number text:select-page="current">1</text:page-number></text:p></style:footer>';
+        $plain = '<style:page-layout style:name="pm0"><style:page-layout-properties fo:page-width="21cm" fo:page-height="29.7cm" fo:margin-top="2cm" fo:margin-bottom="1cm" fo:margin-left="2cm" fo:margin-right="2cm"/>' . $foot . '</style:page-layout>';
+        if ($this->frame) {   // cadre autour des pages (la première page, la couverture, n'en a pas)
+            $dbl = ($this->frame['style'] ?? '') === 'double';
+            $line = ($dbl ? '2.5pt double ' : '1.25pt solid ') . $this->frame['color'];
+            $layouts = $plain . '<style:page-layout style:name="pm1"><style:page-layout-properties fo:page-width="21cm" fo:page-height="29.7cm" fo:margin-top="1.1cm" fo:margin-bottom="1.1cm" fo:margin-left="1.1cm" fo:margin-right="1.1cm" fo:padding="0.9cm" fo:border="' . $line . '"/>' . $foot . '</style:page-layout>';
+            $masters = '<style:master-page style:name="First" style:page-layout-name="pm0" style:next-style-name="Standard">' . $footer . '</style:master-page><style:master-page style:name="Standard" style:page-layout-name="pm1">' . $footer . '</style:master-page>';
+        } else {
+            $layouts = str_replace('"pm0"', '"pm1"', $plain);
+            $masters = '<style:master-page style:name="Standard" style:page-layout-name="pm1">' . $footer . '</style:master-page>';
+        }
         return '<?xml version="1.0" encoding="UTF-8"?><office:document-styles ' . $ns . ' office:version="1.2">'
             . '<office:font-face-decls><style:font-face style:name="' . $this->docFont() . '" svg:font-family="' . $this->docFont() . '"/></office:font-face-decls>'
             . '<office:styles><style:default-style style:family="paragraph"><style:paragraph-properties fo:line-height="115%"/><style:text-properties style:font-name="' . $this->docFont() . '" fo:font-size="' . $this->spec('body')['sz'] . 'pt" fo:language="fr" fo:country="FR"/></style:default-style>'
             . '<style:style style:name="Standard" style:family="paragraph" style:class="text"><style:text-properties fo:color="' . $c['text'] . '"/></style:style>'
-            . $ps('Title', 'Title', $this->spec('title'), ' fo:text-align="center"')
+            . $ps('Title', 'Title', $this->spec('title'), ' fo:text-align="center" fo:border-top="2.25pt solid ' . $c['head'] . '" fo:border-bottom="0.75pt solid ' . $c['head'] . '" fo:padding-top="0.4cm" fo:padding-bottom="0.4cm"')
             . $ps('Heading_20_1', 'Heading 1', $this->spec('h1'), ' fo:border-bottom="1.5pt solid ' . $c['title'] . '" fo:padding-bottom="0.1cm"')
             . $ps('Heading_20_2', 'Heading 2', $this->spec('h2'))
             . $ps('Heading_20_3', 'Heading 3', $this->spec('h3'))
             . $ps('Heading_20_4', 'Heading 4', $this->spec('h4'))
             . '<style:style style:name="Footer" style:family="paragraph" style:parent-style-name="Standard"><style:paragraph-properties fo:text-align="center"/><style:text-properties fo:font-size="9pt" fo:color="' . $c['meta'] . '"/></style:style>'
-            . '</office:styles><office:automatic-styles><style:page-layout style:name="pm1"><style:page-layout-properties fo:page-width="21cm" fo:page-height="29.7cm" fo:margin-top="2cm" fo:margin-bottom="1cm" fo:margin-left="2cm" fo:margin-right="2cm"/>'
-            . '<style:footer-style><style:header-footer-properties fo:min-height="0.6cm" fo:margin-top="0.4cm"/></style:footer-style></style:page-layout></office:automatic-styles>'
-            . '<office:master-styles><style:master-page style:name="Standard" style:page-layout-name="pm1"><style:footer><text:p text:style-name="Footer"><text:page-number text:select-page="current">1</text:page-number></text:p></style:footer></style:master-page></office:master-styles></office:document-styles>';
+            . '</office:styles><office:automatic-styles>' . $layouts . '</office:automatic-styles>'
+            . '<office:master-styles>' . $masters . '</office:master-styles></office:document-styles>';
     }
 }

@@ -1889,6 +1889,9 @@ class TNGBook_Renderer {
             return '<strong>' . $this->e($this->plain($pid)) . '</strong>' . ($r ? ' <span class="cref">(' . $this->link($r) . ')</span>' : '');
         };
         $famDone = [];
+        $hist = !empty($this->o['history']);
+        $hDef = (string) ($this->o['history_country'] ?? 'FR');
+        $cc = [];   // pays de naissance => nombre de personnes et années extrêmes
         foreach ($ids as $pid => $kind) {
             $p = $d->people[$pid] ?? null;
             if (!$p || $d->hidden($pid) || $d->dropped($pid)) continue;
@@ -1898,6 +1901,17 @@ class TNGBook_Renderer {
             $btx = $isB ? $p['birthdate'] : ($p['baptdate'] ?? '');
             $bpl = $isB ? trim((string) $p['birthplace']) : trim((string) ($p['baptplace'] ?? ''));
             $add($btr, $btx, 1, $this->e($isB ? $L['ch_birth'] : $L['ch_bapt']) . ' ' . $who($pid), $nm, $bpl);
+            $hy = [];
+            if ($hist) {
+                $code = TNGBook_History::country_of($bpl, $hDef);
+                foreach ([$btr, $p['deathdatetr'] ?? '', $p['burialdatetr'] ?? ''] as $t) if (($pdx = self::pd($t))) $hy[] = $pdx[0];
+                if ($code !== '' && $hy) {
+                    $cc[$code] = $cc[$code] ?? ['n' => 0, 'min' => 9999, 'max' => 0];
+                    $cc[$code]['n']++;
+                    $cc[$code]['min'] = min($cc[$code]['min'], min($hy));
+                    $cc[$code]['max'] = max($cc[$code]['max'], max($hy));
+                }
+            }
             $isD = trim((string) $p['deathdate']) !== '' && self::pd($p['deathdatetr']);
             $dtr = $isD ? $p['deathdatetr'] : ($p['burialdatetr'] ?? '');
             $dtx = $isD ? $p['deathdate'] : ($p['burialdate'] ?? '');
@@ -1915,12 +1929,43 @@ class TNGBook_Renderer {
             }
         }
         if (count($ev) < 2) return '';
+        $hNote = false;
+        if ($hist) {
+            // pays retenus : au moins deux personnes ou 3 % des personnes datées (à défaut, le plus fréquent)
+            $tot = 0;
+            foreach ($cc as $c) $tot += $c['n'];
+            $keep = [];
+            foreach ($cc as $code => $c) if ($c['n'] >= 2 && $c['n'] >= 0.03 * $tot) $keep[$code] = $c;
+            if (!$keep && $cc) { uasort($cc, function ($a, $b) { return $b['n'] - $a['n']; }); $keep = array_slice($cc, 0, 1, true); }
+            $multi = count($keep) > 1;
+            $custom = TNGBook_History::parse_custom((string) ($this->o['history_custom'] ?? ''));
+            $minAll = 9999; $maxAll = 0;
+            foreach ($keep as $c) { $minAll = min($minAll, $c['min']); $maxAll = max($maxAll, $c['max']); }
+            $addH = function ($y, $m, $dd, $txt, $label) use (&$ev) {
+                $tr = sprintf('%04d-%02d-%02d', $y, $m, $dd);
+                $ev[] = ['y' => $y, 'm' => $m, 'd' => $dd, 'k' => 4, 'n' => '', 'date' => $this->dShort($tr, ''), 'html' => '<em>' . $this->e($txt) . ($label !== '' ? ' (' . $this->e($label) . ')' : '') . '</em>', 'place' => '', 'extra' => ''];
+            };
+            foreach ($keep as $code => $c) {
+                $label = $multi ? TNGBook_History::country_name($code, $this->lang) : '';
+                foreach (TNGBook_History::events($code) as $e) {
+                    if ($e[0] < $c['min'] || $e[0] > $c['max']) continue;
+                    $addH($e[0], $e[1], $e[2], $this->lang === 'fr' ? $e[3] : $e[4], $label);
+                    $hNote = true;
+                }
+            }
+            foreach ($custom as $e) {
+                if ($e[4] !== '' && !isset($keep[$e[4]])) continue;
+                if ($e[0] < $minAll || $e[0] > $maxAll) continue;
+                $addH($e[0], $e[1], $e[2], $e[3], '');
+                $hNote = true;
+            }
+        }
         usort($ev, function ($a, $b) {
             foreach (['y', 'm', 'd', 'k'] as $k) if ($a[$k] !== $b[$k]) return $a[$k] - $b[$k];
             return strcmp($a['n'], $b['n']);
         });
         $root = $this->plain($this->o['root']);
-        $h = '<div class="part chrono">' . $this->part('p-chrono', $L['ch_title']) . '<p class="src">' . $this->e(str_replace('{name}', $root, $L['ch_intro'])) . '</p>';
+        $h = '<div class="part chrono">' . $this->part('p-chrono', $L['ch_title']) . '<p class="src">' . $this->e(str_replace('{name}', $root, $L['ch_intro'])) . ($hNote ? ' ' . $this->e($L['ch_hist']) : '') . '</p>';
         $h .= '<table class="st"><tr><th>' . $this->e($L['ch_date']) . '</th><th>' . $this->e($L['ch_event']) . '</th></tr>';
         $dec = null;
         foreach ($ev as $e) {
@@ -2060,7 +2105,7 @@ CSS;
         $raw = $this->cssRaw();
         if ($this->mode !== 'pdf') return $raw;
         $raw = (string) preg_replace('/^@page [^\n]*\n/m', '', $raw, 1);
-        return $raw . ".fiche .phw { float: right; width: 3.2cm; margin: 0 0 .3cm 0; padding-left: .6cm; }\n.fiche .phw img.ph { float: none; margin: 0; display: block; width: 100%; }\ndiv.fiche, div.fiche.hasnotes { page-break-inside: auto; break-inside: auto; }\n";  // mPDF : « page-break-inside: avoid » casse les blocs flottants (textes superposés)
+        return $raw . ".cover { page-break-after: auto; }\n.fiche .phw { float: right; width: 3.2cm; margin: 0 0 .3cm 0; padding-left: .6cm; }\n.fiche .phw img.ph { float: none; margin: 0; display: block; width: 100%; }\ndiv.fiche, div.fiche.hasnotes { page-break-inside: auto; break-inside: auto; }\n";  // mPDF : « page-break-inside: avoid » casse les blocs flottants (textes superposés)
     }
 
     private function cssRaw() {
@@ -2069,8 +2114,9 @@ CSS;
 body { font-family: Georgia, "DejaVu Serif", serif; font-size: 11pt; line-height: 1.45; color: %text%; margin: 0; }
 a { color: inherit; text-decoration: none; }
 a.ref { color: %head%; }
-.cover { text-align: center; padding-top: 6cm; page-break-after: always; }
-.cover h1 { font-size: 30pt; margin: 0 0 .6em; line-height: 1.2; color: %title%; }
+.cover { text-align: center; padding-top: 4.5cm; page-break-after: always; }
+.cover .rule { width: 70%; margin: 0 auto; height: 4px; border-top: 3px solid %head%; border-bottom: 1px solid %head%; }
+.cover h1 { font-size: 42pt; margin: .45em 0 .45em; line-height: 1.15; color: %head%; letter-spacing: .02em; }
 .cover .author { font-size: 14pt; margin-top: 2em; }
 .cover .gen-date { margin-top: 5cm; font-size: 10pt; color: %meta%; }
 .part { page-break-before: always; }
@@ -2125,6 +2171,7 @@ p.mpf .fl i:nth-child(3) { background: #c8102e; }
 .chrono table.st td { padding: 3px 4px; border-bottom: 1px solid #e6dede; vertical-align: top; }
 .chrono table.st td.dt { white-space: nowrap; width: 22%; color: %meta%; }
 .chrono table.st td.gh { font-weight: bold; color: %head%; background: #f3eded; border-bottom: 1.5px solid %tree%; padding: 4px; font-size: 9.5pt; }
+.chrono table.st tr.k4 td { background: #faf6ee; color: %meta%; font-size: 8.5pt; }
 .chrono table.st .un, .chrono .cref { color: %meta%; font-size: 8pt; }
 .chrono table.st tr { page-break-inside: avoid; }
 .chrono table.st tr.genrow { page-break-after: avoid; }
@@ -2164,7 +2211,7 @@ CSS;
         $title = $o['title'] !== '' ? $o['title'] : str_replace('{name}', $rootName, $L['title_default']);
         $today = $this->dt(gmdate('Y-m-d'), '');
 
-        $front = '<div class="cover"><h1>' . $this->e($title) . '</h1>';
+        $front = '<div class="cover"><div class="rule"></div><h1>' . $this->e($title) . '</h1><div class="rule"></div>';
         if ($o['author'] !== '') $front .= '<div class="author">' . $this->e($o['author']) . '</div>';
         $front .= $this->coverStats();
         $front .= '<div class="gen-date">' . $this->e(str_replace('{date}', $today, $L['generated'])) . '</div></div>';
@@ -2220,8 +2267,21 @@ CSS;
             $bar .= '<div class="noprint"><strong>Diagnostic photos</strong><br>' . implode('<br>', array_map([$this, 'e'], $this->dbg)) . '</div>';
         }
 
+        $fr = (string) ($this->o['frame'] ?? 'none');
+        if (!in_array($fr, ['single', 'double'], true)) $fr = 'none';
+        $mark = '';
+        $frameDiv = '';
+        $frameCss = '';
+        if ($fr !== 'none' && $this->mode === 'pdf') {   // le PDF est cadré par TNGBook (image de fond de page) : simple repère, retiré avant mPDF
+            $mark = '<meta name="tng-frame" content="' . $fr . ' ' . $this->colors()['head'] . '">';
+        } elseif ($fr !== 'none' && $this->mode === 'html') {   // page imprimable : cadre fixe répété sur chaque page à l'impression
+            $col = $this->colors()['head'];
+            $frameCss = '.pageframe { display: none; } @media print { .pageframe { display: block; position: fixed; top: -.8cm; left: -.8cm; right: -.8cm; bottom: -1cm; '
+                . ($fr === 'double' ? 'border: 3px double ' : 'border: 1.5pt solid ') . $col . '; pointer-events: none; } }';
+            $frameDiv = '<div class="pageframe"></div>';
+        }
         return '<!DOCTYPE html><html lang="' . esc_attr($this->lang) . '"><head><meta charset="utf-8"><title>' . $this->e($title)
-            . '</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>' . $this->css() . '</style></head><body>'
+            . '</title><meta name="viewport" content="width=device-width, initial-scale=1">' . $mark . '<style>' . $this->css() . $frameCss . '</style></head><body>' . $frameDiv
             . $bar . $front . $notice . $toc . $body . '</body></html>';
     }
 }

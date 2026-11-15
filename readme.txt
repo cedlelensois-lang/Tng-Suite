@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.4.7
+Stable tag: 2.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.5.0 =
+* Livre : trois nouveautés demandées par un utilisateur. (1) Contexte historique dans la chronologie : option à cocher qui insère, en italique, les grands événements (guerres, révolutions, épidémies, lois…) du pays de naissance de chaque personne (France, Belgique, Suisse, Espagne, Italie, Allemagne, Royaume-Uni, États-Unis, Canada) ; un lieu sans pays reconnu se rattache au pays par défaut (France) ; événements personnalisés possibles. (2) Option « Cadre autour des pages » (filet simple ou double filet, couleur du livre, pas de cadre sur la couverture) pour la page imprimable, le PDF, Word et OpenDocument. (3) Page de titre : titre plus grand, en couleur, encadré de filets. Corrige aussi une page blanche après la couverture dans le PDF.
 
 = 2.4.7 =
 * Livre, PDF, modèle « Élégant » : les lettres accentuées des titres en petites capitales (ç, è, ë, à…) s'affichaient comme un carré vide (« Fran□ois »). Les petites capitales sont maintenant imitées dans le PDF (initiale puis majuscules réduites), sans changement d'aspect.

@@ -3370,6 +3370,33 @@ msgstr ""
 msgid "Le traitement s’est arrêté sans pouvoir se signaler : limite de l’hébergeur (temps, mémoire, processus) ou plantage de PHP."
 msgstr ""
 
+msgid "Cadre autour des pages"
+msgstr ""
+
+msgid "Filet simple"
+msgstr ""
+
+msgid "Double filet"
+msgstr ""
+
+msgid "Un liseré autour de chaque page, pour une impression en livre : couleur du livre (« en-têtes et liens »), pas de cadre sur la couverture."
+msgstr ""
+
+msgid "Contexte historique dans la chronologie : guerres, révolutions, épidémies et grandes dates du pays de naissance des personnes (France, Belgique, Suisse, Espagne, Italie, Allemagne, Royaume-Uni, États-Unis, Canada), insérées en italique ; réglages plus bas"
+msgstr ""
+
+msgid "Contexte historique : pays par défaut"
+msgstr ""
+
+msgid "Utilisé pour les personnes dont le lieu de naissance ne nomme aucun pays connu (ex. « Lille » ou « Lille, Nord »). Une personne née en Espagne reçoit les événements d’Espagne, etc. ; un pays n’est retenu que s’il compte au moins deux personnes du livre (ou 3 %)."
+msgstr ""
+
+msgid "Événements historiques personnalisés"
+msgstr ""
+
+msgid "Facultatif, un par ligne : <code>date | texte | pays</code> (date AAAA, AAAA-MM ou AAAA-MM-JJ ; pays = code à deux lettres FR, BE, CH, ES, IT, DE, GB, US, CA, ou vide pour tous les pays). Ajoutés à la chronologie quand « Contexte historique » est coché."
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""
