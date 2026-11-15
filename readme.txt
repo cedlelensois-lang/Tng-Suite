@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.2.1
+Stable tag: 2.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,14 +80,12 @@ Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding`
 
 == Changelog ==
 
-= 2.3.0-beta.2 =
+= 2.3.0 =
+* Livre : nouveau bouton « Générer en arrière-plan » (et « En arrière-plan » pour chaque profil, dans la vue d'ensemble). Pour un gros livre, que l'hébergeur coupe avant la fin (erreur 500 après une longue attente), le livre est préparé par une tâche planifiée du serveur : un panneau affiche l'état et l'avancement (lecture de la base, mise en page, création du PDF…), propose l'annulation, puis le téléchargement quand le livre est prêt. Une interruption par l'hébergeur est détectée et expliquée (dernière étape atteinte, mémoire utilisée). Fonctionne pour tous les formats ; le fichier est déposé dans le dossier de la génération automatique.
+* Désinstallation : la tâche planifiée de génération automatique et l'état de la génération en arrière-plan sont aussi supprimés.
 * Heatmap : nouvelle palette par défaut, orange clair (#FFA500) / orange foncé (#F0590C) / rouge sombre (#B30000). Les sites restés sur l'ancienne palette d'origine (bleu / jaune / rouge) passent automatiquement à la nouvelle ; une palette personnalisée n'est jamais modifiée, et le bouton « Revenir à la palette recommandée » (réglages du module) la rétablit en un clic.
 * Heatmap : l'intensité suit maintenant une échelle logarithmique et les lieux isolés restent colorés à tous les niveaux de zoom. Les foyers secondaires (quelques dizaines d'événements) ressortent nettement en orange, et seul le plus gros foyer de la sélection affichée atteint le rouge sombre.
 * Heatmap : les réglages « Seuil faible max » et « Seuil moyen max » sont supprimés (l'échelle est désormais automatique).
-
-= 2.3.0-beta.1 =
-* Livre : nouveau bouton « Générer en arrière-plan » (et « En arrière-plan » pour chaque profil, dans la vue d'ensemble). Pour un gros livre, que l'hébergeur coupe avant la fin (erreur 500 après une longue attente), le livre est préparé par une tâche planifiée du serveur : un panneau affiche l'état et l'avancement (lecture de la base, mise en page, création du PDF…), propose l'annulation, puis le téléchargement quand le livre est prêt. Une interruption par l'hébergeur est détectée et expliquée (dernière étape atteinte, mémoire utilisée). Fonctionne pour tous les formats ; le fichier est déposé dans le dossier de la génération automatique.
-* Désinstallation : la tâche planifiée de génération automatique et l'état de la génération en arrière-plan sont aussi supprimés.
 
 = 2.2.1 =
 * PDF direct : les gros livres (beaucoup de photos) ne provoquent plus d'erreur 500. Les images sont confiées à mPDF une seule fois chacune (mémoire nettement réduite), le plugin demande plus de mémoire et de temps au serveur quand il l'autorise, et un manque de ressources affiche un message explicite avec la marche à suivre (« Compresser les images », moins de générations, ou Word / OpenDocument).
