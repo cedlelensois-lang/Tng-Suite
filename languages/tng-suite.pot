@@ -3400,6 +3400,93 @@ msgstr ""
 msgid "Enfants des couples dans l’ascendance : « X et Y ont N enfants : » suivi de la liste (modèles Classique, Élégant et Moderne ; le modèle Récit les présente déjà)"
 msgstr ""
 
+msgid "Contenu des fiches"
+msgstr ""
+
+msgid "Parties du livre"
+msgstr ""
+
+msgid "Options avancées"
+msgstr ""
+
+msgid "Afficher"
+msgstr ""
+
+msgid "Poids du fichier"
+msgstr ""
+
+msgid "Photos TNG (statut « Photo par défaut »), avec photo du conjoint"
+msgstr ""
+
+msgid "Photos TNG, et silhouettes génériques (homme / femme) à défaut de photo"
+msgstr ""
+
+msgid "Baptême et sépulture"
+msgstr ""
+
+msgid "Sépulture seule (inhumation ou incinération : date et lieu)"
+msgstr ""
+
+msgid "Baptême et sépulture (dates et lieux renseignés dans TNG)"
+msgstr ""
+
+msgid "Phrases détaillées (« Il est né le … à …, fils de … ; il est décédé le …, à l’âge de … ans ») avec l’âge des époux au mariage et les lieux de résidence"
+msgstr ""
+
+msgid "Lieux : pays entre parenthèses après le lieu (« Lyon, Rhône (France) ») et départements, provinces et États traduits dans la langue du livre"
+msgstr ""
+
+msgid "Informations militaires : événements de guerre et mention « Mort pour la France »"
+msgstr ""
+
+msgid "Chronologie familiale (naissances, mariages et décès par date et par décennie)"
+msgstr ""
+
+msgid "Chronologie familiale avec contexte historique (guerres, révolutions… du pays de naissance)"
+msgstr ""
+
+msgid "Chapitre « En chiffres » (statistiques, prénoms et noms les plus fréquents, histogrammes, complétude de l’ascendance, frise) et chiffres clés sur la page de titre"
+msgstr ""
+
+msgid "Arbres : mini-arbre d’ascendance en tête de chaque fiche d’ancêtre, arbres visuels en ouverture et à chaque génération"
+msgstr ""
+
+msgid "Listes récapitulatives des ascendants et des descendants (tableaux : naissance, conjoint, décès, âge)"
+msgstr ""
+
+msgid "Allemagne"
+msgstr ""
+
+msgid "Belgique"
+msgstr ""
+
+msgid "Canada"
+msgstr ""
+
+msgid "Espagne"
+msgstr ""
+
+msgid "Italie"
+msgstr ""
+
+msgid "Royaume-Uni"
+msgstr ""
+
+msgid "Suisse"
+msgstr ""
+
+msgid "États-Unis"
+msgstr ""
+
+msgid "Facultatif, un par ligne :"
+msgstr ""
+
+msgid "date | texte | pays"
+msgstr ""
+
+msgid "(date AAAA, AAAA-MM ou AAAA-MM-JJ ; pays = code à deux lettres FR, BE, CH, ES, IT, DE, GB, US, CA, ou vide pour tous les pays). Ajoutés à la chronologie quand « Contexte historique » est coché."
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""

@@ -3400,6 +3400,93 @@ msgstr "Optional, one per line: <code>date | text | country</code> (date YYYY, Y
 msgid "Enfants des couples dans l’ascendance : « X et Y ont N enfants : » suivi de la liste (modèles Classique, Élégant et Moderne ; le modèle Récit les présente déjà)"
 msgstr "Children of couples in the ascendancy: “X and Y have N children:” followed by the list (Classic, Elegant and Modern templates; the Narrative template already shows them)"
 
+msgid "Contenu des fiches"
+msgstr "Content of the records"
+
+msgid "Parties du livre"
+msgstr "Parts of the book"
+
+msgid "Options avancées"
+msgstr "Advanced options"
+
+msgid "Afficher"
+msgstr "Show"
+
+msgid "Poids du fichier"
+msgstr "File size"
+
+msgid "Photos TNG (statut « Photo par défaut »), avec photo du conjoint"
+msgstr "TNG photos (“Default photo” status), with the spouse’s photo"
+
+msgid "Photos TNG, et silhouettes génériques (homme / femme) à défaut de photo"
+msgstr "TNG photos, and generic silhouettes (man / woman) when there is no photo"
+
+msgid "Baptême et sépulture"
+msgstr "Baptism and burial"
+
+msgid "Sépulture seule (inhumation ou incinération : date et lieu)"
+msgstr "Burial only (burial or cremation: date and place)"
+
+msgid "Baptême et sépulture (dates et lieux renseignés dans TNG)"
+msgstr "Baptism and burial (dates and places recorded in TNG)"
+
+msgid "Phrases détaillées (« Il est né le … à …, fils de … ; il est décédé le …, à l’âge de … ans ») avec l’âge des époux au mariage et les lieux de résidence"
+msgstr "Detailed sentences (“He was born on … in …, son of …; he died on …, aged … years”) with the spouses’ ages at marriage and places of residence"
+
+msgid "Lieux : pays entre parenthèses après le lieu (« Lyon, Rhône (France) ») et départements, provinces et États traduits dans la langue du livre"
+msgstr "Places: country in brackets after the place (“Lyon, Rhône (France)”) and départements, provinces and states translated into the book’s language"
+
+msgid "Informations militaires : événements de guerre et mention « Mort pour la France »"
+msgstr "Military information: war events and the “Died for France” mention"
+
+msgid "Chronologie familiale (naissances, mariages et décès par date et par décennie)"
+msgstr "Family chronology (births, marriages and deaths by date and by decade)"
+
+msgid "Chronologie familiale avec contexte historique (guerres, révolutions… du pays de naissance)"
+msgstr "Family chronology with historical background (wars, revolutions… of the country of birth)"
+
+msgid "Chapitre « En chiffres » (statistiques, prénoms et noms les plus fréquents, histogrammes, complétude de l’ascendance, frise) et chiffres clés sur la page de titre"
+msgstr "“In figures” chapter (statistics, most frequent first names and surnames, histograms, ascendancy completeness, timeline) and key figures on the title page"
+
+msgid "Arbres : mini-arbre d’ascendance en tête de chaque fiche d’ancêtre, arbres visuels en ouverture et à chaque génération"
+msgstr "Trees: mini ancestry tree at the top of each ancestor’s record, visual trees at the opening and at each generation"
+
+msgid "Listes récapitulatives des ascendants et des descendants (tableaux : naissance, conjoint, décès, âge)"
+msgstr "Summary lists of ascendants and descendants (tables: birth, spouse, death, age)"
+
+msgid "Allemagne"
+msgstr "Germany"
+
+msgid "Belgique"
+msgstr "Belgium"
+
+msgid "Canada"
+msgstr "Canada"
+
+msgid "Espagne"
+msgstr "Spain"
+
+msgid "Italie"
+msgstr "Italy"
+
+msgid "Royaume-Uni"
+msgstr "United Kingdom"
+
+msgid "Suisse"
+msgstr "Switzerland"
+
+msgid "États-Unis"
+msgstr "United States"
+
+msgid "Facultatif, un par ligne :"
+msgstr "Optional, one per line:"
+
+msgid "date | texte | pays"
+msgstr "date | text | country"
+
+msgid "(date AAAA, AAAA-MM ou AAAA-MM-JJ ; pays = code à deux lettres FR, BE, CH, ES, IT, DE, GB, US, CA, ou vide pour tous les pays). Ajoutés à la chronologie quand « Contexte historique » est coché."
+msgstr "(date YYYY, YYYY-MM or YYYY-MM-DD; country = two-letter code FR, BE, CH, ES, IT, DE, GB, US, CA, or empty for all countries). Added to the chronology when “Historical background” is selected."
+
 msgctxt "js"
 msgid " Page "
 msgstr " Page "

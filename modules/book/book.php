@@ -274,9 +274,34 @@ final class TNGBook {
         register_setting('tngbook_group', self::OPT, ['sanitize_callback' => [__CLASS__, 'sanitize']]);
     }
 
+    /**
+     * Le formulaire regroupe plusieurs réglages en un seul choix (photos, baptême/sépulture, chronologie, phrases détaillées, lieux,
+     * militaire, arbres, listes) : ils sont ici traduits vers les réglages détaillés que le livre utilise (et que conservent les profils).
+     * Un tableau sans ces choix (profil enregistré, anciens réglages) est laissé tel quel.
+     */
+    private static function expand_fields(array $in) {
+        if (!isset($in['photos_mode'])) return $in;
+        $pm = (string) $in['photos_mode'];
+        $in['photos'] = $in['spphotos'] = $pm === 'none' ? 0 : 1;
+        $in['generic'] = $pm === 'full' ? 1 : 0;
+        $bm = (string) ($in['bapt_mode'] ?? 'burial');
+        $in['bapt'] = $bm === 'both' ? 1 : 0;
+        $in['burial'] = $bm === 'none' ? 0 : 1;
+        $cm = (string) ($in['chrono_mode'] ?? 'none');
+        $in['chrono'] = $cm === 'none' ? 0 : 1;
+        $in['history'] = $cm === 'history' ? 1 : 0;
+        $in['verbose'] = $in['marrage'] = $in['resi'] = empty($in['verbose_all']) ? 0 : 1;
+        $in['country'] = $in['regions'] = empty($in['places_tr']) ? 0 : 1;
+        $in['military'] = $in['mpf'] = empty($in['military_all']) ? 0 : 1;
+        $in['mini'] = $in['trees'] = empty($in['trees_all']) ? 0 : 1;
+        $in['asclist'] = $in['desclist'] = empty($in['lists']) ? 0 : 1;
+        $in['stats_first'] = $in['stats_last'] = empty($in['stats']) ? 0 : 1;
+        return $in;
+    }
+
     /** Paramètres du livre uniquement (utilisé aussi pour le formulaire public). */
     public static function sanitize_gen($in, array $base) {
-        $in = (array) $in;
+        $in = self::expand_fields((array) $in);
         $out = $base;
         $out['personID'] = preg_replace('/[^\w\-.]/u', '', (string) ($in['personID'] ?? ''));
         $out['tree'] = sanitize_text_field($in['tree'] ?? '');
@@ -358,6 +383,13 @@ final class TNGBook {
         echo '</select>' . ($desc ? '<p class="description">' . wp_kses_post($desc) . '</p>' : '') . '</td></tr>';
     }
 
+    /** Liste déroulante dans une cellule de formulaire (plusieurs réglages regroupés dans une même ligne). */
+    private static function isel($key, $label, array $choices, $current) {
+        $h = '<p style="margin:0 0 6px"><label><strong>' . esc_html($label) . '</strong> : <select name="' . esc_attr(self::OPT . '[' . $key . ']') . '">';
+        foreach ($choices as $val => $l) $h .= '<option value="' . esc_attr($val) . '"' . selected((string) $current, (string) $val, false) . '>' . esc_html($l) . '</option>';
+        return $h . '</select></label></p>';
+    }
+
     private static function chk($key, $label, $o) {
         return '<label><input type="checkbox" name="' . esc_attr(self::OPT . '[' . $key . ']') . '" value="1"' . checked(!empty($o[$key]), true, false) . '> ' . $label . '</label><br>';
     }
@@ -386,39 +418,34 @@ final class TNGBook {
         }
         self::select('Niveaux de lieux affichés', 'place_parts', ['1' => 'Commune seule', '2' => 'Commune, département', '3' => '3 niveaux', '0' => 'Lieu complet'], $o['place_parts']);
         self::select('Style des silhouettes génériques', 'avatar', ['portrait' => 'Portrait (cercle sur fond clair)', 'round' => 'Rond (sans fond)'], $o['avatar'] ?? 'portrait', 'Utilisé quand « Silhouettes génériques » est coché, pour les personnes sans photo.');
-        echo '<tr><th>Contenu</th><td>'
-            . self::chk('photos', 'Photos TNG (uniquement celles au statut « Photo par défaut »)', $o)
-            . self::chk('spphotos', 'Photo du conjoint (petite vignette à côté de l’union)', $o)
-            . self::chk('generic', 'Silhouettes génériques (homme / femme) sinon', $o)
-            . self::chk('bapt', 'Baptême (date et lieu, quand ils sont renseignés dans TNG)', $o)
-            . self::chk('burial', 'Sépulture (inhumation, ou incinération le cas échéant : date et lieu quand ils sont renseignés)', $o)
-            . self::chk('verbose', 'Phrases détaillées (« Il est né le … à …, fils de … » ; « Il est décédé le …, à l’âge de … ans » ; « Il a été inhumé … ») au lieu des mentions courtes « Né le … »', $o)
-            . self::chk('country', 'Pays entre parenthèses après le lieu (« Lyon, Rhône (France) »), traduit dans la langue du livre et déduit du département ou de l’État quand il n’est pas écrit', $o)
-            . self::chk('regions', 'Départements, provinces et États traduits dans la langue du livre (Bouches-du-Rhône / Bocas del Ródano, Bavière / Bavaria / Baviera, Nouvelle-Galles du Sud / New South Wales…), y compris dans les cartes', $o)
+        $v = function ($k) use ($o) { return !empty($o[$k]); };
+        $pm = !$v('photos') ? 'none' : ($v('generic') ? 'full' : 'photos');
+        $bm = $v('bapt') ? 'both' : ($v('burial') ? 'burial' : 'none');
+        $cm = $v('history') ? 'history' : ($v('chrono') ? 'chrono' : 'none');
+        echo '<tr><th>Contenu des fiches</th><td>'
+            . self::isel('photos_mode', 'Photos', ['none' => 'Aucune', 'photos' => 'Photos TNG (statut « Photo par défaut »), avec photo du conjoint', 'full' => 'Photos TNG, et silhouettes génériques (homme / femme) à défaut de photo'], $pm)
+            . self::isel('bapt_mode', 'Baptême et sépulture', ['none' => 'Aucun', 'burial' => 'Sépulture seule (inhumation ou incinération : date et lieu)', 'both' => 'Baptême et sépulture (dates et lieux renseignés dans TNG)'], $bm)
+            . self::chk('verbose_all', 'Phrases détaillées (« Il est né le … à …, fils de … ; il est décédé le …, à l’âge de … ans ») avec l’âge des époux au mariage et les lieux de résidence', ['verbose_all' => $v('verbose')])
+            . self::chk('places_tr', 'Lieux : pays entre parenthèses après le lieu (« Lyon, Rhône (France) ») et départements, provinces et États traduits dans la langue du livre', ['places_tr' => $v('country') || $v('regions')])
+            . self::chk('military_all', 'Informations militaires : événements de guerre et mention « Mort pour la France »', ['military_all' => $v('military') || $v('mpf')])
             . self::chk('notes', 'Notes (générales de chaque personne et de chaque union, et notes des événements : naissance, mariage, décès…)', $o)
-            . self::chk('cous', 'Cousinages et implexes (partie ajoutée seulement si un même ancêtre apparaît plusieurs fois : liste des implexes et des unions entre apparentés)', $o)
-            . self::chk('allunions', 'Autres mariages et unions des ancêtres (en plus de l’union dont descend la lignée)', $o)
             . self::chk('sibs', 'Frères et sœurs sur les fiches (liste des autres enfants de la famille d’origine, avec lien vers leur fiche si elle existe)', $o)
-            . self::chk('marrage', 'Âge des époux au mariage (« il avait 27 ans et elle 24 ans », si les dates de naissance sont connues)', $o)
-            . self::chk('resi', 'Lieux de résidence (« A résidé à Comines (Belgique), Nieppe (France) », du plus ancien au plus récent, d’après les événements Résidence de TNG)', $o)
-            . self::chk('mpf', 'Mention « Mort pour la France » (cause de décès) avec la guerre ou la bataille tirée des événements militaires', $o)
-            . self::chk('military', 'Informations militaires / événements de guerre (dates et notes conservées telles quelles)', $o)
+            . self::chk('allunions', 'Autres mariages et unions des ancêtres (en plus de l’union dont descend la lignée)', $o)
+            . self::chk('kids', 'Enfants des couples dans l’ascendance : « X et Y ont N enfants : » suivi de la liste (modèles Classique, Élégant et Moderne ; le modèle Récit les présente déjà)', $o)
+            . '</td></tr>';
+        echo '<tr><th>Parties du livre</th><td>'
+            . self::isel('chrono_mode', 'Chronologie', ['none' => 'Aucune', 'chrono' => 'Chronologie familiale (naissances, mariages et décès par date et par décennie)', 'history' => 'Chronologie familiale avec contexte historique (guerres, révolutions… du pays de naissance)'], $cm)
+            . self::chk('stats', 'Chapitre « En chiffres » (statistiques, prénoms et noms les plus fréquents, histogrammes, complétude de l’ascendance, frise) et chiffres clés sur la page de titre', $o)
+            . self::chk('trees_all', 'Arbres : mini-arbre d’ascendance en tête de chaque fiche d’ancêtre, arbres visuels en ouverture et à chaque génération', ['trees_all' => $v('mini') || $v('trees')])
+            . self::chk('lists', 'Listes récapitulatives des ascendants et des descendants (tableaux : naissance, conjoint, décès, âge)', ['lists' => $v('asclist') || $v('desclist')])
+            . self::chk('cous', 'Cousinages et implexes (partie ajoutée seulement si un même ancêtre apparaît plusieurs fois : liste des implexes et des unions entre apparentés)', $o)
             . self::chk('sources', 'Sources', $o)
             . self::chk('index', 'Index des noms et des lieux', $o)
-            . self::chk('imgq', 'Compresser les images (PDF direct et Word / OpenDocument : photos réduites, images du texte à 150 ppp) : fichier plus léger, qualité un peu moindre', $o)
-            . self::chk('mini', 'Mini-arbre d’ascendance (parents et grands-parents) en tête de la fiche de chaque ancêtre', $o)
-            . self::chk('trees', 'Arbres visuels : un arbre (Nom (code)) en ouverture de l’ascendance et de la descendance, et des arbres classiques en cases (génération en évidence) à chaque génération', $o)
-            . self::chk('asclist', 'Liste des ascendants (tableau récapitulatif : n° Sosa, naissance, conjoint, décès, âge), placée avant la liste des descendants', $o)
-            . self::chk('desclist', 'Liste des descendants (tableau récapitulatif : n° d’Aboville, naissance, conjoint, décès, âge) à la toute fin du document', $o)
-            . self::chk('kids', 'Enfants des couples dans l’ascendance : « X et Y ont N enfants : » suivi de la liste (modèles Classique, Élégant et Moderne ; le modèle Récit les présente déjà)', $o)
-            . self::chk('chrono', 'Chronologie familiale : naissances, mariages et décès des personnes du livre classés par date et par décennie (position réglable dans « Ordre des parties »)', $o)
-            . self::chk('history', 'Contexte historique dans la chronologie : guerres, révolutions, épidémies et grandes dates du pays de naissance des personnes (France, Belgique, Suisse, Espagne, Italie, Allemagne, Royaume-Uni, États-Unis, Canada), insérées en italique (active aussi la chronologie familiale) ; réglages plus bas', $o)
-            . self::chk('stats', 'Chapitre « En chiffres » (statistiques, histogrammes, complétude de l’ascendance, frise) et chiffres clés sur la page de titre', $o)
-            . self::chk('stats_first', '— dans « En chiffres » : prénoms les plus fréquents', $o)
-            . self::chk('stats_last', '— dans « En chiffres » : noms de famille les plus fréquents', $o)
             . self::chk('map', 'Carte des lieux de vie en noir et blanc (nombre de personnes par département ou province ; fond de carte précis si des fichiers GeoJSON sont déposés dans le dossier data du module, voir le guide)', $o)
-            . ($admin ? '<label><input type="checkbox" name="' . esc_attr(self::OPT) . '[debug]" value="1"> Mode diagnostic (en haut du livre : pourquoi une photo n’est pas trouvée ; à la fin du chapitre « Carte des lieux de vie » : chaque lieu pris en compte, son origine et la raison de son classement)</label>' : '')
             . '</td></tr>';
+        if ($admin) {
+            echo '<tr><th>Options avancées</th><td><details><summary>Afficher</summary><label><input type="checkbox" name="' . esc_attr(self::OPT) . '[debug]" value="1"> Mode diagnostic (en haut du livre : pourquoi une photo n’est pas trouvée ; à la fin du chapitre « Carte des lieux de vie » : chaque lieu pris en compte, son origine et la raison de son classement)</label></details></td></tr>';
+        }
         if ($admin) {
             $ord = self::clean_order($o['order'] ?? null);
             $lab = self::partLabels();
@@ -492,11 +519,12 @@ final class TNGBook {
         $hco = [];
         foreach (TNGBook_History::countries() as $code => $nm) $hco[$code] = $nm[0];
         self::select('Contexte historique : pays par défaut', 'history_country', $hco, $o['history_country'] ?? 'FR', 'Utilisé pour les personnes dont le lieu de naissance ne nomme aucun pays connu (ex. « Lille » ou « Lille, Nord »). Une personne née en Espagne reçoit les événements d’Espagne, etc. ; un pays n’est retenu que s’il compte au moins deux personnes du livre (ou 3 %).');
-        echo '<tr><th scope="row"><label for="tngbook_history_custom">Événements historiques personnalisés</label></th><td><textarea id="tngbook_history_custom" name="' . esc_attr(self::OPT) . '[history_custom]" rows="3" class="large-text" placeholder="1914-08-02 | Départ de mon arrière-grand-père | FR">' . esc_textarea($o['history_custom'] ?? '') . '</textarea><p class="description">Facultatif, un par ligne : <code>date | texte | pays</code> (date AAAA, AAAA-MM ou AAAA-MM-JJ ; pays = code à deux lettres FR, BE, CH, ES, IT, DE, GB, US, CA, ou vide pour tous les pays). Ajoutés à la chronologie quand « Contexte historique » est coché.</p></td></tr>';
+        echo '<tr><th scope="row"><label for="tngbook_history_custom">Événements historiques personnalisés</label></th><td><textarea id="tngbook_history_custom" name="' . esc_attr(self::OPT) . '[history_custom]" rows="3" class="large-text" placeholder="1914-08-02 | Départ de mon arrière-grand-père | FR">' . esc_textarea($o['history_custom'] ?? '') . '</textarea><p class="description">Facultatif, un par ligne : <code>date | texte | pays</code> (date AAAA, AAAA-MM ou AAAA-MM-JJ ; pays = code à deux lettres FR, BE, CH, ES, IT, DE, GB, US, CA, ou vide pour tous les pays). Ajoutés à la chronologie quand elle est réglée sur « avec contexte historique ».</p></td></tr>';
         $fmt = ['html' => 'Page imprimable (Imprimer → Enregistrer en PDF)'];
         if (self::mpdf_available()) $fmt['pdf'] = 'PDF (téléchargement direct)';
         if (TNGBook_Doc::available()) { $fmt['docx'] = 'Word (.docx, téléchargement)'; $fmt['odt'] = 'OpenDocument (.odt, téléchargement)'; }
         self::select('Format', 'format', $fmt, $o['format']);
+        echo '<tr><th>Poids du fichier</th><td>' . self::chk('imgq', 'Compresser les images (PDF direct et Word / OpenDocument : photos réduites, images du texte à 150 ppp) : fichier plus léger, qualité un peu moindre', $o) . '</td></tr>';
     }
 
     /* ---------- Page d'administration (un seul formulaire) ---------- */
