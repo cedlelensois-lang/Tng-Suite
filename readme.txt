@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.4.6
+Stable tag: 2.4.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.4.7 =
+* Livre, PDF, modèle « Élégant » : les lettres accentuées des titres en petites capitales (ç, è, ë, à…) s'affichaient comme un carré vide (« Fran□ois »). Les petites capitales sont maintenant imitées dans le PDF (initiale puis majuscules réduites), sans changement d'aspect.
 
 = 2.4.6 =
 * Heatmap : les chiffres au centre des ronds ne se chevauchent plus. À partir de l'échelle d'une région (zoom 8), les plus gros nombres sont posés en premier et un chiffre qui en recouvrirait un autre est omis jusqu'au zoom suivant ; le nombre reste toujours dans l'infobulle au survol.

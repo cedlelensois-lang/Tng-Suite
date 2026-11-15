@@ -727,6 +727,36 @@ final class TNGBook {
         return ['format' => $format, 'html' => $html, 'doc' => $isDoc ? $file : ''];
     }
 
+    /**
+     * mPDF affiche un carré vide à la place de certaines lettres accentuées (ç, è, ë, à…) dans un texte en petites capitales
+     * (modèle « Élégant »). Pour le PDF, les petites capitales sont donc imitées : initiale telle quelle, reste en majuscules réduites.
+     */
+    public static function pdf_smallcaps($html) {
+        if (strpos($html, 'font-variant: small-caps') === false) return $html;
+        $html = str_replace('font-variant: small-caps;', '', $html);
+        $sc = function ($txt) {
+            $parts = preg_split('/(&#?\w+;)/u', $txt, -1, PREG_SPLIT_DELIM_CAPTURE);
+            foreach ($parts as $i => $t) {
+                if ($i % 2 === 1 || $t === '') continue;
+                $parts[$i] = preg_replace_callback('/\p{L}[\p{L}\p{M}\x{2019}\x{27}-]*/u', function ($m) {
+                    $w = $m[0];
+                    if (!preg_match('/\p{Ll}/u', $w)) return $w;   // déjà en majuscules (patronyme)
+                    if (preg_match('/^\p{Lu}/u', $w)) return mb_substr($w, 0, 1) . '<span class="sc">' . mb_substr($w, 1) . '</span>';
+                    return '<span class="sc">' . $w . '</span>';
+                }, $t);
+            }
+            return implode('', $parts);
+        };
+        $inner = function ($m) use ($sc) {
+            $segs = preg_split('/(<[^>]*>)/', $m[2], -1, PREG_SPLIT_DELIM_CAPTURE);
+            foreach ($segs as $i => $t) if ($i % 2 === 0) $segs[$i] = $sc($t);
+            return $m[1] . implode('', $segs) . $m[3];
+        };
+        $html = preg_replace_callback('#(<h4\b[^>]*>)(.*?)(</h4>)#s', $inner, $html);
+        $html = preg_replace_callback('#(<h2 class="part-title"[^>]*>)(.*?)(</h2>)#s', $inner, $html);
+        return str_replace('</style>', '.sc { font-size: 80%; text-transform: uppercase; }</style>', $html);
+    }
+
     /** Nouveau document mPDF (réglages communs au PDF direct et à la génération en arrière-plan). */
     private static function pdf_make() {
         $up_dir = wp_upload_dir();
@@ -746,7 +776,7 @@ final class TNGBook {
         self::pdf_prepare();
         $mpdf = self::pdf_make();
         self::beat('images');
-        $html = self::pdf_images($mpdf, (string) $html);
+        $html = self::pdf_images($mpdf, self::pdf_smallcaps((string) $html));
         self::pdf_write($mpdf, $html);
         $html = '';
         $mpdf->imageVars = [];   // les images sont désormais dans le PDF : mémoire libérée avant l'écriture du fichier
@@ -761,7 +791,7 @@ final class TNGBook {
     public static function pdf_stage_init(&$html) {
         $mpdf = self::pdf_make();
         self::beat('images');
-        $html = self::pdf_images($mpdf, (string) $html);
+        $html = self::pdf_images($mpdf, self::pdf_smallcaps((string) $html));
         $pieces = self::pdf_pieces($mpdf, $html);
         $html = '';
         if ($pieces === null) throw new Exception(tngs_t('Le livre n’a pas pu être découpé pour le PDF.'));
