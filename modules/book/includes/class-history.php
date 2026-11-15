@@ -80,6 +80,62 @@ class TNGBook_History {
         return $out;
     }
 
+    /**
+     * Périodes marquantes d'un pays (guerres, régimes…) : [début, fin, nom français avec article, nom anglais avec article].
+     * Bornes AAAA, AAAA-MM ou AAAA-MM-JJ (début = premier jour possible, fin = dernier jour possible).
+     */
+    public static function periods($code) {
+        static $all = null;
+        if ($all === null) {
+            $w1 = ['1914-08-02', '1918-11-11', 'la Première Guerre mondiale', 'the First World War'];
+            $w2 = ['1939-09-03', '1945-05-08', 'la Seconde Guerre mondiale', 'the Second World War'];
+            $all = [
+                'FR' => [['1789-07-14', '1799-11-09', 'la Révolution française', 'the French Revolution'], ['1803-05-18', '1815-06-18', 'les guerres napoléoniennes', 'the Napoleonic Wars'],
+                    ['1870-07-19', '1871-05-10', 'la guerre franco-prussienne', 'the Franco-Prussian War'], $w1, $w2, ['1954-11-01', '1962-03-19', 'la guerre d’Algérie', 'the Algerian War']],
+                'ES' => [['1808-05-02', '1814', 'la guerre d’Indépendance espagnole', 'the Peninsular War'], ['1833-10', '1840', 'la première guerre carliste', 'the First Carlist War'],
+                    ['1872', '1876', 'la troisième guerre carliste', 'the Third Carlist War'], ['1923-09-13', '1930-01-28', 'la dictature de Primo de Rivera', 'the Primo de Rivera dictatorship'],
+                    ['1936-07-17', '1939-04-01', 'la guerre civile espagnole', 'the Spanish Civil War'], ['1939-04-01', '1975-11-20', 'la dictature franquiste', 'the Franco dictatorship']],
+                'BE' => [['1914-08-04', '1918-11-11', 'la Première Guerre mondiale', 'the First World War'], ['1940-05-10', '1945-05-08', 'la Seconde Guerre mondiale', 'the Second World War']],
+                'IT' => [['1915-05-24', '1918-11-04', 'la Première Guerre mondiale', 'the First World War'], ['1940-06-10', '1945-05-08', 'la Seconde Guerre mondiale', 'the Second World War']],
+                'DE' => [['1870-07-19', '1871-05-10', 'la guerre franco-allemande', 'the Franco-German War'], ['1914-08-01', '1918-11-11', 'la Première Guerre mondiale', 'the First World War'],
+                    ['1939-09-01', '1945-05-08', 'la Seconde Guerre mondiale', 'the Second World War']],
+                'GB' => [['1642-08-22', '1651-09-03', 'la guerre civile anglaise', 'the English Civil War'], ['1803-05-18', '1815-06-18', 'les guerres napoléoniennes', 'the Napoleonic Wars'],
+                    ['1837-06-20', '1901-01-22', 'l’époque victorienne', 'the Victorian era'], ['1914-08-04', '1918-11-11', 'la Première Guerre mondiale', 'the First World War'], $w2],
+                'CH' => [['1914-08-03', '1918-11-11', 'la Première Guerre mondiale', 'the First World War'], ['1939-09-02', '1945-05-08', 'la Seconde Guerre mondiale', 'the Second World War']],
+                'US' => [['1775-04-19', '1783-09-03', 'la guerre d’Indépendance', 'the War of Independence'], ['1861-04-12', '1865-04-09', 'la guerre de Sécession', 'the Civil War'],
+                    ['1917-04-06', '1918-11-11', 'la Première Guerre mondiale', 'the First World War'], ['1920-01-17', '1933-12-05', 'la Prohibition', 'Prohibition'],
+                    ['1929-10-29', '1939-12-31', 'la Grande Dépression', 'the Great Depression'], ['1941-12-07', '1945-09-02', 'la Seconde Guerre mondiale', 'the Second World War'],
+                    ['1950-06-25', '1953-07-27', 'la guerre de Corée', 'the Korean War'], ['1965-03-08', '1973-03-29', 'la guerre du Vietnam', 'the Vietnam War']],
+                'CA' => [['1837-11', '1838-12', 'les rébellions de 1837-1838', 'the Rebellions of 1837–1838'], ['1914-08-04', '1918-11-11', 'la Première Guerre mondiale', 'the First World War'],
+                    ['1929-10-29', '1939-12-31', 'la Grande Dépression', 'the Great Depression'], ['1939-09-10', '1945-05-08', 'la Seconde Guerre mondiale', 'the Second World War']],
+            ];
+        }
+        return $all[$code] ?? [];
+    }
+
+    /** Périodes (indices) qui contiennent entièrement la date (année, mois ou jour connu) : prudent, une date imprécise n'est retenue que si toutes ses possibilités tombent dans la période. */
+    public static function periods_at($code, $y, $m, $d) {
+        $lo = sprintf('%04d-%02d-%02d', $y, $m ?: 1, $d ?: 1);
+        $hi = $d ? $lo : sprintf('%04d-%02d-%02d', $y, $m ?: 12, $m ? (int) date('t', mktime(0, 0, 0, $m, 1, $y)) : 31);
+        $hits = [];
+        foreach (self::periods($code) as $i => $p) {
+            $a = self::bound($p[0], false);
+            $b = self::bound($p[1], true);
+            if ($lo >= $a && $hi <= $b) $hits[] = $i;
+        }
+        return $hits;
+    }
+
+    private static function bound($s, $end) {
+        $f = explode('-', $s);
+        $y = (int) $f[0];
+        $m = isset($f[1]) ? (int) $f[1] : 0;
+        $d = isset($f[2]) ? (int) $f[2] : 0;
+        if (!$m) return sprintf('%04d-%s', $y, $end ? '12-31' : '01-01');
+        if (!$d) return sprintf('%04d-%02d-%02d', $y, $m, $end ? (int) date('t', mktime(0, 0, 0, $m, 1, $y)) : 1);
+        return sprintf('%04d-%02d-%02d', $y, $m, $d);
+    }
+
     private static function data() {
         return [
             'FR' => [

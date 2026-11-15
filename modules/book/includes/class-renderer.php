@@ -393,6 +393,48 @@ class TNGBook_Renderer {
         return $nm;
     }
 
+    /**
+     * Option « Contexte historique dans les fiches » : « Contexte historique : naissance et décès pendant la Première Guerre mondiale ; mariage pendant … ».
+     * Seules les dates entièrement comprises dans une période marquante du pays de naissance sont retenues.
+     */
+    private function histLine($pid, array $unions) {
+        if (empty($this->o['histfiche'])) return '';
+        $d = $this->d;
+        $p = $d->people[$pid] ?? null;
+        if (!$p || $d->hidden($pid)) return '';
+        $L = $this->L;
+        $isB = trim((string) $p['birthdate']) !== '' && self::pd($p['birthdatetr']);
+        $place = $isB ? (string) $p['birthplace'] : (string) ($p['baptplace'] ?? '');
+        $code = TNGBook_History::country_of($place, (string) ($this->o['history_country'] ?? 'FR'));
+        if ($code === '') return '';
+        $isD = trim((string) $p['deathdate']) !== '' && self::pd($p['deathdatetr']);
+        $ev = [['hx_birth', $isB ? $p['birthdatetr'] : ($p['baptdatetr'] ?? '')], ['hx_death', $isD ? $p['deathdatetr'] : ($p['burialdatetr'] ?? '')]];
+        foreach ($unions as $fid) {
+            $f = $d->fams[$fid] ?? null;
+            if ($f && trim((string) ($f['marrdate'] ?? '')) !== '') $ev[] = ['hx_marr', $f['marrdatetr']];
+        }
+        $by = [];   // période => libellés
+        foreach ($ev as $e) {
+            $pd = self::pd($e[1]);
+            if (!$pd) continue;
+            foreach (TNGBook_History::periods_at($code, $pd[0], $pd[1], $pd[2]) as $i) {
+                if (!in_array($e[0], $by[$i] ?? [], true)) $by[$i][] = $e[0];
+            }
+        }
+        if (!$by) return '';
+        ksort($by);
+        $per = TNGBook_History::periods($code);
+        $parts = [];
+        foreach ($by as $i => $labels) {
+            $order = ['hx_birth' => 0, 'hx_marr' => 1, 'hx_death' => 2];
+            usort($labels, function ($a, $b) use ($order) { return $order[$a] - $order[$b]; });
+            $names = array_map(function ($k) use ($L) { return $L[$k]; }, $labels);
+            $what = count($names) > 1 ? implode(', ', array_slice($names, 0, -1)) . ' ' . $L['hx_and'] . ' ' . end($names) : $names[0];
+            $parts[] = $what . ' ' . $L['hx_during'] . ' ' . ($this->lang === 'fr' ? $per[$i][2] : $per[$i][3]);
+        }
+        return '<p class="hxline"><em>' . $this->e($L['hx_lead'] . implode(' ; ', $parts)) . '.</em></p>';
+    }
+
     /** Modèle « récit » : « X et Y ont N enfants : » suivi d'une puce par enfant (naissance, décès, lien vers la fiche). */
     private function narrKids($fid, $ref, $prefer) {
         $d = $this->d;
@@ -1142,6 +1184,7 @@ class TNGBook_Renderer {
 
         if (!$narr) $html .= $deathHtml . $mpfHtml;
 
+        $html .= $this->histLine($pid, $unions);
         $html .= $this->notesHtml($pid);
         $html .= $this->sourceNums($pid);
         return $html . '</div>';
@@ -2203,6 +2246,7 @@ p.mpf .fl i:nth-child(3) { background: #c8102e; }
 .chrono table.st td { padding: 3px 4px; border-bottom: 1px solid #e6dede; vertical-align: top; }
 .chrono table.st td.dt { white-space: nowrap; width: 22%; color: %meta%; }
 .chrono table.st td.gh { font-weight: bold; color: %head%; background: #f3eded; border-bottom: 1.5px solid %tree%; padding: 4px; font-size: 9.5pt; }
+.hxline { margin: .3em 0; font-size: 90%; color: %meta%; }
 .chrono table.st tr.k4 td { background: #faf6ee; color: %meta%; font-size: 8.5pt; }
 .chrono table.st .un, .chrono .cref { color: %meta%; font-size: 8pt; }
 .chrono table.st tr { page-break-inside: avoid; }

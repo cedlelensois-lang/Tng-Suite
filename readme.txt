@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.6.0
+Stable tag: 2.7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.7.0 =
+* Livre : option « Contexte historique dans les fiches » (décochée par défaut). Une ligne en italique ajoute, sous la fiche, « Contexte historique : naissance pendant la Première Guerre mondiale ; décès pendant la Seconde Guerre mondiale » quand la date tombe dans une guerre ou une période marquante du pays de naissance (9 pays). Une date imprécise (année seule) n'est retenue que si toute l'année est dans la période.
 
 = 2.6.0 =
 * Livre : réglages simplifiés. Les 29 cases sont regroupées en « Contenu des fiches », « Parties du livre », « Poids du fichier » et « Options avancées » (mode diagnostic), et plusieurs réglages sont réunis en un seul choix : Photos (aucune / photos / photos et silhouettes), Baptême et sépulture, Chronologie (aucune / familiale / avec contexte historique), Phrases détaillées (avec âge au mariage et résidences), Lieux traduits (pays et départements), Informations militaires (guerre et « Mort pour la France »), Arbres, Listes récapitulatives, « En chiffres » (prénoms et noms fréquents inclus). Les réglages et profils déjà enregistrés sont convertis automatiquement.
