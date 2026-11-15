@@ -3343,6 +3343,12 @@ msgstr "Last sign of activity"
 msgid "Dernier morceau du PDF lancé :"
 msgstr "Last PDF chunk started:"
 
+msgid "suite de tableau"
+msgstr "table continued"
+
+msgid "précédent :"
+msgstr "previous:"
+
 msgid "mémoire en cours :"
 msgstr "current memory:"
 

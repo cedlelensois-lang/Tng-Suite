@@ -1123,6 +1123,8 @@ return array(
 	'Mémoire maximale utilisée :' => 'Peak memory used:',
 	'Dernier signe d’activité il y a' => 'Last sign of activity',
 	'Dernier morceau du PDF lancé :' => 'Last PDF chunk started:',
+	'suite de tableau' => 'table continued',
+	'précédent :' => 'previous:',
 	'mémoire en cours :' => 'current memory:',
 	'Morceau du PDF en cours :' => 'PDF chunk in progress:',
 	'Le traitement s’est arrêté sans pouvoir se signaler : limite de l’hébergeur (temps, mémoire, processus) ou plantage de PHP.' => 'The process stopped without being able to report: host limit (time, memory, processes) or a PHP crash.',

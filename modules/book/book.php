@@ -807,7 +807,7 @@ final class TNGBook {
 
     /**
      * Envoie le livre à mPDF par morceaux : mPDF refuse tout bloc supérieur à pcre.backtrack_limit (1 Mo par défaut), ce que dépasse un livre un peu fourni.
-     * Les coupures se font entre deux balises <div>, jamais à l'intérieur d'un tableau.
+     * Les coupures se font entre deux balises <div> et, dans les longs tableaux de liste, entre deux lignes (le tableau est refermé puis rouvert).
      */
     private static function pdf_write(\Mpdf\Mpdf $mpdf, $html) {
         $b0 = stripos($html, '<body');
@@ -824,27 +824,62 @@ final class TNGBook {
             foreach ($css[1] as $c) $mpdf->WriteHTML($c, \Mpdf\HTMLParserMode::HEADER_CSS);
         }
         $body = substr($html, $b1 + 1, $b2 - $b1 - 1);
-        $max = 300000;
-        $cuts = [];
+        /* Découpage : coupures entre deux <div> (150 Ko au plus entre deux coupures) et, dans un long tableau « st »
+           (listes, chronologie), entre deux lignes (100 Ko au plus) : le tableau est refermé puis rouvert avec sa ligne d'en-tête,
+           ce qui garde des colonnes alignées. Un morceau géant (plusieurs centaines de Ko) est ce qui épuise mPDF. */
+        $max = 150000;
+        $tmax = 100000;
+        $cuts = [];   // chaque coupure : [position, fermeture ajoutée au morceau qui finit, ouverture ajoutée au suivant]
         $last = 0;
         $tab = 0;
-        if (preg_match_all('#<(/?)(table|div)\b#i', $body, $m, PREG_OFFSET_CAPTURE)) {
+        $st = false; $tstart = 0; $topen = ''; $hdr = ''; $hdrFrom = -1; $prevGen = false;
+        if (preg_match_all('#<(/?)(table|div|tr)\b[^>]*>#i', $body, $m, PREG_OFFSET_CAPTURE)) {
             foreach ($m[0] as $k => $hit) {
-                if (strtolower($m[2][$k][0]) === 'table') { $tab += $m[1][$k][0] === '/' ? -1 : 1; continue; }
-                if ($m[1][$k][0] === '' && $tab === 0 && $hit[1] - $last > $max) { $cuts[] = $hit[1]; $last = $hit[1]; }
+                $tag = strtolower($m[2][$k][0]);
+                $close = $m[1][$k][0] === '/';
+                $pos = $hit[1];
+                if ($tag === 'table') {
+                    $tab += $close ? -1 : 1;
+                    if (!$close && $tab === 1) { $st = (bool) preg_match('#\bclass\s*=\s*["\']st["\']#i', $hit[0]); $topen = $hit[0]; $tstart = $pos; $hdr = ''; $hdrFrom = -1; $prevGen = false; }
+                    if ($close && $tab === 0) $st = false;
+                    continue;
+                }
+                if ($tag === 'tr') {
+                    if ($tab !== 1 || !$st) continue;
+                    if ($close) {
+                        if ($hdrFrom >= 0 && $hdr === '') $hdr = substr($body, $hdrFrom, $pos + 5 - $hdrFrom);   // première ligne = en-tête
+                        continue;
+                    }
+                    if ($hdrFrom < 0) { $hdrFrom = $pos; continue; }
+                    if ($hdr !== '' && !$prevGen && $pos - max($last, $tstart) > $tmax) {
+                        $cuts[] = [$pos, '</table>', $topen . $hdr];
+                        $last = $pos;
+                    }
+                    $prevGen = stripos($hit[0], 'genrow') !== false;
+                    continue;
+                }
+                if (!$close && $tab === 0 && $pos - $last > $max) { $cuts[] = [$pos, '', '']; $last = $pos; }
             }
         }
-        $cuts[] = strlen($body);
+        $cuts[] = [strlen($body), '', ''];
         $from = 0;
         $widest = 0;
-        foreach ($cuts as $to) { $widest = max($widest, $to - $from); $from = $to; }
-        if ($widest * 2 > (int) ini_get('pcre.backtrack_limit')) @ini_set('pcre.backtrack_limit', (string) ($widest * 2));   // un tableau très long reste d'un seul tenant
+        $pre = '';
+        foreach ($cuts as $c) { $widest = max($widest, $c[0] - $from + strlen($pre) + strlen($c[1])); $from = $c[0]; $pre = $c[2]; }
+        if ($widest * 2 > (int) ini_get('pcre.backtrack_limit')) @ini_set('pcre.backtrack_limit', (string) ($widest * 2));
         $from = 0;
-        foreach ($cuts as $n => $to) {
-            $txt = trim(preg_replace('/\s+/u', ' ', wp_strip_all_tags(substr($body, $from, min($to - $from, 4000)))));
-            self::beat('write', $n / count($cuts), sprintf('%d/%d · %d Ko · « %s »', $n + 1, count($cuts), (int) round(($to - $from) / 1024), mb_substr($txt, 0, 70)));
-            $mpdf->WriteHTML(substr($body, $from, $to - $from), \Mpdf\HTMLParserMode::HTML_BODY, $n === 0, $n === count($cuts) - 1);
-            $from = $to;
+        $pre = '';
+        $count = count($cuts);
+        $took = '';
+        foreach ($cuts as $n => $c) {
+            $piece = $pre . substr($body, $from, $c[0] - $from) . $c[1];
+            $txt = trim(preg_replace('/\s+/u', ' ', wp_strip_all_tags(substr($piece, 0, 4000))));
+            self::beat('write', $n / $count, sprintf('%d/%d · %d Ko%s · « %s »%s', $n + 1, $count, (int) round(strlen($piece) / 1024), $pre !== '' ? ' (' . tngs_t('suite de tableau') . ')' : '', mb_substr($txt, 0, 70), $took));
+            $t0 = microtime(true);
+            $mpdf->WriteHTML($piece, \Mpdf\HTMLParserMode::HTML_BODY, $n === 0, $n === $count - 1);
+            $took = sprintf(' · %s %.1f s', tngs_t('précédent :'), microtime(true) - $t0);
+            $from = $c[0];
+            $pre = $c[2];
         }
     }
 

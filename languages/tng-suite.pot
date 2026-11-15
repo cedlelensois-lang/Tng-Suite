@@ -3343,6 +3343,12 @@ msgstr ""
 msgid "Dernier morceau du PDF lancé :"
 msgstr ""
 
+msgid "suite de tableau"
+msgstr ""
+
+msgid "précédent :"
+msgstr ""
+
 msgid "mémoire en cours :"
 msgstr ""
 
