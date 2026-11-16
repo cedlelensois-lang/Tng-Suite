@@ -313,7 +313,7 @@ class TNGBook_Bg {
         $j = self::job();
         $file = (string) $j['pfile'];
         $dest = TNGBook_Auto::dir(true) . '/' . $file;
-        $mpdf->imageVars = array_intersect_key($mpdf->imageVars, ['tngframe' => 1]);
+        $mpdf->imageVars = array_intersect_key($mpdf->imageVars, ['tngframe' => 1, 'tngcover' => 1]);
         TNGBook::beat('output');
         $mpdf->Output($dest, 'F');
         TNGBook::beat('save');

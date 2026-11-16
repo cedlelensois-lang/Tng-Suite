@@ -1182,6 +1182,7 @@ return array(
 	'Arbre : saule pleureur' => 'Tree: weeping willow',
 	'Arbre : feuillu, ses racines dessinées dessous' => 'Tree: leafy, with its roots drawn below',
 	'Arbre en couleurs : feuillage vert, tronc brun, racines dans la terre et médaillons' => 'Colour tree: green foliage, brown trunk, roots in the soil and medallions',
+	'Pochette pleine page (PDF) : arbre à l’aquarelle sur fond crème, titre dessous' => 'Full-page cover (PDF): watercolour tree on a cream background, title below',
 	'Dessinée par le plugin dans la couleur du livre (« en-têtes et liens »), sans fichier à installer.' => 'Drawn by the plugin in the book colour (“headings and links”), with no file to install.',
 	'Arbres & visualisations' => 'Trees & visualisations',
 	'Analyses' => 'Analyses',

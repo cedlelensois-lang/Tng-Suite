@@ -178,12 +178,13 @@ class TNGBook_Art {
 
     /** Valeurs du réglage « illustration de couverture » : none, ornament, puis un arbre (tree = chêne, olive, willow, roots). */
     public static function cover_choices() {
-        return array('none', 'ornament', 'tree', 'olive', 'willow', 'roots', 'color');
+        return array('none', 'ornament', 'tree', 'olive', 'willow', 'roots', 'color', 'page');
     }
 
     /** Style d'arbre correspondant à une valeur du réglage (tree → oak). */
     public static function style_of($art) {
         if ($art === 'winter') $art = 'roots';   // ancien nom (2.8.2)
+        if ($art === 'page') return 'olive';   // hors PDF : l'arbre penché, sans fond de page
         return $art === 'tree' ? 'oak' : (in_array($art, self::tree_styles(), true) ? $art : 'oak');
     }
 
@@ -390,6 +391,54 @@ class TNGBook_Art {
         imagecopyresampled($outim, $im, 0, 0, 0, 0, $w, $h, $W, $H);
         imagedestroy($im);
         return self::png($outim);
+    }
+
+    /**
+     * Pochette pleine page (A4, JPEG) : fond crème, arbre à l'aquarelle qui part du bord gauche et ses racines,
+     * feuilles gris-bleu (teinte du livre atténuée), place libre dessous pour le titre. Posée en fond de la première page du PDF.
+     */
+    public static function cover_page($hex, $w = 1240, $h = 1754) {
+        $S = 2; $u = $w * $S / 1800;   // unité de dessin : l'arbre « olive » est dessiné pour 1800 px de large
+        $W = $w * $S; $H = $h * $S;
+        $im = self::canvas($W, $H);
+        $hx = ltrim((string) $hex, '#'); if (!preg_match('/^[0-9a-f]{6}$/i', $hx)) $hx = '7a1f1f';
+        $mix = function ($t) use ($hx) { $o = ''; foreach (array(0, 2, 4) as $i) { $o .= sprintf('%02x', (int) round(hexdec(substr($hx, $i, 2)) * $t + array(0x6f, 0x83, 0x93)[$i / 2] * (1 - $t))); } return $o; };
+        $leaf = $mix(0.1);
+        $seed = 20261116;
+        $ground = $H * 0.72; $tx = $W * 0.075;
+        $c = array(
+            'S' => $u, 'max' => 7, 'wood' => self::col($im, 128, 116, 102),
+            'l1' => self::rgb($im, $leaf, 70), 'l2' => self::rgb($im, $leaf, 52), 'l3' => self::rgb($im, $leaf, 30),
+            'cx' => $W * 0.55, 'cy' => $H * 0.3, 'rx' => $W * 0.5, 'ry' => $H * 0.3,
+            'droop' => 0.18, 'droopFrom' => 4, 'pull' => -0.75, 'pullf' => 0.2, 'lp' => 0.28, 'leafFrom' => 2, 'tips' => 2,
+            'lenf' => 0.84, 'lenf0' => 2.9, 'ls' => array(34, 58), 'lw' => 0.3, 'bare' => false, 'fork2' => true,
+        );
+        // lavis léger derrière la ramure et le pied du tronc
+        $blobs = array();
+        for ($k = 0; $k < 40; $k++) {
+            $blobs[] = array($W * (0.1 + self::rnd($seed) * 0.8), $H * (0.06 + self::rnd($seed) * 0.4), (90 + self::rnd($seed) * 110) * $u, (70 + self::rnd($seed) * 70) * $u, 0.3 + self::rnd($seed) * 0.4);
+        }
+        self::wash($im, $W, $H, $leaf, $blobs, 0.07);
+        $blobs = array();
+        for ($k = 0; $k < 12; $k++) $blobs[] = array($tx + (self::rnd($seed) - 0.3) * 260 * $u, $ground + (self::rnd($seed) - 0.3) * 200 * $u, (100 + self::rnd($seed) * 90) * $u, (60 + self::rnd($seed) * 60) * $u, 0.5 + self::rnd($seed) * 0.4);
+        self::wash($im, $W, $H, 'a89880', $blobs, 0.2);
+        // racines : arrondies, qui s'étirent vers la droite et sortent de la page par la gauche
+        foreach (array(array(0.12, 240), array(0.6, 190), array(M_PI - 0.45, 170)) as $i => $r) {
+            self::root($im, $tx + (($i % 2) ? 1 : -1) * 20 * $u, $ground - 50 * $u, $r[0], $r[1] * $u * 1.25, (40 - $i * 5) * $u, $seed, $c['wood'], $u);
+        }
+        imagefilledellipse($im, (int) $tx, (int) ($ground - 20 * $u), (int) (170 * $u), (int) (60 * $u), $c['wood']);
+        self::limb($im, $tx, $ground - 18 * $u, -M_PI / 2 + 0.38, 129 * $u, 64 * $u, 0, $seed, $c);
+        for ($k = 0; $k < 9; $k++) {   // feuilles qui tombent vers le titre
+            self::leaf($im, $W * (0.3 + self::rnd($seed) * 0.6), $H * (0.44 + self::rnd($seed) * 0.16), self::rnd($seed) * 6.28, (12 + self::rnd($seed) * 8) * $u, $c['l2'], 0.34);
+        }
+        $out = imagecreatetruecolor($w, $h);
+        imagefill($out, 0, 0, imagecolorallocate($out, 243, 240, 232));   // crème
+        imagealphablending($out, true);
+        imagecopyresampled($out, $im, 0, 0, 0, 0, $w, $h, $W, $H);
+        imagedestroy($im);
+        ob_start(); imagejpeg($out, null, 88); $bin = (string) ob_get_clean();
+        imagedestroy($out);
+        return $bin;
     }
 
     /** Fleuron séparateur : filets qui s'effilent, losanges et points autour d'un motif central. */

@@ -3520,6 +3520,9 @@ msgstr ""
 msgid "Arbre en couleurs : feuillage vert, tronc brun, racines dans la terre et médaillons"
 msgstr ""
 
+msgid "Pochette pleine page (PDF) : arbre à l’aquarelle sur fond crème, titre dessous"
+msgstr ""
+
 msgid "Dessinée par le plugin dans la couleur du livre (« en-têtes et liens »), sans fichier à installer."
 msgstr ""
 

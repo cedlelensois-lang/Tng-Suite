@@ -530,6 +530,7 @@ final class TNGBook {
             'willow' => 'Arbre : saule pleureur',
             'roots' => 'Arbre : feuillu, ses racines dessinées dessous',
             'color' => 'Arbre en couleurs : feuillage vert, tronc brun, racines dans la terre et médaillons',
+            'page' => 'Pochette pleine page (PDF) : arbre à l’aquarelle sur fond crème, titre dessous',
         ], $o['cover_art'] ?? 'tree', 'Dessinée par le plugin dans la couleur du livre (« en-têtes et liens »), sans fichier à installer.');
         $hco = [];
         foreach (TNGBook_History::countries() as $code => $nm) $hco[$code] = $nm[0];
@@ -835,6 +836,23 @@ final class TNGBook {
         return preg_replace('/<body[^>]*>/', '$0<htmlpagefooter name="tngpf"><div style="text-align:center;font-size:9pt;color:#666666">{PAGENO}</div></htmlpagefooter>', $html, 1);
     }
 
+    /** Pochette pleine page : image JPEG posée en fond de la première page seulement (repère <meta name="tng-cover">, retiré avant mPDF). */
+    public static function pdf_cover(\Mpdf\Mpdf $mpdf, $html) {
+        if (!preg_match('/<meta name="tng-cover" content="(#[0-9a-f]{6})">/', $html, $m)) return $html;
+        $html = str_replace($m[0], '', $html);
+        if (!function_exists('imagecreatetruecolor')) return $html;
+        $mpdf->imageVars['tngcover'] = TNGBook_Art::cover_page($m[1]);
+        $first = 'background: url(var:tngcover) no-repeat 0 0; background-image-resize: 6; odd-footer-name: html_tngnf; even-footer-name: html_tngnf; margin-footer: 14mm;';   // pas de numéro sur la pochette
+        $nf = '<htmlpagefooter name="tngnf"><div></div></htmlpagefooter>';
+        if (strpos($html, 'html_tngpf') !== false) {   // cadre déjà déclaré : sa règle de première page (sans fond) est remplacée
+            $html = preg_replace('/@page :first \{[^}]*\}/', '@page :first { ' . $first . ' }', $html, 1);
+        } else {   // une règle @page fait perdre le pied de page de toutes les pages : la numérotation est redéclarée
+            $html = str_replace('</style>', '@page { odd-footer-name: html_tngpf; even-footer-name: html_tngpf; margin-footer: 14mm; } @page :first { ' . $first . ' }</style>', $html);
+            $nf .= '<htmlpagefooter name="tngpf"><div style="text-align:center;font-size:9pt;color:#666666">{PAGENO}</div></htmlpagefooter>';
+        }
+        return preg_replace('/<body[^>]*>/', '$0' . $nf, $html, 1);
+    }
+
     /** Nouveau document mPDF (réglages communs au PDF direct et à la génération en arrière-plan). */
     private static function pdf_make() {
         $up_dir = wp_upload_dir();
@@ -854,10 +872,10 @@ final class TNGBook {
         self::pdf_prepare();
         $mpdf = self::pdf_make();
         self::beat('images');
-        $html = self::pdf_images($mpdf, self::pdf_frame($mpdf, self::pdf_smallcaps((string) $html)));
+        $html = self::pdf_images($mpdf, self::pdf_cover($mpdf, self::pdf_frame($mpdf, self::pdf_smallcaps((string) $html))));
         self::pdf_write($mpdf, $html);
         $html = '';
-        $mpdf->imageVars = array_intersect_key($mpdf->imageVars, ['tngframe' => 1]);   // les images sont désormais dans le PDF : mémoire libérée avant l'écriture du fichier
+        $mpdf->imageVars = array_intersect_key($mpdf->imageVars, ['tngframe' => 1, 'tngcover' => 1]);   // les images sont désormais dans le PDF : mémoire libérée avant l'écriture du fichier
         self::beat('output');
         $mpdf->Output($name, $dest);
     }
@@ -869,7 +887,7 @@ final class TNGBook {
     public static function pdf_stage_init(&$html) {
         $mpdf = self::pdf_make();
         self::beat('images');
-        $html = self::pdf_images($mpdf, self::pdf_frame($mpdf, self::pdf_smallcaps((string) $html)));
+        $html = self::pdf_images($mpdf, self::pdf_cover($mpdf, self::pdf_frame($mpdf, self::pdf_smallcaps((string) $html))));
         $pieces = self::pdf_pieces($mpdf, $html);
         $html = '';
         if ($pieces === null) throw new Exception(tngs_t('Le livre n’a pas pu être découpé pour le PDF.'));
