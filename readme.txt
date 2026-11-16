@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.11.1
+Stable tag: 2.11.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,6 +81,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.11.2 =
+* Livre : gestion des listes de faits historiques refaite. Une liste déroulante « Liste à modifier » ouvre chacune de vos listes pour la modifier ou la supprimer, ou crée une nouvelle liste (vide ou copiée d'une liste fournie, remplie tout de suite pour être modifiée avant l'enregistrement) ; après l'enregistrement la liste reste sélectionnée.
 
 = 2.11.1 =
 * Livre : le contexte historique des fiches n'est plus une phrase composée (« décès pendant… ; a aussi vécu… ») mais une simple énumération des périodes concernées, avec les noms écrits dans les listes : plus de mélange de langues dans un livre catalan ou espagnol qui utilise une liste fournie en anglais.

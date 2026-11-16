@@ -590,31 +590,72 @@ class TNGBook_History {
     public static function admin_form() {
         $lists = self::user_lists();
         $msg = isset($_GET['tngbook_msg']) ? sanitize_key(wp_unslash($_GET['tngbook_msg'])) : '';   // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        $cur = isset($_GET['tngbook_hist']) ? sanitize_text_field(wp_unslash($_GET['tngbook_hist'])) : '';   // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        if (!isset($lists[$cur])) $cur = $lists ? (string) array_key_first($lists) : 'new';
         echo '<h2 id="tngbook-history">' . esc_html(tngs_t('Faits historiques')) . '</h2>';
-        if ($msg === 'hist_saved') echo '<div class="notice notice-success is-dismissible"><p>' . esc_html(tngs_t('Listes enregistrées.')) . '</p></div>';
+        if ($msg === 'hist_saved') echo '<div class="notice notice-success is-dismissible"><p>' . esc_html(tngs_t('Liste enregistrée.')) . '</p></div>';
+        if ($msg === 'hist_deleted') echo '<div class="notice notice-success is-dismissible"><p>' . esc_html(tngs_t('Liste supprimée.')) . '</p></div>';
         echo '<p class="description" style="max-width:900px">' . esc_html(tngs_t('Une liste est un ensemble de faits dans la langue de votre choix : vous écrivez les textes vous-même. Une entrée par ligne : « date | texte » pour un événement (date AAAA, AAAA-MM ou AAAA-MM-JJ), « date .. date | nom » pour une période (guerre, régime… avec son article, par exemple « la Première Guerre mondiale » : sert à la phrase « Contexte historique » des fiches). Les mots-clés de lieu (séparés par des virgules) rattachent la liste aux personnes dont un élément du lieu de naissance correspond ; sans mot-clé, la liste vaut pour tout le monde. Les listes se cochent dans le formulaire du livre.')) . '</p>';
         echo '<form method="post" enctype="multipart/form-data" action="' . esc_url(admin_url('admin-post.php')) . '"><input type="hidden" name="action" value="tngbook_hist_save">';
         wp_nonce_field('tngbook_hist', 'tngbook_hnonce');
-        $block = function ($key, $x, $isNew) {
-            $exp = (!$isNew) ? ' <a href="' . esc_url(wp_nonce_url(admin_url('admin-post.php?action=tngbook_hist_export&id=' . rawurlencode($key)), 'tngbook_hist_export')) . '">' . esc_html(tngs_t('Exporter (.txt)')) . '</a>' : '';
-            $del = (!$isNew) ? ' &nbsp; <label><input type="checkbox" name="hl[' . esc_attr($key) . '][delete]" value="1"> ' . esc_html(tngs_t('Supprimer cette liste')) . '</label>' : '';
-            echo '<div style="border:1px solid #c3c4c7;background:#fff;padding:10px 12px;margin:0 0 12px;max-width:900px"><p style="margin:0 0 6px"><label><strong>' . esc_html(tngs_t('Nom')) . '</strong> <input type="text" name="hl[' . esc_attr($key) . '][name]" value="' . esc_attr($x['name']) . '" maxlength="60" class="regular-text"></label> '
-                . '<label style="margin-left:10px"><strong>' . esc_html(tngs_t('Mots-clés de lieu')) . '</strong> <input type="text" name="hl[' . esc_attr($key) . '][match]" value="' . esc_attr($x['match']) . '" maxlength="300" class="regular-text" placeholder="Catalunya, Cataluña, Espanya"></label>' . $del . $exp . '</p>'
-                . '<textarea name="hl[' . esc_attr($key) . '][text]" rows="' . ($isNew ? 4 : 10) . '" class="large-text code" placeholder="1714-09-11 | Caiguda de Barcelona&#10;1936-07-17 .. 1939-04-01 | la guerra civil">' . esc_textarea($x['text']) . '</textarea></div>';
-        };
-        foreach ($lists as $id => $x) {
-            echo '<h3 style="margin:14px 0 6px">' . esc_html($x['name'] !== '' ? $x['name'] : $id) . '</h3>';
-            $block($id, $x, false);
-        }
-        echo '<h3 style="margin:14px 0 6px">' . esc_html(tngs_t('Nouvelle liste')) . '</h3>';
-        $block('new', ['name' => '', 'match' => '', 'text' => ''], true);
-        echo '<p><label>' . esc_html(tngs_t('Ou partir d’une liste fournie :')) . ' <select name="hist_copy"><option value="">—</option>';
+        // choix de la liste à modifier : mes listes, ou une nouvelle liste (vide ou copiée d'une liste fournie)
+        echo '<p><label><strong>' . esc_html(tngs_t('Liste à modifier')) . '</strong> <select id="tngh-sel">';
+        foreach ($lists as $id => $x) echo '<option value="' . esc_attr($id) . '"' . selected($cur, $id, false) . '>' . esc_html($x['name'] !== '' ? $x['name'] : $id) . '</option>';
+        echo '<option value="new"' . selected($cur, 'new', false) . '>+ ' . esc_html(tngs_t('Nouvelle liste (vide)')) . '</option>';
+        echo '<optgroup label="' . esc_attr(tngs_t('Nouvelle liste à partir d’une liste fournie')) . '">';
+        $tpl = [];
         foreach (self::countries() as $c => $n) {
-            echo '<option value="' . esc_attr($c . ':fr') . '">' . esc_html($n[0] . ' (français)') . '</option><option value="' . esc_attr($c . ':en') . '">' . esc_html($n[1] . ' (English)') . '</option>';
+            $al = self::aliases();
+            foreach (['fr' => $n[0] . ' (français)', 'en' => $n[1] . ' (English)'] as $lg => $lab) {
+                $tpl[$c . ':' . $lg] = ['name' => self::country_name($c, $lg), 'match' => implode(', ', $al[$c] ?? []), 'text' => self::template_text($c, $lg)];
+                echo '<option value="tpl:' . esc_attr($c . ':' . $lg) . '">+ ' . esc_html($lab) . '</option>';
+            }
         }
-        echo '</select></label> <span class="description">' . esc_html(tngs_t('Une copie modifiable est ajoutée à vos listes.')) . '</span></p>';
+        echo '</optgroup></select></label></p>';
+        $block = function ($key, $x) use ($cur) {
+            $isNew = $key === 'new';
+            $k = esc_attr($key);
+            echo '<div class="tngh-block" data-id="' . $k . '" style="border:1px solid #c3c4c7;background:#fff;padding:10px 12px;margin:0 0 12px;max-width:900px' . ($key === $cur ? '' : ';display:none') . '">';
+            echo '<p style="margin:0 0 6px"><label><strong>' . esc_html(tngs_t('Nom')) . '</strong> <input type="text" name="hl[' . $k . '][name]" value="' . esc_attr($x['name']) . '" maxlength="60" class="regular-text"></label> '
+                . '<label style="margin-left:10px"><strong>' . esc_html(tngs_t('Mots-clés de lieu')) . '</strong> <input type="text" name="hl[' . $k . '][match]" value="' . esc_attr($x['match']) . '" maxlength="300" class="regular-text" placeholder="Catalunya, Cataluña, Espanya"></label></p>';
+            echo '<textarea name="hl[' . $k . '][text]" rows="14" class="large-text code" placeholder="1714-09-11 | Caiguda de Barcelona&#10;1936-07-17 .. 1939-04-01 | la guerra civil">' . esc_textarea($x['text']) . '</textarea>';
+            if (!$isNew) {
+                echo '<p style="margin:8px 0 0"><a href="' . esc_url(wp_nonce_url(admin_url('admin-post.php?action=tngbook_hist_export&id=' . rawurlencode($key)), 'tngbook_hist_export')) . '">' . esc_html(tngs_t('Exporter (.txt)')) . '</a>'
+                    . ' &nbsp; <button type="button" class="button-link button-link-delete" style="color:#b32d2e" onclick="if(confirm(\'' . esc_js(tngs_t('Supprimer cette liste ? Cette action est définitive.')) . '\')){var f=this.form,i=document.createElement(\'input\');i.type=\'hidden\';i.name=\'hist_delete\';i.value=\'' . esc_js($key) . '\';f.appendChild(i);f.submit();}">' . esc_html(tngs_t('Supprimer cette liste')) . '</button></p>';
+            }
+            echo '</div>';
+        };
+        foreach ($lists as $id => $x) $block($id, $x);
+        $block('new', ['name' => '', 'match' => '', 'text' => '']);
         echo '<p><label>' . esc_html(tngs_t('Importer une liste (fichier .txt exporté) :')) . ' <input type="file" name="hist_file" accept=".txt,text/plain"></label></p>';
-        echo '<p class="submit"><button type="submit" class="button button-primary">' . esc_html(tngs_t('Enregistrer les listes')) . '</button></p></form>';
+        echo '<p class="submit"><button type="submit" class="button button-primary" name="hist_current" value="" id="tngh-save">' . esc_html(tngs_t('Enregistrer la liste')) . '</button></p></form>';
+        echo '<script type="application/json" id="tngh-tpl">' . wp_json_encode($tpl, JSON_HEX_TAG | JSON_HEX_AMP) . '</script>';
+        ?>
+<script>
+(function () {
+    var sel = document.getElementById('tngh-sel'), tplEl = document.getElementById('tngh-tpl');
+    if (!sel || !tplEl) return;
+    var tpl = JSON.parse(tplEl.textContent), first = true;
+    function show() {
+        var v = sel.value, key = v, nb = document.querySelector('.tngh-block[data-id="new"]');
+        if (v.indexOf('tpl:') === 0 || v === 'new') {
+            key = 'new';
+            if (!first || v !== 'new') {   // changement de choix : le bloc « nouvelle liste » est rempli (modèle) ou vidé
+                var t = v === 'new' ? {name: '', match: '', text: ''} : tpl[v.slice(4)];
+                nb.querySelector('[name="hl[new][name]"]').value = t.name;
+                nb.querySelector('[name="hl[new][match]"]').value = t.match;
+                nb.querySelector('[name="hl[new][text]"]').value = t.text;
+            }
+        }
+        first = false;
+        document.querySelectorAll('.tngh-block').forEach(function (b) { b.style.display = b.getAttribute('data-id') === key ? '' : 'none'; });
+        document.getElementById('tngh-save').value = key;
+    }
+    sel.addEventListener('change', show);
+    show();
+})();
+</script>
+        <?php
     }
 
     /** Nettoie le texte des entrées d'une liste (lignes de 300 caractères, 3000 lignes au plus). */
@@ -647,24 +688,31 @@ class TNGBook_History {
         if (!isset($_POST['tngbook_hnonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['tngbook_hnonce'])), 'tngbook_hist')) wp_die(esc_html(tngs_t('Jeton de sécurité invalide.')), 403);
         $in = (isset($_POST['hl']) && is_array($_POST['hl'])) ? wp_unslash($_POST['hl']) : [];
         $lists = self::user_lists();
+        $back = function ($msg, $id = '') {
+            $args = ['page' => 'tngbook', 'tngbook_msg' => $msg];
+            if ($id !== '') $args['tngbook_hist'] = $id;
+            wp_safe_redirect(add_query_arg($args, admin_url('admin.php')) . '#tngbook-settings');   // section « Livre : réglages » (un identifiant inconnu ouvrirait la première section)
+            exit;
+        };
+        $del = sanitize_text_field(wp_unslash($_POST['hist_delete'] ?? ''));
+        if ($del !== '') {
+            if (isset($lists[$del])) { unset($lists[$del]); self::save_user_lists($lists); }
+            $back('hist_deleted');
+        }
         $clean = function ($x) {
             return ['name' => mb_substr(sanitize_text_field((string) ($x['name'] ?? '')), 0, 60), 'match' => mb_substr(sanitize_text_field((string) ($x['match'] ?? '')), 0, 300), 'text' => self::clean_text($x['text'] ?? '')];
         };
+        $cur = sanitize_text_field(wp_unslash($_POST['hist_current'] ?? ''));
         foreach ($lists as $id => $x) {
             if (!isset($in[$id]) || !is_array($in[$id])) continue;
-            if (!empty($in[$id]['delete'])) { unset($lists[$id]); continue; }
             $lists[$id] = $clean($in[$id]);
             if ($lists[$id]['name'] === '') $lists[$id]['name'] = $x['name'] !== '' ? $x['name'] : $id;
         }
+        $added = '';
         $add = [];
-        if (isset($in['new']) && is_array($in['new'])) {
+        if ($cur === 'new' && isset($in['new']) && is_array($in['new'])) {
             $n = $clean($in['new']);
             if ($n['text'] !== '' || $n['name'] !== '') $add[] = $n;
-        }
-        $copy = sanitize_text_field(wp_unslash($_POST['hist_copy'] ?? ''));
-        if (preg_match('/^([A-Z]{2}):(fr|en)$/', $copy, $m) && isset(self::countries()[$m[1]])) {
-            $al = self::aliases();
-            $add[] = ['name' => self::country_name($m[1], $m[2]), 'match' => implode(', ', $al[$m[1]] ?? []), 'text' => self::template_text($m[1], $m[2])];
         }
         if (!empty($_FILES['hist_file']['tmp_name']) && is_uploaded_file($_FILES['hist_file']['tmp_name']) && (int) ($_FILES['hist_file']['size'] ?? 0) < 400000) {   // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
             $f = self::parse_file((string) file_get_contents($_FILES['hist_file']['tmp_name']));   // phpcs:ignore WordPress.Security.ValidatedSanitizedInput, WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
@@ -673,11 +721,11 @@ class TNGBook_History {
         }
         foreach ($add as $x) {
             if ($x['name'] === '') $x['name'] = tngs_t('Nouvelle liste');
-            $lists[self::new_id($lists)] = $x;
+            $added = self::new_id($lists);
+            $lists[$added] = $x;
         }
         self::save_user_lists($lists);
-        wp_safe_redirect(add_query_arg(['page' => 'tngbook', 'tngbook_msg' => 'hist_saved'], admin_url('admin.php')) . '#tngbook-settings');   // section « Livre : réglages » (un identifiant inconnu ouvrirait la première section)
-        exit;
+        $back('hist_saved', $added !== '' ? $added : (isset($lists[$cur]) ? $cur : ''));
     }
 
     public static function admin_export() {
