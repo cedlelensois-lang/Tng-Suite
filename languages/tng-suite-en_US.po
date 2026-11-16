@@ -3679,9 +3679,6 @@ msgstr "Delete this list? This cannot be undone."
 msgid "Enregistrer la liste"
 msgstr "Save list"
 
-msgid "Dans les fiches, ajouter aussi les événements datés des listes cochées survenus entre la naissance et le décès de la personne (« Faits marquants de son vivant : 1939 : … ; 1975 : … ») ; nécessite des dates de naissance et de décès, et allonge les fiches"
-msgstr "In the records, also add the dated events of the ticked lists that happened between the person’s birth and death (“Notable events in their lifetime: 1939: … ; 1975: … ”); needs birth and death dates, and makes the records longer"
-
 msgid "Listes fournies proposées dans le formulaire du livre"
 msgstr "Supplied lists offered in the book form"
 
