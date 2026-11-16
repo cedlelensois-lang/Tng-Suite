@@ -1236,4 +1236,6 @@ return array(
 	'Supprimer cette liste ? Cette action est définitive.' => 'Delete this list? This cannot be undone.',
 	'Enregistrer la liste' => 'Save list',
 	'Dans les fiches, ajouter aussi les événements datés des listes cochées survenus entre la naissance et le décès de la personne (« Faits marquants de son vivant : 1939 : … ; 1975 : … ») ; nécessite des dates de naissance et de décès, et allonge les fiches' => 'In the records, also add the dated events of the ticked lists that happened between the person’s birth and death (“Notable events in their lifetime: 1939: … ; 1975: … ”); needs birth and death dates, and makes the records longer',
+	'Listes fournies proposées dans le formulaire du livre' => 'Supplied lists offered in the book form',
+	'Décochez celles dont vous n’avez pas besoin pour les retirer ; elles restent disponibles ci-dessus comme modèles à copier.' => 'Untick the ones you do not need to remove them; they remain available above as templates to copy.',
 );

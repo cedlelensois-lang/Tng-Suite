@@ -3682,6 +3682,12 @@ msgstr ""
 msgid "Dans les fiches, ajouter aussi les événements datés des listes cochées survenus entre la naissance et le décès de la personne (« Faits marquants de son vivant : 1939 : … ; 1975 : … ») ; nécessite des dates de naissance et de décès, et allonge les fiches"
 msgstr ""
 
+msgid "Listes fournies proposées dans le formulaire du livre"
+msgstr ""
+
+msgid "Décochez celles dont vous n’avez pas besoin pour les retirer ; elles restent disponibles ci-dessus comme modèles à copier."
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""

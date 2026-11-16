@@ -65,16 +65,25 @@ class TNGBook_History {
         update_option(self::OPT, $lists, false);
     }
 
-    /** Identifiants des listes modèles (« tpl-FR »…). */
+    const OPT_HIDE = 'tngbook_history_hidden';
+
+    /** Listes fournies que l'utilisateur a retirées du formulaire du livre (elles restent disponibles comme modèles à copier). */
+    public static function hidden_templates() {
+        $h = get_option(self::OPT_HIDE, []);
+        return is_array($h) ? array_values(array_filter(array_map('strval', $h), function ($id) { return strpos($id, 'tpl-') === 0 && isset(self::countries()[substr($id, 4)]); })) : [];
+    }
+
+    /** Identifiants des listes fournies encore proposées (« tpl-FR »…). */
     public static function template_ids() {
-        return array_map(function ($c) { return 'tpl-' . $c; }, array_keys(self::countries()));
+        $hid = self::hidden_templates();
+        return array_values(array_filter(array_map(function ($c) { return 'tpl-' . $c; }, array_keys(self::countries())), function ($id) use ($hid) { return !in_array($id, $hid, true); }));
     }
 
     /** Choix proposés dans le formulaire du livre : id => libellé (listes de l'utilisateur d'abord). */
     public static function choices($lang) {
         $out = [];
         foreach (self::user_lists() as $id => $x) $out[$id] = $x['name'] !== '' ? $x['name'] : $id;
-        foreach (array_keys(self::countries()) as $c) $out['tpl-' . $c] = self::country_name($c, $lang);
+        foreach (self::template_ids() as $id) $out[$id] = self::country_name(substr($id, 4), $lang);
         return $out;
     }
 
@@ -150,7 +159,7 @@ class TNGBook_History {
             if (isset($user[$id])) {
                 $p = self::parse_entries($user[$id]['text']);
                 $sets[$id] = ['id' => $id, 'name' => $user[$id]['name'], 'match' => self::keywords($user[$id]['match']), 'events' => $p['events'], 'periods' => $p['periods']];
-            } elseif (strpos($id, 'tpl-') === 0 && isset(self::countries()[substr($id, 4)])) {
+            } elseif (strpos($id, 'tpl-') === 0 && isset(self::countries()[substr($id, 4)]) && !in_array($id, self::hidden_templates(), true)) {
                 $c = substr($id, 4);
                 $fr = $lang === 'fr';
                 $ev = [];
@@ -567,7 +576,7 @@ class TNGBook_History {
             $h .= '</div>';
         }
         $h .= '<p style="margin:6px 0 4px"><strong>' . esc_html(tngs_t('Listes fournies (textes en français, ou en anglais si le livre est dans une autre langue : copiez-en une dans vos listes pour la traduire)')) . '</strong></p><div>';
-        foreach (self::countries() as $c => $n) $h .= $box('tpl-' . $c, $ch['tpl-' . $c]);
+        foreach (self::template_ids() as $id) $h .= $box($id, $ch[$id]);
         $h .= '</div>';
         $sc = (string) ($o['history_scope'] ?? 'all') === 'place' ? 'place' : 'all';
         $h .= '<p style="margin:10px 0 0"><label>' . esc_html(tngs_t('Listes cochées appliquées')) . ' : <select name="' . esc_attr($name) . '[history_scope]"><option value="all"' . selected($sc, 'all', false) . '>' . esc_html(tngs_t('à tout le livre (toutes les personnes)')) . '</option><option value="place"' . selected($sc, 'place', false) . '>' . esc_html(tngs_t('selon le lieu de naissance de chaque personne (mots-clés de lieu)')) . '</option></select></label></p>';
@@ -627,6 +636,10 @@ class TNGBook_History {
         };
         foreach ($lists as $id => $x) $block($id, $x);
         $block('new', ['name' => '', 'match' => '', 'text' => '']);
+        echo '<input type="hidden" name="hist_tpl_form" value="1"><p style="margin:14px 0 4px"><strong>' . esc_html(tngs_t('Listes fournies proposées dans le formulaire du livre')) . '</strong> <span class="description">' . esc_html(tngs_t('Décochez celles dont vous n’avez pas besoin pour les retirer ; elles restent disponibles ci-dessus comme modèles à copier.')) . '</span></p><div style="max-width:900px;margin:0 0 6px">';
+        $hid = self::hidden_templates();
+        foreach (self::countries() as $c => $n) echo '<label style="display:inline-block;min-width:170px;margin:0 12px 4px 0"><input type="checkbox" name="hist_tpl[]" value="' . esc_attr($c) . '"' . (in_array('tpl-' . $c, $hid, true) ? '' : ' checked') . '> ' . esc_html($n[0] . ' / ' . $n[1]) . '</label>';
+        echo '</div>';
         echo '<p><label>' . esc_html(tngs_t('Importer une liste (fichier .txt exporté) :')) . ' <input type="file" name="hist_file" accept=".txt,text/plain"></label></p>';
         echo '<p class="submit"><button type="submit" class="button button-primary" name="hist_current" value="" id="tngh-save">' . esc_html(tngs_t('Enregistrer la liste')) . '</button></p></form>';
         echo '<script type="application/json" id="tngh-tpl">' . wp_json_encode($tpl, JSON_HEX_TAG | JSON_HEX_AMP) . '</script>';
@@ -694,6 +707,12 @@ class TNGBook_History {
             wp_safe_redirect(add_query_arg($args, admin_url('admin.php')) . '#tngbook-settings');   // section « Livre : réglages » (un identifiant inconnu ouvrirait la première section)
             exit;
         };
+        if (!empty($_POST['hist_tpl_form'])) {   // listes fournies à garder dans le formulaire du livre
+            $shown = array_map('sanitize_text_field', (array) wp_unslash($_POST['hist_tpl'] ?? []));
+            $hide = [];
+            foreach (array_keys(self::countries()) as $c) if (!in_array($c, $shown, true)) $hide[] = 'tpl-' . $c;
+            update_option(self::OPT_HIDE, $hide, false);
+        }
         $del = sanitize_text_field(wp_unslash($_POST['hist_delete'] ?? ''));
         if ($del !== '') {
             if (isset($lists[$del])) { unset($lists[$del]); self::save_user_lists($lists); }

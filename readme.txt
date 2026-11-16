@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.11.3
+Stable tag: 2.11.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,6 +81,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.11.4 =
+* Livre : les listes de faits historiques fournies par défaut peuvent être retirées du formulaire du livre (Livre > Réglages > Faits historiques : décochez-les). Elles restent disponibles comme modèles à copier dans vos listes.
 
 = 2.11.3 =
 * Livre : nouvelle option « Dans les fiches, ajouter aussi les événements datés des listes cochées survenus entre la naissance et le décès » (cochée par défaut) : une ligne « Faits marquants de son vivant : 1939 : … ; 1975 : … » sous la fiche. Les fiches n'affichaient que les périodes (« date .. date | nom ») : une liste faite d'événements seulement ne donnait donc rien.
