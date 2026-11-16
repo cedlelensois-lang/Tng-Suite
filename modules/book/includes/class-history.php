@@ -169,7 +169,8 @@ class TNGBook_History {
      * ont, une seule choisie vaut pour tout le monde, plusieurs : celles dont un mot-clé est un élément du lieu de naissance (de la fin vers le
      * début), à défaut la liste par défaut (sauf si le lieu nomme un pays connu mais sans liste choisie : alors aucune).
      */
-    public static function pick(array $sets, $place, $default = '') {
+    public static function pick(array $sets, $place, $default = '', $scope = 'place') {
+        if ($scope === 'all') return array_values($sets);   // listes cochées : pour tout le livre, sans tenir compte du lieu
         $reg = [];
         $com = [];
         foreach ($sets as $s) {
@@ -244,6 +245,20 @@ class TNGBook_History {
             if ($lo >= $a && $hi <= $b) $hits[] = $i;
         }
         return $hits;
+    }
+
+    /** Fusionne les périodes de même nom issues de plusieurs listes (ex. « la Première Guerre mondiale » en France et en Belgique) : du plus tôt début à la plus tardive fin, par ordre chronologique. */
+    public static function merge_periods(array $periods) {
+        $m = [];
+        foreach ($periods as $p) {
+            $k = self::norm($p[2]) !== '' ? self::norm($p[2]) : $p[2];
+            if (!isset($m[$k])) { $m[$k] = $p; continue; }
+            if (self::bound($p[0], false) < self::bound($m[$k][0], false)) $m[$k][0] = $p[0];
+            if (self::bound($p[1], true) > self::bound($m[$k][1], true)) $m[$k][1] = $p[1];
+        }
+        $m = array_values($m);
+        usort($m, function ($a, $b) { return strcmp(self::bound($a[0], false), self::bound($b[0], false)); });
+        return $m;
     }
 
     private static function bound($s, $end) {
@@ -512,7 +527,7 @@ class TNGBook_History {
         $cu = self::legacy_custom_list($in['history_custom'] ?? '');
         if ($cu !== '') $ids[] = $cu;
         $c = strtoupper((string) ($in['history_country'] ?? 'FR'));
-        return ['history_lists' => $ids, 'history_default' => isset(self::countries()[$c]) ? 'tpl-' . $c : 'tpl-FR'];
+        return ['history_lists' => $ids, 'history_default' => isset(self::countries()[$c]) ? 'tpl-' . $c : 'tpl-FR', 'history_scope' => 'place'];
     }
 
     /** Listes cochées dans un formulaire : ne garde que les listes qui existent. */
@@ -523,7 +538,7 @@ class TNGBook_History {
             if ($id !== '' && self::is_known($id) && !in_array($id, $ids, true)) $ids[] = $id;
         }
         $def = sanitize_text_field((string) ($in['history_default'] ?? ''));
-        return ['history_lists' => $ids, 'history_default' => in_array($def, $ids, true) ? $def : ''];
+        return ['history_lists' => $ids, 'history_default' => in_array($def, $ids, true) ? $def : '', 'history_scope' => (($in['history_scope'] ?? '') === 'place') ? 'place' : 'all'];
     }
 
     private static function new_id(array $lists) {
@@ -554,10 +569,12 @@ class TNGBook_History {
         $h .= '<p style="margin:6px 0 4px"><strong>' . esc_html(tngs_t('Listes fournies (textes français ou anglais selon la langue du livre)')) . '</strong></p><div>';
         foreach (self::countries() as $c => $n) $h .= $box('tpl-' . $c, $ch['tpl-' . $c]);
         $h .= '</div>';
-        $h .= '<p style="margin:8px 0 0"><label>' . esc_html(tngs_t('Liste par défaut (lieux de naissance sans mot-clé reconnu)')) . ' : <select name="' . esc_attr($name) . '[history_default]"><option value="">' . esc_html(tngs_t('la première liste cochée')) . '</option>';
+        $sc = (string) ($o['history_scope'] ?? 'all') === 'place' ? 'place' : 'all';
+        $h .= '<p style="margin:10px 0 0"><label>' . esc_html(tngs_t('Listes cochées appliquées')) . ' : <select name="' . esc_attr($name) . '[history_scope]"><option value="all"' . selected($sc, 'all', false) . '>' . esc_html(tngs_t('à tout le livre (toutes les personnes)')) . '</option><option value="place"' . selected($sc, 'place', false) . '>' . esc_html(tngs_t('selon le lieu de naissance de chaque personne (mots-clés de lieu)')) . '</option></select></label></p>';
+        $h .= '<p style="margin:8px 0 0"><label>' . esc_html(tngs_t('Liste par défaut (utilisée selon le lieu de naissance : lieux sans mot-clé reconnu)')) . ' : <select name="' . esc_attr($name) . '[history_default]"><option value="">' . esc_html(tngs_t('la première liste cochée')) . '</option>';
         foreach ($ch as $id => $l) $h .= '<option value="' . esc_attr($id) . '"' . selected((string) ($o['history_default'] ?? ''), $id, false) . '>' . esc_html($l) . '</option>';
         $h .= '</select></label></p>';
-        $h .= '<p class="description">' . esc_html(tngs_t('Utilisé quand la chronologie est réglée sur « avec contexte historique » ou que le contexte historique des fiches est coché. Une seule liste cochée vaut pour tout le livre ; avec plusieurs, chaque personne reçoit les listes dont un mot-clé de lieu figure dans son lieu de naissance (une liste sans mot-clé vaut pour tout le monde), et un pays n’apparaît dans la chronologie que s’il compte au moins deux personnes du livre (ou 3 %).'));
+        $h .= '<p class="description">' . esc_html(tngs_t('Utilisé quand la chronologie est réglée sur « avec contexte historique » ou que le contexte historique des fiches est coché. Choisissez ici, pour chaque livre, les listes à afficher. « À tout le livre » : toutes les listes cochées valent pour toutes les personnes. « Selon le lieu de naissance » : avec plusieurs listes, chaque personne reçoit celles dont un mot-clé de lieu figure dans son lieu de naissance (une liste sans mot-clé vaut pour tout le monde), et une liste n’apparaît dans la chronologie que si elle concerne au moins deux personnes du livre (ou 3 %).'));
         if ($admin) $h .= ' <a href="#tngbook-settings">' . esc_html(tngs_t('Créez et modifiez vos listes dans Livre > Réglages > Faits historiques.')) . '</a>';
         $h .= '</p></td></tr>';
         return $h;

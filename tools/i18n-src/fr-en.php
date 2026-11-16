@@ -1223,4 +1223,9 @@ return array(
 	'Importer une liste (fichier .txt exporté) :' => 'Import a list (exported .txt file):',
 	'Enregistrer les listes' => 'Save lists',
 	'Liste introuvable.' => 'List not found.',
+	'Listes cochées appliquées' => 'Ticked lists applied',
+	'à tout le livre (toutes les personnes)' => 'to the whole book (everyone)',
+	'selon le lieu de naissance de chaque personne (mots-clés de lieu)' => 'according to each person’s birthplace (place keywords)',
+	'Liste par défaut (utilisée selon le lieu de naissance : lieux sans mot-clé reconnu)' => 'Default list (used by birthplace: places without a recognised keyword)',
+	'Utilisé quand la chronologie est réglée sur « avec contexte historique » ou que le contexte historique des fiches est coché. Choisissez ici, pour chaque livre, les listes à afficher. « À tout le livre » : toutes les listes cochées valent pour toutes les personnes. « Selon le lieu de naissance » : avec plusieurs listes, chaque personne reçoit celles dont un mot-clé de lieu figure dans son lieu de naissance (une liste sans mot-clé vaut pour tout le monde), et une liste n’apparaît dans la chronologie que si elle concerne au moins deux personnes du livre (ou 3 %).' => 'Used when the chronology is set to “with historical background” or when the historical background of the sheets is ticked. Choose here, for each book, the lists to display. “To the whole book”: all ticked lists apply to everyone. “According to birthplace”: with several lists, each person gets those with a place keyword found in their birthplace (a list without keywords applies to everyone), and a list only appears in the chronology if it concerns at least two people in the book (or 3%).',
 );

@@ -445,8 +445,9 @@ class TNGBook_Renderer {
         $isB = trim((string) $p['birthdate']) !== '' && self::pd($p['birthdatetr']);
         $place = $isB ? (string) $p['birthplace'] : (string) ($p['baptplace'] ?? '');
         $per = [];   // périodes des listes qui s'appliquent à cette personne
-        foreach (TNGBook_History::pick($this->histSets(), $place, (string) ($this->o['history_default'] ?? '')) as $set) $per = array_merge($per, $set['periods']);
+        foreach (TNGBook_History::pick($this->histSets(), $place, (string) ($this->o['history_default'] ?? ''), (string) ($this->o['history_scope'] ?? 'all')) as $set) $per = array_merge($per, $set['periods']);
         if (!$per) return '';
+        $per = TNGBook_History::merge_periods($per);
         $isD = trim((string) $p['deathdate']) !== '' && self::pd($p['deathdatetr']);
         $ev = [['hx_birth', $isB ? $p['birthdatetr'] : ($p['baptdatetr'] ?? '')], ['hx_death', $isD ? $p['deathdatetr'] : ($p['burialdatetr'] ?? '')]];
         foreach ($unions as $fid) {
@@ -2062,6 +2063,7 @@ class TNGBook_Renderer {
         $hist = !empty($this->o['history']);
         $hDef = (string) ($this->o['history_default'] ?? '');
         $hSets = $hist ? $this->histSets() : [];
+        $hScope = (string) ($this->o['history_scope'] ?? 'all');
         $cc = [];   // liste (avec mots-clés de lieu) => nombre de personnes et années extrêmes
         $nDated = 0; $allMin = 9999; $allMax = 0;   // personnes datées et années extrêmes de tout le livre
         foreach ($ids as $pid => $kind) {
@@ -2080,7 +2082,7 @@ class TNGBook_Renderer {
                     $nDated++;
                     $allMin = min($allMin, min($hy));
                     $allMax = max($allMax, max($hy));
-                    foreach (TNGBook_History::pick($hSets, $bpl, $hDef) as $set) {
+                    foreach (TNGBook_History::pick($hSets, $bpl, $hDef, $hScope) as $set) {
                         if (!$set['match']) continue;
                         $id = $set['id'];
                         $cc[$id] = $cc[$id] ?? ['n' => 0, 'min' => 9999, 'max' => 0];
@@ -2113,7 +2115,7 @@ class TNGBook_Renderer {
             $nReg = 0;
             foreach ($hSets as $set) if ($set['match']) $nReg++;
             $keep = [];
-            foreach ($cc as $id => $c) if ($nReg === 1 || ($c['n'] >= 2 && $c['n'] >= 0.03 * $nDated)) $keep[$id] = $c;
+            foreach ($cc as $id => $c) if ($hScope === 'all' || $nReg === 1 || ($c['n'] >= 2 && $c['n'] >= 0.03 * $nDated)) $keep[$id] = $c;
             if (!$keep && $cc) { uasort($cc, function ($a, $b) { return $b['n'] - $a['n']; }); $keep = array_slice($cc, 0, 1, true); }
             $multi = count($keep) > 1;
             $minAll = $allMin; $maxAll = $allMax;

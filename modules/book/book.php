@@ -89,7 +89,7 @@ final class TNGBook {
             'personID' => '', 'tree' => '', 'lang' => tngs_lang(),
             'gen_up' => 6, 'gen_down' => 4, 'max_people' => self::MAX_PEOPLE, 'living' => 'anonymize', 'place_parts' => 2,
             'photos' => 1, 'spphotos' => 1, 'spfiche' => 1, 'generic' => 1, 'avatar' => 'portrait', 'sources' => 1, 'index' => 1, 'notes' => 0, 'military' => 0, 'mpf' => 1, 'mini' => 0, 'imgq' => 0, 'trees' => 1, 'stats' => 1, 'stats_first' => 1, 'stats_last' => 1, 'desclist' => 1, 'chrono' => 0, 'kids' => 1, 'histfiche' => 0, 'map' => 0, 'bapt' => 0, 'burial' => 1, 'verbose' => 0, 'country' => 0, 'regions' => 0, 'asclist' => 0, 'resi' => 0, 'sibs' => 0, 'marrage' => 0, 'cous' => 1, 'allunions' => 1, 'order' => ['asc', 'desc', 'stats', 'chrono', 'map', 'idxn', 'idxp', 'src', 'alist', 'dlist'],
-            'title' => '', 'author' => '', 'preface' => '', 'surname' => '', 'surname_title' => '', 'format' => 'html', 'template' => 'classic', 'frame' => 'none', 'cover_art' => 'tree', 'history' => 0, 'history_lists' => [tngs_lang() === 'fr' ? 'tpl-FR' : 'tpl-GB'], 'history_default' => '',
+            'title' => '', 'author' => '', 'preface' => '', 'surname' => '', 'surname_title' => '', 'format' => 'html', 'template' => 'classic', 'frame' => 'none', 'cover_art' => 'tree', 'history' => 0, 'history_lists' => [tngs_lang() === 'fr' ? 'tpl-FR' : 'tpl-GB'], 'history_default' => '', 'history_scope' => 'all',
             'colors' => TNGBook_Renderer::defaultColors(),
         ];
     }
@@ -338,9 +338,10 @@ final class TNGBook {
         $out['template'] = isset(TNGBook_Renderer::templates()[$tp]) ? $tp : 'classic';
         if (array_key_exists('history_lists', $in)) $sel = TNGBook_History::sanitize_selection($in);
         elseif (array_key_exists('history_country', $in) || array_key_exists('history_custom', $in)) $sel = TNGBook_History::legacy_selection($in);   // profil enregistré avant la 2.10.0
-        else $sel = ['history_lists' => (array) ($base['history_lists'] ?? []), 'history_default' => (string) ($base['history_default'] ?? '')];
+        else $sel = ['history_lists' => (array) ($base['history_lists'] ?? []), 'history_default' => (string) ($base['history_default'] ?? ''), 'history_scope' => (string) ($base['history_scope'] ?? 'all')];
         $out['history_lists'] = $sel['history_lists'];
         $out['history_default'] = $sel['history_default'];
+        $out['history_scope'] = $sel['history_scope'];
         unset($out['history_country'], $out['history_custom']);
         $fr = (string) ($in['frame'] ?? 'none');
         $out['frame'] = in_array($fr, ['single', 'double', 'ornate'], true) ? $fr : 'none';
@@ -777,7 +778,7 @@ final class TNGBook {
             'notes' => (bool) $o['notes'], 'military' => (bool) $o['military'], 'mpf' => !empty($o['mpf']), 'mini' => !empty($o['mini']), 'imgq' => !empty($o['imgq']), 'trees' => !empty($o['trees']), 'stats' => !empty($o['stats']), 'stats_first' => !empty($o['stats_first']), 'stats_last' => !empty($o['stats_last']), 'desclist' => !empty($o['desclist']), 'chrono' => !empty($o['chrono']), 'map' => !empty($o['map']), 'bapt' => !empty($o['bapt']), 'burial' => !empty($o['burial']), 'verbose' => !empty($o['verbose']), 'country' => !empty($o['country']), 'regions' => !empty($o['regions']), 'asclist' => !empty($o['asclist']), 'resi' => !empty($o['resi']), 'sibs' => !empty($o['sibs']), 'cous' => !empty($o['cous']), 'allunions' => !empty($o['allunions']), 'marrage' => !empty($o['marrage']),
             'debug' => $debug, 'place_parts' => (int) $o['place_parts'],
             'title' => $o['title'], 'author' => $o['author'], 'preface' => $o['preface'], 'surname' => (string) ($o['surname'] ?? ''), 'surname_title' => (string) ($o['surname_title'] ?? ''), 'colors' => $o['colors'] ?? [],
-            'template' => $o['template'] ?? 'classic', 'frame' => in_array($o['frame'] ?? '', ['single', 'double', 'ornate'], true) ? $o['frame'] : 'none', 'cover_art' => in_array($o['cover_art'] ?? 'tree', TNGBook_Art::cover_choices(), true) ? $o['cover_art'] : 'tree', 'kids' => !empty($o['kids']), 'histfiche' => !empty($o['histfiche']), 'history' => !empty($o['history']), 'history_lists' => (array) ($o['history_lists'] ?? []), 'history_default' => (string) ($o['history_default'] ?? ''), 'order' => self::clean_order($o['order'] ?? null),
+            'template' => $o['template'] ?? 'classic', 'frame' => in_array($o['frame'] ?? '', ['single', 'double', 'ornate'], true) ? $o['frame'] : 'none', 'cover_art' => in_array($o['cover_art'] ?? 'tree', TNGBook_Art::cover_choices(), true) ? $o['cover_art'] : 'tree', 'kids' => !empty($o['kids']), 'histfiche' => !empty($o['histfiche']), 'history' => !empty($o['history']), 'history_lists' => (array) ($o['history_lists'] ?? []), 'history_default' => (string) ($o['history_default'] ?? ''), 'history_scope' => (string) ($o['history_scope'] ?? 'all'), 'order' => self::clean_order($o['order'] ?? null),
             'tng_path' => $o['tng_path'], 'photo_folder' => $o['photo_folder'],
         ];
         $narr = !empty(TNGBook_Renderer::templates()[$opts['template']]['narr']);
