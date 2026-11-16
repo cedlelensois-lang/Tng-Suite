@@ -53,6 +53,7 @@ Remarques :
 
 - WordPress ne lance ses tâches que lorsque le site est visité : l’heure est approximative. Pour une heure précise, programmez une tâche cron du serveur qui appelle `wp-cron.php` (par exemple toutes les heures).
 - Le PDF direct utilise mPDF, inclus dans le plugin (zip des Releases comme code source GitHub). Si vous l’avez supprimé, lancez `composer install --no-dev` dans `modules/book` ; sans mPDF, la génération d’un profil au format PDF échoue (message dans la colonne « Dernière génération »).
+- Notes d’événements : avec l’option « Notes », chaque événement affiché dans une fiche (naissance, baptême, profession, résidences, mariage, divorce, décès, inhumation, événements militaires) est suivi de ses notes TNG.
 - Les photos ou notes modifiées sans changement des fiches ne sont pas détectées par l’option « seulement si les données ont changé » : utilisez **Générer maintenant**.
 
 ## Génération en arrière-plan (bêta)

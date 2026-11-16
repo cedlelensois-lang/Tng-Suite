@@ -53,6 +53,7 @@ Notes:
 
 - WordPress only runs its tasks when the site is visited, so the time is approximate. For an exact time, set up a server cron job that calls `wp-cron.php` (for example every hour).
 - Direct PDF uses mPDF, included in the plugin (Releases zip and GitHub source alike). If you removed it, run `composer install --no-dev` in `modules/book`; without mPDF, generating a PDF profile fails (message in the “Last generation” column).
+- Event notes: with the “Notes” option, each event shown in a record (birth, baptism, occupation, residences, marriage, divorce, death, burial, military events) is followed by its TNG notes.
 - Photos or notes changed without any change to the records are not detected by “only if the data has changed”: use **Generate now**.
 
 ## Background generation (beta)

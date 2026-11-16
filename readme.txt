@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.8.8
+Stable tag: 2.8.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,6 +81,10 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.8.9 =
+* Livre : les notes des événements sont affichées pour tous les événements présents dans la fiche (profession, résidences, baptême, divorce en plus de la naissance, du mariage, du décès, de l'inhumation et des événements militaires).
+* Livre (PDF) : la photo suit désormais le titre de la fiche ; le filet sous le titre ne passe plus par-dessus la photo.
 
 = 2.8.8 =
 * Livre : le contexte historique des fiches (« a vécu… ») fonctionne aussi sans date de naissance, à partir d'un mariage connu : une personne décédée deux jours après l'armistice a bien vécu la guerre.

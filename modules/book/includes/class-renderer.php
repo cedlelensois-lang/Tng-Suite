@@ -9,7 +9,7 @@ class TNGBook_Renderer {
     private $d, $L, $lang, $o, $mode;
     use TNGBook_StatsView;
 
-    private $Ls = [], $tpl = [], $names = [], $places = [], $srcNum = [], $srcOrder = [], $toc = [], $av = [], $avRnd = [], $dbg = [];
+    private $resiIds = [], $Ls = [], $tpl = [], $names = [], $places = [], $srcNum = [], $srcOrder = [], $toc = [], $av = [], $avRnd = [], $dbg = [];
 
     /** $mode : 'html' (images par URL) ou 'pdf' (images intégrées en base64) */
     public function __construct($d, $lang, array $o, $mode) {
@@ -747,11 +747,13 @@ class TNGBook_Renderer {
         if (!$list) return '';
         $L = $this->L;
         $seen = []; $items = [];
+        $this->resiIds = [];
         foreach ($list as $r) {
             $s = $this->placeShort($r[0]);
             $k = TNGBook_Map::norm($s);
             if ($s === '' || isset($seen[$k])) continue;
             $seen[$k] = true;
+            if (!empty($r[2])) $this->resiIds[] = $r[2];
             $this->places[$s][$ref] = true;
             // séparer « Ville, Dép. » du pays entre parenthèses, que l'on n'écrit que lorsqu'il change
             $base = $s; $cty = '';
@@ -797,6 +799,12 @@ class TNGBook_Renderer {
         }
         if ($d === '' && $pl === '') return '';
         return $this->e(($short ? $this->Ls : $this->L)['bapt'][$sex] . ($d !== '' ? ' ' . $d : '')) . ($pl !== '' ? ' ' . $pl : '');
+    }
+
+    /** Notes de l'événement de baptême affiché : celui de la naissance alternative (CHR / BAPM / CHRA), sinon le baptême propre (BAPL). */
+    private function baptNotes($pid, $p) {
+        $t = strtoupper(trim((string) ($p['altbirthtype'] ?? '')));
+        return $this->evNotes($pid, in_array($t, ['CHR', 'BAPM', 'CHRA'], true) && ($this->d->evnotes[$pid][$t] ?? false) ? [$t] : ['BAPL', 'BAPT']);
     }
 
     /** « Inhumé le … à … » ou « Incinéré le … » (option « Sépulture »), sinon chaîne vide. */
@@ -1041,8 +1049,9 @@ class TNGBook_Renderer {
         $sex = $this->sx($p['sex']);
 
         if ($d->hidden($pid)) {
-            return '<div class="fiche anon" id="' . esc_attr($ref) . '">' . $this->photoTag($pid, $sex, true)
-                . '<h4><span class="num">' . $this->e($ref) . '</span> ' . $this->e($L['living']) . '</h4></div>';
+            $ph = $this->photoTag($pid, $sex, true);
+            return '<div class="fiche anon" id="' . esc_attr($ref) . '">' . ($this->mode === 'pdf' ? '' : $ph)
+                . '<h4><span class="num">' . $this->e($ref) . '</span> ' . $this->e($L['living']) . '</h4>' . ($this->mode === 'pdf' ? $ph : '') . '</div>';
         }
 
         $narr = !empty($this->tpl['narr']);
@@ -1050,13 +1059,15 @@ class TNGBook_Renderer {
         $yr = $this->years($pid);
         $symbol = $sex === 'M' ? '♂' : ($sex === 'F' ? '♀' : '');
         $hasNotes = !empty($this->o['notes']) && !empty($d->notes[$pid]);
-        $html = '<div class="fiche' . ($hasNotes ? ' hasnotes' : '') . '" id="' . esc_attr($ref) . '">' . $this->photoTag($pid, $sex, false);
+        $phHtml = $this->photoTag($pid, $sex, false);
+        $html = '<div class="fiche' . ($hasNotes ? ' hasnotes' : '') . '" id="' . esc_attr($ref) . '">' . ($this->mode === 'pdf' ? '' : $phHtml);   // PDF : la photo suit le titre, sinon mPDF fait passer le filet du titre par-dessus
         if ($narr) {
             $html .= '<h4><span class="num">' . $this->e($ref) . ' -</span> <span class="nm">' . $this->e($this->plain($pid)) . '</span>.</h4>';
         } else {
             $html .= '<h4><span class="num">' . $this->e($ref) . '</span> ' . $this->e($this->plain($pid))
                 . ($symbol ? ' <span class="sx">' . $symbol . '</span>' : '') . ($yr ? ' <span class="yrs">' . $this->e($yr) . '</span>' : '') . '</h4>';
         }
+        if ($this->mode === 'pdf') $html .= $phHtml;
 
         /* Mini-arbre d'ascendance (parents et grands-parents) en tête de la fiche d'un ancêtre */
         if (!empty($this->o['mini']) && $ref[0] === 'A') $html .= $this->miniTree((int) substr($ref, 1));
@@ -1072,7 +1083,7 @@ class TNGBook_Renderer {
             if ($bits) $html .= '<p>' . self::cap($bits[0]) . '.</p>';
             $html .= $this->evNotes($pid, ['BIRT']);
             $bb = $this->baptBit($p, $sex, $ref);
-            if ($bb !== '') $html .= '<p>' . $bb . '.</p>';
+            if ($bb !== '') $html .= '<p>' . $bb . '.</p>' . $this->baptNotes($pid, $p);
         } else {
             if ($par !== '') $bits[] = $par;
             if ($bits) {
@@ -1081,7 +1092,7 @@ class TNGBook_Renderer {
             }
             $html .= $this->evNotes($pid, ['BIRT']);
             $bb = $this->baptBit($p, $sex, $ref);
-            if ($bb !== '') $html .= '<p>' . $bb . '.</p>';
+            if ($bb !== '') $html .= '<p>' . $bb . '.</p>' . $this->baptNotes($pid, $p);
         }
 
         /* Décès et inhumation (calculés ici : le modèle « récit » les place juste après la naissance) */
@@ -1123,12 +1134,16 @@ class TNGBook_Renderer {
             $occ = (!empty($this->o['verbose']) && !empty($L['vb']))
                 ? $this->e(str_replace('{o}', implode(', ', $d->occ[$pid]), $L['vb'][(int) ($p['living'] ?? 0) === 1 ? 'occ_now' : 'occ'][$sex])) . '.'
                 : $this->e($L['occupation'] . $L['colon'] . implode(', ', $d->occ[$pid])) . '.';
-            if ($narr) $other[] = $occ; else $html .= '<p>' . $occ . '</p>';
+            $occNotes = $this->evNotes($pid, $d->occEv[$pid] ?? []);
+            if ($narr) $other[] = $occ . $occNotes; else $html .= '<p>' . $occ . '</p>' . $occNotes;
         }
 
         /* Lieux de résidence, du plus ancien au plus récent */
         $resi = $this->resiSentence($pid, $sex, $ref);
-        if ($resi !== '') { if ($narr) $other[] = $resi; else $html .= '<p>' . $resi . '</p>'; }
+        if ($resi !== '') {
+            $resiNotes = $this->evNotes($pid, $this->resiIds);
+            if ($narr) $other[] = $resi . $resiNotes; else $html .= '<p>' . $resi . '</p>' . $resiNotes;
+        }
 
         /* Informations militaires */
         if (!empty($this->o['military']) && !empty($d->mil[$pid])) {
@@ -1168,7 +1183,7 @@ class TNGBook_Renderer {
                     $eu = $this->endUnion($pid, $fid);
                     if ($eu !== '') $s = ($s !== '' ? $s . ' ' : '') . $eu;
                     if ($s !== '') $html .= '<p>' . $this->spPhoto($pid, $fid) . $s . '</p>';
-                    $html .= $this->famEvNotes($fid, ['MARR']) . $this->famNotes($fid) . $this->narrKids($fid, $ref, 'A');
+                    $html .= $this->famEvNotes($fid, $eu !== '' ? ['MARR', 'DIV'] : ['MARR']) . $this->famNotes($fid) . $this->narrKids($fid, $ref, 'A');
                     continue;
                 }
                 $spouse = ($f['husband'] === $pid) ? $f['wife'] : $f['husband'];
@@ -1189,7 +1204,12 @@ class TNGBook_Renderer {
                 $eu = $this->endUnion($pid, $fid);
                 if ($eu !== '') $s = ($s !== '' ? $s . ' ' : '') . $eu;
                 if ($s !== '') $html .= '<p>' . $this->spPhoto($pid, $fid) . $s . '</p>';
-                $html .= $this->famEvNotes($fid, ['MARR']);
+                $html .= $this->famEvNotes($fid, $eu !== '' ? ['MARR', 'DIV'] : ['MARR']);
+                if ($pre !== '') {   // fin de l'union précédente (divorce) rappelée dans la phrase : sa note aussi
+                    $fl = $d->famsOf[$pid] ?? [];
+                    $ix = array_search($fid, $fl, true);
+                    if ($ix !== false && $ix > 0 && trim((string) ($d->fams[$fl[$ix - 1]]['divdate'] ?? '')) !== '') $html .= $this->famEvNotes($fl[$ix - 1], ['DIV']);
+                }
                 $html .= $this->famNotes($fid);
                 if ($prefer === 'D') $html .= $narr ? $this->narrKids($fid, $ref, 'D') : $this->childrenList($fid);
                 elseif (!$narr && !empty($this->o['kids'])) {   // ascendance : liste des enfants, dans la fiche du mari (ou du seul conjoint présent)

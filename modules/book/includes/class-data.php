@@ -9,7 +9,7 @@ class TNGBook_Data {
     public $people = [], $fams = [], $kidsOf = [], $famsOf = [], $parentFam = [], $famsLoaded = [];
     public $sosa = [], $sosaOf = [], $collapse = [];
     public $desc = [], $descGen = [], $childNum = [], $dupDesc = [], $dupPid = [], $listed = [];
-    public $occ = [], $photos = [], $cites = [], $sources = [];
+    public $occ = [], $occEv = [], $photos = [], $cites = [], $sources = [];
     public $photoDir = '';
     public $notes = [], $mil = [], $mpf = [];
     private $noDiv = false;   // colonnes divdate / divdatetr absentes de la table des familles
@@ -376,11 +376,11 @@ class TNGBook_Data {
                 if ($v === '') continue;
                 $tr = trim((string) ($r['eventdatetr'] ?? ''));
                 if ($tr === '' || strpos($tr, '0000') === 0) $tr = '9999-99-99';      // sans date : après les autres, dans l'ordre de saisie
-                $tmp[$r['persfamID']][] = [$v, $tr, $i];
+                $tmp[$r['persfamID']][] = [$v, $tr, $i, (string) $r['eventID']];
             }
             foreach ($tmp as $pid => $list) {
                 usort($list, function ($a, $b) { return $a[1] === $b[1] ? $a[2] - $b[2] : strcmp($a[1], $b[1]); });
-                $this->resiEv[$pid] = array_map(function ($x) { return [$x[0], $x[1]]; }, $list);
+                $this->resiEv[$pid] = array_map(function ($x) { return [$x[0], $x[1], $x[3]]; }, $list);
             }
         }
     }
@@ -406,12 +406,13 @@ class TNGBook_Data {
 
     private function loadOcc(array $pids) {
         foreach ($this->chunks($pids) as $ch) {
-            $rows = $this->rows("SELECT e.persfamID, e.info FROM {$this->t('events')} e INNER JOIN {$this->t('eventtypes')} t ON t.eventtypeID = e.eventtypeID WHERE t.tag = 'OCCU' AND t.type = 'I' AND " . $this->g('e.') . ' AND e.persfamID IN (' . $this->in($ch) . ") AND e.info <> '' ORDER BY e.eventdatetr");
+            $rows = $this->rows("SELECT e.persfamID, e.info, e.eventID FROM {$this->t('events')} e INNER JOIN {$this->t('eventtypes')} t ON t.eventtypeID = e.eventtypeID WHERE t.tag = 'OCCU' AND t.type = 'I' AND " . $this->g('e.') . ' AND e.persfamID IN (' . $this->in($ch) . ") AND e.info <> '' ORDER BY e.eventdatetr");
             foreach ($rows as $r) {
                 $v = trim($r['info']);
                 if ($v !== '' && (!isset($this->occ[$r['persfamID']]) || !in_array($v, $this->occ[$r['persfamID']], true))) {
                     $this->occ[$r['persfamID']][] = $v;
                 }
+                if ($v !== '') $this->occEv[$r['persfamID']][] = (string) $r['eventID'];   // pour les notes de ces événements
             }
         }
     }
