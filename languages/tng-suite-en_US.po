@@ -2278,6 +2278,33 @@ msgstr "Trees: highlighted generation"
 msgid "Carte des lieux de vie en noir et blanc (nombre de personnes par département ou province ; fond de carte précis si des fichiers GeoJSON sont déposés dans le dossier data du module, voir le guide)"
 msgstr "Black-and-white map of places lived (number of people per département or province; precise base map if GeoJSON files are placed in the module’s data folder, see the guide)"
 
+msgid "Chêne et prairie"
+msgstr "Oak and meadow"
+
+msgid "Écorce et ciel d’été"
+msgstr "Bark and summer sky"
+
+msgid "Ciel de campagne"
+msgstr "Countryside sky"
+
+msgid "Terre et racines"
+msgstr "Earth and roots"
+
+msgid "Ferme en pierre et tuiles"
+msgstr "Stone farmhouse and tiles"
+
+msgid "Peinture impressionniste"
+msgstr "Impressionist painting"
+
+msgid "Coquelicot et feuillage"
+msgstr "Poppy and foliage"
+
+msgid "Prairie fleurie"
+msgstr "Flowering meadow"
+
+msgid "Pastel de la campagne"
+msgstr "Countryside pastel"
+
 msgid "Palettes harmonisées :"
 msgstr "Matching palettes:"
 

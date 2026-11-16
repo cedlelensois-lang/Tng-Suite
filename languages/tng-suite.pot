@@ -2278,6 +2278,33 @@ msgstr ""
 msgid "Carte des lieux de vie en noir et blanc (nombre de personnes par département ou province ; fond de carte précis si des fichiers GeoJSON sont déposés dans le dossier data du module, voir le guide)"
 msgstr ""
 
+msgid "Chêne et prairie"
+msgstr ""
+
+msgid "Écorce et ciel d’été"
+msgstr ""
+
+msgid "Ciel de campagne"
+msgstr ""
+
+msgid "Terre et racines"
+msgstr ""
+
+msgid "Ferme en pierre et tuiles"
+msgstr ""
+
+msgid "Peinture impressionniste"
+msgstr ""
+
+msgid "Coquelicot et feuillage"
+msgstr ""
+
+msgid "Prairie fleurie"
+msgstr ""
+
+msgid "Pastel de la campagne"
+msgstr ""
+
 msgid "Palettes harmonisées :"
 msgstr ""
 

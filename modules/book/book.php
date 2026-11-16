@@ -506,6 +506,15 @@ final class TNGBook {
             'Héritage & parchemin' => ['#333333', '#4b2e1f', '#8a6a44', '#2f1b12', '#786c5a', '#bbae9a', '#a76a3a'],
             'Ardoise & vieux rose' => ['#2e2e2e', '#2f4858', '#51728c', '#1f2933', '#6e7b87', '#bac6cf', '#a04b65'],
             'Vert sauge & cuivre' => ['#2d2d2d', '#33463a', '#58715f', '#223028', '#6d776f', '#b7c1b9', '#b07a44'],
+            'Chêne et prairie' => ['#252a1f', '#2d4a22', '#4f7a2f', '#2d4a22', '#62695a', '#8fae6b', '#6b8e3a'],
+            'Écorce et ciel d’été' => ['#2b241d', '#4a3524', '#6e4b2d', '#4a3524', '#6b6258', '#7fa3c9', '#2f6aa3'],
+            'Ciel de campagne' => ['#1f2733', '#2a4a73', '#3b6ea5', '#2a4a73', '#5d6b7d', '#8fb2d6', '#c97a3c'],
+            'Terre et racines' => ['#2c231b', '#5a3c22', '#8a5a32', '#5a3c22', '#6f6354', '#c0a07a', '#8a5a32'],
+            'Ferme en pierre et tuiles' => ['#2d2822', '#6b3b25', '#b0562e', '#6b3b25', '#756a5c', '#c9b08a', '#b0562e'],
+            'Peinture impressionniste' => ['#2a2a30', '#3d4f7a', '#5a73a8', '#3d4f7a', '#6a6e78', '#a9b88a', '#c0603b'],
+            'Coquelicot et feuillage' => ['#232620', '#3c5a2a', '#a8402a', '#3c5a2a', '#666a5c', '#98b070', '#a8402a'],
+            'Prairie fleurie' => ['#232a25', '#3a5a43', '#4f7a5a', '#3a5a43', '#65705f', '#a7bf9a', '#d17a2a'],
+            'Pastel de la campagne' => ['#2b2a30', '#4d4a6e', '#7a6aa6', '#4d4a6e', '#6c6a78', '#9cc5c0', '#c98a7a'],
             'Sobre (noir et gris)' => ['#000000', '#000000', '#333333', '#000000', '#555555', '#777777', '#000000'],
         ];
         $ord = ['text', 'title', 'head', 'name', 'meta', 'tree', 'treehl'];
