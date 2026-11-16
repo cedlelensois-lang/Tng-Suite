@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.13.0
+Stable tag: 2.13.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,6 +81,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.13.1 =
+* Livre : arbres de couverture, racines plus naturelles : le pied du tronc s'évase en courbe (plus de pointes ni de brindilles au-dessus du sol) ; dans l'arbre « racines », collet évasé et racines maîtresses irrégulières qui restent sous la ligne de sol, tronc plus long sans croisement ; dans l'arbre en couleurs, plus de branches de racines au-dessus de l'herbe.
 
 = 2.13.0 =
 * Livre : deux nouvelles pochettes pleine page (PDF), à l'aide d'illustrations fournies : « arbre aux étiquettes vierges et oiseaux, prairie fleurie » et « grand tronc, feuillage pastel et campagne ». Le titre se place dans la zone libre ; dans les autres formats, un arbre dessiné par le plugin les remplace.

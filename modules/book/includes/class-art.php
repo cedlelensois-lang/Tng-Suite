@@ -141,6 +141,23 @@ class TNGBook_Art {
         }
     }
 
+    /** Pied de tronc évasé : le tronc s'élargit en courbe creuse et se pose sur le sol, avec de petits renflements de racines. */
+    private static function flare($im, $x, $y, $tw, $fw, $fh, $col, $S, $asym = 0.0, $lean = 0.0) {
+        $n = 16; $L = array(); $R = array();
+        for ($i = 0; $i <= $n; $i++) {
+            $t = $i / $n; $e = pow($t, 2.3);
+            $bump = 1 + 0.07 * sin($t * 9.5) * $t;   // renflements des racines
+            $L[] = array($lean * (1 - $t) + $x - $tw / 2 - ($fw * (1 + $asym) - $tw / 2) * $e * $bump, $y - $fh + $fh * $t);
+            $R[] = array($lean * (1 - $t) + $x + $tw / 2 + ($fw * (1 - $asym) - $tw / 2) * $e * (2 - $bump), $y - $fh + $fh * $t);
+        }
+        $pts = array();
+        foreach ($L as $p) { $pts[] = (int) round($p[0]); $pts[] = (int) round($p[1]); }
+        $pts[] = (int) round($L[$n][0] + 4 * $S); $pts[] = (int) round($y + 3 * $S);
+        $pts[] = (int) round($R[$n][0] - 4 * $S); $pts[] = (int) round($y + 3 * $S);
+        for ($i = $n; $i >= 0; $i--) { $pts[] = (int) round($R[$i][0]); $pts[] = (int) round($R[$i][1]); }
+        imagefilledpolygon($im, $pts, count($pts) / 2, $col);
+    }
+
     /** Lavis : taches douces et irrégulières (coussin de gaussiennes calculé en basse résolution puis agrandi sans crénelage). */
     private static function wash($im, $W, $H, $hex, array $blobs, $maxOpacity) {
         $f = 10; $sw = (int) ceil($W / $f); $sh = (int) ceil($H / $f);
@@ -233,7 +250,7 @@ class TNGBook_Art {
             $tx = $W * 0.47; $tang = -M_PI / 2 + 0.06; $tlen = $H * 0.16; $tth = 40 * $S; $wash = 0.2; $nb = 26;
         } elseif ($style === 'roots') {
             $c = array_merge($c, array('max' => 6, 'lenf' => 0.72, 'lenf0' => 1.7, 'lp' => 0.5, 'cy' => $H * 0.3, 'rx' => $W * 0.44, 'ry' => $H * 0.27));
-            $ground = $H * 0.6; $tlen = $H * 0.085; $tth = 36 * $S; $tbase = 0; $wash = 0.2; $nb = 26; $roots = false; $mirror = true;
+            $ground = $H * 0.6; $tlen = $H * 0.12; $tth = 36 * $S; $tbase = 0; $wash = 0.2; $nb = 26; $roots = false; $mirror = true;
         }
         // lavis de la cime et ombre au sol
         $blobs = array();
@@ -245,21 +262,21 @@ class TNGBook_Art {
             $blobs[] = array($tx + (self::rnd($seed) - 0.5) * 220 * $S, $ground + 8 * $S, (90 + self::rnd($seed) * 70) * $S, (10 + self::rnd($seed) * 8) * $S, 0.7);
         }
         self::wash($im, $W, $H, $hex, $blobs, $wash);
-        if ($roots) {
-            foreach (array(-1, 1) as $side) {
-                foreach (array(0.9, 0.6, 0.3) as $i => $o) {   // plus l'angle de départ est grand, plus la racine plonge d'abord
-                    self::root($im, $tx + $side * (16 + $i * 6) * $S, $ground - (44 - $i * 12) * $S, $side > 0 ? $o : M_PI - $o, (80 + self::rnd($seed) * 70 - $i * 14) * $S, (24 - $i * 4) * $S, $seed, $c['wood'], $S);
-                }
-            }
-            imagefilledellipse($im, (int) $tx, (int) ($ground - 14 * $S), (int) (104 * $S), (int) (46 * $S), $c['wood']);   // pied arrondi
-        }
+        if ($roots) self::flare($im, $tx, $ground, $tth * 0.84, $tth * 1.6, 46 * $S, $c['wood'], $S, 0.1, $style === 'olive' ? 15 * $S : 1 * $S);   // pied de tronc évasé
         self::limb($im, $tx, $ground - $tbase, $tang, $tlen, $tth, 0, $seed, $c);
         if ($mirror) {   // racines : l'image du houppier, plus fine, sous la ligne de sol
             $rc = array_merge($c, array('bare' => true, 'max' => 5, 'cy' => $ground + $H * 0.2, 'lenf' => 0.76, 'lenf0' => 1.2, 'pull' => M_PI / 2, 'pullf' => 0.1, 'droopFrom' => 99));
-            imagefilledellipse($im, (int) $tx, (int) $ground, (int) (40 * $S), (int) (26 * $S), $c['wood']);
-            foreach (array(-1, 1) as $side) {   // deux maîtresses racines symétriques, chacune ramifiée
-                self::limb($im, $tx + $side * 4 * $S, $ground - 2 * $S, M_PI / 2 - $side * 0.55, $H * 0.1, 26 * $S, 1, $seed, $rc);
+            self::flare($im, $tx, $ground, $tth * 0.95, $tth * 1.7, 34 * $S, $c['wood'], $S, 0.06);   // collet évasé
+            // maîtresses racines nées du collet : deux latérales qui plongent en s'écartant, une pivot, pas de symétrie parfaite
+            $tmp = self::canvas($W, $H);
+            foreach (array(array(-22, 1.05, 0.092, 24), array(-4, 0.28, 0.115, 22), array(20, -0.95, 0.098, 23), array(-12, -0.5, 0.07, 15)) as $r) {
+                self::limb($tmp, $tx + $r[0] * $S, $ground + 2 * $S, M_PI / 2 + $r[1], $H * $r[2], $r[3] * $S, 1, $seed, $rc);
             }
+            imagealphablending($tmp, false);   // rien au-dessus du sol : les racines restent sous la ligne
+            imagefilledrectangle($tmp, 0, 0, $W, (int) ($ground + 1 * $S), self::col($tmp, 0, 0, 0, 127));
+            imagealphablending($tmp, true);
+            imagecopy($im, $tmp, 0, 0, 0, 0, $W, $H);
+            imagedestroy($tmp);
         }
         // quelques feuilles qui tombent
         for ($k = 0; $k < ($style === 'roots' ? 4 : 7); $k++) {
@@ -338,11 +355,20 @@ class TNGBook_Art {
         // racines dans la terre, de part et d'autre, puis rognées au contour de l'îlot
         $rc = array_merge($c, array('bare' => true, 'max' => 5, 'lenf' => 0.76, 'lenf0' => 1.15, 'pull' => M_PI / 2, 'pullf' => 0.1, 'droopFrom' => 99, 'wood' => self::col($im, 62, 40, 26)));
         unset($rc['med']);
+        $tmp = self::canvas($W, $H);   // les racines sont dessinées à part : ce qui dépasse au-dessus de l'herbe est effacé
         foreach (array(-1, 1) as $side) {
             foreach (array(0.4, 0.95) as $o) {
-                self::limb($im, $cx + $side * 6 * $S, $y0 + 0.01 * $H, M_PI / 2 - $side * $o, $H * 0.085, (18 - $o * 4) * $S, 1, $seed, $rc);
+                self::limb($tmp, $cx + $side * 6 * $S, $y0 + 0.01 * $H, M_PI / 2 - $side * $o, $H * 0.085, (18 - $o * 4) * $S, 1, $seed, $rc);
             }
         }
+        imagealphablending($tmp, false);
+        $up = array();
+        foreach ($top as $p) { $up[] = (int) round($p[0]); $up[] = (int) round($p[1] + 4 * $S); }
+        array_push($up, (int) $W, 0, 0, 0);
+        imagefilledpolygon($tmp, $up, count($up) / 2, self::col($tmp, 0, 0, 0, 127));
+        imagealphablending($tmp, true);
+        imagecopy($im, $tmp, 0, 0, 0, 0, $W, $H);
+        imagedestroy($tmp);
         imagealphablending($im, false);
         $clear = self::col($im, 0, 0, 0, 127);
         $out = array();
@@ -365,12 +391,7 @@ class TNGBook_Art {
         }
         // pied du tronc : racines apparentes, puis tronc et houppier
         $wood = $c['wood'];
-        foreach (array(-1, 1) as $side) {
-            foreach (array(0.15, 0.5) as $i => $o) {
-                self::root($im, $cx + $side * (14 + $i * 8) * $S, $y0 - 18 * $S, $side > 0 ? $o : M_PI - $o, (70 + self::rnd($seed) * 50) * $S, (22 - $i * 6) * $S, $seed, $wood, $S);
-            }
-        }
-        imagefilledellipse($im, (int) $cx, (int) ($y0 - 8 * $S), (int) (100 * $S), (int) (40 * $S), $wood);
+        self::flare($im, $cx, $y0 + 2 * $S, 52 * $S, 98 * $S, 34 * $S, $wood, $S, -0.08);
         self::limb($im, $cx, $y0 - 4 * $S, -M_PI / 2 + 0.02, $H * 0.085, 56 * $S, 0, $seed, $c);
         // médaillons : on garde ceux qui sont dans la cime, bien espacés
         $cands = $med->getArrayCopy();
@@ -433,11 +454,8 @@ class TNGBook_Art {
         $blobs = array();
         for ($k = 0; $k < 12; $k++) $blobs[] = array($tx + (self::rnd($seed) - 0.3) * 260 * $u, $ground + (self::rnd($seed) - 0.3) * 200 * $u, (100 + self::rnd($seed) * 90) * $u, (60 + self::rnd($seed) * 60) * $u, 0.5 + self::rnd($seed) * 0.4);
         self::wash($im, $W, $H, 'a89880', $blobs, 0.2);
-        // racines : arrondies, qui s'étirent vers la droite et sortent de la page par la gauche
-        foreach (array(array(0.12, 240), array(0.6, 190), array(M_PI - 0.45, 170)) as $i => $r) {
-            self::root($im, $tx + (($i % 2) ? 1 : -1) * 20 * $u, $ground - 50 * $u, $r[0], $r[1] * $u * 1.25, (40 - $i * 5) * $u, $seed, $c['wood'], $u);
-        }
-        imagefilledellipse($im, (int) $tx, (int) ($ground - 20 * $u), (int) (170 * $u), (int) (60 * $u), $c['wood']);
+        // pied de tronc évasé, posé sur le sol (le tronc penche vers la droite)
+        self::flare($im, $tx, $ground, 64 * $u * 0.84, 64 * $u * 1.7, 52 * $u, $c['wood'], $u, 0.15, 20 * $u);
         self::limb($im, $tx, $ground - 18 * $u, -M_PI / 2 + 0.38, 129 * $u, 64 * $u, 0, $seed, $c);
         for ($k = 0; $k < 9; $k++) {   // feuilles qui tombent vers le titre
             self::leaf($im, $W * (0.3 + self::rnd($seed) * 0.6), $H * (0.44 + self::rnd($seed) * 0.16), self::rnd($seed) * 6.28, (12 + self::rnd($seed) * 8) * $u, $c['l2'], 0.34);
