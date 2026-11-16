@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.11.5
+Stable tag: 2.11.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,6 +81,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.11.6 =
+* Livre : formulaire des listes de faits historiques : l'intitulé « Listes fournies » n'apparaît plus quand toutes les listes fournies sont retirées ; la « liste par défaut » ne s'affiche que pour l'application « selon le lieu de naissance ».
 
 = 2.11.5 =
 * Livre : retrait de l'option « faits marquants de son vivant » des fiches (2.11.3), trop longue et redondante avec la ligne des périodes : les événements datés des listes s'affichent uniquement dans la chronologie familiale ; les fiches gardent la ligne « Contexte historique » (périodes).

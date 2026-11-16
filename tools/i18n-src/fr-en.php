@@ -1237,4 +1237,5 @@ return array(
 	'Enregistrer la liste' => 'Save list',
 	'Listes fournies proposées dans le formulaire du livre' => 'Supplied lists offered in the book form',
 	'Décochez celles dont vous n’avez pas besoin pour les retirer ; elles restent disponibles ci-dessus comme modèles à copier.' => 'Untick the ones you do not need to remove them; they remain available above as templates to copy.',
+	'Aucune liste pour le moment.' => 'No list yet.',
 );

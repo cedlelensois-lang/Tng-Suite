@@ -575,12 +575,16 @@ class TNGBook_History {
             foreach ($user as $id => $x) $h .= $box($id, $ch[$id]);
             $h .= '</div>';
         }
-        $h .= '<p style="margin:6px 0 4px"><strong>' . esc_html(tngs_t('Listes fournies (textes en français, ou en anglais si le livre est dans une autre langue : copiez-en une dans vos listes pour la traduire)')) . '</strong></p><div>';
-        foreach (self::template_ids() as $id) $h .= $box($id, $ch[$id]);
-        $h .= '</div>';
+        if (self::template_ids()) {
+            $h .= '<p style="margin:6px 0 4px"><strong>' . esc_html(tngs_t('Listes fournies (textes en français, ou en anglais si le livre est dans une autre langue : copiez-en une dans vos listes pour la traduire)')) . '</strong></p><div>';
+            foreach (self::template_ids() as $id) $h .= $box($id, $ch[$id]);
+            $h .= '</div>';
+
+        }
+        if (!$ch) $h .= '<p>' . esc_html(tngs_t('Aucune liste pour le moment.')) . '</p>';
         $sc = (string) ($o['history_scope'] ?? 'all') === 'place' ? 'place' : 'all';
-        $h .= '<p style="margin:10px 0 0"><label>' . esc_html(tngs_t('Listes cochées appliquées')) . ' : <select name="' . esc_attr($name) . '[history_scope]"><option value="all"' . selected($sc, 'all', false) . '>' . esc_html(tngs_t('à tout le livre (toutes les personnes)')) . '</option><option value="place"' . selected($sc, 'place', false) . '>' . esc_html(tngs_t('selon le lieu de naissance de chaque personne (mots-clés de lieu)')) . '</option></select></label></p>';
-        $h .= '<p style="margin:8px 0 0"><label>' . esc_html(tngs_t('Liste par défaut (utilisée selon le lieu de naissance : lieux sans mot-clé reconnu)')) . ' : <select name="' . esc_attr($name) . '[history_default]"><option value="">' . esc_html(tngs_t('la première liste cochée')) . '</option>';
+        $h .= '<p style="margin:10px 0 0"><label>' . esc_html(tngs_t('Listes cochées appliquées')) . ' : <select name="' . esc_attr($name) . '[history_scope]" onchange="var d=document.getElementById(\'tngh-def\');if(d)d.style.display=this.value===\'place\'?\'\':\'none\'"><option value="all"' . selected($sc, 'all', false) . '>' . esc_html(tngs_t('à tout le livre (toutes les personnes)')) . '</option><option value="place"' . selected($sc, 'place', false) . '>' . esc_html(tngs_t('selon le lieu de naissance de chaque personne (mots-clés de lieu)')) . '</option></select></label></p>';
+        $h .= '<p id="tngh-def" style="margin:8px 0 0' . ($sc === 'place' ? '' : ';display:none') . '"><label>' . esc_html(tngs_t('Liste par défaut (utilisée selon le lieu de naissance : lieux sans mot-clé reconnu)')) . ' : <select name="' . esc_attr($name) . '[history_default]"><option value="">' . esc_html(tngs_t('la première liste cochée')) . '</option>';
         foreach ($ch as $id => $l) $h .= '<option value="' . esc_attr($id) . '"' . selected((string) ($o['history_default'] ?? ''), $id, false) . '>' . esc_html($l) . '</option>';
         $h .= '</select></label></p>';
         $h .= '<p class="description">' . esc_html(tngs_t('Utilisé quand la chronologie est réglée sur « avec contexte historique » ou que le contexte historique des fiches est coché. Choisissez ici, pour chaque livre, les listes à afficher. « À tout le livre » : toutes les listes cochées valent pour toutes les personnes. « Selon le lieu de naissance » : avec plusieurs listes, chaque personne reçoit celles dont un mot-clé de lieu figure dans son lieu de naissance (une liste sans mot-clé vaut pour tout le monde), et une liste n’apparaît dans la chronologie que si elle concerne au moins deux personnes du livre (ou 3 %).'));

@@ -3685,6 +3685,9 @@ msgstr "Supplied lists offered in the book form"
 msgid "Décochez celles dont vous n’avez pas besoin pour les retirer ; elles restent disponibles ci-dessus comme modèles à copier."
 msgstr "Untick the ones you do not need to remove them; they remain available above as templates to copy."
 
+msgid "Aucune liste pour le moment."
+msgstr "No list yet."
+
 msgctxt "js"
 msgid " Page "
 msgstr " Page "
