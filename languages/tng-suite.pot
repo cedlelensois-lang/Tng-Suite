@@ -3490,7 +3490,7 @@ msgstr ""
 msgid "(date AAAA, AAAA-MM ou AAAA-MM-JJ ; pays = code à deux lettres FR, BE, CH, ES, IT, DE, GB, US, CA, ou vide pour tous les pays). Ajoutés à la chronologie quand elle est réglée sur « avec contexte historique »."
 msgstr ""
 
-msgid "Contexte historique dans les fiches : « Contexte historique : naissance pendant la Première Guerre mondiale ; a aussi vécu la Seconde Guerre mondiale » : dates tombant dans une guerre ou une période marquante du pays de naissance, et périodes traversées de son vivant"
+msgid "Contexte historique dans les fiches : une ligne « Contexte historique : la Première Guerre mondiale et la Seconde Guerre mondiale » qui énumère, d’après les listes cochées, les périodes (guerres, régimes…) où tombe une date de la fiche ou que la personne a traversées de son vivant"
 msgstr ""
 
 msgid "Utilisé pour les personnes dont le lieu de naissance ne nomme aucun pays connu (ex. « Lille » ou « Lille, Nord »). Une personne née en Espagne reçoit les événements d’Espagne, etc. ; un pays n’est retenu dans la chronologie que s’il compte au moins deux personnes du livre (ou 3 %)."
@@ -3592,7 +3592,7 @@ msgstr ""
 msgid "Mes listes"
 msgstr ""
 
-msgid "Listes fournies (textes français ou anglais selon la langue du livre)"
+msgid "Listes fournies (textes en français, ou en anglais si le livre est dans une autre langue : copiez-en une dans vos listes pour la traduire)"
 msgstr ""
 
 msgid "Liste par défaut (lieux de naissance sans mot-clé reconnu)"

@@ -566,7 +566,7 @@ class TNGBook_History {
             foreach ($user as $id => $x) $h .= $box($id, $ch[$id]);
             $h .= '</div>';
         }
-        $h .= '<p style="margin:6px 0 4px"><strong>' . esc_html(tngs_t('Listes fournies (textes français ou anglais selon la langue du livre)')) . '</strong></p><div>';
+        $h .= '<p style="margin:6px 0 4px"><strong>' . esc_html(tngs_t('Listes fournies (textes en français, ou en anglais si le livre est dans une autre langue : copiez-en une dans vos listes pour la traduire)')) . '</strong></p><div>';
         foreach (self::countries() as $c => $n) $h .= $box('tpl-' . $c, $ch['tpl-' . $c]);
         $h .= '</div>';
         $sc = (string) ($o['history_scope'] ?? 'all') === 'place' ? 'place' : 'all';

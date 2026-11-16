@@ -3490,8 +3490,8 @@ msgstr "date | text | country"
 msgid "(date AAAA, AAAA-MM ou AAAA-MM-JJ ; pays = code à deux lettres FR, BE, CH, ES, IT, DE, GB, US, CA, ou vide pour tous les pays). Ajoutés à la chronologie quand elle est réglée sur « avec contexte historique »."
 msgstr "(date YYYY, YYYY-MM or YYYY-MM-DD; country = two-letter code FR, BE, CH, ES, IT, DE, GB, US, CA, or empty for all countries). Added to the chronology when it is set to “with historical background”."
 
-msgid "Contexte historique dans les fiches : « Contexte historique : naissance pendant la Première Guerre mondiale ; a aussi vécu la Seconde Guerre mondiale » : dates tombant dans une guerre ou une période marquante du pays de naissance, et périodes traversées de son vivant"
-msgstr "Historical background in the records: “Historical background: birth during the First World War; also lived through the Second World War”: dates falling within a war or a notable period of the country of birth, and periods lived through"
+msgid "Contexte historique dans les fiches : une ligne « Contexte historique : la Première Guerre mondiale et la Seconde Guerre mondiale » qui énumère, d’après les listes cochées, les périodes (guerres, régimes…) où tombe une date de la fiche ou que la personne a traversées de son vivant"
+msgstr "Historical background in the records: a line “Historical background: the First World War and the Second World War” listing, from the ticked lists, the periods (wars, regimes…) in which a date of the record falls or that the person lived through"
 
 msgid "Utilisé pour les personnes dont le lieu de naissance ne nomme aucun pays connu (ex. « Lille » ou « Lille, Nord »). Une personne née en Espagne reçoit les événements d’Espagne, etc. ; un pays n’est retenu dans la chronologie que s’il compte au moins deux personnes du livre (ou 3 %)."
 msgstr "Used for people whose birthplace names no known country (e.g. “Lille” or “Lille, Nord”). A person born in Spain gets Spain’s events, and so on; a country is kept in the chronology only if it has at least two people in the book (or 3%)."
@@ -3592,8 +3592,8 @@ msgstr "Historical background: lists to use"
 msgid "Mes listes"
 msgstr "My lists"
 
-msgid "Listes fournies (textes français ou anglais selon la langue du livre)"
-msgstr "Supplied lists (French or English texts, depending on the book language)"
+msgid "Listes fournies (textes en français, ou en anglais si le livre est dans une autre langue : copiez-en une dans vos listes pour la traduire)"
+msgstr "Supplied lists (texts in French, or in English if the book is in another language: copy one into your lists to translate it)"
 
 msgid "Liste par défaut (lieux de naissance sans mot-clé reconnu)"
 msgstr "Default list (birthplaces without a recognised keyword)"

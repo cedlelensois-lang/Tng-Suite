@@ -433,8 +433,8 @@ class TNGBook_Renderer {
     }
 
     /**
-     * Option « Contexte historique dans les fiches » : « Contexte historique : naissance et décès pendant la Première Guerre mondiale ; mariage pendant … ».
-     * Seules les dates entièrement comprises dans une période marquante du pays de naissance sont retenues.
+     * Option « Contexte historique dans les fiches » : « Contexte historique : la Première Guerre mondiale et la Seconde Guerre mondiale. »
+     * Périodes (des listes cochées) dans lesquelles tombe une date de la fiche (naissance, mariage, décès), ou traversées de son vivant.
      */
     private function histLine($pid, array $unions) {
         if (empty($this->o['histfiche'])) return '';
@@ -478,20 +478,12 @@ class TNGBook_Renderer {
             }
         }
         if (!$by && !$lived) return '';
-        ksort($by);
-        $parts = [];
-        foreach ($by as $i => $labels) {
-            $order = ['hx_birth' => 0, 'hx_marr' => 1, 'hx_death' => 2];
-            usort($labels, function ($a, $b) use ($order) { return $order[$a] - $order[$b]; });
-            $names = array_map(function ($k) use ($L) { return $L[$k]; }, $labels);
-            $what = count($names) > 1 ? implode(', ', array_slice($names, 0, -1)) . ' ' . $L['hx_and'] . ' ' . end($names) : $names[0];
-            $parts[] = $what . ' ' . $L['hx_during'] . ' ' . $per[$i][2];
-        }
-        if ($lived) {
-            $names = array_map(function ($i) use ($per) { return $per[$i][2]; }, $lived);
-            $what = count($names) > 1 ? implode(', ', array_slice($names, 0, -1)) . ' ' . $L['hx_and'] . ' ' . end($names) : $names[0];
-            $parts[] = $L[$by ? 'hx_also' : 'hx_lived'] . ' ' . $what;
-        }
+        // une simple liste des périodes vécues ou touchées, avec les noms écrits dans les listes (aucune phrase composée : pas de mélange de langues)
+        $idx = array_unique(array_merge(array_keys($by), $lived));
+        sort($idx);
+        $names = array_map(function ($i) use ($per) { return $per[$i][2]; }, $idx);
+        $what = count($names) > 1 ? implode(', ', array_slice($names, 0, -1)) . ' ' . $L['hx_and'] . ' ' . end($names) : $names[0];
+        $parts = [$what];
         return '<p class="hxline"><em>' . $this->e($L['hx_lead'] . implode(' ; ', $parts)) . '.</em></p>';
     }
 
