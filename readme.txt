@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.12.0
+Stable tag: 2.13.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,6 +81,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.13.0 =
+* Livre : deux nouvelles pochettes pleine page (PDF), à l'aide d'illustrations fournies : « arbre aux étiquettes vierges et oiseaux, prairie fleurie » et « grand tronc, feuillage pastel et campagne ». Le titre se place dans la zone libre ; dans les autres formats, un arbre dessiné par le plugin les remplace.
 
 = 2.12.0 =
 * Livre : un nouveau livre (bouton « Nouveau livre », première installation) part des réglages recommandés : modèle Élégant, filet simple, arbre de couverture en couleurs, PDF (HTML si le PDF direct est indisponible), photos avec silhouettes, baptême et sépulture, phrases détaillées, lieux avec pays, militaire, notes, fiche de chaque conjoint, chronologie et fiches avec contexte historique, « En chiffres », arbres, listes, cousinages, index et carte. Les profils enregistrés ne changent pas.

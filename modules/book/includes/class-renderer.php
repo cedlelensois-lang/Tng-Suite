@@ -2299,7 +2299,7 @@ body { font-family: Georgia, "DejaVu Serif", serif; font-size: 11pt; line-height
 a { color: inherit; text-decoration: none; }
 a.ref { color: %head%; }
 .cover { text-align: center; padding-top: 4.5cm; page-break-after: always; }
-.cover.art-tree, .cover.art-ornament { padding-top: 2.2cm; } .cover img.cart { display: block; margin: 0 auto; } .cover img.tr { width: 9cm; } .cover img.trw { width: 14cm; } .cover.art-page { padding-top: 17cm; padding-left: 4cm; page-break-after: auto; } .cover.art-page h1 { margin: 0 0 .3em; font-size: 28pt; } .cover.art-page .author { margin-top: .6em; font-size: 12pt; } .cover.art-page .cover-stats { margin-top: .4cm; } .cover.art-page .gen-date { margin-top: .5cm; } .cover img.fl { width: 12cm; margin: .2cm auto; } .cover.art-tree h1, .cover.art-ornament h1 { margin: .35em 0 .25em; } .cover.art-tree .author, .cover.art-ornament .author { margin-top: 1em; } .cover.art-tree .cover-stats, .cover.art-ornament .cover-stats { margin-top: .6cm; } .cover.art-tree .gen-date, .cover.art-ornament .gen-date { margin-top: 1.2cm; } .cover.long h1 { font-size: 32pt; }
+.cover.art-tree, .cover.art-ornament { padding-top: 2.2cm; } .cover img.cart { display: block; margin: 0 auto; } .cover img.tr { width: 9cm; } .cover img.trw { width: 14cm; } .cover.art-page { padding-top: 17cm; padding-left: 4cm; page-break-after: auto; } .cover.art-page h1 { margin: 0 0 .3em; font-size: 28pt; } .cover.art-page .author { margin-top: .6em; font-size: 12pt; } .cover.art-page.art-meadow { padding-top: 13.2cm; padding-left: 11.6cm; } .cover.art-page.art-meadow h1 { font-size: 21pt; } .cover.art-page.art-farm { padding-top: 14cm; padding-left: 5.4cm; } .cover.art-page.art-farm h1 { font-size: 26pt; } .cover.art-page .cover-stats { margin-top: .4cm; } .cover.art-page .gen-date { margin-top: .5cm; } .cover img.fl { width: 12cm; margin: .2cm auto; } .cover.art-tree h1, .cover.art-ornament h1 { margin: .35em 0 .25em; } .cover.art-tree .author, .cover.art-ornament .author { margin-top: 1em; } .cover.art-tree .cover-stats, .cover.art-ornament .cover-stats { margin-top: .6cm; } .cover.art-tree .gen-date, .cover.art-ornament .gen-date { margin-top: 1.2cm; } .cover.long h1 { font-size: 32pt; }
 .cover .rule { width: 70%; margin: 0 auto; height: 4px; border-top: 3px solid %head%; border-bottom: 1px solid %head%; }
 .cover h1 { font-size: 42pt; margin: .45em 0 .45em; line-height: 1.15; color: %head%; letter-spacing: .02em; }
 .cover .author { font-size: 14pt; margin-top: 2em; }
@@ -2400,9 +2400,9 @@ CSS;
         $art = (string) ($o['cover_art'] ?? 'tree');
         $head = $this->colors()['head'];
         $img = function ($bin, $cm, $cls) { return '<img class="tpng cart ' . $cls . '" data-cm="' . $cm . '" src="data:image/png;base64,' . base64_encode($bin) . '" alt="">'; };
-        $pageCover = $art === 'page' && $this->mode === 'pdf' && function_exists('imagecreatetruecolor');   // pochette pleine page : image de fond de la 1re page du PDF
+        $pageCover = in_array($art, TNGBook_Art::page_covers(), true) && $this->mode === 'pdf' && function_exists('imagecreatetruecolor');   // pochette pleine page : image de fond de la 1re page du PDF
         if ($pageCover) {
-            $front = '<div class="cover art-page' . (mb_strlen($title) > 34 ? ' long' : '') . '"><h1>' . $this->e($title) . '</h1>';
+            $front = '<div class="cover art-page art-' . $art . (mb_strlen($title) > 34 ? ' long' : '') . '"><h1>' . $this->e($title) . '</h1>';
         } elseif ($art !== 'none' && function_exists('imagecreatetruecolor')) {
             $fl = $img(TNGBook_Art::flourish($head), 12, 'fl');
             $wide = TNGBook_Art::style_of($art) === 'color' && $art !== 'ornament';   // arbre en couleurs : image large (≈1,5 × 1)
@@ -2472,7 +2472,7 @@ CSS;
 
         $fr = (string) ($this->o['frame'] ?? 'none');
         if (!in_array($fr, ['single', 'double', 'ornate'], true)) $fr = 'none';
-        $mark = $pageCover ? '<meta name="tng-cover" content="' . $this->colors()['head'] . '">' : '';
+        $mark = $pageCover ? '<meta name="tng-cover" content="' . $this->colors()['head'] . ($art === 'page' ? '' : ' ' . $art) . '">' : '';
         $frameDiv = '';
         $frameCss = '';
         if ($fr !== 'none' && $this->mode === 'pdf') {   // le PDF est cadré par TNGBook (image de fond de page) : simple repère, retiré avant mPDF

@@ -553,7 +553,9 @@ final class TNGBook {
             'roots' => 'Arbre : feuillu, ses racines dessinées dessous',
             'color' => 'Arbre en couleurs : feuillage vert, tronc brun, racines dans la terre et médaillons',
             'page' => 'Pochette pleine page (PDF) : arbre à l’aquarelle sur fond crème, titre dessous',
-        ], $o['cover_art'] ?? 'tree', 'Dessinée par le plugin dans la couleur du livre (« en-têtes et liens »), sans fichier à installer.');
+            'meadow' => 'Pochette pleine page (PDF) : arbre aux étiquettes vierges et oiseaux, prairie fleurie',
+            'farm' => 'Pochette pleine page (PDF) : grand tronc, feuillage pastel et campagne',
+        ], $o['cover_art'] ?? 'tree', 'Les arbres sont dessinés par le plugin dans la couleur du livre (« en-têtes et liens »). Les deux pochettes avec oiseaux ou campagne sont des illustrations fournies, qui gardent leurs couleurs.');
         echo TNGBook_History::form_row(self::OPT, $o, $admin);
         $fmt = ['html' => 'Page imprimable (Imprimer → Enregistrer en PDF)'];
         if (self::mpdf_available()) $fmt['pdf'] = 'PDF (téléchargement direct)';
@@ -859,10 +861,10 @@ final class TNGBook {
 
     /** Pochette pleine page : image JPEG posée en fond de la première page seulement (repère <meta name="tng-cover">, retiré avant mPDF). */
     public static function pdf_cover(\Mpdf\Mpdf $mpdf, $html) {
-        if (!preg_match('/<meta name="tng-cover" content="(#[0-9a-f]{6})">/', $html, $m)) return $html;
+        if (!preg_match('/<meta name="tng-cover" content="(#[0-9a-f]{6})(?: (meadow|farm))?">/', $html, $m)) return $html;
         $html = str_replace($m[0], '', $html);
         if (!function_exists('imagecreatetruecolor')) return $html;
-        $mpdf->imageVars['tngcover'] = TNGBook_Art::cover_page($m[1]);
+        $mpdf->imageVars['tngcover'] = TNGBook_Art::cover_page($m[1], 1240, 1754, $m[2] ?? 'page');
         $first = 'background: url(var:tngcover) no-repeat 0 0; background-image-resize: 6; odd-footer-name: html_tngnf; even-footer-name: html_tngnf; margin-footer: 14mm;';   // pas de numéro sur la pochette
         $nf = '<htmlpagefooter name="tngnf"><div></div></htmlpagefooter>';
         if (strpos($html, 'html_tngpf') !== false) {   // cadre déjà déclaré : sa règle de première page (sans fond) est remplacée

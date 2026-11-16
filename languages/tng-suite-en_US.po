@@ -3523,11 +3523,17 @@ msgstr "Tree: leafy, with its roots drawn below"
 msgid "Arbre en couleurs : feuillage vert, tronc brun, racines dans la terre et médaillons"
 msgstr "Colour tree: green foliage, brown trunk, roots in the soil and medallions"
 
+msgid "Pochette pleine page (PDF) : arbre aux étiquettes vierges et oiseaux, prairie fleurie"
+msgstr "Full-page cover (PDF): tree with blank ribbons and birds, flowering meadow"
+
+msgid "Pochette pleine page (PDF) : grand tronc, feuillage pastel et campagne"
+msgstr "Full-page cover (PDF): large trunk, pastel foliage and countryside"
+
 msgid "Pochette pleine page (PDF) : arbre à l’aquarelle sur fond crème, titre dessous"
 msgstr "Full-page cover (PDF): watercolour tree on a cream background, title below"
 
-msgid "Dessinée par le plugin dans la couleur du livre (« en-têtes et liens »), sans fichier à installer."
-msgstr "Drawn by the plugin in the book colour (“headings and links”), with no file to install."
+msgid "Les arbres sont dessinés par le plugin dans la couleur du livre (« en-têtes et liens »). Les deux pochettes avec oiseaux ou campagne sont des illustrations fournies, qui gardent leurs couleurs."
+msgstr "The trees are drawn by the plugin in the book colour (“headings and links”). The two covers with birds or countryside are supplied illustrations and keep their own colours."
 
 msgid "Arbres & visualisations"
 msgstr "Trees & visualisations"
