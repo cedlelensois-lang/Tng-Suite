@@ -4,6 +4,9 @@ Analyse de l’implexe (ancêtres répétés) et de la consanguinité. Trois sec
 
 ## Dans l’administration
 
+Menu **TNG Suite > Analyses > Implexe & consanguinité**.
+
+
 ![Implexe & consanguinité](../images/implex.png)
 
 ## Shortcodes

@@ -4,6 +4,9 @@ Timeline of the events of a person or a family.
 
 ## In the admin
 
+Menu: **TNG Suite > Trees & visualisations > Timeline**.
+
+
 ![Timeline](../images/timeline.png)
 
 ## Shortcodes

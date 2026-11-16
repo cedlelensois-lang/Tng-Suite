@@ -4,6 +4,9 @@ Ancestors, descendants or mixed wheel, interactive (zoom, pan, PDF export). The 
 
 ## In the admin
 
+Menu: **TNG Suite > Trees & visualisations > Fan / kinship wheel**.
+
+
 ![Fan / kinship wheel](../images/fan.png)
 
 ## Shortcodes

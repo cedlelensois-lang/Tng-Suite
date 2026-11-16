@@ -4,6 +4,9 @@ Public charts (sex, living, half-centuries, months…). Two sections: Settings a
 
 ## In the admin
 
+Menu: **TNG Suite > Analyses > Statistics & charts**.
+
+
 ![Statistics & charts](../images/stats_chart.png)
 
 ## Shortcodes

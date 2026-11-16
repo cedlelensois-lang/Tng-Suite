@@ -4,6 +4,9 @@ Carte de chaleur des lieux de naissance, mariage, décès… de l’arbre.
 
 ## Dans l’administration
 
+Menu **TNG Suite > Analyses > Heatmap des lieux**.
+
+
 ![Heatmap des lieux](../images/heatmap.png)
 
 ## Shortcodes

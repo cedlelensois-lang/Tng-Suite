@@ -4,6 +4,9 @@ Listes d’ascendants et de descendants et fiche individuelle, en PDF, Excel ou 
 
 ## Dans l’administration
 
+Menu **TNG Suite > Documents > Fiche & listes de documents**.
+
+
 ![Fiche & listes de documents](../images/individual%20sheet.png)
 
 ## Shortcodes

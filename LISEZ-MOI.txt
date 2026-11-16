@@ -55,7 +55,7 @@ LE MENU : CINQ ENTRÉES (depuis la 2.8.0)
   - Analyses : Statistiques & graphiques, Heatmap des lieux, Implexe & consanguinité.
   - Documents : Livre généalogique, Fiche & listes de documents.
   - Médias & widgets : Galerie de médias, Nuage de noms & anniversaires, Individu au hasard.
- Quand ce guide indique « TNG Suite > Stats : graphiques » ou « TNG Suite > Livre généalogique », ouvrez l'onglet de la famille, puis la section du même nom.
+ Quand ce guide indique « TNG Suite > Analyses > Statistiques & graphiques » ou « TNG Suite > Documents > Livre généalogique », ouvrez l'onglet de la famille, puis la section du même nom.
  « Bouton vers la fiche » est activé avec « Arbres & descendance », et « Individu au hasard » avec « Nuage de noms & anniversaires » : une case
  et un réglage « Vivants / privés » pour chaque couple. Les shortcodes et les réglages enregistrés ne changent pas.
 
@@ -113,7 +113,7 @@ VIVANTS / PRIVÉS : UN RÉGLAGE PAR MODULE (TNG Suite > Général > Modules)
  - Migration : si un ancien plugin affichait déjà les vivants, son module est repris sur « Afficher » (et signalé).
 
 
-STATISTIQUES : PERSONNALISER CHAQUE GRAPHIQUE (TNG Suite > Stats : graphiques)
+STATISTIQUES : PERSONNALISER CHAQUE GRAPHIQUE (TNG Suite > Analyses > Statistiques & graphiques)
 ------------------------------------------------------------------------------
  Pour chaque graphique : titre, type par défaut, remplacement de libellés (« Ancien = Nouveau », pour la légende
  et le tableau), titres d'axes, position de la légende (ou masquée), note, et couleurs.
@@ -141,7 +141,7 @@ LIVRE : COUPLE MARIÉ OU EN COUPLE
  « Va viure en parella amb … »). Le livre n'écrit donc jamais « épousa » sans date de mariage.
 
 
-ÉVENTAIL / ROUE DE PARENTÉ (TNG Suite > Éventail / roue)
+ÉVENTAIL / ROUE DE PARENTÉ (TNG Suite > Arbres & visualisations > Éventail / roue de parenté)
 --------------------------------------------------------
  Module nouveau (sans équivalent parmi les anciens plugins). Shortcode : [tng_fan person="I1"] (alias [tng_roue]).
  - Trois types : roue d'ascendance, roue de descendance, roue mixte (ascendance en haut, descendance en bas).
@@ -165,7 +165,7 @@ LIVRE : COUPLE MARIÉ OU EN COUPLE
    affiche sur cette roue (⚠️ RGPD : leurs noms, dates et lieux sont visibles de tous les visiteurs de la page).
    « show » est ignoré si le module est réglé sur « Toujours masquer », ou si l'auteur de la page n'a pas le droit de
    modifier les articles des autres (rôle éditeur ou administrateur requis). Le visiteur ne peut pas changer ce choix.
- - Générer la roue depuis l'administration : TNG Suite > Éventail : générer une roue. Choisissez la personne (recherche
+ - Générer la roue depuis l'administration : TNG Suite > Arbres & visualisations > Éventail / roue de parenté > générer une roue. Choisissez la personne (recherche
    par nom), le type, les générations, les couleurs, le contenu et les vivants ; « Générer la roue » affiche un aperçu
    interactif (zoom, PDF) et le shortcode correspondant, à copier dans une page.
  - Panneau d'options du visiteur (engrenage) : type, générations, forme, coloration, palette, style, dates, lieux,
@@ -281,7 +281,7 @@ PAGES DE RÉGLAGES : UNE SEULE PRÉSENTATION
  en plus le catalan et l'espagnol pour les documents produits (« Langue du site » suit le réglage Général).
 
 
-LIVRE : MODÈLES DE MISE EN PAGE (TNG Suite > Livre généalogique > Modèle de mise en page)
+LIVRE : MODÈLES DE MISE EN PAGE (TNG Suite > Documents > Livre généalogique > Modèle de mise en page)
 ------------------------------------------------------------------------------------------
  Le modèle « Classique » est le modèle d'origine : son rendu n'a pas changé. Quatre modèles s'y ajoutent ; tous
  fonctionnent pour la page imprimable, le PDF, le Word (.docx) et l'OpenDocument (.odt) et suivent vos couleurs :
@@ -301,15 +301,15 @@ LIVRE : MODÈLES DE MISE EN PAGE (TNG Suite > Livre généalogique > Modèle de 
  (« Enregistrer en PDF ») reste une alternative.
 
 
-MODULE FICHE & LISTES DE DOCUMENTS (TNG Suite > Fiche & documents)
+MODULE FICHE & LISTES DE DOCUMENTS (TNG Suite > Documents > Fiche & listes de documents)
 ------------------------------------------------------------------
  Ancien plugin « TNG Fiche Généalogique », désormais un module. Shortcode : [tng_listes] (liste des ascendants numérotés Sosa, liste des descendants numérotés d'Aboville,
  fiche individuelle ; PDF, Excel, Word). La connexion, le préfixe, l'URL de TNG, l'arbre et les vivants/privés
  viennent des réglages communs (TNG Suite > Général > Modules règle « vivants / privés » pour ce module). Les
  réglages de l'ancien plugin autonome (personne de référence) sont relus
  automatiquement ; l'affiche généalogique A3 a été retirée ([tng_fiche] affiche désormais l'outil [tng_listes]) ; ses champs de connexion à la base ne servent plus.
- Génération depuis l'administration : TNG Suite > Générer des documents (listes et fiche individuelle). Le choix des champs et de la langue y est toujours proposé. Aucune page ni shortcode nécessaire.
- Champs affichés : cochez / décochez dans TNG Suite > Fiche & documents.
+ Génération depuis l'administration : TNG Suite > Documents > Fiche & listes de documents > générer des documents (listes et fiche individuelle). Le choix des champs et de la langue y est toujours proposé. Aucune page ni shortcode nécessaire.
+ Champs affichés : cochez / décochez dans TNG Suite > Documents > Fiche & listes de documents.
  - Listes : toutes les colonnes sauf le nom (numéro, date et lieu de naissance, conjoint, date et lieu d'union,
    date et lieu de décès, âge au décès).
  - Fiche individuelle : numéro Sosa, profession, mention de signature, rubriques personnelles, parents (avec leur
@@ -317,7 +317,7 @@ MODULE FICHE & LISTES DE DOCUMENTS (TNG Suite > Fiche & documents)
    enfants), conjoints et enfants (détail du mariage, petits-enfants), chronologie (âges, événements des proches).
  « Choix sur la page » (coché par défaut) affiche aux visiteurs une case par champ, pré-réglée avec vos choix.
  Langue des documents : français, anglais (britannique), catalan ou espagnol. Choisissez la langue par défaut dans
- TNG Suite > Fiche & documents > Langue des documents (« Langue du site » suit la langue de WordPress) ; « Choix de la
+ TNG Suite > Documents > Fiche & listes de documents > Langue des documents (« Langue du site » suit la langue de WordPress) ; « Choix de la
  langue sur la page » (coché par défaut) ajoute une liste pour que les visiteurs choisissent eux-mêmes. Le choix
  s'applique aux dates, phrases, titres, en-têtes de colonnes, boutons, fichiers PDF / Excel / Word Les données des personnes (professions, notes, noms de lieux) restent telles qu'enregistrées dans TNG.
 
@@ -355,11 +355,11 @@ BOUTON VERS LA FICHE vs [lien_fiche_tng]
 
 NOUVEAUX MODULES : POINTS D'ATTENTION
 ------------------------------------
- - Livre généalogique (TNG Suite > Livre généalogique) : afficher les vivants en entier se règle dans
+ - Livre généalogique (TNG Suite > Documents > Livre généalogique) : afficher les vivants en entier se règle dans
    TNG Suite > Général > Modules > Livre généalogique > « Afficher (⚠️ RGPD) ». L'arbre et le préfixe viennent des
    réglages communs ; le dossier de TNG sur le disque est déduit de l'URL de TNG s'il est laissé vide.
    PDF direct : mPDF est inclus dans le plugin (modules/book/vendor/) ; s'il a été supprimé, « composer install --no-dev » dans modules/book/ le remet (sinon page imprimable).
- - Implexe & consanguinité (TNG Suite > Implexe : analyse / consanguinité / réglages) : le masquage des vivants
+ - Implexe & consanguinité (TNG Suite > Analyses > Implexe & consanguinité : analyse / consanguinité / réglages) : le masquage des vivants
    suit la case commune. Le calcul de consanguinité écrit dans une table de la base WordPress
    (<préfixe WP>tngi_inbreeding), supprimée à la désinstallation de la suite. Chart.js et vis-network sont chargés
    depuis libs/ s'ils y sont, sinon depuis cdnjs.cloudflare.com (l'adresse IP du visiteur est alors transmise à ce CDN).

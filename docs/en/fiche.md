@@ -4,6 +4,9 @@ Ancestor and descendant lists and an individual sheet, as PDF, Excel or Word. Tw
 
 ## In the admin
 
+Menu: **TNG Suite > Documents > Individual sheet & document lists**.
+
+
 ![Individual sheet & document lists](../images/individual%20sheet.png)
 
 ## Shortcodes

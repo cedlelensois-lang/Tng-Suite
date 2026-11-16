@@ -4,6 +4,9 @@ Ancestor trees, descendants with thumbnails, patronymic line, lists and links to
 
 ## In the admin
 
+Menu: **TNG Suite > Trees & visualisations > Trees & descendants**.
+
+
 ![Trees & descendants](../images/trees.png)
 
 ## Shortcodes

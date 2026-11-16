@@ -4,6 +4,9 @@ Génère un livre complet (ascendance, descendance, index, cartes, statistiques)
 
 ## Dans l’administration
 
+Menu **TNG Suite > Documents > Livre généalogique**.
+
+
 ![Livre généalogique](../images/book.png)
 
 ## Shortcodes

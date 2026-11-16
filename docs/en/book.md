@@ -4,6 +4,9 @@ Generates a complete book (ancestry, descendants, indexes, maps, statistics) as 
 
 ## In the admin
 
+Menu: **TNG Suite > Documents > Family book**.
+
+
 ![Family book](../images/book.png)
 
 ## Shortcodes

@@ -4,6 +4,9 @@ Arbres d’ascendance, descendants avec vignettes, lignée patronymique, listes 
 
 ## Dans l’administration
 
+Menu **TNG Suite > Arbres & visualisations > Arbres & descendance**.
+
+
 ![Arbres & descendance](../images/trees.png)
 
 ## Shortcodes

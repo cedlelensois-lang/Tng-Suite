@@ -4,6 +4,9 @@ Galerie des photos et médias de l’arbre.
 
 ## Dans l’administration
 
+Menu **TNG Suite > Médias & widgets > Galerie de médias**.
+
+
 ![Galerie de médias](../images/media_gallery.png)
 
 ## Shortcodes

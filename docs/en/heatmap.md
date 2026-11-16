@@ -4,6 +4,9 @@ Heat map of birth, marriage, death… places in the tree.
 
 ## In the admin
 
+Menu: **TNG Suite > Analyses > Places heatmap**.
+
+
 ![Places heatmap](../images/heatmap.png)
 
 ## Shortcodes

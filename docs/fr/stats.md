@@ -4,6 +4,9 @@ Graphiques publics (sexe, vivants, demi-siècles, mois…). Deux sections : Rég
 
 ## Dans l’administration
 
+Menu **TNG Suite > Analyses > Statistiques & graphiques**.
+
+
 ![Statistiques & graphiques](../images/stats_chart.png)
 
 ## Shortcodes

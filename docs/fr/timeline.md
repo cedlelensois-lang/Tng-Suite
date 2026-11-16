@@ -4,6 +4,9 @@ Frise chronologique des événements d’une personne ou d’une famille.
 
 ## Dans l’administration
 
+Menu **TNG Suite > Arbres & visualisations > Frise chronologique**.
+
+
 ![Frise chronologique](../images/timeline.png)
 
 ## Shortcodes

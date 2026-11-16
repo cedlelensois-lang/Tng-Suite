@@ -4,6 +4,9 @@ Analysis of implex (repeated ancestors) and inbreeding. Three sections: Analysis
 
 ## In the admin
 
+Menu: **TNG Suite > Analyses > Implex & inbreeding**.
+
+
 ![Implex & inbreeding](../images/implex.png)
 
 ## Shortcodes

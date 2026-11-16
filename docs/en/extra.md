@@ -4,6 +4,9 @@ Cloud of surnames and today’s anniversaries (births, marriages, deaths). No se
 
 ## In the admin
 
+Menu: **TNG Suite > Media & widgets > Name cloud & birthdays**.
+
+
 ![Name cloud & birthdays](../images/Name%20cloud%20%26%20birthdays.png)
 
 ## Shortcodes

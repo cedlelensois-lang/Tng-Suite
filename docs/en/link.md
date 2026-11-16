@@ -4,6 +4,9 @@ A button that links to a person’s page in TNG. Settings: **Trees & visualisati
 
 ## In the admin
 
+Menu: **TNG Suite > Trees & visualisations > Record link button**.
+
+
 ![Record link button](../images/record%20link.png)
 
 ## Shortcodes

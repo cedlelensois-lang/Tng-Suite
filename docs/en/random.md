@@ -4,6 +4,9 @@ Shows a random person (or a given surname). Settings: **Media & widgets** tab, *
 
 ## In the admin
 
+Menu: **TNG Suite > Media & widgets > Random individual**.
+
+
 ![Random individual](../images/random.png)
 
 ## Shortcodes

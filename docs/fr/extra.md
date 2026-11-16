@@ -4,6 +4,9 @@ Nuage des noms de famille et anniversaires du jour (naissances, mariages, décè
 
 ## Dans l’administration
 
+Menu **TNG Suite > Médias & widgets > Nuage de noms & anniversaires**.
+
+
 ![Nuage de noms & anniversaires](../images/Name%20cloud%20%26%20birthdays.png)
 
 ## Shortcodes

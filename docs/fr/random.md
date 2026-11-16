@@ -4,6 +4,9 @@ Affiche une personne tirée au hasard (ou un nom précis). Réglages : onglet **
 
 ## Dans l’administration
 
+Menu **TNG Suite > Médias & widgets > Individu au hasard**.
+
+
 ![Individu au hasard](../images/random.png)
 
 ## Shortcodes

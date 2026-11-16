@@ -4,6 +4,9 @@ Roue d’ascendants, de descendants ou mixte, interactive (zoom, déplacement, e
 
 ## Dans l’administration
 
+Menu **TNG Suite > Arbres & visualisations > Éventail / roue de parenté**.
+
+
 ![Éventail / roue de parenté](../images/fan.png)
 
 ## Shortcodes

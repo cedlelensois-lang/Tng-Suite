@@ -4,6 +4,9 @@ Un bouton qui renvoie vers la fiche d’une personne dans TNG. Réglages : ongle
 
 ## Dans l’administration
 
+Menu **TNG Suite > Arbres & visualisations > Bouton vers la fiche**.
+
+
 ![Bouton vers la fiche](../images/record%20link.png)
 
 ## Shortcodes
