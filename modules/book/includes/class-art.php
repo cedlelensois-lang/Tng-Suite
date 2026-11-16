@@ -265,11 +265,11 @@ class TNGBook_Art {
         if ($roots) self::flare($im, $tx, $ground, $tth * 0.84, $tth * 1.6, 46 * $S, $c['wood'], $S, 0.1, $style === 'olive' ? 15 * $S : 1 * $S);   // pied de tronc évasé
         self::limb($im, $tx, $ground - $tbase, $tang, $tlen, $tth, 0, $seed, $c);
         if ($mirror) {   // racines : l'image du houppier, plus fine, sous la ligne de sol
-            $rc = array_merge($c, array('bare' => true, 'max' => 5, 'cy' => $ground + $H * 0.2, 'lenf' => 0.76, 'lenf0' => 1.2, 'pull' => M_PI / 2, 'pullf' => 0.1, 'droopFrom' => 99));
+            $rc = array_merge($c, array('bare' => true, 'max' => 4, 'cy' => $ground + $H * 0.2, 'lenf' => 0.7, 'lenf0' => 1.1, 'pull' => M_PI / 2, 'pullf' => 0.1, 'droopFrom' => 99));
             self::flare($im, $tx, $ground, $tth * 0.95, $tth * 1.7, 34 * $S, $c['wood'], $S, 0.06);   // collet évasé
             // maîtresses racines nées du collet : deux latérales qui plongent en s'écartant, une pivot, pas de symétrie parfaite
             $tmp = self::canvas($W, $H);
-            foreach (array(array(-22, 1.05, 0.092, 24), array(-4, 0.28, 0.115, 22), array(20, -0.95, 0.098, 23), array(-12, -0.5, 0.07, 15)) as $r) {
+            foreach (array(array(-20, 1.0, 0.085, 20), array(2, 0.12, 0.105, 18), array(20, -0.85, 0.09, 19)) as $r) {
                 self::limb($tmp, $tx + $r[0] * $S, $ground + 2 * $S, M_PI / 2 + $r[1], $H * $r[2], $r[3] * $S, 1, $seed, $rc);
             }
             imagealphablending($tmp, false);   // rien au-dessus du sol : les racines restent sous la ligne
