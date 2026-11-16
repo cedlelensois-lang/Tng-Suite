@@ -2,7 +2,7 @@
 
 This guide presents each module: where to set it up, how to use it and what it looks like. French: [Guide français](../fr/README.md).
 
-![TNG Suite menu](../images/menu.png)
+![TNG Suite menu](../images/menu-en.png)
 
 The **TNG Suite** menu has five entries: **General** and four families. Each former admin page is a section of its family (section bar at the top of the page):
 
