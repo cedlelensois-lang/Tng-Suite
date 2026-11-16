@@ -2,7 +2,7 @@
 
 Ce guide présente chaque module : où le régler, comment l’utiliser et à quoi il ressemble. Anglais : [English guide](../en/README.md).
 
-![Menu TNG Suite](../images/menu.png)
+![Menu TNG Suite](../images/menu-fr.png)
 
 Le menu **TNG Suite** compte cinq entrées : **Général** et quatre familles. Chaque ancienne page d’administration est une section de sa famille (barre de sections en haut de la page) :
 
