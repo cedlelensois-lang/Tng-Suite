@@ -618,7 +618,7 @@ class TNGBook_Art {
             for ($k = 1; $k <= 11; $k++) {
                 $a += (self::rnd($seed) - 0.5) * 0.14 + ($dir ? (M_PI / 2 - 0.2 - $a) * 0.03 : (0.12 - $a) * 0.04);
                 $L = ($dir ? 1.9 : 2.1) * $u; $nx = $px + cos($a) * $L; $ny = $py + sin($a) * $L;
-                self::stroke($tile, $px, $py, $nx, $ny, 1.5 * $S, 0.9 * $S, $stem);
+                self::stroke($tile, $px, $py, $nx, $ny, 0.8 * $S, 0.5 * $S, $stem);
                 if ($k % 2 == 0) {
                     $side = ($k % 4 == 0) ? 1 : -1;
                     self::leaf($tile, $nx, $ny, $a + $side * 0.95, (5.5 - $k * 0.18) * $u, $k % 4 == 0 ? $leaf1 : $leaf2, 0.34);
@@ -710,7 +710,7 @@ class TNGBook_Art {
         };
         if ($style === 'floral') {   // cadre fleuri : filet fin, coins de coquelicots et de feuillages
             $rect(0, 3, 0);
-            $T = $mm(12);
+            $T = $mm(6);
             $small = self::floral_corner($T, 5, $hex);
             $put = function ($t, $dx, $dy) use ($im, $T) { imagecopy($im, $t, $dx, $dy, 0, 0, $T, $T); };
             $put($small, $x0, $y0);
