@@ -4,6 +4,13 @@ Extension WordPress qui affiche vos données [TNG](https://tngsitebuilding.com/)
 
 Licence : GPLv2 ou ultérieure. Prérequis : WordPress 5.8+, PHP 7.4+.
 
+## Documentation (avec captures d'écran)
+
+- [Guide en français](docs/fr/README.md)
+- [User guide in English](docs/en/README.md)
+
+Chaque module a sa page (arbres, livre, fiche, frise, carte de chaleur, galerie, statistiques, éventail, implexe…), avec ses réglages et des captures d'écran.
+
 ## Installation
 
 1. Téléchargez `tng-suite.zip` dans la dernière [Release](../../releases/latest).
