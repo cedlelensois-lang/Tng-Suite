@@ -710,7 +710,7 @@ class TNGBook_Art {
         };
         if ($style === 'floral') {   // cadre fleuri : filet fin, coins de coquelicots et de feuillages
             $rect(0, 3, 0);
-            $T = $mm(19);
+            $T = $mm(12);
             $small = self::floral_corner($T, 5, $hex);
             $put = function ($t, $dx, $dy) use ($im, $T) { imagecopy($im, $t, $dx, $dy, 0, 0, $T, $T); };
             $put($small, $x0, $y0);

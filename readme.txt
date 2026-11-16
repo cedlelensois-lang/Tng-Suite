@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.17.2
+Stable tag: 2.17.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -82,6 +82,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.17.3 =
+* Livre : coins du cadre fleuri encore plus petits (12 mm, environ 1 cm de fleurs), visibles mais discrets.
 
 = 2.17.2 =
 * Livre : le cadre fleuri (style Monet) a des coins deux fois plus petits (19 mm) qui ne recouvrent plus le titre, et les fleurs, feuillages et nymphéas des deux ornements Monet sont dessinés en camaïeu de la couleur du livre (« en-têtes et liens ») au lieu de coquelicots rouges fixes.
