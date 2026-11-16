@@ -445,8 +445,12 @@ class TNGBook_Renderer {
         $isB = trim((string) $p['birthdate']) !== '' && self::pd($p['birthdatetr']);
         $place = $isB ? (string) $p['birthplace'] : (string) ($p['baptplace'] ?? '');
         $per = [];   // périodes des listes qui s'appliquent à cette personne
-        foreach (TNGBook_History::pick($this->histSets(), $place, (string) ($this->o['history_default'] ?? ''), (string) ($this->o['history_scope'] ?? 'all')) as $set) $per = array_merge($per, $set['periods']);
-        if (!$per) return '';
+        $fev = [];   // leurs événements datés
+        foreach (TNGBook_History::pick($this->histSets(), $place, (string) ($this->o['history_default'] ?? ''), (string) ($this->o['history_scope'] ?? 'all')) as $set) {
+            $per = array_merge($per, $set['periods']);
+            $fev = array_merge($fev, $set['events']);
+        }
+        if (!$per && !$fev) return '';
         $per = TNGBook_History::merge_periods($per);
         $isD = trim((string) $p['deathdate']) !== '' && self::pd($p['deathdatetr']);
         $ev = [['hx_birth', $isB ? $p['birthdatetr'] : ($p['baptdatetr'] ?? '')], ['hx_death', $isD ? $p['deathdatetr'] : ($p['burialdatetr'] ?? '')]];
@@ -477,7 +481,15 @@ class TNGBook_Renderer {
                 if (min($first) < (int) substr($pp[1], 0, 4) && $dy0[0] > (int) substr($pp[0], 0, 4)) $lived[] = $i;
             }
         }
-        if (!$by && !$lived) return '';
+        $out = '';
+        if ($by || $lived) $out .= $this->histPeriods($per, $by, $lived);
+        if (!empty($this->o['histfiche_ev']) && $fev) $out .= $this->histEvents($fev, $isB ? $p['birthdatetr'] : ($p['baptdatetr'] ?? ''), $isD ? $p['deathdatetr'] : ($p['burialdatetr'] ?? ''));
+        return $out;
+    }
+
+    /** Ligne des périodes (voir histLine). */
+    private function histPeriods(array $per, array $by, array $lived) {
+        $L = $this->L;
         // une simple liste des périodes vécues ou touchées, avec les noms écrits dans les listes (aucune phrase composée : pas de mélange de langues)
         $idx = array_unique(array_merge(array_keys($by), $lived));
         sort($idx);
@@ -485,6 +497,26 @@ class TNGBook_Renderer {
         $what = count($names) > 1 ? implode(', ', array_slice($names, 0, -1)) . ' ' . $L['hx_and'] . ' ' . end($names) : $names[0];
         $parts = [$what];
         return '<p class="hxline"><em>' . $this->e($L['hx_lead'] . implode(' ; ', $parts)) . '.</em></p>';
+    }
+
+    /** Événements datés des listes survenus entre la naissance et le décès (par année) : « Faits marquants de son vivant : 1939 : … ; 1975 : … ». */
+    private function histEvents(array $fev, $btr, $dtr) {
+        $b = self::pd($btr);
+        $d = self::pd($dtr);
+        if (!$b || !$d) return '';
+        $seen = [];
+        $rows = [];
+        foreach ($fev as $e) {
+            if ($e[0] < $b[0] || $e[0] > $d[0]) continue;
+            $k = $e[0] . '|' . mb_strtolower($e[3]);
+            if (isset($seen[$k])) continue;
+            $seen[$k] = 1;
+            $rows[] = $e;
+        }
+        if (!$rows) return '';
+        usort($rows, function ($x, $y) { return [$x[0], $x[1], $x[2]] <=> [$y[0], $y[1], $y[2]]; });
+        $txt = implode(' ; ', array_map(function ($e) { return $e[0] . ' : ' . $e[3]; }, $rows));
+        return '<p class="hxline hxev"><em>' . $this->e($this->L['hx_events'] . $txt) . '.</em></p>';
     }
 
     /** Modèle « récit » : « X et Y ont N enfants : » suivi d'une puce par enfant (naissance, décès, lien vers la fiche). */

@@ -1235,4 +1235,5 @@ return array(
 	'Nouvelle liste à partir d’une liste fournie' => 'New list from a supplied list',
 	'Supprimer cette liste ? Cette action est définitive.' => 'Delete this list? This cannot be undone.',
 	'Enregistrer la liste' => 'Save list',
+	'Dans les fiches, ajouter aussi les événements datés des listes cochées survenus entre la naissance et le décès de la personne (« Faits marquants de son vivant : 1939 : … ; 1975 : … ») ; nécessite des dates de naissance et de décès, et allonge les fiches' => 'In the records, also add the dated events of the ticked lists that happened between the person’s birth and death (“Notable events in their lifetime: 1939: … ; 1975: … ”); needs birth and death dates, and makes the records longer',
 );

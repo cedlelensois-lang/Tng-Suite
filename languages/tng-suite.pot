@@ -3679,6 +3679,9 @@ msgstr ""
 msgid "Enregistrer la liste"
 msgstr ""
 
+msgid "Dans les fiches, ajouter aussi les événements datés des listes cochées survenus entre la naissance et le décès de la personne (« Faits marquants de son vivant : 1939 : … ; 1975 : … ») ; nécessite des dates de naissance et de décès, et allonge les fiches"
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""
