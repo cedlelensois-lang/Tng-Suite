@@ -9,7 +9,7 @@ class TNGBook_Renderer {
     private $d, $L, $lang, $o, $mode;
     use TNGBook_StatsView;
 
-    private $resiIds = [], $Ls = [], $tpl = [], $names = [], $places = [], $srcNum = [], $srcOrder = [], $toc = [], $av = [], $avRnd = [], $dbg = [];
+    private $spMap = null, $spLine = [], $resiIds = [], $Ls = [], $tpl = [], $names = [], $places = [], $srcNum = [], $srcOrder = [], $toc = [], $av = [], $avRnd = [], $dbg = [];
 
     /** $mode : 'html' (images par URL) ou 'pdf' (images intégrées en base64) */
     public function __construct($d, $lang, array $o, $mode) {
@@ -95,7 +95,38 @@ class TNGBook_Renderer {
             if ($dd) return 'D' . $dd;
             if ($a) return 'A' . $a;
         }
-        return null;
+        return $this->spFiches()['pid'][$pid] ?? null;   // conjoint d'un descendant ayant sa propre fiche
+    }
+
+    /**
+     * Fiches des conjoints des descendants (option « spfiche ») : numéro du couple + « c » (D12c, D12c2 pour une 2e union).
+     * Pas de fiche pour un conjoint masqué ou écarté, déjà ancêtre, déjà descendant (cousins mariés) ou déjà doté d'une fiche.
+     * Retourne ['pid' => [conjoint => réf.], 'of' => [descendant => [[conjoint, fid, réf.], …]]].
+     */
+    private function spFiches() {
+        if ($this->spMap !== null) return $this->spMap;
+        $this->spMap = ['pid' => [], 'of' => []];
+        if (empty($this->o['spfiche'])) return $this->spMap;
+        $d = $this->d;
+        ksort($d->descGen);
+        foreach ($d->descGen as $list) {
+            foreach ($list as $pid) {
+                if (empty($d->desc[$pid])) continue;
+                $n = 0;
+                foreach ($d->famsOf[$pid] ?? [] as $fid) {
+                    $f = $d->fams[$fid] ?? null;
+                    if (!$f) continue;
+                    $sp = ($f['husband'] === $pid) ? $f['wife'] : $f['husband'];
+                    if ($sp === '' || !isset($d->people[$sp]) || $d->dropped($sp) || $d->hidden($sp)) continue;
+                    if (isset($d->sosaOf[$sp]) || isset($d->desc[$sp]) || isset($this->spMap['pid'][$sp])) continue;
+                    $n++;
+                    $ref = 'D' . $d->desc[$pid]['num'] . 'c' . ($n > 1 ? $n : '');
+                    $this->spMap['pid'][$sp] = $ref;
+                    $this->spMap['of'][$pid][] = [$sp, $fid, $ref];
+                }
+            }
+        }
+        return $this->spMap;
     }
 
     /* ---------- Noms, dates, lieux ---------- */
@@ -916,7 +947,8 @@ class TNGBook_Renderer {
         if (!$f) return '';
         $sp = ($f['husband'] === $pid) ? $f['wife'] : $f['husband'];
         if ($sp === '' || !isset($d->people[$sp]) || $d->dropped($sp) || $d->hidden($sp)) return '';
-        if (empty($d->photos[$sp])) return '';   // la vignette est répétée même si le conjoint a sa propre fiche
+        if (empty($d->photos[$sp])) return '';
+        if (isset($d->sosaOf[$sp]) || isset($d->desc[$sp]) || isset($this->spFiches()['pid'][$sp])) return '';   // le conjoint a sa propre fiche, avec sa photo : pas de vignette en double
         $src = $this->cachedPhoto($d->photos[$sp], $this->plain($sp) . ' (' . $sp . ')');
         return $src === '' ? '' : '<img class="ph sp" src="' . esc_attr($src) . '" alt="">';
     }
@@ -938,14 +970,17 @@ class TNGBook_Renderer {
                 $rr = $this->refAny($sp, $prefer);
                 $spHead = '<strong>' . $this->e($plain) . '</strong>' . ($rr ? ' (' . $this->link($rr) . ')' : '');
                 $spHtml = $spHead;
-                $spBio = $this->bioShort($sp, $ref);
-                $spBioAnd = $this->bioShort($sp, $ref, true);
-                if ($spBio !== '') $spHtml .= ' (' . $spBio . ')';
-                if ($prefer === 'D') {
-                    $spPar = (string) $this->parentsPhrase($sp, $this->sx($d->people[$sp]['sex']), 'D');
-                    if ($spPar !== '') $spHtml .= ', ' . $spPar;
+                $own = isset($this->spFiches()['pid'][$sp]);   // fiche du conjoint dans la descendance : la phrase d'union se limite à son nom et au renvoi
+                if (!$own) {
+                    $spBio = $this->bioShort($sp, $ref);
+                    $spBioAnd = $this->bioShort($sp, $ref, true);
+                    if ($spBio !== '') $spHtml .= ' (' . $spBio . ')';
+                    if ($prefer === 'D') {
+                        $spPar = (string) $this->parentsPhrase($sp, $this->sx($d->people[$sp]['sex']), 'D');
+                        if ($spPar !== '') $spHtml .= ', ' . $spPar;
+                    }
+                    $this->addName($sp, $ref);
                 }
-                $this->addName($sp, $ref);
             }
         }
         $md = $this->dt($f['marrdatetr'], $f['marrdate']);
@@ -1094,6 +1129,8 @@ class TNGBook_Renderer {
             $bb = $this->baptBit($p, $sex, $ref);
             if ($bb !== '') $html .= '<p>' . $bb . '.</p>' . $this->baptNotes($pid, $p);
         }
+
+        $html .= $this->spLine[$pid] ?? '';   // fiche d'un conjoint de descendant : de qui est-il le conjoint
 
         /* Décès et inhumation (calculés ici : le modèle « récit » les place juste après la naissance) */
         $dd = $this->dt($p['deathdatetr'], $p['deathdate']);
@@ -1812,6 +1849,10 @@ class TNGBook_Renderer {
             else { $h .= $gh . $gt; }
             foreach ($list as $pid) {
                 $h .= $this->fiche($pid, 'D' . $d->desc[$pid]['num'], 'D', $d->famsOf[$pid] ?? []);
+                foreach ($this->spFiches()['of'][$pid] ?? [] as $x) {
+                    $this->spLine[$x[0]] = '<p class="spof">' . $this->e($this->L['spouse_of'][$this->sx($d->people[$x[0]]['sex'])]) . ' <strong>' . $this->e($this->plain($pid)) . '</strong> (' . $this->link('D' . $d->desc[$pid]['num']) . ').</p>';
+                    $h .= $this->fiche($x[0], $x[2], 'D', []);
+                }
             }
             if ($cols) $h .= '</div>';
         }

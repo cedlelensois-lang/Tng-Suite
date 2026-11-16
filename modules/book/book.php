@@ -88,14 +88,21 @@ final class TNGBook {
             // Paramètres du livre (tous conservés d'une fois sur l'autre)
             'personID' => '', 'tree' => '', 'lang' => tngs_lang(),
             'gen_up' => 6, 'gen_down' => 4, 'max_people' => self::MAX_PEOPLE, 'living' => 'anonymize', 'place_parts' => 2,
-            'photos' => 1, 'spphotos' => 1, 'generic' => 1, 'avatar' => 'portrait', 'sources' => 1, 'index' => 1, 'notes' => 0, 'military' => 0, 'mpf' => 1, 'mini' => 0, 'imgq' => 0, 'trees' => 1, 'stats' => 1, 'stats_first' => 1, 'stats_last' => 1, 'desclist' => 1, 'chrono' => 0, 'kids' => 1, 'histfiche' => 0, 'map' => 0, 'bapt' => 0, 'burial' => 1, 'verbose' => 0, 'country' => 0, 'regions' => 0, 'asclist' => 0, 'resi' => 0, 'sibs' => 0, 'marrage' => 0, 'cous' => 1, 'allunions' => 1, 'order' => ['asc', 'desc', 'stats', 'chrono', 'map', 'idxn', 'idxp', 'src', 'alist', 'dlist'],
+            'photos' => 1, 'spphotos' => 1, 'spfiche' => 1, 'generic' => 1, 'avatar' => 'portrait', 'sources' => 1, 'index' => 1, 'notes' => 0, 'military' => 0, 'mpf' => 1, 'mini' => 0, 'imgq' => 0, 'trees' => 1, 'stats' => 1, 'stats_first' => 1, 'stats_last' => 1, 'desclist' => 1, 'chrono' => 0, 'kids' => 1, 'histfiche' => 0, 'map' => 0, 'bapt' => 0, 'burial' => 1, 'verbose' => 0, 'country' => 0, 'regions' => 0, 'asclist' => 0, 'resi' => 0, 'sibs' => 0, 'marrage' => 0, 'cous' => 1, 'allunions' => 1, 'order' => ['asc', 'desc', 'stats', 'chrono', 'map', 'idxn', 'idxp', 'src', 'alist', 'dlist'],
             'title' => '', 'author' => '', 'preface' => '', 'surname' => '', 'surname_title' => '', 'format' => 'html', 'template' => 'classic', 'frame' => 'none', 'cover_art' => 'tree', 'history' => 0, 'history_country' => 'FR', 'history_custom' => '',
             'colors' => TNGBook_Renderer::defaultColors(),
         ];
     }
 
+    /** Réglages enregistrés + valeurs par défaut ; « spfiche » (apparu en 2.9.0) reste décoché pour des réglages déjà enregistrés. */
+    private static function saved_opts() {
+        $saved = get_option(self::OPT, []);
+        if (is_array($saved) && $saved && !array_key_exists('spfiche', $saved)) $saved['spfiche'] = 0;
+        return wp_parse_args($saved, self::defaults());
+    }
+
     public static function opts() {
-        $o = wp_parse_args(get_option(self::OPT, []), self::defaults());
+        $o = self::saved_opts();
         $o['prefix'] = tngs_prefix();                       // réglage commun
         // Vivants/privés : réglage du module (TNG Suite > Général > Modules). « Afficher » = inclus en entier.
         if (!tngs_hide_living('book')) $o['living'] = 'include';
@@ -313,7 +320,7 @@ final class TNGBook {
         if (!tngs_hide_living('book')) $out['living'] = 'include';
         $out['place_parts'] = max(0, min(5, (int) ($in['place_parts'] ?? 2)));
         $out['avatar'] = (($in['avatar'] ?? '') === 'round') ? 'round' : 'portrait';
-        foreach (['photos', 'spphotos', 'generic', 'sources', 'index', 'notes', 'military', 'mpf', 'mini', 'imgq', 'trees', 'stats', 'stats_first', 'stats_last', 'desclist', 'kids', 'histfiche', 'chrono', 'history', 'map', 'bapt', 'burial', 'verbose', 'country', 'regions', 'asclist', 'resi', 'sibs', 'marrage', 'cous', 'allunions'] as $k) {
+        foreach (['photos', 'spphotos', 'spfiche', 'generic', 'sources', 'index', 'notes', 'military', 'mpf', 'mini', 'imgq', 'trees', 'stats', 'stats_first', 'stats_last', 'desclist', 'kids', 'histfiche', 'chrono', 'history', 'map', 'bapt', 'burial', 'verbose', 'country', 'regions', 'asclist', 'resi', 'sibs', 'marrage', 'cous', 'allunions'] as $k) {
             $out[$k] = empty($in[$k]) ? 0 : 1;
         }
         $out['order'] = self::clean_order($in['order'] ?? null);
@@ -435,6 +442,7 @@ final class TNGBook {
             . self::chk('notes', 'Notes (générales de chaque personne et de chaque union, et notes des événements : naissance, mariage, décès…)', $o)
             . self::chk('sibs', 'Frères et sœurs sur les fiches (liste des autres enfants de la famille d’origine, avec lien vers leur fiche si elle existe)', $o)
             . self::chk('allunions', 'Autres mariages et unions des ancêtres (en plus de l’union dont descend la lignée)', $o)
+            . self::chk('spfiche', 'Fiche pour le conjoint de chaque descendant (numéro du couple suivi de « c », par exemple D12c) : la phrase d’union se limite alors à son nom, avec un lien vers sa fiche', $o)
             . self::chk('kids', 'Enfants des couples dans l’ascendance : « X et Y ont N enfants : » suivi de la liste (modèles Classique, Élégant et Moderne ; le modèle Récit les présente déjà)', $o)
             . self::chk('histfiche', 'Contexte historique dans les fiches : « Contexte historique : naissance pendant la Première Guerre mondiale ; a aussi vécu la Seconde Guerre mondiale » : dates tombant dans une guerre ou une période marquante du pays de naissance, et périodes traversées de son vivant', $o)
             . '</td></tr>';
@@ -640,7 +648,7 @@ final class TNGBook {
         if (!current_user_can('manage_options')) wp_die(esc_html(tngs_t('Accès refusé.')), 403);
         if (!isset($_POST['tngbook_snonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['tngbook_snonce'])), 'tngbook_settings')) wp_die(esc_html(tngs_t('Jeton de sécurité invalide.')), 403);
         $in = (isset($_POST['tngbook_cfg']) && is_array($_POST['tngbook_cfg'])) ? wp_unslash($_POST['tngbook_cfg']) : [];
-        $cur = wp_parse_args(get_option(self::OPT, []), self::defaults());
+        $cur = self::saved_opts();
         $cur['tng_path'] = sanitize_text_field($in['tng_path'] ?? '');
         $ph = sanitize_text_field($in['photo_folder'] ?? '');
         $cur['photo_folder'] = $ph !== '' ? $ph : 'photos';
@@ -761,7 +769,7 @@ final class TNGBook {
 
         $opts = [
             'root' => $pid, 'up' => $up, 'down' => $down,
-            'photos' => (bool) $o['photos'], 'spphotos' => (bool) $o['spphotos'], 'generic' => (bool) $o['generic'], 'avatar' => ($o['avatar'] ?? '') === 'round' ? 'round' : 'portrait',
+            'photos' => (bool) $o['photos'], 'spphotos' => (bool) $o['spphotos'], 'spfiche' => !empty($o['spfiche']), 'generic' => (bool) $o['generic'], 'avatar' => ($o['avatar'] ?? '') === 'round' ? 'round' : 'portrait',
             'sources' => (bool) $o['sources'], 'index' => (bool) $o['index'],
             'notes' => (bool) $o['notes'], 'military' => (bool) $o['military'], 'mpf' => !empty($o['mpf']), 'mini' => !empty($o['mini']), 'imgq' => !empty($o['imgq']), 'trees' => !empty($o['trees']), 'stats' => !empty($o['stats']), 'stats_first' => !empty($o['stats_first']), 'stats_last' => !empty($o['stats_last']), 'desclist' => !empty($o['desclist']), 'chrono' => !empty($o['chrono']), 'map' => !empty($o['map']), 'bapt' => !empty($o['bapt']), 'burial' => !empty($o['burial']), 'verbose' => !empty($o['verbose']), 'country' => !empty($o['country']), 'regions' => !empty($o['regions']), 'asclist' => !empty($o['asclist']), 'resi' => !empty($o['resi']), 'sibs' => !empty($o['sibs']), 'cous' => !empty($o['cous']), 'allunions' => !empty($o['allunions']), 'marrage' => !empty($o['marrage']),
             'debug' => $debug, 'place_parts' => (int) $o['place_parts'],
