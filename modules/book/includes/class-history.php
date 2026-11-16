@@ -558,7 +558,7 @@ class TNGBook_History {
         foreach ($ch as $id => $l) $h .= '<option value="' . esc_attr($id) . '"' . selected((string) ($o['history_default'] ?? ''), $id, false) . '>' . esc_html($l) . '</option>';
         $h .= '</select></label></p>';
         $h .= '<p class="description">' . esc_html(tngs_t('Utilisé quand la chronologie est réglée sur « avec contexte historique » ou que le contexte historique des fiches est coché. Une seule liste cochée vaut pour tout le livre ; avec plusieurs, chaque personne reçoit les listes dont un mot-clé de lieu figure dans son lieu de naissance (une liste sans mot-clé vaut pour tout le monde), et un pays n’apparaît dans la chronologie que s’il compte au moins deux personnes du livre (ou 3 %).'));
-        if ($admin) $h .= ' ' . esc_html(tngs_t('Créez et modifiez vos listes dans Livre > Réglages > Faits historiques.'));
+        if ($admin) $h .= ' <a href="#tngbook-settings">' . esc_html(tngs_t('Créez et modifiez vos listes dans Livre > Réglages > Faits historiques.')) . '</a>';
         $h .= '</p></td></tr>';
         return $h;
     }
@@ -659,7 +659,7 @@ class TNGBook_History {
             $lists[self::new_id($lists)] = $x;
         }
         self::save_user_lists($lists);
-        wp_safe_redirect(add_query_arg(['page' => 'tngbook', 'tngbook_msg' => 'hist_saved'], admin_url('admin.php')) . '#tngbook-history');
+        wp_safe_redirect(add_query_arg(['page' => 'tngbook', 'tngbook_msg' => 'hist_saved'], admin_url('admin.php')) . '#tngbook-settings');   // section « Livre : réglages » (un identifiant inconnu ouvrirait la première section)
         exit;
     }
 
