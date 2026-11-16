@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.17.1
+Stable tag: 2.17.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -82,6 +82,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.17.2 =
+* Livre : le cadre fleuri (style Monet) a des coins deux fois plus petits (19 mm) qui ne recouvrent plus le titre, et les fleurs, feuillages et nymphéas des deux ornements Monet sont dessinés en camaïeu de la couleur du livre (« en-têtes et liens ») au lieu de coquelicots rouges fixes.
 
 = 2.17.1 =
 * Documentation entièrement revue en français et en anglais : une page par menu avec tous les réglages, un tableau des attributs de chaque shortcode (dont les 11 statistiques), référence rapide des shortcodes, rubrique confidentialité et sécurité ; correction de `[tng_stat stat="…"]` (l'exemple indiquait `type`), de `[liste_enfants_tng]` (identifiant de famille) et des guides texte (numéros de version obsolètes). README GitHub complété et fichier SECURITY.md ajouté ; le zip des Releases n'embarque plus le dossier docs/ (5 Mo de captures).

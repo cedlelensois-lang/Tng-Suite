@@ -552,12 +552,12 @@ final class TNGBook {
             'single' => 'Filet simple',
             'double' => 'Double filet',
             'ornate' => 'Cadre orné (angles creusés, PDF et page imprimable ; double filet dans Word et OpenDocument)',
-            'floral' => 'Cadre fleuri, style Monet (coquelicots aux quatre coins, PDF et page imprimable ; double filet dans Word et OpenDocument)',
+            'floral' => 'Cadre fleuri, style Monet (petites fleurs aux quatre coins, aux couleurs du livre ; PDF et page imprimable ; double filet dans Word et OpenDocument)',
         ], $o['frame'] ?? 'none', 'Un liseré autour de chaque page, pour une impression en livre : couleur du livre (« en-têtes et liens »), pas de cadre sur la couverture.');
         self::select('Illustration de couverture', 'cover_art', [
             'none' => 'Aucune (deux filets autour du titre)',
             'ornament' => 'Fleurons au-dessus et au-dessous du titre',
-            'nympheas' => 'Nymphéas et coquelicots au-dessus et au-dessous du titre (style Monet)',
+            'nympheas' => 'Nymphéas et fleurs aux couleurs du livre, au-dessus et au-dessous du titre (style Monet)',
             'tree' => 'Arbre : chêne ample, puis titre et fleuron',
             'olive' => 'Arbre : penché, aux branches légères',
             'willow' => 'Arbre : saule pleureur',

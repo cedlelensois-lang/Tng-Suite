@@ -2305,10 +2305,10 @@ msgstr ""
 msgid "Pastel de la campagne"
 msgstr ""
 
-msgid "Nymphéas et coquelicots au-dessus et au-dessous du titre (style Monet)"
+msgid "Nymphéas et fleurs aux couleurs du livre, au-dessus et au-dessous du titre (style Monet)"
 msgstr ""
 
-msgid "Cadre fleuri, style Monet (coquelicots aux quatre coins, PDF et page imprimable ; double filet dans Word et OpenDocument)"
+msgid "Cadre fleuri, style Monet (petites fleurs aux quatre coins, aux couleurs du livre ; PDF et page imprimable ; double filet dans Word et OpenDocument)"
 msgstr ""
 
 msgid "Palettes harmonisées :"
