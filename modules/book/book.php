@@ -556,7 +556,11 @@ final class TNGBook {
             'meadow' => 'Pochette pleine page (PDF) : arbre aux étiquettes vierges et oiseaux, prairie fleurie',
             'farm' => 'Pochette pleine page (PDF) : grand tronc, feuillage pastel et campagne',
             'chene' => 'Pochette pleine page (PDF) : chêne et ses racines, campagne, texte sur fond blanc flouté',
-        ], $o['cover_art'] ?? 'tree', 'Les arbres sont dessinés par le plugin dans la couleur du livre (« en-têtes et liens »). Les trois pochettes illustrées (oiseaux, campagne, chêne) sont des illustrations fournies, qui gardent leurs couleurs.');
+            'chene2' => 'Pochette pleine page (PDF) : chêne ensoleillé, prairie, texte sur fond blanc flouté',
+            'chene3' => 'Pochette pleine page (PDF) : chêne vert, ciel bleu et ferme, texte sur fond blanc flouté',
+            'chene4' => 'Pochette pleine page (PDF) : chêne aux couleurs éclatantes, texte sur fond blanc flouté',
+            'peinture' => 'Pochette pleine page (PDF) : peinture impressionniste, chêne et coquelicots, texte sur fond blanc flouté',
+        ], $o['cover_art'] ?? 'tree', 'Les arbres sont dessinés par le plugin dans la couleur du livre (« en-têtes et liens »). Les pochettes illustrées (oiseaux, campagne, chênes, peinture) sont des illustrations fournies, qui gardent leurs couleurs.');
         echo TNGBook_History::form_row(self::OPT, $o, $admin);
         $fmt = ['html' => 'Page imprimable (Imprimer → Enregistrer en PDF)'];
         if (self::mpdf_available()) $fmt['pdf'] = 'PDF (téléchargement direct)';
@@ -862,7 +866,7 @@ final class TNGBook {
 
     /** Pochette pleine page : image JPEG posée en fond de la première page seulement (repère <meta name="tng-cover">, retiré avant mPDF). */
     public static function pdf_cover(\Mpdf\Mpdf $mpdf, $html) {
-        if (!preg_match('/<meta name="tng-cover" content="(#[0-9a-f]{6})(?: (meadow|farm|chene))?">/', $html, $m)) return $html;
+        if (!preg_match('/<meta name="tng-cover" content="(#[0-9a-f]{6})(?: (meadow|farm|chene[234]?|peinture))?">/', $html, $m)) return $html;
         $html = str_replace($m[0], '', $html);
         if (!function_exists('imagecreatetruecolor')) return $html;
         $mpdf->imageVars['tngcover'] = TNGBook_Art::cover_page($m[1], 1240, 1754, $m[2] ?? 'page');

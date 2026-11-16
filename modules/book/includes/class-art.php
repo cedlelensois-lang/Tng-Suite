@@ -215,12 +215,17 @@ class TNGBook_Art {
 
     /** Valeurs du réglage « illustration de couverture » : none, ornament, puis un arbre (tree = chêne, olive, willow, roots). */
     public static function cover_choices() {
-        return array('none', 'ornament', 'tree', 'olive', 'willow', 'roots', 'color', 'page', 'meadow', 'farm', 'chene');
+        return array('none', 'ornament', 'tree', 'olive', 'willow', 'roots', 'color', 'page', 'meadow', 'farm', 'chene', 'peinture', 'chene2', 'chene3', 'chene4');
     }
 
     /** Pochettes pleine page (fond de la 1re page du PDF). */
     public static function page_covers() {
-        return array('page', 'meadow', 'farm', 'chene');
+        return array('page', 'meadow', 'farm', 'chene', 'peinture', 'chene2', 'chene3', 'chene4');
+    }
+
+    /** Pochettes à image fournie (assets/img/cover-<nom>.jpg). */
+    public static function image_covers() {
+        return array('meadow', 'farm', 'chene', 'peinture', 'chene2', 'chene3', 'chene4');
     }
 
     /** Style d'arbre correspondant à une valeur du réglage (tree → oak). */
@@ -228,7 +233,7 @@ class TNGBook_Art {
         if ($art === 'winter') $art = 'roots';   // ancien nom (2.8.2)
         if ($art === 'page') return 'olive';   // hors PDF : l'arbre penché, sans fond de page
         if ($art === 'meadow') return 'color';
-        if ($art === 'farm' || $art === 'chene') return 'oak';
+        if (in_array($art, self::image_covers(), true)) return 'oak';
         return $art === 'tree' ? 'oak' : (in_array($art, self::tree_styles(), true) ? $art : 'oak');
     }
 
@@ -446,7 +451,7 @@ class TNGBook_Art {
      * feuilles gris-bleu (teinte du livre atténuée), place libre dessous pour le titre. Posée en fond de la première page du PDF.
      */
     public static function cover_page($hex, $w = 1240, $h = 1754, $variant = 'page') {
-        if ($variant === 'meadow' || $variant === 'farm' || $variant === 'chene') {   // illustrations fournies (assets/img), déjà au format A4
+        if (in_array($variant, self::image_covers(), true)) {   // illustrations fournies (assets/img), déjà au format A4
             $bin = @file_get_contents(TNGBOOK_DIR . 'assets/img/cover-' . $variant . '.jpg');
             if ($bin !== false && $bin !== '') return $bin;
         }

@@ -3526,6 +3526,18 @@ msgstr ""
 msgid "Pochette pleine page (PDF) : arbre aux étiquettes vierges et oiseaux, prairie fleurie"
 msgstr ""
 
+msgid "Pochette pleine page (PDF) : chêne ensoleillé, prairie, texte sur fond blanc flouté"
+msgstr ""
+
+msgid "Pochette pleine page (PDF) : chêne vert, ciel bleu et ferme, texte sur fond blanc flouté"
+msgstr ""
+
+msgid "Pochette pleine page (PDF) : chêne aux couleurs éclatantes, texte sur fond blanc flouté"
+msgstr ""
+
+msgid "Pochette pleine page (PDF) : peinture impressionniste, chêne et coquelicots, texte sur fond blanc flouté"
+msgstr ""
+
 msgid "Pochette pleine page (PDF) : chêne et ses racines, campagne, texte sur fond blanc flouté"
 msgstr ""
 
@@ -3535,7 +3547,7 @@ msgstr ""
 msgid "Pochette pleine page (PDF) : arbre à l’aquarelle sur fond crème, titre dessous"
 msgstr ""
 
-msgid "Les arbres sont dessinés par le plugin dans la couleur du livre (« en-têtes et liens »). Les trois pochettes illustrées (oiseaux, campagne, chêne) sont des illustrations fournies, qui gardent leurs couleurs."
+msgid "Les arbres sont dessinés par le plugin dans la couleur du livre (« en-têtes et liens »). Les pochettes illustrées (oiseaux, campagne, chênes, peinture) sont des illustrations fournies, qui gardent leurs couleurs."
 msgstr ""
 
 msgid "Arbres & visualisations"
