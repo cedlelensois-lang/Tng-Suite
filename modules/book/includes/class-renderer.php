@@ -2404,8 +2404,8 @@ CSS;
         if ($pageCover) {
             $front = '<div class="cover art-page art-' . $art . (mb_strlen($title) > 34 ? ' long' : '') . '"><h1>' . $this->e($title) . '</h1>';
         } elseif ($art !== 'none' && function_exists('imagecreatetruecolor')) {
-            $orn = in_array($art, ['ornament', 'nympheas'], true);
-            $fl = $img($art === 'nympheas' ? TNGBook_Art::garland($head) : TNGBook_Art::flourish($head), 12, 'fl');
+            $orn = in_array($art, ['ornament', 'nympheas', 'feuillage'], true);
+            $fl = $img($art === 'nympheas' ? TNGBook_Art::garland($head) : ($art === 'feuillage' ? TNGBook_Art::leafgarland($head) : TNGBook_Art::flourish($head)), 12, 'fl');
             $wide = TNGBook_Art::style_of($art) === 'color' && !$orn;   // arbre en couleurs : image large (≈1,5 × 1)
             $front = '<div class="cover art-' . ($orn ? 'ornament' : 'tree') . (mb_strlen($title) > 34 ? ' long' : '') . '">' . ($orn ? $fl : ($wide ? $img(TNGBook_Art::tree($head, 1000, 680, 'color'), 14, 'trw') : $img(TNGBook_Art::tree($head, 900, 760, TNGBook_Art::style_of($art)), 9, 'tr')))
                 . '<h1>' . $this->e($title) . '</h1>' . $fl;
@@ -2472,7 +2472,7 @@ CSS;
         }
 
         $fr = (string) ($this->o['frame'] ?? 'none');
-        if (!in_array($fr, ['single', 'double', 'ornate', 'floral'], true)) $fr = 'none';
+        if (!in_array($fr, ['single', 'double', 'ornate', 'floral', 'leaves'], true)) $fr = 'none';
         $mark = $pageCover ? '<meta name="tng-cover" content="' . $this->colors()['head'] . ($art === 'page' ? '' : ' ' . $art) . '">' : '';
         $frameDiv = '';
         $frameCss = '';
@@ -2480,7 +2480,7 @@ CSS;
             $mark .= '<meta name="tng-frame" content="' . $fr . ' ' . $this->colors()['head'] . '">';
         } elseif ($fr !== 'none' && $this->mode === 'html') {   // page imprimable : cadre fixe répété sur chaque page à l'impression
             $col = $this->colors()['head'];
-            $look = in_array($fr, ['ornate', 'floral'], true) && function_exists('imagecreatetruecolor')
+            $look = in_array($fr, ['ornate', 'floral', 'leaves'], true) && function_exists('imagecreatetruecolor')
                 ? 'background: url(data:image/png;base64,' . base64_encode(TNGBook_Art::frame($fr, $col, true)) . ') center / 100% 100% no-repeat;'
                 : ($fr === 'single' ? 'border: 1.5pt solid ' : 'border: 3px double ') . $col . ';';
             $frameCss = '.pageframe { display: none; } @media print { .pageframe { display: block; position: fixed; top: -.8cm; left: -.8cm; right: -.8cm; bottom: -1cm; ' . $look . ' pointer-events: none; -webkit-print-color-adjust: exact; print-color-adjust: exact; } }';

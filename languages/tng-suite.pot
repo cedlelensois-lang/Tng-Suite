@@ -2305,6 +2305,12 @@ msgstr ""
 msgid "Pastel de la campagne"
 msgstr ""
 
+msgid "Petit arbre et branches de feuilles aux couleurs du livre, au-dessus et au-dessous du titre"
+msgstr ""
+
+msgid "Cadre feuillage (petites branches de feuilles aux quatre coins, aux couleurs du livre ; PDF et page imprimable ; double filet dans Word et OpenDocument)"
+msgstr ""
+
 msgid "Nymphéas et fleurs aux couleurs du livre, au-dessus et au-dessous du titre (style Monet)"
 msgstr ""
 

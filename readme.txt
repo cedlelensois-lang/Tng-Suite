@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.17.4
+Stable tag: 2.18.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -82,6 +82,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.18.0 =
+* Livre : deux ornements à feuilles d'arbre, dessinés par le plugin en camaïeu de la couleur du livre : le cadre « Cadre feuillage » (filet fin et petites branches de feuilles aux quatre coins, 9 mm) et l'illustration de couverture « Petit arbre et feuillages » (un petit arbre entre deux branches feuillues, au-dessus et au-dessous du titre). Word et OpenDocument : double filet pour le cadre, comme les autres cadres ornés.
 
 = 2.17.4 =
 * Livre : coins du cadre fleuri divisés par deux (6 mm, tiges plus fines).

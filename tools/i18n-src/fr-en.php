@@ -777,6 +777,8 @@ return array(
 	'Coquelicot et feuillage' => 'Poppy and foliage',
 	'Prairie fleurie' => 'Flowering meadow',
 	'Pastel de la campagne' => 'Countryside pastel',
+	'Petit arbre et branches de feuilles aux couleurs du livre, au-dessus et au-dessous du titre' => 'Small tree and leafy branches in the book colours, above and below the title',
+	'Cadre feuillage (petites branches de feuilles aux quatre coins, aux couleurs du livre ; PDF et page imprimable ; double filet dans Word et OpenDocument)' => 'Leaf frame (small leafy branches in the four corners, in the book colours; PDF and printable page; double line in Word and OpenDocument)',
 	'Nymphéas et fleurs aux couleurs du livre, au-dessus et au-dessous du titre (style Monet)' => 'Water lilies and flowers in the book colours, above and below the title (Monet style)',
 	'Cadre fleuri, style Monet (petites fleurs aux quatre coins, aux couleurs du livre ; PDF et page imprimable ; double filet dans Word et OpenDocument)' => 'Floral frame, Monet style (small flowers in the four corners, in the book colours; PDF and printable page; double line in Word and OpenDocument)',
 	'Palettes harmonisées :' => 'Matching palettes:',

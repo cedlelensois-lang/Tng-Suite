@@ -215,7 +215,7 @@ class TNGBook_Art {
 
     /** Valeurs du réglage « illustration de couverture » : none, ornament, puis un arbre (tree = chêne, olive, willow, roots). */
     public static function cover_choices() {
-        return array('none', 'ornament', 'tree', 'olive', 'willow', 'roots', 'color', 'page', 'meadow', 'farm', 'chene', 'peinture', 'chene2', 'chene3', 'chene4', 'nympheas');
+        return array('none', 'ornament', 'tree', 'olive', 'willow', 'roots', 'color', 'page', 'meadow', 'farm', 'chene', 'peinture', 'chene2', 'chene3', 'chene4', 'nympheas', 'feuillage');
     }
 
     /** Pochettes pleine page (fond de la 1re page du PDF). */
@@ -643,6 +643,86 @@ class TNGBook_Art {
         return $small;
     }
 
+    /**
+     * Fleuron « feuillage » : un petit arbre au centre et, de chaque côté, une branche ondulée garnie de feuilles qui rapetissent
+     * vers le bord (camaïeu de la couleur du livre).
+     */
+    public static function leafgarland($hex, $w = 1000, $h = 110) {
+        $S = 3; $W = $w * $S; $H = $h * $S; $u = $S * $h / 110;
+        $im = self::canvas($W, $H);
+        $pal = self::monet_pal($hex); $seed = 20261118;
+        $cx = $W / 2; $cy = $H * 0.56;
+        $stem = self::col($im, $pal['stem'][0], $pal['stem'][1], $pal['stem'][2], 14);
+        $tones = array(self::col($im, $pal['leaf1'][0], $pal['leaf1'][1], $pal['leaf1'][2], 34), self::col($im, $pal['leaf2'][0], $pal['leaf2'][1], $pal['leaf2'][2], 42), self::col($im, $pal['petal'][0][0], $pal['petal'][0][1], $pal['petal'][0][2], 38));
+        foreach (array(-1, 1) as $s) {
+            $x0 = $cx + $s * 120 * $u; $x1 = $cx + $s * ($W / 2 - 12 * $S); $n = 26;
+            $px = $x0; $py = $cy + sin(0) * 9 * $u;
+            for ($k = 1; $k <= $n; $k++) {
+                $t = $k / $n; $nx = $x0 + ($x1 - $x0) * $t; $ny = $cy + sin($t * M_PI * 2.2) * 9 * $u * (1 - 0.4 * $t);
+                self::stroke($im, $px, $py, $nx, $ny, 3.2 * $u * (1 - $t) + 0.8 * $S, 3.2 * $u * (1 - ($k + 1) / $n) + 0.8 * $S, $stem);
+                if ($k % 2 == 0 && $k < $n) {
+                    $ang = atan2($ny - $py, $nx - $px); $len = (30 - 20 * $t) * $u;
+                    foreach (array(-1, 1) as $side) {
+                        self::leaf($im, $nx, $ny, $ang + $side * (0.85 + self::rnd($seed) * 0.25), $len * (0.9 + 0.2 * self::rnd($seed)), $tones[($k / 2 + ($side > 0 ? 1 : 0)) % 3], 0.34);
+                    }
+                }
+                $px = $nx; $py = $ny;
+            }
+            self::leaf($im, $px, $py, atan2($s * 0.0, $s), 14 * $u, $tones[1], 0.3);
+        }
+        // petit arbre central : tronc, deux branches, houppier de feuilles
+        $tb = $cy + 38 * $u;
+        self::stroke($im, $cx, $tb, $cx, $cy - 4 * $u, 7 * $u, 3.4 * $u, $stem);
+        self::stroke($im, $cx, $cy + 10 * $u, $cx - 22 * $u, $cy - 14 * $u, 3 * $u, 1.4 * $u, $stem);
+        self::stroke($im, $cx, $cy + 6 * $u, $cx + 22 * $u, $cy - 16 * $u, 3 * $u, 1.4 * $u, $stem);
+        foreach (array(array(0, -22, 30), array(-24, -10, 22), array(24, -12, 22)) as $c) {
+            for ($k = 0; $k < 16; $k++) {
+                $a = $k / 16 * 2 * M_PI + self::rnd($seed) * 0.3; $d = $c[2] * $u * (0.35 + 0.65 * self::rnd($seed));
+                $lx = $cx + $c[0] * $u + cos($a) * $d * 0.9; $ly = $cy + $c[1] * $u + sin($a) * $d * 0.7;
+                self::leaf($im, $lx, $ly, $a + 0.4, (9 + 7 * self::rnd($seed)) * $u, $tones[$k % 3], 0.4);
+            }
+        }
+        $ground = self::col($im, $pal['stem'][0], $pal['stem'][1], $pal['stem'][2], 40);
+        self::stroke($im, $cx - 30 * $u, $tb + 1 * $u, $cx + 30 * $u, $tb + 1 * $u, 1.6 * $u, 0.6 * $u, $ground);
+        $out = imagecreatetruecolor($w, $h);
+        imagealphablending($out, false); imagesavealpha($out, true);
+        imagefill($out, 0, 0, imagecolorallocatealpha($out, 255, 255, 255, 127));
+        imagecopyresampled($out, $im, 0, 0, 0, 0, $w, $h, $W, $H);
+        imagedestroy($im);
+        return self::png($out);
+    }
+
+    /** Coin « feuillage » (haut gauche) : deux brindilles feuillues qui longent le cadre et un bouquet de feuilles dans l'angle. */
+    private static function leaf_corner($T, $S, $hex) {
+        $tile = self::canvas($T * $S, $T * $S);
+        $u = $T / 34 * $S; $seed = 9157; $pal = self::monet_pal($hex);
+        $stem = self::col($tile, $pal['stem'][0], $pal['stem'][1], $pal['stem'][2], 10);
+        $tones = array(self::col($tile, $pal['leaf1'][0], $pal['leaf1'][1], $pal['leaf1'][2], 22), self::col($tile, $pal['leaf2'][0], $pal['leaf2'][1], $pal['leaf2'][2], 34), self::col($tile, $pal['petal'][0][0], $pal['petal'][0][1], $pal['petal'][0][2], 28));
+        foreach (array(0, 1) as $dir) {
+            $px = 5 * $u; $py = 5 * $u; $a = $dir ? 1.22 : 0.35;
+            for ($k = 1; $k <= 9; $k++) {
+                $a += ($dir ? (M_PI / 2 - 0.15 - $a) : (0.1 - $a)) * 0.05 + (self::rnd($seed) - 0.5) * 0.12;
+                $nx = $px + cos($a) * 2.9 * $u; $ny = $py + sin($a) * 2.9 * $u;
+                self::stroke($tile, $px, $py, $nx, $ny, 0.9 * $S, 0.5 * $S, $stem);
+                $len = (8 - $k * 0.55) * $u;
+                foreach (array(-1, 1) as $side) {
+                    if (($k + ($side > 0 ? 1 : 0)) % 2) self::leaf($tile, $nx, $ny, $a + $side * (0.8 + self::rnd($seed) * 0.25), $len, $tones[($k + $dir) % 3], 0.36);
+                }
+                $px = $nx; $py = $ny;
+            }
+            self::leaf($tile, $px, $py, $a, 5 * $u, $tones[1], 0.34);
+        }
+        foreach (array(0.45, 0.78, 1.12) as $i => $a) {   // petit bouquet dans l'angle
+            self::leaf($tile, 4 * $u, 4 * $u, $a, (9.5 - ($i % 2) * 2.5) * $u, $tones[$i % 3], 0.34);
+        }
+        $small = self::canvas($T, $T);
+        imagealphablending($small, false);
+        imagecopyresampled($small, $tile, 0, 0, 0, 0, $T, $T, $T * $S, $T * $S);
+        imagealphablending($small, true);
+        imagedestroy($tile);
+        return $small;
+    }
+
     /** Fleuron séparateur : filets qui s'effilent, losanges et points autour d'un motif central. */
     public static function flourish($hex, $w = 1000, $h = 70) {
         $S = 3;
@@ -708,10 +788,10 @@ class TNGBook_Art {
                 imageline($im, $x1 - $a, $y0 + $a + $cut, $x1 - $a, $y1 - $a - $cut, $col);
             }
         };
-        if ($style === 'floral') {   // cadre fleuri : filet fin, coins de coquelicots et de feuillages
+        if ($style === 'floral' || $style === 'leaves') {   // cadre fleuri / feuillage : filet fin et petits coins
             $rect(0, 3, 0);
-            $T = $mm(6);
-            $small = self::floral_corner($T, 5, $hex);
+            $T = $mm($style === 'leaves' ? 9 : 6);
+            $small = $style === 'leaves' ? self::leaf_corner($T, 5, $hex) : self::floral_corner($T, 5, $hex);
             $put = function ($t, $dx, $dy) use ($im, $T) { imagecopy($im, $t, $dx, $dy, 0, 0, $T, $T); };
             $put($small, $x0, $y0);
             $f = imagecreatetruecolor($T, $T); imagealphablending($f, false); imagesavealpha($f, true);
