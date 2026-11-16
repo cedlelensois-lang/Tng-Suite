@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.9.1
+Stable tag: 2.10.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,6 +81,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.10.0 =
+* Livre : faits historiques gérés par listes. Dans Livre > Réglages > Faits historiques, vous créez vos propres listes (France, England, Catalunya, España…) en écrivant les textes dans la langue de votre choix (« date | texte » pour un événement, « date .. date | nom » pour une période), avec des mots-clés de lieu ; import et export en fichier .txt, copie possible d'une liste fournie (France, Belgique, Suisse, Espagne, Italie, Allemagne, Royaume-Uni, États-Unis, Canada ; mots-clés du Canada étendus aux provinces). Dans le formulaire du livre, des cases à cocher choisissent les listes à utiliser (chronologie et contexte historique des fiches), plus une liste par défaut. Les anciens réglages (pays par défaut, événements personnalisés) sont convertis automatiquement ; une liste sans mot-clé de lieu vaut pour tout le monde.
 
 = 2.9.1 =
 * Livre : dans l'ascendance, la petite photo du conjoint et le lien vers sa fiche sont conservés ; dans la descendance (option « fiche détaillée pour chaque conjoint »), la fiche suit directement, sans petite photo.

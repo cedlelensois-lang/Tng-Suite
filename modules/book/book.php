@@ -89,7 +89,7 @@ final class TNGBook {
             'personID' => '', 'tree' => '', 'lang' => tngs_lang(),
             'gen_up' => 6, 'gen_down' => 4, 'max_people' => self::MAX_PEOPLE, 'living' => 'anonymize', 'place_parts' => 2,
             'photos' => 1, 'spphotos' => 1, 'spfiche' => 1, 'generic' => 1, 'avatar' => 'portrait', 'sources' => 1, 'index' => 1, 'notes' => 0, 'military' => 0, 'mpf' => 1, 'mini' => 0, 'imgq' => 0, 'trees' => 1, 'stats' => 1, 'stats_first' => 1, 'stats_last' => 1, 'desclist' => 1, 'chrono' => 0, 'kids' => 1, 'histfiche' => 0, 'map' => 0, 'bapt' => 0, 'burial' => 1, 'verbose' => 0, 'country' => 0, 'regions' => 0, 'asclist' => 0, 'resi' => 0, 'sibs' => 0, 'marrage' => 0, 'cous' => 1, 'allunions' => 1, 'order' => ['asc', 'desc', 'stats', 'chrono', 'map', 'idxn', 'idxp', 'src', 'alist', 'dlist'],
-            'title' => '', 'author' => '', 'preface' => '', 'surname' => '', 'surname_title' => '', 'format' => 'html', 'template' => 'classic', 'frame' => 'none', 'cover_art' => 'tree', 'history' => 0, 'history_country' => 'FR', 'history_custom' => '',
+            'title' => '', 'author' => '', 'preface' => '', 'surname' => '', 'surname_title' => '', 'format' => 'html', 'template' => 'classic', 'frame' => 'none', 'cover_art' => 'tree', 'history' => 0, 'history_lists' => [tngs_lang() === 'fr' ? 'tpl-FR' : 'tpl-GB'], 'history_default' => '',
             'colors' => TNGBook_Renderer::defaultColors(),
         ];
     }
@@ -98,6 +98,7 @@ final class TNGBook {
     private static function saved_opts() {
         $saved = get_option(self::OPT, []);
         if (is_array($saved) && $saved && !array_key_exists('spfiche', $saved)) $saved['spfiche'] = 0;
+        if (is_array($saved) && $saved && !array_key_exists('history_lists', $saved)) $saved = array_merge($saved, TNGBook_History::legacy_selection($saved));   // avant la 2.10.0 : pays par défaut + événements personnalisés
         return wp_parse_args($saved, self::defaults());
     }
 
@@ -117,6 +118,7 @@ final class TNGBook {
         add_action('admin_post_tngbook_profile_save', [__CLASS__, 'profile_save']);
         add_action('admin_post_tngbook_profile_apply', [__CLASS__, 'profile_apply']);
         add_action('admin_post_tngbook_settings_save', [__CLASS__, 'settings_save']);
+        TNGBook_History::init();
         add_shortcode('tng_book', [__CLASS__, 'shortcode']);
     }
 
@@ -334,9 +336,12 @@ final class TNGBook {
         }
         $tp = (string) ($in['template'] ?? 'classic');
         $out['template'] = isset(TNGBook_Renderer::templates()[$tp]) ? $tp : 'classic';
-        $hc = strtoupper((string) ($in['history_country'] ?? 'FR'));
-        $out['history_country'] = isset(TNGBook_History::countries()[$hc]) ? $hc : 'FR';
-        $out['history_custom'] = substr(sanitize_textarea_field((string) ($in['history_custom'] ?? '')), 0, 4000);
+        if (array_key_exists('history_lists', $in)) $sel = TNGBook_History::sanitize_selection($in);
+        elseif (array_key_exists('history_country', $in) || array_key_exists('history_custom', $in)) $sel = TNGBook_History::legacy_selection($in);   // profil enregistré avant la 2.10.0
+        else $sel = ['history_lists' => (array) ($base['history_lists'] ?? []), 'history_default' => (string) ($base['history_default'] ?? '')];
+        $out['history_lists'] = $sel['history_lists'];
+        $out['history_default'] = $sel['history_default'];
+        unset($out['history_country'], $out['history_custom']);
         $fr = (string) ($in['frame'] ?? 'none');
         $out['frame'] = in_array($fr, ['single', 'double', 'ornate'], true) ? $fr : 'none';
         $ca = (string) ($in['cover_art'] ?? 'tree');
@@ -540,10 +545,7 @@ final class TNGBook {
             'color' => 'Arbre en couleurs : feuillage vert, tronc brun, racines dans la terre et médaillons',
             'page' => 'Pochette pleine page (PDF) : arbre à l’aquarelle sur fond crème, titre dessous',
         ], $o['cover_art'] ?? 'tree', 'Dessinée par le plugin dans la couleur du livre (« en-têtes et liens »), sans fichier à installer.');
-        $hco = [];
-        foreach (TNGBook_History::countries() as $code => $nm) $hco[$code] = $nm[0];
-        self::select('Contexte historique : pays par défaut', 'history_country', $hco, $o['history_country'] ?? 'FR', 'Utilisé pour les personnes dont le lieu de naissance ne nomme aucun pays connu (ex. « Lille » ou « Lille, Nord »). Une personne née en Espagne reçoit les événements d’Espagne, etc. ; un pays n’est retenu dans la chronologie que s’il compte au moins deux personnes du livre (ou 3 %).');
-        echo '<tr><th scope="row"><label for="tngbook_history_custom">Événements historiques personnalisés</label></th><td><textarea id="tngbook_history_custom" name="' . esc_attr(self::OPT) . '[history_custom]" rows="3" class="large-text" placeholder="1914-08-02 | Départ de mon arrière-grand-père | FR">' . esc_textarea($o['history_custom'] ?? '') . '</textarea><p class="description">Facultatif, un par ligne : <code>date | texte | pays</code> (date AAAA, AAAA-MM ou AAAA-MM-JJ ; pays = code à deux lettres FR, BE, CH, ES, IT, DE, GB, US, CA, ou vide pour tous les pays). Ajoutés à la chronologie quand elle est réglée sur « avec contexte historique ».</p></td></tr>';
+        echo TNGBook_History::form_row(self::OPT, $o, $admin);
         $fmt = ['html' => 'Page imprimable (Imprimer → Enregistrer en PDF)'];
         if (self::mpdf_available()) $fmt['pdf'] = 'PDF (téléchargement direct)';
         if (TNGBook_Doc::available()) { $fmt['docx'] = 'Word (.docx, téléchargement)'; $fmt['odt'] = 'OpenDocument (.odt, téléchargement)'; }
@@ -631,6 +633,7 @@ final class TNGBook {
                 . ' ' . tngs_t('Installation depuis le code source : lancez « composer install --no-dev » dans le dossier modules/book du plugin.');
         }
         echo '<p><strong>' . esc_html(tngs_t('PDF direct :')) . '</strong> ' . esc_html($pdf) . '</p>';
+        TNGBook_History::admin_form();
         TNGBook_Auto::settings_form();
         echo '</div>';
     }
@@ -774,7 +777,7 @@ final class TNGBook {
             'notes' => (bool) $o['notes'], 'military' => (bool) $o['military'], 'mpf' => !empty($o['mpf']), 'mini' => !empty($o['mini']), 'imgq' => !empty($o['imgq']), 'trees' => !empty($o['trees']), 'stats' => !empty($o['stats']), 'stats_first' => !empty($o['stats_first']), 'stats_last' => !empty($o['stats_last']), 'desclist' => !empty($o['desclist']), 'chrono' => !empty($o['chrono']), 'map' => !empty($o['map']), 'bapt' => !empty($o['bapt']), 'burial' => !empty($o['burial']), 'verbose' => !empty($o['verbose']), 'country' => !empty($o['country']), 'regions' => !empty($o['regions']), 'asclist' => !empty($o['asclist']), 'resi' => !empty($o['resi']), 'sibs' => !empty($o['sibs']), 'cous' => !empty($o['cous']), 'allunions' => !empty($o['allunions']), 'marrage' => !empty($o['marrage']),
             'debug' => $debug, 'place_parts' => (int) $o['place_parts'],
             'title' => $o['title'], 'author' => $o['author'], 'preface' => $o['preface'], 'surname' => (string) ($o['surname'] ?? ''), 'surname_title' => (string) ($o['surname_title'] ?? ''), 'colors' => $o['colors'] ?? [],
-            'template' => $o['template'] ?? 'classic', 'frame' => in_array($o['frame'] ?? '', ['single', 'double', 'ornate'], true) ? $o['frame'] : 'none', 'cover_art' => in_array($o['cover_art'] ?? 'tree', TNGBook_Art::cover_choices(), true) ? $o['cover_art'] : 'tree', 'kids' => !empty($o['kids']), 'histfiche' => !empty($o['histfiche']), 'history' => !empty($o['history']), 'history_country' => (string) ($o['history_country'] ?? 'FR'), 'history_custom' => (string) ($o['history_custom'] ?? ''), 'order' => self::clean_order($o['order'] ?? null),
+            'template' => $o['template'] ?? 'classic', 'frame' => in_array($o['frame'] ?? '', ['single', 'double', 'ornate'], true) ? $o['frame'] : 'none', 'cover_art' => in_array($o['cover_art'] ?? 'tree', TNGBook_Art::cover_choices(), true) ? $o['cover_art'] : 'tree', 'kids' => !empty($o['kids']), 'histfiche' => !empty($o['histfiche']), 'history' => !empty($o['history']), 'history_lists' => (array) ($o['history_lists'] ?? []), 'history_default' => (string) ($o['history_default'] ?? ''), 'order' => self::clean_order($o['order'] ?? null),
             'tng_path' => $o['tng_path'], 'photo_folder' => $o['photo_folder'],
         ];
         $narr = !empty(TNGBook_Renderer::templates()[$opts['template']]['narr']);

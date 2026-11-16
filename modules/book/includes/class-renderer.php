@@ -424,6 +424,14 @@ class TNGBook_Renderer {
         return $nm;
     }
 
+    private $hsets = null;
+
+    /** Listes de faits historiques choisies pour le livre (voir TNGBook_History::resolve). */
+    private function histSets() {
+        if ($this->hsets === null) $this->hsets = TNGBook_History::resolve($this->o['history_lists'] ?? [], $this->lang);
+        return $this->hsets;
+    }
+
     /**
      * Option « Contexte historique dans les fiches » : « Contexte historique : naissance et décès pendant la Première Guerre mondiale ; mariage pendant … ».
      * Seules les dates entièrement comprises dans une période marquante du pays de naissance sont retenues.
@@ -436,8 +444,9 @@ class TNGBook_Renderer {
         $L = $this->L;
         $isB = trim((string) $p['birthdate']) !== '' && self::pd($p['birthdatetr']);
         $place = $isB ? (string) $p['birthplace'] : (string) ($p['baptplace'] ?? '');
-        $code = TNGBook_History::country_of($place, (string) ($this->o['history_country'] ?? 'FR'));
-        if ($code === '') return '';
+        $per = [];   // périodes des listes qui s'appliquent à cette personne
+        foreach (TNGBook_History::pick($this->histSets(), $place, (string) ($this->o['history_default'] ?? '')) as $set) $per = array_merge($per, $set['periods']);
+        if (!$per) return '';
         $isD = trim((string) $p['deathdate']) !== '' && self::pd($p['deathdatetr']);
         $ev = [['hx_birth', $isB ? $p['birthdatetr'] : ($p['baptdatetr'] ?? '')], ['hx_death', $isD ? $p['deathdatetr'] : ($p['burialdatetr'] ?? '')]];
         foreach ($unions as $fid) {
@@ -448,11 +457,10 @@ class TNGBook_Renderer {
         foreach ($ev as $e) {
             $pd = self::pd($e[1]);
             if (!$pd) continue;
-            foreach (TNGBook_History::periods_at($code, $pd[0], $pd[1], $pd[2]) as $i) {
+            foreach (TNGBook_History::periods_at($per, $pd[0], $pd[1], $pd[2]) as $i) {
                 if (!in_array($e[0], $by[$i] ?? [], true)) $by[$i][] = $e[0];
             }
         }
-        $per = TNGBook_History::periods($code);
         // périodes traversées sans qu'aucune date de la fiche n'y tombe : la personne était en vie (naissance et décès connus, strictement avant la fin et après le début)
         $lived = [];
         $dy0 = self::pd($isD ? $p['deathdatetr'] : ($p['burialdatetr'] ?? ''));
@@ -476,10 +484,10 @@ class TNGBook_Renderer {
             usort($labels, function ($a, $b) use ($order) { return $order[$a] - $order[$b]; });
             $names = array_map(function ($k) use ($L) { return $L[$k]; }, $labels);
             $what = count($names) > 1 ? implode(', ', array_slice($names, 0, -1)) . ' ' . $L['hx_and'] . ' ' . end($names) : $names[0];
-            $parts[] = $what . ' ' . $L['hx_during'] . ' ' . ($this->lang === 'fr' ? $per[$i][2] : $per[$i][3]);
+            $parts[] = $what . ' ' . $L['hx_during'] . ' ' . $per[$i][2];
         }
         if ($lived) {
-            $names = array_map(function ($i) use ($per) { return $this->lang === 'fr' ? $per[$i][2] : $per[$i][3]; }, $lived);
+            $names = array_map(function ($i) use ($per) { return $per[$i][2]; }, $lived);
             $what = count($names) > 1 ? implode(', ', array_slice($names, 0, -1)) . ' ' . $L['hx_and'] . ' ' . end($names) : $names[0];
             $parts[] = $L[$by ? 'hx_also' : 'hx_lived'] . ' ' . $what;
         }
@@ -2052,8 +2060,10 @@ class TNGBook_Renderer {
         };
         $famDone = [];
         $hist = !empty($this->o['history']);
-        $hDef = (string) ($this->o['history_country'] ?? 'FR');
-        $cc = [];   // pays de naissance => nombre de personnes et années extrêmes
+        $hDef = (string) ($this->o['history_default'] ?? '');
+        $hSets = $hist ? $this->histSets() : [];
+        $cc = [];   // liste (avec mots-clés de lieu) => nombre de personnes et années extrêmes
+        $nDated = 0; $allMin = 9999; $allMax = 0;   // personnes datées et années extrêmes de tout le livre
         foreach ($ids as $pid => $kind) {
             $p = $d->people[$pid] ?? null;
             if (!$p || $d->hidden($pid) || $d->dropped($pid)) continue;
@@ -2065,13 +2075,19 @@ class TNGBook_Renderer {
             $add($btr, $btx, 1, $this->e($isB ? $L['ch_birth'] : $L['ch_bapt']) . ' ' . $who($pid), $nm, $bpl);
             $hy = [];
             if ($hist) {
-                $code = TNGBook_History::country_of($bpl, $hDef);
                 foreach ([$btr, $p['deathdatetr'] ?? '', $p['burialdatetr'] ?? ''] as $t) if (($pdx = self::pd($t))) $hy[] = $pdx[0];
-                if ($code !== '' && $hy) {
-                    $cc[$code] = $cc[$code] ?? ['n' => 0, 'min' => 9999, 'max' => 0];
-                    $cc[$code]['n']++;
-                    $cc[$code]['min'] = min($cc[$code]['min'], min($hy));
-                    $cc[$code]['max'] = max($cc[$code]['max'], max($hy));
+                if ($hy) {
+                    $nDated++;
+                    $allMin = min($allMin, min($hy));
+                    $allMax = max($allMax, max($hy));
+                    foreach (TNGBook_History::pick($hSets, $bpl, $hDef) as $set) {
+                        if (!$set['match']) continue;
+                        $id = $set['id'];
+                        $cc[$id] = $cc[$id] ?? ['n' => 0, 'min' => 9999, 'max' => 0];
+                        $cc[$id]['n']++;
+                        $cc[$id]['min'] = min($cc[$id]['min'], min($hy));
+                        $cc[$id]['max'] = max($cc[$id]['max'], max($hy));
+                    }
                 }
             }
             $isD = trim((string) $p['deathdate']) !== '' && self::pd($p['deathdatetr']);
@@ -2093,33 +2109,36 @@ class TNGBook_Renderer {
         if (count($ev) < 2) return '';
         $hNote = false;
         if ($hist) {
-            // pays retenus : au moins deux personnes ou 3 % des personnes datées (à défaut, le plus fréquent)
-            $tot = 0;
-            foreach ($cc as $c) $tot += $c['n'];
+            // listes régionales retenues : une seule choisie = tout le livre ; sinon au moins deux personnes ou 3 % des personnes datées (à défaut, la plus fréquente)
+            $nReg = 0;
+            foreach ($hSets as $set) if ($set['match']) $nReg++;
             $keep = [];
-            foreach ($cc as $code => $c) if ($c['n'] >= 2 && $c['n'] >= 0.03 * $tot) $keep[$code] = $c;
+            foreach ($cc as $id => $c) if ($nReg === 1 || ($c['n'] >= 2 && $c['n'] >= 0.03 * $nDated)) $keep[$id] = $c;
             if (!$keep && $cc) { uasort($cc, function ($a, $b) { return $b['n'] - $a['n']; }); $keep = array_slice($cc, 0, 1, true); }
             $multi = count($keep) > 1;
-            $custom = TNGBook_History::parse_custom((string) ($this->o['history_custom'] ?? ''));
-            $minAll = 9999; $maxAll = 0;
-            foreach ($keep as $c) { $minAll = min($minAll, $c['min']); $maxAll = max($maxAll, $c['max']); }
+            $minAll = $allMin; $maxAll = $allMax;
+            if ($keep) {
+                $minAll = 9999; $maxAll = 0;
+                foreach ($keep as $c) { $minAll = min($minAll, $c['min']); $maxAll = max($maxAll, $c['max']); }
+            }
             $addH = function ($y, $m, $dd, $txt, $label) use (&$ev) {
                 $tr = sprintf('%04d-%02d-%02d', $y, $m, $dd);
                 $ev[] = ['y' => $y, 'm' => $m, 'd' => $dd, 'k' => 4, 'n' => '', 'date' => $this->dShort($tr, ''), 'html' => '<em>' . $this->e($txt) . ($label !== '' ? ' (' . $this->e($label) . ')' : '') . '</em>', 'place' => '', 'extra' => ''];
             };
-            foreach ($keep as $code => $c) {
-                $label = $multi ? TNGBook_History::country_name($code, $this->lang) : '';
-                foreach (TNGBook_History::events($code) as $e) {
-                    if ($e[0] < $c['min'] || $e[0] > $c['max']) continue;
-                    $addH($e[0], $e[1], $e[2], $this->lang === 'fr' ? $e[3] : $e[4], $label);
+            foreach ($hSets as $id => $set) {
+                if ($set['match']) {
+                    if (!isset($keep[$id])) continue;
+                    $lo = $keep[$id]['min']; $hi = $keep[$id]['max'];
+                    $label = $multi ? $set['name'] : '';
+                } else {   // liste sans mot-clé de lieu : toute la période couverte par le livre
+                    $lo = $minAll; $hi = $maxAll;
+                    $label = '';
+                }
+                foreach ($set['events'] as $e) {
+                    if ($e[0] < $lo || $e[0] > $hi) continue;
+                    $addH($e[0], $e[1], $e[2], $e[3], $label);
                     $hNote = true;
                 }
-            }
-            foreach ($custom as $e) {
-                if ($e[4] !== '' && !isset($keep[$e[4]])) continue;
-                if ($e[0] < $minAll || $e[0] > $maxAll) continue;
-                $addH($e[0], $e[1], $e[2], $e[3], '');
-                $hNote = true;
             }
         }
         usort($ev, function ($a, $b) {

@@ -3586,6 +3586,63 @@ msgstr ""
 msgid "aucun"
 msgstr ""
 
+msgid "Contexte historique : listes à utiliser"
+msgstr ""
+
+msgid "Mes listes"
+msgstr ""
+
+msgid "Listes fournies (textes français ou anglais selon la langue du livre)"
+msgstr ""
+
+msgid "Liste par défaut (lieux de naissance sans mot-clé reconnu)"
+msgstr ""
+
+msgid "la première liste cochée"
+msgstr ""
+
+msgid "Utilisé quand la chronologie est réglée sur « avec contexte historique » ou que le contexte historique des fiches est coché. Une seule liste cochée vaut pour tout le livre ; avec plusieurs, chaque personne reçoit les listes dont un mot-clé de lieu figure dans son lieu de naissance (une liste sans mot-clé vaut pour tout le monde), et un pays n’apparaît dans la chronologie que s’il compte au moins deux personnes du livre (ou 3 %)."
+msgstr ""
+
+msgid "Créez et modifiez vos listes dans Livre > Réglages > Faits historiques."
+msgstr ""
+
+msgid "Faits historiques"
+msgstr ""
+
+msgid "Listes enregistrées."
+msgstr ""
+
+msgid "Une liste est un ensemble de faits dans la langue de votre choix : vous écrivez les textes vous-même. Une entrée par ligne : « date | texte » pour un événement (date AAAA, AAAA-MM ou AAAA-MM-JJ), « date .. date | nom » pour une période (guerre, régime… avec son article, par exemple « la Première Guerre mondiale » : sert à la phrase « Contexte historique » des fiches). Les mots-clés de lieu (séparés par des virgules) rattachent la liste aux personnes dont un élément du lieu de naissance correspond ; sans mot-clé, la liste vaut pour tout le monde. Les listes se cochent dans le formulaire du livre."
+msgstr ""
+
+msgid "Exporter (.txt)"
+msgstr ""
+
+msgid "Supprimer cette liste"
+msgstr ""
+
+msgid "Mots-clés de lieu"
+msgstr ""
+
+msgid "Nouvelle liste"
+msgstr ""
+
+msgid "Ou partir d’une liste fournie :"
+msgstr ""
+
+msgid "Une copie modifiable est ajoutée à vos listes."
+msgstr ""
+
+msgid "Importer une liste (fichier .txt exporté) :"
+msgstr ""
+
+msgid "Enregistrer les listes"
+msgstr ""
+
+msgid "Liste introuvable."
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""

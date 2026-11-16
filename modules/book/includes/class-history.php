@@ -1,8 +1,8 @@
 <?php
 /**
- * Contexte historique de la chronologie : événements marquants (guerres, révolutions, épidémies, grandes lois…) du pays de naissance
- * des personnes du livre. Chaque pays a sa propre liste ; le pays d'une personne est déduit du dernier élément de son lieu de naissance
- * (ou de baptême). Un lieu sans pays reconnu se rattache au pays par défaut des réglages (France).
+ * Contexte historique : listes de faits (événements datés et périodes : guerres, révolutions, épidémies, grandes lois…). Neuf listes modèles
+ * sont fournies (textes français et anglais) ; l'utilisateur crée les siennes, dans la langue de son choix, avec des mots-clés de lieu qui
+ * rattachent chaque liste aux personnes (lieu de naissance, ou de baptême). Le livre choisit les listes à utiliser.
  */
 if (!defined('ABSPATH')) exit;
 
@@ -22,40 +22,175 @@ class TNGBook_History {
         return $lang === 'fr' ? $c[$code][0] : $c[$code][1];
     }
 
-    private static function norm($s) {
+    public static function norm($s) {
         $s = function_exists('remove_accents') ? remove_accents((string) $s) : (string) $s;
         $s = strtolower(trim($s));
         return trim(preg_replace('/[^a-z]+/', ' ', $s));
     }
 
-    /**
-     * Pays (code) d'un lieu : 'FR'…, '' = pays reconnu mais sans liste (aucun événement), ou $default si le lieu ne nomme aucun pays connu.
-     */
-    public static function country_of($place, $default) {
-        static $map = null;
-        if ($map === null) {
-            $map = [];
-            $al = [
-                'FR' => ['france', 'republique francaise', 'algerie', 'algeria', 'corse', 'guadeloupe', 'martinique', 'reunion', 'nouvelle caledonie', 'polynesie francaise'],
-                'BE' => ['belgique', 'belgium', 'belgie', 'belgica', 'belgien'],
-                'CH' => ['suisse', 'switzerland', 'schweiz', 'svizzera', 'swiss'],
-                'ES' => ['espagne', 'spain', 'espana', 'espanya'],
-                'IT' => ['italie', 'italy', 'italia'],
-                'DE' => ['allemagne', 'germany', 'deutschland', 'prusse', 'prussia', 'baviere', 'saxe', 'westphalie'],
-                'GB' => ['royaume uni', 'united kingdom', 'uk', 'u k', 'angleterre', 'england', 'ecosse', 'scotland', 'pays de galles', 'wales', 'grande bretagne', 'great britain', 'irlande du nord', 'northern ireland'],
-                'US' => ['etats unis', 'etats unis d amerique', 'usa', 'u s a', 'us', 'united states', 'united states of america'],
-                'CA' => ['canada', 'quebec', 'nouveau brunswick', 'nova scotia', 'nouvelle ecosse', 'ontario'],
-                '' => ['pologne', 'poland', 'portugal', 'luxembourg', 'pays bas', 'hollande', 'netherlands', 'autriche', 'austria', 'russie', 'russia', 'irlande', 'ireland',
-                    'tunisie', 'maroc', 'grece', 'greece', 'roumanie', 'hongrie', 'tchequie', 'tchecoslovaquie', 'ukraine', 'danemark', 'suede', 'norvege', 'finlande', 'turquie',
-                    'bresil', 'argentine', 'mexique', 'chine', 'japon', 'inde', 'australie', 'liban', 'syrie', 'egypte', 'senegal', 'vietnam', 'cambodge', 'madagascar', 'armenie', 'bulgarie', 'serbie', 'croatie', 'slovenie', 'lituanie', 'lettonie', 'estonie', 'chili', 'perou', 'cuba', 'haiti'],
-            ];
-            foreach ($al as $code => $names) foreach ($names as $n) $map[$n] = $code;
+    /** Mots désignant chaque pays modèle (forme normalisée : minuscules, sans accent) ; '' = pays connus sans liste fournie. */
+    private static function aliases() {
+        return [
+            'FR' => ['france', 'republique francaise', 'algerie', 'algeria', 'corse', 'guadeloupe', 'martinique', 'reunion', 'nouvelle caledonie', 'polynesie francaise'],
+            'BE' => ['belgique', 'belgium', 'belgie', 'belgica', 'belgien'],
+            'CH' => ['suisse', 'switzerland', 'schweiz', 'svizzera', 'swiss'],
+            'ES' => ['espagne', 'spain', 'espana', 'espanya'],
+            'IT' => ['italie', 'italy', 'italia'],
+            'DE' => ['allemagne', 'germany', 'deutschland', 'prusse', 'prussia', 'baviere', 'saxe', 'westphalie'],
+            'GB' => ['royaume uni', 'united kingdom', 'uk', 'u k', 'angleterre', 'england', 'ecosse', 'scotland', 'pays de galles', 'wales', 'grande bretagne', 'great britain', 'irlande du nord', 'northern ireland'],
+            'US' => ['etats unis', 'etats unis d amerique', 'usa', 'u s a', 'us', 'united states', 'united states of america'],
+            'CA' => ['canada', 'quebec', 'nouveau brunswick', 'new brunswick', 'nova scotia', 'nouvelle ecosse', 'ontario', 'acadie', 'acadia', 'manitoba', 'saskatchewan', 'alberta', 'colombie britannique', 'british columbia', 'terre neuve', 'newfoundland', 'ile du prince edouard', 'prince edward island', 'yukon'],
+            '' => ['pologne', 'poland', 'portugal', 'luxembourg', 'pays bas', 'hollande', 'netherlands', 'autriche', 'austria', 'russie', 'russia', 'irlande', 'ireland',
+                'tunisie', 'maroc', 'grece', 'greece', 'roumanie', 'hongrie', 'tchequie', 'tchecoslovaquie', 'ukraine', 'danemark', 'suede', 'norvege', 'finlande', 'turquie',
+                'bresil', 'argentine', 'mexique', 'chine', 'japon', 'inde', 'australie', 'liban', 'syrie', 'egypte', 'senegal', 'vietnam', 'cambodge', 'madagascar', 'armenie', 'bulgarie', 'serbie', 'croatie', 'slovenie', 'lituanie', 'lettonie', 'estonie', 'chili', 'perou', 'cuba', 'haiti'],
+        ];
+    }
+
+    /* ---------- Listes de faits historiques ---------- */
+
+    const OPT = 'tngbook_history_lists';
+
+    /** Listes de l'utilisateur : id => [name, match, text]. */
+    public static function user_lists() {
+        $l = get_option(self::OPT, []);
+        $out = [];
+        if (is_array($l)) foreach ($l as $id => $x) {
+            if (!is_array($x) || !preg_match('/^u[a-z0-9]{4,12}$/', (string) $id)) continue;
+            $out[$id] = ['name' => (string) ($x['name'] ?? ''), 'match' => (string) ($x['match'] ?? ''), 'text' => (string) ($x['text'] ?? '')];
         }
-        $parts = array_values(array_filter(array_map('trim', explode(',', (string) $place)), 'strlen'));
-        if (!$parts) return $default;
-        $last = self::norm(end($parts));
-        if (isset($map[$last])) return $map[$last];
-        return $default;
+        return $out;
+    }
+
+    public static function save_user_lists(array $lists) {
+        update_option(self::OPT, $lists, false);
+    }
+
+    /** Identifiants des listes modèles (« tpl-FR »…). */
+    public static function template_ids() {
+        return array_map(function ($c) { return 'tpl-' . $c; }, array_keys(self::countries()));
+    }
+
+    /** Choix proposés dans le formulaire du livre : id => libellé (listes de l'utilisateur d'abord). */
+    public static function choices($lang) {
+        $out = [];
+        foreach (self::user_lists() as $id => $x) $out[$id] = $x['name'] !== '' ? $x['name'] : $id;
+        foreach (array_keys(self::countries()) as $c) $out['tpl-' . $c] = self::country_name($c, $lang);
+        return $out;
+    }
+
+    public static function is_known($id) {
+        return isset(self::choices('fr')[$id]);
+    }
+
+    /** Mots-clés de lieu : « Catalunya, Cataluña » => formes normalisées. */
+    public static function keywords($text) {
+        $out = [];
+        foreach (explode(',', (string) $text) as $w) {
+            $n = self::norm($w);
+            if ($n !== '') $out[$n] = $n;
+        }
+        return array_values($out);
+    }
+
+    /** Date AAAA, AAAA-MM ou AAAA-MM-JJ => [année, mois, jour] (0 = inconnu) ou null. */
+    private static function date3($t) {
+        if (!preg_match('/^(\d{3,4})(?:-(\d{1,2}))?(?:-(\d{1,2}))?$/', trim($t), $m)) return null;
+        $mo = (int) ($m[2] ?? 0);
+        $da = (int) ($m[3] ?? 0);
+        if ($mo > 12 || $da > 31 || ($da && !$mo)) return null;
+        return [(int) $m[1], $mo, $da];
+    }
+
+    /**
+     * Lit les entrées d'une liste : une par ligne, « date | texte » (événement) ou « date .. date | texte » (période : guerre, régime…, avec
+     * son article, ex. « la Première Guerre mondiale »). Date : AAAA, AAAA-MM ou AAAA-MM-JJ. Les lignes vides ou commençant par # sont ignorées.
+     * Retourne ['events' => [[y, m, d, texte]], 'periods' => [[début, fin, nom]]].
+     */
+    public static function parse_entries($text) {
+        $ev = [];
+        $pe = [];
+        foreach (preg_split('/\r\n|\r|\n/', (string) $text) as $line) {
+            $line = trim($line);
+            if ($line === '' || $line[0] === '#') continue;
+            $f = array_map('trim', explode('|', $line));
+            if (count($f) < 2 || $f[1] === '') continue;
+            $r = preg_split('/\s*(?:\.\.|→|—|–|\/)\s*/u', $f[0]);
+            if (count($r) === 2 && ($a = self::date3($r[0])) && ($b = self::date3($r[1]))) {
+                $pe[] = [self::fmt($a), self::fmt($b), $f[1]];
+            } elseif (count($r) === 1 && ($a = self::date3($f[0]))) {
+                $ev[] = [$a[0], $a[1], $a[2], $f[1]];
+            }
+        }
+        return ['events' => $ev, 'periods' => $pe];
+    }
+
+    private static function fmt(array $a) {
+        return $a[1] ? sprintf($a[2] ? '%04d-%02d-%02d' : '%04d-%02d', $a[0], $a[1], $a[2]) : sprintf('%04d', $a[0]);
+    }
+
+    /** Texte d'une liste modèle dans une langue (« fr » ou « en ») : format de saisie, prêt à être copié. */
+    public static function template_text($code, $lang) {
+        $fr = $lang === 'fr';
+        $o = [];
+        foreach (self::periods($code) as $p) $o[] = $p[0] . ' .. ' . $p[1] . ' | ' . ($fr ? $p[2] : $p[3]);
+        foreach (self::events($code) as $e) $o[] = self::fmt([$e[0], $e[1], $e[2]]) . ' | ' . ($fr ? $e[3] : $e[4]);
+        return implode("\n", $o);
+    }
+
+    /**
+     * Listes choisies pour un livre, prêtes à l'emploi, dans l'ordre choisi : [id => ['id', 'name', 'match' (mots-clés), 'events', 'periods']].
+     * Les textes des modèles suivent la langue du livre ; ceux des listes de l'utilisateur sont pris tels quels.
+     */
+    public static function resolve($ids, $lang) {
+        $user = self::user_lists();
+        $sets = [];
+        foreach ((array) $ids as $id) {
+            $id = (string) $id;
+            if (isset($sets[$id])) continue;
+            if (isset($user[$id])) {
+                $p = self::parse_entries($user[$id]['text']);
+                $sets[$id] = ['id' => $id, 'name' => $user[$id]['name'], 'match' => self::keywords($user[$id]['match']), 'events' => $p['events'], 'periods' => $p['periods']];
+            } elseif (strpos($id, 'tpl-') === 0 && isset(self::countries()[substr($id, 4)])) {
+                $c = substr($id, 4);
+                $fr = $lang === 'fr';
+                $ev = [];
+                foreach (self::events($c) as $e) $ev[] = [$e[0], $e[1], $e[2], $fr ? $e[3] : $e[4]];
+                $pe = [];
+                foreach (self::periods($c) as $p) $pe[] = [$p[0], $p[1], $fr ? $p[2] : $p[3]];
+                $al = self::aliases();
+                $sets[$id] = ['id' => $id, 'name' => self::country_name($c, $lang), 'match' => $al[$c] ?? [], 'events' => $ev, 'periods' => $pe];
+            }
+        }
+        return $sets;
+    }
+
+    /**
+     * Listes qui s'appliquent à une personne née à $place. Une liste sans mot-clé de lieu vaut pour tout le monde ; parmi les listes qui en
+     * ont, une seule choisie vaut pour tout le monde, plusieurs : celles dont un mot-clé est un élément du lieu de naissance (de la fin vers le
+     * début), à défaut la liste par défaut (sauf si le lieu nomme un pays connu mais sans liste choisie : alors aucune).
+     */
+    public static function pick(array $sets, $place, $default = '') {
+        $reg = [];
+        $com = [];
+        foreach ($sets as $s) {
+            if ($s['match']) $reg[] = $s; else $com[] = $s;
+        }
+        $out = [];
+        if (count($reg) === 1) {
+            $out = $reg;
+        } elseif ($reg) {
+            $norm = [];
+            foreach (array_reverse(array_map('trim', explode(',', (string) $place))) as $part) {
+                $n = self::norm($part);
+                if ($n !== '') $norm[] = $n;
+            }
+            foreach ($reg as $s) foreach ($norm as $n) if (in_array($n, $s['match'], true)) { $out[] = $s; break; }
+            if (!$out) {
+                $foreign = $norm && in_array($norm[0], self::aliases()[''], true);
+                if (!$foreign) $out[] = isset($sets[$default]) && $sets[$default]['match'] ? $sets[$default] : $reg[0];
+            }
+        }
+        return array_merge($out, $com);
     }
 
     /** Événements d'un pays : liste de [année, mois, jour, texte français, texte anglais] (mois / jour 0 = inconnu). */
@@ -63,21 +198,6 @@ class TNGBook_History {
         static $all = null;
         if ($all === null) $all = self::data();
         return $all[$code] ?? [];
-    }
-
-    /**
-     * Événements personnalisés saisis dans les réglages : une ligne par événement « date | texte | pays » (pays facultatif : code à deux lettres ;
-     * sans pays, l'événement s'applique à tous). Date : AAAA, AAAA-MM ou AAAA-MM-JJ. Retourne [[y, m, d, texte, pays], …].
-     */
-    public static function parse_custom($text) {
-        $out = [];
-        foreach (preg_split('/\r\n|\r|\n/', (string) $text) as $line) {
-            $f = array_map('trim', explode('|', $line));
-            if (count($f) < 2 || !preg_match('/^(\d{3,4})(?:-(\d{1,2}))?(?:-(\d{1,2}))?$/', $f[0], $m) || $f[1] === '') continue;
-            $c = strtoupper($f[2] ?? '');
-            $out[] = [(int) $m[1], (int) ($m[2] ?? 0), (int) ($m[3] ?? 0), $f[1], preg_match('/^[A-Z]{2}$/', $c) ? $c : ''];
-        }
-        return $out;
     }
 
     /**
@@ -113,12 +233,12 @@ class TNGBook_History {
         return $all[$code] ?? [];
     }
 
-    /** Périodes (indices) qui contiennent entièrement la date (année, mois ou jour connu) : prudent, une date imprécise n'est retenue que si toutes ses possibilités tombent dans la période. */
-    public static function periods_at($code, $y, $m, $d) {
+    /** Périodes (indices dans $periods) qui contiennent entièrement la date (année, mois ou jour connu) : prudent, une date imprécise n'est retenue que si toutes ses possibilités tombent dans la période. */
+    public static function periods_at(array $periods, $y, $m, $d) {
         $lo = sprintf('%04d-%02d-%02d', $y, $m ?: 1, $d ?: 1);
         $hi = $d ? $lo : sprintf('%04d-%02d-%02d', $y, $m ?: 12, $m ? (int) date('t', mktime(0, 0, 0, $m, 1, $y)) : 31);
         $hits = [];
-        foreach (self::periods($code) as $i => $p) {
+        foreach ($periods as $i => $p) {
             $a = self::bound($p[0], false);
             $b = self::bound($p[1], true);
             if ($lo >= $a && $hi <= $b) $hits[] = $i;
@@ -370,5 +490,191 @@ class TNGBook_History {
                 [1995, 10, 30, 'Second référendum sur la souveraineté du Québec', 'Second Quebec sovereignty referendum'],
             ],
         ];
+    }
+
+    /* ---------- Réglages hérités (avant la 2.10.0 : pays par défaut + événements personnalisés) ---------- */
+
+    /** Liste de l'utilisateur contenant ce texte d'événements (créée si besoin) ; retourne son identifiant. */
+    public static function legacy_custom_list($text) {
+        $text = trim((string) $text);
+        if ($text === '') return '';
+        $lists = self::user_lists();
+        foreach ($lists as $id => $x) if (trim($x['text']) === $text && $x['name'] === 'Événements personnalisés') return $id;
+        $id = self::new_id($lists);
+        $lists[$id] = ['name' => 'Événements personnalisés', 'match' => '', 'text' => $text];
+        self::save_user_lists($lists);
+        return $id;
+    }
+
+    /** Sélection équivalente à l'ancien fonctionnement : tous les modèles (pays reconnu d'après le lieu) + les événements personnalisés. */
+    public static function legacy_selection(array $in) {
+        $ids = self::template_ids();
+        $cu = self::legacy_custom_list($in['history_custom'] ?? '');
+        if ($cu !== '') $ids[] = $cu;
+        $c = strtoupper((string) ($in['history_country'] ?? 'FR'));
+        return ['history_lists' => $ids, 'history_default' => isset(self::countries()[$c]) ? 'tpl-' . $c : 'tpl-FR'];
+    }
+
+    /** Listes cochées dans un formulaire : ne garde que les listes qui existent. */
+    public static function sanitize_selection(array $in) {
+        $ids = [];
+        foreach ((array) ($in['history_lists'] ?? []) as $id) {
+            $id = sanitize_text_field((string) $id);
+            if ($id !== '' && self::is_known($id) && !in_array($id, $ids, true)) $ids[] = $id;
+        }
+        $def = sanitize_text_field((string) ($in['history_default'] ?? ''));
+        return ['history_lists' => $ids, 'history_default' => in_array($def, $ids, true) ? $def : ''];
+    }
+
+    private static function new_id(array $lists) {
+        do {
+            $id = 'u' . substr(md5(uniqid('', true)), 0, 6);
+        } while (isset($lists[$id]));
+        return $id;
+    }
+
+    /* ---------- Formulaire du livre ---------- */
+
+    /** Ligne du formulaire du livre : listes de faits historiques à utiliser (cases à cocher) et liste par défaut. */
+    public static function form_row($name, array $o, $admin) {
+        $lang = (string) ($o['lang'] ?? 'fr');
+        $ch = self::choices($lang);
+        $sel = (array) ($o['history_lists'] ?? []);
+        $user = self::user_lists();
+        $h = '<tr><th scope="row">' . esc_html(tngs_t('Contexte historique : listes à utiliser')) . '</th><td>';
+        $h .= '<input type="hidden" name="' . esc_attr($name) . '[history_lists][]" value="">';
+        $box = function ($id, $label) use ($name, $sel) {
+            return '<label style="display:inline-block;min-width:200px;margin:0 14px 4px 0"><input type="checkbox" name="' . esc_attr($name) . '[history_lists][]" value="' . esc_attr($id) . '"' . (in_array($id, $sel, true) ? ' checked' : '') . '> ' . esc_html($label) . '</label>';
+        };
+        if ($user) {
+            $h .= '<p style="margin:0 0 4px"><strong>' . esc_html(tngs_t('Mes listes')) . '</strong></p><div>';
+            foreach ($user as $id => $x) $h .= $box($id, $ch[$id]);
+            $h .= '</div>';
+        }
+        $h .= '<p style="margin:6px 0 4px"><strong>' . esc_html(tngs_t('Listes fournies (textes français ou anglais selon la langue du livre)')) . '</strong></p><div>';
+        foreach (self::countries() as $c => $n) $h .= $box('tpl-' . $c, $ch['tpl-' . $c]);
+        $h .= '</div>';
+        $h .= '<p style="margin:8px 0 0"><label>' . esc_html(tngs_t('Liste par défaut (lieux de naissance sans mot-clé reconnu)')) . ' : <select name="' . esc_attr($name) . '[history_default]"><option value="">' . esc_html(tngs_t('la première liste cochée')) . '</option>';
+        foreach ($ch as $id => $l) $h .= '<option value="' . esc_attr($id) . '"' . selected((string) ($o['history_default'] ?? ''), $id, false) . '>' . esc_html($l) . '</option>';
+        $h .= '</select></label></p>';
+        $h .= '<p class="description">' . esc_html(tngs_t('Utilisé quand la chronologie est réglée sur « avec contexte historique » ou que le contexte historique des fiches est coché. Une seule liste cochée vaut pour tout le livre ; avec plusieurs, chaque personne reçoit les listes dont un mot-clé de lieu figure dans son lieu de naissance (une liste sans mot-clé vaut pour tout le monde), et un pays n’apparaît dans la chronologie que s’il compte au moins deux personnes du livre (ou 3 %).'));
+        if ($admin) $h .= ' ' . esc_html(tngs_t('Créez et modifiez vos listes dans Livre > Réglages > Faits historiques.'));
+        $h .= '</p></td></tr>';
+        return $h;
+    }
+
+    /* ---------- Gestion des listes (Livre > Réglages) ---------- */
+
+    public static function init() {
+        add_action('admin_post_tngbook_hist_save', [__CLASS__, 'admin_save']);
+        add_action('admin_post_tngbook_hist_export', [__CLASS__, 'admin_export']);
+    }
+
+    public static function admin_form() {
+        $lists = self::user_lists();
+        $msg = isset($_GET['tngbook_msg']) ? sanitize_key(wp_unslash($_GET['tngbook_msg'])) : '';   // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        echo '<h2 id="tngbook-history">' . esc_html(tngs_t('Faits historiques')) . '</h2>';
+        if ($msg === 'hist_saved') echo '<div class="notice notice-success is-dismissible"><p>' . esc_html(tngs_t('Listes enregistrées.')) . '</p></div>';
+        echo '<p class="description" style="max-width:900px">' . esc_html(tngs_t('Une liste est un ensemble de faits dans la langue de votre choix : vous écrivez les textes vous-même. Une entrée par ligne : « date | texte » pour un événement (date AAAA, AAAA-MM ou AAAA-MM-JJ), « date .. date | nom » pour une période (guerre, régime… avec son article, par exemple « la Première Guerre mondiale » : sert à la phrase « Contexte historique » des fiches). Les mots-clés de lieu (séparés par des virgules) rattachent la liste aux personnes dont un élément du lieu de naissance correspond ; sans mot-clé, la liste vaut pour tout le monde. Les listes se cochent dans le formulaire du livre.')) . '</p>';
+        echo '<form method="post" enctype="multipart/form-data" action="' . esc_url(admin_url('admin-post.php')) . '"><input type="hidden" name="action" value="tngbook_hist_save">';
+        wp_nonce_field('tngbook_hist', 'tngbook_hnonce');
+        $block = function ($key, $x, $isNew) {
+            $exp = (!$isNew) ? ' <a href="' . esc_url(wp_nonce_url(admin_url('admin-post.php?action=tngbook_hist_export&id=' . rawurlencode($key)), 'tngbook_hist_export')) . '">' . esc_html(tngs_t('Exporter (.txt)')) . '</a>' : '';
+            $del = (!$isNew) ? ' &nbsp; <label><input type="checkbox" name="hl[' . esc_attr($key) . '][delete]" value="1"> ' . esc_html(tngs_t('Supprimer cette liste')) . '</label>' : '';
+            echo '<div style="border:1px solid #c3c4c7;background:#fff;padding:10px 12px;margin:0 0 12px;max-width:900px"><p style="margin:0 0 6px"><label><strong>' . esc_html(tngs_t('Nom')) . '</strong> <input type="text" name="hl[' . esc_attr($key) . '][name]" value="' . esc_attr($x['name']) . '" maxlength="60" class="regular-text"></label> '
+                . '<label style="margin-left:10px"><strong>' . esc_html(tngs_t('Mots-clés de lieu')) . '</strong> <input type="text" name="hl[' . esc_attr($key) . '][match]" value="' . esc_attr($x['match']) . '" maxlength="300" class="regular-text" placeholder="Catalunya, Cataluña, Espanya"></label>' . $del . $exp . '</p>'
+                . '<textarea name="hl[' . esc_attr($key) . '][text]" rows="' . ($isNew ? 4 : 10) . '" class="large-text code" placeholder="1714-09-11 | Caiguda de Barcelona&#10;1936-07-17 .. 1939-04-01 | la guerra civil">' . esc_textarea($x['text']) . '</textarea></div>';
+        };
+        foreach ($lists as $id => $x) {
+            echo '<h3 style="margin:14px 0 6px">' . esc_html($x['name'] !== '' ? $x['name'] : $id) . '</h3>';
+            $block($id, $x, false);
+        }
+        echo '<h3 style="margin:14px 0 6px">' . esc_html(tngs_t('Nouvelle liste')) . '</h3>';
+        $block('new', ['name' => '', 'match' => '', 'text' => ''], true);
+        echo '<p><label>' . esc_html(tngs_t('Ou partir d’une liste fournie :')) . ' <select name="hist_copy"><option value="">—</option>';
+        foreach (self::countries() as $c => $n) {
+            echo '<option value="' . esc_attr($c . ':fr') . '">' . esc_html($n[0] . ' (français)') . '</option><option value="' . esc_attr($c . ':en') . '">' . esc_html($n[1] . ' (English)') . '</option>';
+        }
+        echo '</select></label> <span class="description">' . esc_html(tngs_t('Une copie modifiable est ajoutée à vos listes.')) . '</span></p>';
+        echo '<p><label>' . esc_html(tngs_t('Importer une liste (fichier .txt exporté) :')) . ' <input type="file" name="hist_file" accept=".txt,text/plain"></label></p>';
+        echo '<p class="submit"><button type="submit" class="button button-primary">' . esc_html(tngs_t('Enregistrer les listes')) . '</button></p></form>';
+    }
+
+    /** Nettoie le texte des entrées d'une liste (lignes de 300 caractères, 3000 lignes au plus). */
+    private static function clean_text($t) {
+        $lines = [];
+        foreach (preg_split('/\r\n|\r|\n/', (string) $t) as $l) {
+            $l = trim(wp_strip_all_tags($l));
+            if ($l === '') continue;
+            $lines[] = mb_substr($l, 0, 300);
+            if (count($lines) >= 3000) break;
+        }
+        return implode("\n", $lines);
+    }
+
+    /** Fichier texte d'une liste : « # name: », « # match: » puis les entrées. */
+    private static function parse_file($txt) {
+        $x = ['name' => '', 'match' => '', 'text' => ''];
+        $body = [];
+        foreach (preg_split('/\r\n|\r|\n/', (string) $txt) as $l) {
+            if (preg_match('/^#\s*name\s*:\s*(.*)$/i', $l, $m)) $x['name'] = trim($m[1]);
+            elseif (preg_match('/^#\s*match\s*:\s*(.*)$/i', $l, $m)) $x['match'] = trim($m[1]);
+            else $body[] = $l;
+        }
+        $x['text'] = implode("\n", $body);
+        return $x;
+    }
+
+    public static function admin_save() {
+        if (!current_user_can('manage_options')) wp_die(esc_html(tngs_t('Accès refusé.')), 403);
+        if (!isset($_POST['tngbook_hnonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['tngbook_hnonce'])), 'tngbook_hist')) wp_die(esc_html(tngs_t('Jeton de sécurité invalide.')), 403);
+        $in = (isset($_POST['hl']) && is_array($_POST['hl'])) ? wp_unslash($_POST['hl']) : [];
+        $lists = self::user_lists();
+        $clean = function ($x) {
+            return ['name' => mb_substr(sanitize_text_field((string) ($x['name'] ?? '')), 0, 60), 'match' => mb_substr(sanitize_text_field((string) ($x['match'] ?? '')), 0, 300), 'text' => self::clean_text($x['text'] ?? '')];
+        };
+        foreach ($lists as $id => $x) {
+            if (!isset($in[$id]) || !is_array($in[$id])) continue;
+            if (!empty($in[$id]['delete'])) { unset($lists[$id]); continue; }
+            $lists[$id] = $clean($in[$id]);
+            if ($lists[$id]['name'] === '') $lists[$id]['name'] = $x['name'] !== '' ? $x['name'] : $id;
+        }
+        $add = [];
+        if (isset($in['new']) && is_array($in['new'])) {
+            $n = $clean($in['new']);
+            if ($n['text'] !== '' || $n['name'] !== '') $add[] = $n;
+        }
+        $copy = sanitize_text_field(wp_unslash($_POST['hist_copy'] ?? ''));
+        if (preg_match('/^([A-Z]{2}):(fr|en)$/', $copy, $m) && isset(self::countries()[$m[1]])) {
+            $al = self::aliases();
+            $add[] = ['name' => self::country_name($m[1], $m[2]), 'match' => implode(', ', $al[$m[1]] ?? []), 'text' => self::template_text($m[1], $m[2])];
+        }
+        if (!empty($_FILES['hist_file']['tmp_name']) && is_uploaded_file($_FILES['hist_file']['tmp_name']) && (int) ($_FILES['hist_file']['size'] ?? 0) < 400000) {   // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+            $f = self::parse_file((string) file_get_contents($_FILES['hist_file']['tmp_name']));   // phpcs:ignore WordPress.Security.ValidatedSanitizedInput, WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+            $f = $clean($f);
+            if ($f['text'] !== '') $add[] = $f;
+        }
+        foreach ($add as $x) {
+            if ($x['name'] === '') $x['name'] = tngs_t('Nouvelle liste');
+            $lists[self::new_id($lists)] = $x;
+        }
+        self::save_user_lists($lists);
+        wp_safe_redirect(add_query_arg(['page' => 'tngbook', 'tngbook_msg' => 'hist_saved'], admin_url('admin.php')) . '#tngbook-history');
+        exit;
+    }
+
+    public static function admin_export() {
+        if (!current_user_can('manage_options')) wp_die(esc_html(tngs_t('Accès refusé.')), 403);
+        check_admin_referer('tngbook_hist_export');
+        $id = sanitize_text_field(wp_unslash($_GET['id'] ?? ''));
+        $lists = self::user_lists();
+        if (!isset($lists[$id])) wp_die(esc_html(tngs_t('Liste introuvable.')), 404);
+        $x = $lists[$id];
+        $fn = sanitize_file_name('faits-historiques-' . ($x['name'] !== '' ? $x['name'] : $id) . '.txt');
+        nocache_headers();
+        header('Content-Type: text/plain; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . $fn . '"');
+        echo "# name: " . $x['name'] . "\n# match: " . $x['match'] . "\n" . $x['text'] . "\n";   // phpcs:ignore WordPress.Security.EscapeOutput
+        exit;
     }
 }
