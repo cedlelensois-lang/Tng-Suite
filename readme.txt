@@ -83,6 +83,7 @@ Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding`
 == Changelog ==
 
 = 2.8.5 =
+* Livre (PDF) : la couverture avec illustration ne déborde plus sur une 2e page quand le titre est long (trois lignes) ; marges de la date et des chiffres réduites.
 * Livre : nouvelle couverture « Pochette pleine page » (PDF) : fond crème sur toute la première page, arbre à l'aquarelle qui part du bord gauche, feuilles gris-bleu, titre dessous ; dans les autres formats, l'arbre penché habituel.
 * Livre (PDF direct) : plus de page blanche entre la table des matières et la première partie (mPDF saute déjà une page après la table des matières) ; le filet sous le titre d'une fiche ne traverse plus la photo (modèle Élégant).
 
