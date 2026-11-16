@@ -141,6 +141,26 @@ class TNGBook_Art {
         }
     }
 
+    /** Racine souterraine : courbe souple qui s'effile, s'infléchit vers le bas et émet des radicelles de part et d'autre. */
+    private static function rootbr($im, $x, $y, $ang, $len, $th, $depth, &$seed, $col, $S) {
+        $segs = 16; $a = $ang; $px = $x; $py = $y; $curve = (self::rnd($seed) - 0.5) * 0.12; $side = self::rnd($seed) > 0.5 ? 1 : -1;
+        imagefilledellipse($im, (int) round($x), (int) round($y), (int) max(1, round($th)), (int) max(1, round($th)), $col);
+        for ($k = 1; $k <= $segs; $k++) {
+            $curve = $curve * 0.82 + (self::rnd($seed) - 0.5) * 0.09;   // courbure qui persiste : pas d'angles brusques
+            $a += $curve + (M_PI / 2 - $a) * 0.022;
+            $nx = $px + cos($a) * $len / $segs; $ny = $py + sin($a) * $len / $segs;
+            $f1 = pow(1 - ($k - 1) / $segs, 0.75); $f2 = pow(1 - $k / $segs, 0.75);
+            $w1 = max(1.5 * $S, $th * $f1); $w2 = max(1.5 * $S, $th * $f2);
+            self::stroke($im, $px, $py, $nx, $ny, $w1, $w2, $col);
+            imagefilledellipse($im, (int) round($nx), (int) round($ny), (int) round($w2), (int) round($w2), $col);
+            if ($depth < 2 && $k >= 4 && $k <= 13 && self::rnd($seed) < 0.26) {   // radicelle, en alternant les côtés
+                $side = -$side;
+                self::rootbr($im, $nx, $ny, $a + $side * (0.55 + self::rnd($seed) * 0.5), $len * (0.34 + self::rnd($seed) * 0.16) * (1 - $k / $segs * 0.4), $w2 * 0.8, $depth + 1, $seed, $col, $S);
+            }
+            $px = $nx; $py = $ny;
+        }
+    }
+
     /** Pied de tronc évasé : le tronc s'élargit en courbe creuse et se pose sur le sol, avec de petits renflements de racines. */
     private static function flare($im, $x, $y, $tw, $fw, $fh, $col, $S, $asym = 0.0, $lean = 0.0) {
         $n = 16; $L = array(); $R = array();
@@ -270,7 +290,7 @@ class TNGBook_Art {
             // maîtresses racines nées du collet : deux latérales qui plongent en s'écartant, une pivot, pas de symétrie parfaite
             $tmp = self::canvas($W, $H);
             foreach (array(array(-20, 1.0, 0.085, 20), array(2, 0.12, 0.105, 18), array(20, -0.85, 0.09, 19)) as $r) {
-                self::limb($tmp, $tx + $r[0] * $S, $ground + 2 * $S, M_PI / 2 + $r[1], $H * $r[2], $r[3] * $S, 1, $seed, $rc);
+                self::rootbr($tmp, $tx + $r[0] * $S, $ground + 2 * $S, M_PI / 2 + $r[1], $H * $r[2] * 3.1, $r[3] * $S, 0, $seed, $c['wood'], $S);
             }
             imagealphablending($tmp, false);   // rien au-dessus du sol : les racines restent sous la ligne
             imagefilledrectangle($tmp, 0, 0, $W, (int) ($ground + 1 * $S), self::col($tmp, 0, 0, 0, 127));
