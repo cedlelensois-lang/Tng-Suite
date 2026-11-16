@@ -940,7 +940,7 @@ class TNGBook_Renderer {
     }
 
     /** Petite photo du conjoint, à côté de l'union (répétée même si le conjoint a sa propre fiche dans le livre). */
-    private function spPhoto($pid, $fid) {
+    private function spPhoto($pid, $fid, $prefer = 'A') {
         if (empty($this->o['photos']) || empty($this->o['spphotos'])) return '';
         $d = $this->d;
         $f = $d->fams[$fid] ?? null;
@@ -948,7 +948,7 @@ class TNGBook_Renderer {
         $sp = ($f['husband'] === $pid) ? $f['wife'] : $f['husband'];
         if ($sp === '' || !isset($d->people[$sp]) || $d->dropped($sp) || $d->hidden($sp)) return '';
         if (empty($d->photos[$sp])) return '';
-        if (isset($d->sosaOf[$sp]) || isset($d->desc[$sp]) || isset($this->spFiches()['pid'][$sp])) return '';   // le conjoint a sa propre fiche, avec sa photo : pas de vignette en double
+        if ($prefer === 'D' && isset($this->spFiches()['pid'][$sp])) return '';   // descendance : sa fiche détaillée suit juste après, pas de vignette en double (dans l'ascendance, vignette + lien vers sa fiche)
         $src = $this->cachedPhoto($d->photos[$sp], $this->plain($sp) . ' (' . $sp . ')');
         return $src === '' ? '' : '<img class="ph sp" src="' . esc_attr($src) . '" alt="">';
     }
@@ -1219,7 +1219,7 @@ class TNGBook_Renderer {
                     $s = $this->unionSentence($pid, $fid, $sex, $ref, $prefer);
                     $eu = $this->endUnion($pid, $fid);
                     if ($eu !== '') $s = ($s !== '' ? $s . ' ' : '') . $eu;
-                    if ($s !== '') $html .= '<p>' . $this->spPhoto($pid, $fid) . $s . '</p>';
+                    if ($s !== '') $html .= '<p>' . $this->spPhoto($pid, $fid, $prefer) . $s . '</p>';
                     $html .= $this->famEvNotes($fid, $eu !== '' ? ['MARR', 'DIV'] : ['MARR']) . $this->famNotes($fid) . $this->narrKids($fid, $ref, 'A');
                     continue;
                 }
@@ -1240,7 +1240,7 @@ class TNGBook_Renderer {
                 }
                 $eu = $this->endUnion($pid, $fid);
                 if ($eu !== '') $s = ($s !== '' ? $s . ' ' : '') . $eu;
-                if ($s !== '') $html .= '<p>' . $this->spPhoto($pid, $fid) . $s . '</p>';
+                if ($s !== '') $html .= '<p>' . $this->spPhoto($pid, $fid, $prefer) . $s . '</p>';
                 $html .= $this->famEvNotes($fid, $eu !== '' ? ['MARR', 'DIV'] : ['MARR']);
                 if ($pre !== '') {   // fin de l'union précédente (divorce) rappelée dans la phrase : sa note aussi
                     $fl = $d->famsOf[$pid] ?? [];

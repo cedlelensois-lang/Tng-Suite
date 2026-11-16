@@ -442,7 +442,7 @@ final class TNGBook {
             . self::chk('notes', 'Notes (générales de chaque personne et de chaque union, et notes des événements : naissance, mariage, décès…)', $o)
             . self::chk('sibs', 'Frères et sœurs sur les fiches (liste des autres enfants de la famille d’origine, avec lien vers leur fiche si elle existe)', $o)
             . self::chk('allunions', 'Autres mariages et unions des ancêtres (en plus de l’union dont descend la lignée)', $o)
-            . self::chk('spfiche', 'Fiche pour le conjoint de chaque descendant (numéro du couple suivi de « c », par exemple D12c) : la phrase d’union se limite alors à son nom, avec un lien vers sa fiche', $o)
+            . self::chk('spfiche', 'Dans la descendance, une fiche détaillée pour chaque conjoint (numéro du couple suivi de « c », par exemple D12c), à la suite de celle du descendant ; la phrase d’union se limite alors à son nom, avec un lien. Dans l’ascendance : vignette de la photo du conjoint et lien vers sa fiche', $o)
             . self::chk('kids', 'Enfants des couples dans l’ascendance : « X et Y ont N enfants : » suivi de la liste (modèles Classique, Élégant et Moderne ; le modèle Récit les présente déjà)', $o)
             . self::chk('histfiche', 'Contexte historique dans les fiches : « Contexte historique : naissance pendant la Première Guerre mondiale ; a aussi vécu la Seconde Guerre mondiale » : dates tombant dans une guerre ou une période marquante du pays de naissance, et périodes traversées de son vivant', $o)
             . '</td></tr>';

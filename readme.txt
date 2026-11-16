@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.9.0
+Stable tag: 2.9.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -82,8 +82,10 @@ Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding`
 
 == Changelog ==
 
+= 2.9.1 =
+* Livre : dans l'ascendance, la petite photo du conjoint et le lien vers sa fiche sont conservés ; dans la descendance (option « fiche détaillée pour chaque conjoint »), la fiche suit directement, sans petite photo.
+
 = 2.9.0 =
-* Livre : plus de petite photo du conjoint à côté de la phrase d'union quand il a sa propre fiche (ascendance et descendance).
 * Livre : nouvelle option « Fiche pour le conjoint de chaque descendant » (D12c, D12c2…) ; la phrase d'union se limite au nom avec un lien. Cochée pour un nouveau réglage, décochée pour les réglages déjà enregistrés. Textes « Époux de / Épouse de » en fr/en/es/ca.
 
 = 2.8.9 =
