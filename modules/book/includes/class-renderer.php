@@ -424,12 +424,17 @@ class TNGBook_Renderer {
         $per = TNGBook_History::periods($code);
         // périodes traversées sans qu'aucune date de la fiche n'y tombe : la personne était en vie (naissance et décès connus, strictement avant la fin et après le début)
         $lived = [];
-        $by0 = self::pd($isB ? $p['birthdatetr'] : ($p['baptdatetr'] ?? ''));
         $dy0 = self::pd($isD ? $p['deathdatetr'] : ($p['burialdatetr'] ?? ''));
-        if ($by0 && $dy0) {
+        $first = [];   // premières années où la personne est sûrement en vie : naissance (ou baptême), à défaut un mariage
+        foreach ([$p['birthdatetr'] ?? '', $p['baptdatetr'] ?? ''] as $t) if (($pdx = self::pd($t))) $first[] = $pdx[0];
+        if (!$first) foreach ($unions as $fid) {
+            $f = $d->fams[$fid] ?? null;
+            if ($f && ($pdx = self::pd($f['marrdatetr'] ?? ''))) $first[] = $pdx[0];
+        }
+        if ($first && $dy0) {
             foreach ($per as $i => $pp) {
                 if (isset($by[$i])) continue;
-                if ($by0[0] < (int) substr($pp[1], 0, 4) && $dy0[0] > (int) substr($pp[0], 0, 4)) $lived[] = $i;
+                if (min($first) < (int) substr($pp[1], 0, 4) && $dy0[0] > (int) substr($pp[0], 0, 4)) $lived[] = $i;
             }
         }
         if (!$by && !$lived) return '';
