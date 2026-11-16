@@ -2186,7 +2186,7 @@ CSS;
         $raw = $this->cssRaw();
         if ($this->mode !== 'pdf') return $raw;
         $raw = (string) preg_replace('/^@page [^\n]*\n/m', '', $raw, 1);
-        return $raw . ".cover { page-break-after: auto; }\n.fiche .phw { float: right; width: 3.2cm; margin: 0 0 .3cm 0; padding-left: .6cm; }\n.fiche .phw img.ph { float: none; margin: 0; display: block; width: 100%; }\ndiv.fiche, div.fiche.hasnotes { page-break-inside: auto; break-inside: auto; }\n";  // mPDF : « page-break-inside: avoid » casse les blocs flottants (textes superposés)
+        return $raw . ".cover { page-break-after: auto; }\n.fiche .phw { float: right; width: 3.2cm; margin: 0 0 .3cm 0; padding-left: .6cm; }\n.fiche .phw img.ph { float: none; margin: 0; display: block; width: 100%; }\ndiv.fiche, div.fiche.hasnotes { page-break-inside: auto; break-inside: auto; }\n.part.nopb { page-break-before: auto; }\n.fiche h4 { overflow: hidden; }\n";  // mPDF : « page-break-inside: avoid » casse les blocs flottants (textes superposés)
     }
 
     private function cssRaw() {
@@ -2348,6 +2348,7 @@ CSS;
         $toc .= '</div>';
         if ($this->mode === 'pdf') {   // table des matières native de mPDF, avec numéros de page
             $toc = '<tocpagebreak links="on" toc-preHTML="' . htmlspecialchars('<h2 class="part-title">' . $this->e($L['toc']) . '</h2>', ENT_QUOTES, 'UTF-8') . '" />';
+            $body = (string) preg_replace('/<div class="part(?=[" ])/', '<div class="part nopb', $body, 1);   // mPDF saute déjà une page après sa table des matières : sans cela, une page blanche
         }
 
         $bar = '';
