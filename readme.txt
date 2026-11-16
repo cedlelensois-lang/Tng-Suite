@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.8.6
+Stable tag: 2.8.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,6 +81,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.8.7 =
+* Livre : le contexte historique des fiches ne s'applique plus seulement aux personnes dont une date tombe dans une guerre : la ligne ajoute « a vécu la Première Guerre mondiale… » pour les périodes traversées de leur vivant (naissance et décès connus). Textes fr/en/es/ca.
 
 = 2.8.6 =
 * Livre : nouvelle couverture « Pochette pleine page » (PDF) : fond crème sur toute la première page, arbre à l'aquarelle qui part du bord gauche, feuilles gris-bleu, titre dessous ; dans les autres formats, l'arbre penché habituel.

@@ -436,7 +436,7 @@ final class TNGBook {
             . self::chk('sibs', 'Frères et sœurs sur les fiches (liste des autres enfants de la famille d’origine, avec lien vers leur fiche si elle existe)', $o)
             . self::chk('allunions', 'Autres mariages et unions des ancêtres (en plus de l’union dont descend la lignée)', $o)
             . self::chk('kids', 'Enfants des couples dans l’ascendance : « X et Y ont N enfants : » suivi de la liste (modèles Classique, Élégant et Moderne ; le modèle Récit les présente déjà)', $o)
-            . self::chk('histfiche', 'Contexte historique dans les fiches : « Contexte historique : naissance pendant la Première Guerre mondiale ; décès pendant… » quand une date tombe dans une guerre ou une période marquante du pays de naissance', $o)
+            . self::chk('histfiche', 'Contexte historique dans les fiches : « Contexte historique : naissance pendant la Première Guerre mondiale ; a aussi vécu la Seconde Guerre mondiale » : dates tombant dans une guerre ou une période marquante du pays de naissance, et périodes traversées de son vivant', $o)
             . '</td></tr>';
         echo '<tr><th>Parties du livre</th><td>'
             . self::isel('chrono_mode', 'Chronologie', ['none' => 'Aucune', 'chrono' => 'Chronologie familiale (naissances, mariages et décès par date et par décennie)', 'history' => 'Chronologie familiale avec contexte historique (guerres, révolutions… du pays de naissance)'], $cm)

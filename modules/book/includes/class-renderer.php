@@ -421,9 +421,19 @@ class TNGBook_Renderer {
                 if (!in_array($e[0], $by[$i] ?? [], true)) $by[$i][] = $e[0];
             }
         }
-        if (!$by) return '';
-        ksort($by);
         $per = TNGBook_History::periods($code);
+        // périodes traversées sans qu'aucune date de la fiche n'y tombe : la personne était en vie (naissance et décès connus, strictement avant la fin et après le début)
+        $lived = [];
+        $by0 = self::pd($isB ? $p['birthdatetr'] : ($p['baptdatetr'] ?? ''));
+        $dy0 = self::pd($isD ? $p['deathdatetr'] : ($p['burialdatetr'] ?? ''));
+        if ($by0 && $dy0) {
+            foreach ($per as $i => $pp) {
+                if (isset($by[$i])) continue;
+                if ($by0[0] < (int) substr($pp[1], 0, 4) && $dy0[0] > (int) substr($pp[0], 0, 4)) $lived[] = $i;
+            }
+        }
+        if (!$by && !$lived) return '';
+        ksort($by);
         $parts = [];
         foreach ($by as $i => $labels) {
             $order = ['hx_birth' => 0, 'hx_marr' => 1, 'hx_death' => 2];
@@ -431,6 +441,11 @@ class TNGBook_Renderer {
             $names = array_map(function ($k) use ($L) { return $L[$k]; }, $labels);
             $what = count($names) > 1 ? implode(', ', array_slice($names, 0, -1)) . ' ' . $L['hx_and'] . ' ' . end($names) : $names[0];
             $parts[] = $what . ' ' . $L['hx_during'] . ' ' . ($this->lang === 'fr' ? $per[$i][2] : $per[$i][3]);
+        }
+        if ($lived) {
+            $names = array_map(function ($i) use ($per) { return $this->lang === 'fr' ? $per[$i][2] : $per[$i][3]; }, $lived);
+            $what = count($names) > 1 ? implode(', ', array_slice($names, 0, -1)) . ' ' . $L['hx_and'] . ' ' . end($names) : $names[0];
+            $parts[] = $L[$by ? 'hx_also' : 'hx_lived'] . ' ' . $what;
         }
         return '<p class="hxline"><em>' . $this->e($L['hx_lead'] . implode(' ; ', $parts)) . '.</em></p>';
     }
