@@ -215,7 +215,7 @@ class TNGBook_Art {
 
     /** Valeurs du réglage « illustration de couverture » : none, ornament, puis un arbre (tree = chêne, olive, willow, roots). */
     public static function cover_choices() {
-        return array('none', 'ornament', 'tree', 'olive', 'willow', 'roots', 'color', 'page', 'meadow', 'farm', 'chene', 'peinture', 'chene2', 'chene3', 'chene4');
+        return array('none', 'ornament', 'tree', 'olive', 'willow', 'roots', 'color', 'page', 'meadow', 'farm', 'chene', 'peinture', 'chene2', 'chene3', 'chene4', 'nympheas');
     }
 
     /** Pochettes pleine page (fond de la 1re page du PDF). */
@@ -495,6 +495,125 @@ class TNGBook_Art {
         return $bin;
     }
 
+    /** Tache arrondie (ellipse inclinée) : pétale, galet de lumière, touche de pinceau. */
+    private static function dab($im, $x, $y, $rx, $ry, $ang, $col) {
+        $ca = cos($ang); $sa = sin($ang); $pts = array();
+        for ($k = 0; $k < 22; $k++) {
+            $t = $k / 22 * 2 * M_PI; $lx = cos($t) * $rx; $ly = sin($t) * $ry;
+            $pts[] = (int) round($x + $lx * $ca - $ly * $sa); $pts[] = (int) round($y + $lx * $sa + $ly * $ca);
+        }
+        imagefilledpolygon($im, $pts, 22, $col);
+    }
+
+    /** Coquelicot : pétales ronds semi-transparents qui se superposent, cœur sombre et étamines. */
+    private static function poppy($im, $x, $y, $r, $ang, &$seed) {
+        $tones = array(array(214, 70, 52), array(226, 94, 60), array(196, 52, 46), array(232, 120, 76));
+        for ($k = 0; $k < 5; $k++) {
+            $a = $ang + $k * 1.2566 + (self::rnd($seed) - 0.5) * 0.4; $t = $tones[$k % 4];
+            self::dab($im, $x + cos($a) * $r * 0.46, $y + sin($a) * $r * 0.46, $r * 0.66, $r * 0.58, $a, imagecolorallocatealpha($im, $t[0], $t[1], $t[2], 36 + (int) (self::rnd($seed) * 24)));
+        }
+        imagefilledellipse($im, (int) $x, (int) $y, (int) ($r * 0.5), (int) ($r * 0.5), imagecolorallocatealpha($im, 58, 44, 44, 4));
+        for ($k = 0; $k < 9; $k++) {
+            $a = $k * 0.698 + $ang; imagefilledellipse($im, (int) ($x + cos($a) * $r * 0.33), (int) ($y + sin($a) * $r * 0.33), (int) max(2, $r * 0.09), (int) max(2, $r * 0.09), imagecolorallocatealpha($im, 40, 32, 32, 20));
+        }
+    }
+
+    /** Nymphéa vu de côté : galette verte sur l'eau, pétales roses étagés, cœur doré, rides autour. */
+    private static function lily($im, $x, $y, $r, $col, &$seed) {
+        for ($k = 3; $k >= 1; $k--) {   // rides sur l'eau
+            imagesetthickness($im, (int) max(1, $r * 0.04));
+            imagearc($im, (int) $x, (int) ($y + $r * 0.14), (int) ($r * (1.5 + $k * 0.5)), (int) ($r * (0.3 + $k * 0.11)), 0, 360, $col);
+        }
+        imagesetthickness($im, 1);
+        self::dab($im, $x, $y + $r * 0.12, $r * 1.15, $r * 0.28, 0, imagecolorallocatealpha($im, 96, 142, 104, 30));
+        self::dab($im, $x + $r * 0.5, $y + $r * 0.2, $r * 0.55, $r * 0.16, 0.05, imagecolorallocatealpha($im, 130, 170, 120, 50));
+        $rows = array(array(7, 1.0, 120, array(236, 170, 188)), array(5, 0.8, 70, array(246, 206, 216)), array(3, 0.55, 20, array(252, 236, 240)));
+        foreach ($rows as $row) {
+            for ($k = 0; $k < $row[0]; $k++) {
+                $a = -M_PI / 2 + ($k - ($row[0] - 1) / 2) * (0.36 + 0.04 * (7 - $row[0]) / 2) + (self::rnd($seed) - 0.5) * 0.08;
+                self::leaf($im, $x, $y + $r * 0.05, $a, $r * $row[1] * (0.95 + 0.1 * self::rnd($seed)), imagecolorallocatealpha($im, $row[3][0], $row[3][1], $row[3][2], 28 + (int) (self::rnd($seed) * 20)), 0.3);
+            }
+        }
+        imagefilledellipse($im, (int) $x, (int) ($y - $r * 0.05), (int) ($r * 0.22), (int) ($r * 0.14), imagecolorallocatealpha($im, 240, 196, 80, 8));
+    }
+
+    /**
+     * Fleuron « Monet » : nymphéa au centre, galettes et coquelicots de part et d'autre, roseaux, rides sur l'eau qui s'effilent
+     * (dessiné par le plugin, touches translucides façon impressionniste ; les rides prennent la couleur du livre).
+     */
+    public static function garland($hex, $w = 1000, $h = 110) {
+        $S = 3; $W = $w * $S; $H = $h * $S; $u = $S * $h / 110;
+        $im = self::canvas($W, $H);
+        $line = self::rgb($im, $hex, 40);
+        $seed = 20261117; $cx = $W / 2; $cy = $H * 0.62;
+        foreach (array(-1, 1) as $s) {
+            // rides : filets ondulés qui s'effilent vers le bord
+            $x0 = $cx + $s * 340 * $u; $x1 = $cx + $s * ($W / 2 - 14 * $S);
+            foreach (array(0, 13, -13) as $i => $dy) {
+                $a = $x0 + $s * $i * 18 * $u; $px = $a; $py = $cy + $dy * $u;
+                for ($k = 1; $k <= 20; $k++) {
+                    $nx = $a + ($x1 - $a) * $k / 20; $ny = $cy + $dy * $u + sin($k * 0.9 + $i) * 2.2 * $u;
+                    self::stroke($im, $px, $py, $nx, $ny, max(1, (5 - $i) * $S * (1 - $k / 20) + 0.8 * $S), max(1, (5 - $i) * $S * (1 - ($k + 1) / 20) + 0.8 * $S), $line);
+                    $px = $nx; $py = $ny;
+                }
+            }
+            // roseaux
+            foreach (array(300, 318, 334) as $i => $d) {
+                $bx = $cx + $s * $d * $u; $by = $cy + 6 * $u; $ang = -M_PI / 2 + $s * (0.18 + $i * 0.12);
+                $len = (70 - $i * 14) * $u;
+                self::stroke($im, $bx, $by, $bx + cos($ang) * $len, $by + sin($ang) * $len, 3.2 * $u, 1.4 * $u, self::col($im, 104, 140, 96, 24));
+                self::leaf($im, $bx + cos($ang) * $len * 0.45, $by + sin($ang) * $len * 0.45, $ang - $s * 0.9, 38 * $u, self::col($im, 120, 160, 108, 40), 0.18);
+            }
+            // galettes et coquelicots
+            self::lily($im, $cx + $s * 215 * $u, $cy + 6 * $u, 40 * $u, $line, $seed);
+            self::poppy($im, $cx + $s * 268 * $u, $cy - 20 * $u, 24 * $u, $s * 0.5, $seed);
+            self::dab($im, $cx + $s * 122 * $u, $cy + 14 * $u, 36 * $u, 9 * $u, 0.05, self::col($im, 96, 142, 104, 36));
+            self::poppy($im, $cx + $s * 140 * $u, $cy - 8 * $u, 17 * $u, $s * 1.0, $seed);
+        }
+        self::lily($im, $cx, $cy + 10 * $u, 62 * $u, $line, $seed);
+        $out = imagecreatetruecolor($w, $h);
+        imagealphablending($out, false); imagesavealpha($out, true);
+        imagefill($out, 0, 0, imagecolorallocatealpha($out, 255, 255, 255, 127));
+        imagecopyresampled($out, $im, 0, 0, 0, 0, $w, $h, $W, $H);
+        imagedestroy($im);
+        return self::png($out);
+    }
+
+    /** Coin fleuri (haut gauche) : tiges qui longent le cadre, feuilles et coquelicots ; à retourner pour les trois autres coins. */
+    private static function floral_corner($T, $S, $mm) {
+        $tile = self::canvas($T * $S, $T * $S);
+        $u = $mm(1) * $S; $seed = 77123;
+        $stem = self::col($tile, 98, 132, 92, 12); $leaf1 = self::col($tile, 108, 150, 102, 40); $leaf2 = self::col($tile, 146, 178, 120, 52);
+        foreach (array(0, 1) as $dir) {   // 0 : le long du bord haut, 1 : le long du bord gauche
+            $px = 4 * $u; $py = 4 * $u; $a = $dir ? 1.2 : 0.37;
+            for ($k = 1; $k <= 11; $k++) {
+                $a += (self::rnd($seed) - 0.5) * 0.14 + ($dir ? (M_PI / 2 - 0.2 - $a) * 0.03 : (0.12 - $a) * 0.04);
+                $L = ($dir ? 1.9 : 2.1) * $u; $nx = $px + cos($a) * $L; $ny = $py + sin($a) * $L;
+                self::stroke($tile, $px, $py, $nx, $ny, 2.4 * $S, 1.4 * $S, $stem);
+                if ($k % 2 == 0) {
+                    $side = ($k % 4 == 0) ? 1 : -1;
+                    self::leaf($tile, $nx, $ny, $a + $side * 0.95, (5.5 - $k * 0.18) * $u, $k % 4 == 0 ? $leaf1 : $leaf2, 0.34);
+                }
+                $px = $nx; $py = $ny;
+            }
+            self::poppy($tile, $px + ($dir ? 0.4 : 2.0) * $u, $py + ($dir ? 2.0 : 0.4) * $u, 3.0 * $u, $dir, $seed);
+        }
+        foreach (array(array(8.5, 8.5, 5.0, 0.3), array(14.5, 4.4, 3.3, 1.1), array(4.4, 14.5, 3.3, 2.0)) as $f) {
+            self::poppy($tile, $f[0] * $u, $f[1] * $u, $f[2] * $u, $f[3], $seed);
+        }
+        for ($k = 0; $k < 14; $k++) {   // petites touches de couleur éparses
+            $x = (3 + self::rnd($seed) * 24) * $u; $y = (3 + self::rnd($seed) * 24) * $u;
+            if ($x > 9 * $u && $y > 9 * $u) continue;
+            self::dab($tile, $x, $y, 0.7 * $u, 0.5 * $u, self::rnd($seed) * 3, self::col($tile, 236, 190, 90, 40));
+        }
+        $small = self::canvas($T, $T);
+        imagealphablending($small, false);
+        imagecopyresampled($small, $tile, 0, 0, 0, 0, $T, $T, $T * $S, $T * $S);
+        imagealphablending($small, true);
+        imagedestroy($tile);
+        return $small;
+    }
+
     /** Fleuron séparateur : filets qui s'effilent, losanges et points autour d'un motif central. */
     public static function flourish($hex, $w = 1000, $h = 70) {
         $S = 3;
@@ -560,6 +679,22 @@ class TNGBook_Art {
                 imageline($im, $x1 - $a, $y0 + $a + $cut, $x1 - $a, $y1 - $a - $cut, $col);
             }
         };
+        if ($style === 'floral') {   // cadre fleuri : filet fin, coins de coquelicots et de feuillages
+            $rect(0, 3, 0);
+            $T = $mm(34);
+            $small = self::floral_corner($T, 3, $mm);
+            $put = function ($t, $dx, $dy) use ($im, $T) { imagecopy($im, $t, $dx, $dy, 0, 0, $T, $T); };
+            $put($small, $x0, $y0);
+            $f = imagecreatetruecolor($T, $T); imagealphablending($f, false); imagesavealpha($f, true);
+            imagecopy($f, $small, 0, 0, 0, 0, $T, $T); imageflip($f, IMG_FLIP_HORIZONTAL);
+            $put($f, $x1 - $T + 1, $y0);
+            imageflip($f, IMG_FLIP_VERTICAL);
+            $put($f, $x1 - $T + 1, $y1 - $T + 1);
+            imageflip($f, IMG_FLIP_HORIZONTAL);
+            $put($f, $x0, $y1 - $T + 1);
+            imagedestroy($f); imagedestroy($small);
+            return self::png($im);
+        }
         if ($style !== 'ornate') {
             $rect(0, 5, 0);
             if ($style === 'double') $rect($mm(2.2), 2, 0);

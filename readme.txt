@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.16.0
+Stable tag: 2.17.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,6 +81,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.17.0 =
+* Livre : deux ornements dans le style de Monet, dessinés par le plugin : l'illustration de couverture « Nymphéas et coquelicots » (nymphéas, galettes, coquelicots et roseaux au-dessus et au-dessous du titre, rides dans la couleur du livre) et le cadre de page « Cadre fleuri » (filet fin et coins de coquelicots et de feuillages ; double filet dans Word et OpenDocument).
 
 = 2.16.0 =
 * Livre : neuf nouvelles palettes de couleurs accordées aux pochettes illustrées (Chêne et prairie, Écorce et ciel d'été, Ciel de campagne, Terre et racines, Ferme en pierre et tuiles, Peinture impressionniste, Coquelicot et feuillage, Prairie fleurie, Pastel de la campagne).

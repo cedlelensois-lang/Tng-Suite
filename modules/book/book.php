@@ -352,7 +352,7 @@ final class TNGBook {
         $out['history_scope'] = $sel['history_scope'];
         unset($out['history_country'], $out['history_custom']);
         $fr = (string) ($in['frame'] ?? 'none');
-        $out['frame'] = in_array($fr, ['single', 'double', 'ornate'], true) ? $fr : 'none';
+        $out['frame'] = in_array($fr, ['single', 'double', 'ornate', 'floral'], true) ? $fr : 'none';
         $ca = (string) ($in['cover_art'] ?? 'tree');
         if ($ca === 'winter') $ca = 'roots';   // ancien nom (2.8.2)
         $out['cover_art'] = in_array($ca, TNGBook_Art::cover_choices(), true) ? $ca : 'tree';
@@ -552,10 +552,12 @@ final class TNGBook {
             'single' => 'Filet simple',
             'double' => 'Double filet',
             'ornate' => 'Cadre orné (angles creusés, PDF et page imprimable ; double filet dans Word et OpenDocument)',
+            'floral' => 'Cadre fleuri, style Monet (coquelicots aux quatre coins, PDF et page imprimable ; double filet dans Word et OpenDocument)',
         ], $o['frame'] ?? 'none', 'Un liseré autour de chaque page, pour une impression en livre : couleur du livre (« en-têtes et liens »), pas de cadre sur la couverture.');
         self::select('Illustration de couverture', 'cover_art', [
             'none' => 'Aucune (deux filets autour du titre)',
             'ornament' => 'Fleurons au-dessus et au-dessous du titre',
+            'nympheas' => 'Nymphéas et coquelicots au-dessus et au-dessous du titre (style Monet)',
             'tree' => 'Arbre : chêne ample, puis titre et fleuron',
             'olive' => 'Arbre : penché, aux branches légères',
             'willow' => 'Arbre : saule pleureur',
@@ -803,7 +805,7 @@ final class TNGBook {
             'notes' => (bool) $o['notes'], 'military' => (bool) $o['military'], 'mpf' => !empty($o['mpf']), 'mini' => !empty($o['mini']), 'imgq' => !empty($o['imgq']), 'trees' => !empty($o['trees']), 'stats' => !empty($o['stats']), 'stats_first' => !empty($o['stats_first']), 'stats_last' => !empty($o['stats_last']), 'desclist' => !empty($o['desclist']), 'chrono' => !empty($o['chrono']), 'map' => !empty($o['map']), 'bapt' => !empty($o['bapt']), 'burial' => !empty($o['burial']), 'verbose' => !empty($o['verbose']), 'country' => !empty($o['country']), 'regions' => !empty($o['regions']), 'asclist' => !empty($o['asclist']), 'resi' => !empty($o['resi']), 'sibs' => !empty($o['sibs']), 'cous' => !empty($o['cous']), 'allunions' => !empty($o['allunions']), 'marrage' => !empty($o['marrage']),
             'debug' => $debug, 'place_parts' => (int) $o['place_parts'],
             'title' => $o['title'], 'author' => $o['author'], 'preface' => $o['preface'], 'surname' => (string) ($o['surname'] ?? ''), 'surname_title' => (string) ($o['surname_title'] ?? ''), 'colors' => $o['colors'] ?? [],
-            'template' => $o['template'] ?? 'classic', 'frame' => in_array($o['frame'] ?? '', ['single', 'double', 'ornate'], true) ? $o['frame'] : 'none', 'cover_art' => in_array($o['cover_art'] ?? 'tree', TNGBook_Art::cover_choices(), true) ? $o['cover_art'] : 'tree', 'kids' => !empty($o['kids']), 'histfiche' => !empty($o['histfiche']), 'history' => !empty($o['history']), 'history_lists' => (array) ($o['history_lists'] ?? []), 'history_default' => (string) ($o['history_default'] ?? ''), 'history_scope' => (string) ($o['history_scope'] ?? 'all'), 'order' => self::clean_order($o['order'] ?? null),
+            'template' => $o['template'] ?? 'classic', 'frame' => in_array($o['frame'] ?? '', ['single', 'double', 'ornate', 'floral'], true) ? $o['frame'] : 'none', 'cover_art' => in_array($o['cover_art'] ?? 'tree', TNGBook_Art::cover_choices(), true) ? $o['cover_art'] : 'tree', 'kids' => !empty($o['kids']), 'histfiche' => !empty($o['histfiche']), 'history' => !empty($o['history']), 'history_lists' => (array) ($o['history_lists'] ?? []), 'history_default' => (string) ($o['history_default'] ?? ''), 'history_scope' => (string) ($o['history_scope'] ?? 'all'), 'order' => self::clean_order($o['order'] ?? null),
             'tng_path' => $o['tng_path'], 'photo_folder' => $o['photo_folder'],
         ];
         $narr = !empty(TNGBook_Renderer::templates()[$opts['template']]['narr']);
@@ -820,7 +822,7 @@ final class TNGBook {
             $file = TNGBook_Doc::convert($html, array_merge(TNGBook_Renderer::defaultColors(), (array) $opts['colors']), [
                 'title' => $opts['title'] !== '' ? $opts['title'] : 'Livre généalogique', 'author' => $opts['author'], 'lang' => $lang,
                 'tpl' => $rend->docSpec(),
-                'frame' => $opts['frame'] !== 'none' ? ['style' => $opts['frame'] === 'ornate' ? 'double' : $opts['frame'], 'color' => array_merge(TNGBook_Renderer::defaultColors(), (array) $opts['colors'])['head']] : null,
+                'frame' => $opts['frame'] !== 'none' ? ['style' => in_array($opts['frame'], ['ornate', 'floral'], true) ? 'double' : $opts['frame'], 'color' => array_merge(TNGBook_Renderer::defaultColors(), (array) $opts['colors'])['head']] : null,
             ], $format);
         }
 
@@ -862,7 +864,7 @@ final class TNGBook {
      * de la page, posée en fond de toutes les pages sauf la première (couverture). Le repère <meta name="tng-frame"> du HTML est retiré.
      */
     public static function pdf_frame(\Mpdf\Mpdf $mpdf, $html) {
-        if (!preg_match('/<meta name="tng-frame" content="(single|double|ornate) (#[0-9a-f]{6})">/', $html, $m)) return $html;
+        if (!preg_match('/<meta name="tng-frame" content="(single|double|ornate|floral) (#[0-9a-f]{6})">/', $html, $m)) return $html;
         $html = str_replace($m[0], '', $html);
         if (!function_exists('imagecreatetruecolor')) return $html;
         $png = TNGBook_Art::frame($m[1], $m[2]);

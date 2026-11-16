@@ -777,6 +777,8 @@ return array(
 	'Coquelicot et feuillage' => 'Poppy and foliage',
 	'Prairie fleurie' => 'Flowering meadow',
 	'Pastel de la campagne' => 'Countryside pastel',
+	'Nymphéas et coquelicots au-dessus et au-dessous du titre (style Monet)' => 'Water lilies and poppies above and below the title (Monet style)',
+	'Cadre fleuri, style Monet (coquelicots aux quatre coins, PDF et page imprimable ; double filet dans Word et OpenDocument)' => 'Floral frame, Monet style (poppies in the four corners, PDF and printable page; double line in Word and OpenDocument)',
 	'Palettes harmonisées :' => 'Matching palettes:',
 	'Bordeaux classique' => 'Classic burgundy',
 	'Bleu marine' => 'Navy blue',
