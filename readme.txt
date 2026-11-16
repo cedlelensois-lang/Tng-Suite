@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.11.6
+Stable tag: 2.12.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,6 +81,11 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.12.0 =
+* Livre : un nouveau livre (bouton « Nouveau livre », première installation) part des réglages recommandés : modèle Élégant, filet simple, arbre de couverture en couleurs, PDF (HTML si le PDF direct est indisponible), photos avec silhouettes, baptême et sépulture, phrases détaillées, lieux avec pays, militaire, notes, fiche de chaque conjoint, chronologie et fiches avec contexte historique, « En chiffres », arbres, listes, cousinages, index et carte. Les profils enregistrés ne changent pas.
+* Livre : génération automatique, fin de la bêta (bandeau retiré) ; fichiers conservés par profil : 1 par défaut, 3 au maximum ; la vue d'ensemble des profils liste les fichiers conservés dès qu'il y en a plusieurs.
+* Statistiques : sur la page de réglages, les types d'événement « profession » et les catégories de métiers passent sous le tableau des shortcodes ; la note de [tng_stat_metiers] demande de vérifier ces paramètres ; le champ « profession » vaut OCCU par défaut (aussi s'il est vide).
 
 = 2.11.6 =
 * Livre : formulaire des listes de faits historiques : l'intitulé « Listes fournies » n'apparaît plus quand toutes les listes fournies sont retirées ; la « liste par défaut » ne s'affiche que pour l'application « selon le lieu de naissance ».

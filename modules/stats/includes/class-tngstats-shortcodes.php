@@ -114,7 +114,7 @@ class TNGStats_Shortcodes {
 				'types'   => array( 'pie', 'doughnut', 'polarArea', 'bar', 'hbar', 'table' ),
 				'default' => 'pie',
 				'atts'    => array( 'limit' => '15', 'others' => '0' ),
-				'help'    => 'Catégories modifiables dans Réglages > TNG Stats. others = 1 pour afficher les professions non classées.',
+				'help'    => 'Vérifiez les paramètres ci-dessous : types d’événement « profession » et catégories de métiers. others = 1 pour afficher les professions non classées.',
 			),
 		);
 	}

@@ -87,9 +87,10 @@ final class TNGBook {
             'front_access' => 'none', 'front_living' => 'anonymize',
             // Paramètres du livre (tous conservés d'une fois sur l'autre)
             'personID' => '', 'tree' => '', 'lang' => tngs_lang(),
-            'gen_up' => 6, 'gen_down' => 4, 'max_people' => self::MAX_PEOPLE, 'living' => 'anonymize', 'place_parts' => 2,
-            'photos' => 1, 'spphotos' => 1, 'spfiche' => 1, 'generic' => 1, 'avatar' => 'portrait', 'sources' => 1, 'index' => 1, 'notes' => 0, 'military' => 0, 'mpf' => 1, 'mini' => 0, 'imgq' => 0, 'trees' => 1, 'stats' => 1, 'stats_first' => 1, 'stats_last' => 1, 'desclist' => 1, 'chrono' => 0, 'kids' => 1, 'histfiche' => 0, 'map' => 0, 'bapt' => 0, 'burial' => 1, 'verbose' => 0, 'country' => 0, 'regions' => 0, 'asclist' => 0, 'resi' => 0, 'sibs' => 0, 'marrage' => 0, 'cous' => 1, 'allunions' => 1, 'order' => ['asc', 'desc', 'stats', 'chrono', 'map', 'idxn', 'idxp', 'src', 'alist', 'dlist'],
-            'title' => '', 'author' => '', 'preface' => '', 'surname' => '', 'surname_title' => '', 'format' => 'html', 'template' => 'classic', 'frame' => 'none', 'cover_art' => 'tree', 'history' => 0, 'history_lists' => [tngs_lang() === 'fr' ? 'tpl-FR' : 'tpl-GB'], 'history_default' => '', 'history_scope' => 'all',
+            'gen_up' => 6, 'gen_down' => 4, 'max_people' => self::MAX_PEOPLE, 'living' => 'anonymize', 'place_parts' => 1,
+            // réglages d'un nouveau livre (2.12.0) : contenu complet, modèle Élégant, PDF, contexte historique
+            'photos' => 1, 'spphotos' => 1, 'spfiche' => 1, 'generic' => 1, 'avatar' => 'portrait', 'sources' => 0, 'index' => 1, 'notes' => 1, 'military' => 1, 'mpf' => 1, 'mini' => 1, 'imgq' => 0, 'trees' => 1, 'stats' => 1, 'stats_first' => 1, 'stats_last' => 1, 'desclist' => 1, 'chrono' => 1, 'kids' => 1, 'histfiche' => 1, 'map' => 1, 'bapt' => 1, 'burial' => 1, 'verbose' => 1, 'country' => 1, 'regions' => 1, 'asclist' => 1, 'resi' => 1, 'sibs' => 0, 'marrage' => 1, 'cous' => 1, 'allunions' => 1, 'order' => ['asc', 'desc', 'stats', 'chrono', 'map', 'idxn', 'idxp', 'src', 'alist', 'dlist'],
+            'title' => '', 'author' => '', 'preface' => '', 'surname' => '', 'surname_title' => '', 'format' => self::mpdf_available() ? 'pdf' : 'html', 'template' => 'elegant', 'frame' => 'single', 'cover_art' => 'color', 'history' => 1, 'history_lists' => [tngs_lang() === 'fr' ? 'tpl-FR' : 'tpl-GB'], 'history_default' => '', 'history_scope' => 'all',
             'colors' => TNGBook_Renderer::defaultColors(),
         ];
     }
@@ -100,6 +101,13 @@ final class TNGBook {
         if (is_array($saved) && $saved && !array_key_exists('spfiche', $saved)) $saved['spfiche'] = 0;
         if (is_array($saved) && $saved && !array_key_exists('history_lists', $saved)) $saved = array_merge($saved, TNGBook_History::legacy_selection($saved));   // avant la 2.10.0 : pays par défaut + événements personnalisés
         return wp_parse_args($saved, self::defaults());
+    }
+
+    /** « Nouveau livre » : les réglages par défaut du plugin, en gardant seulement les réglages communs (dossier TNG, accès, langue, vivants/privés). */
+    private static function new_book_opts(array $cur) {
+        $o = self::defaults();
+        foreach (['tng_path', 'photo_folder', 'front_access', 'front_living', 'max_people', 'living', 'lang', 'prefix'] as $k) if (array_key_exists($k, $cur)) $o[$k] = $cur[$k];
+        return $o;
     }
 
     public static function opts() {
@@ -560,6 +568,7 @@ final class TNGBook {
     public static function page() {
         if (!current_user_can('manage_options')) return;
         $o = self::opts();
+        if (isset($_GET['new'])) $o = self::new_book_opts($o);   // phpcs:ignore WordPress.Security.NonceVerification.Recommended
         tngs_admin_header('Livre généalogique', array('module' => 'book'));
         TNGBook_Bg::panel();
 

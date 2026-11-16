@@ -421,6 +421,9 @@ msgstr ""
 msgid "Catégories de métiers"
 msgstr ""
 
+msgid "Vérifiez les paramètres ci-dessous : types d’événement « profession » et catégories de métiers. others = 1 pour afficher les professions non classées."
+msgstr ""
+
 msgid "Catégories modifiables dans Réglages > TNG Stats. others = 1 pour afficher les professions non classées."
 msgstr ""
 
@@ -2908,9 +2911,6 @@ msgstr ""
 msgid "Génération automatique"
 msgstr ""
 
-msgid "Bêta"
-msgstr ""
-
 msgid "Génère automatiquement le livre de chaque profil choisi, à intervalle régulier, dans un dossier du serveur (les anciens fichiers sont supprimés au-delà du nombre conservé)."
 msgstr ""
 
@@ -3686,6 +3686,9 @@ msgid "Décochez celles dont vous n’avez pas besoin pour les retirer ; elles r
 msgstr ""
 
 msgid "Aucune liste pour le moment."
+msgstr ""
+
+msgid "1 par défaut, 3 au maximum."
 msgstr ""
 
 msgctxt "js"

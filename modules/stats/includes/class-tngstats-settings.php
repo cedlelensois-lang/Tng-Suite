@@ -354,6 +354,9 @@ TXT;
 			return;
 		}
 		$o   = wp_parse_args( get_option( self::OPT, array() ), self::defaults() );
+		if ( '' === trim( (string) $o['occ_tags'] ) ) {
+			$o['occ_tags'] = 'OCCU'; // valeur par défaut d'une nouvelle installation
+		}
 		$n   = self::OPT;
 		$msg = '';
 		$ok  = false;
@@ -380,6 +383,9 @@ TXT;
 		<?php tngs_admin_header( 'Statistiques', array( 'module' => 'stats', 'status' => array( $ok, $msg ) ) ); ?>
 			<p>Titres, libellés, légendes et couleurs de chaque graphique : <a href="<?php echo esc_url( tngs_page_url( 'tng-stats-charts' ) ); ?>">Stats : graphiques</a>.</p>
 
+			<?php self::doc(); ?>
+
+			<h2>Réglages</h2>
 			<form method="post" action="options.php">
 				<?php settings_fields( 'tngstats_group' ); ?>
 				<input type="hidden" name="<?php echo esc_attr( $n ); ?>[_section]" value="general">
@@ -396,8 +402,6 @@ TXT;
 				</table>
 				<?php submit_button(); ?>
 			</form>
-
-			<?php self::doc(); ?>
 
 			<h2>Professions non classées</h2>
 			<?php

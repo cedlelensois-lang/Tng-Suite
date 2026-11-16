@@ -147,6 +147,7 @@ return array(
 	'Català' => 'Català',
 	'Catégorie' => 'Category',
 	'Catégories de métiers' => 'Occupation categories',
+	'Vérifiez les paramètres ci-dessous : types d’événement « profession » et catégories de métiers. others = 1 pour afficher les professions non classées.' => 'Check the settings below: “occupation” event types and occupation categories. others = 1 to show unclassified occupations.',
 	'Catégories modifiables dans Réglages > TNG Stats. others = 1 pour afficher les professions non classées.' => 'Categories can be edited under Settings > TNG Stats. others = 1 to show unclassified occupations.',
 	'Ce classement généalogique est réservé aux utilisateurs autorisés.' => 'This genealogy ranking is reserved for authorised users.',
 	'Ce graphique est réservé aux utilisateurs autorisés.' => 'This chart is reserved for authorised users.',
@@ -978,7 +979,6 @@ return array(
 	'Dossier :' => 'Folder:',
 	'Fichier introuvable.' => 'File not found.',
 	'Génération automatique' => 'Automatic generation',
-	'Bêta' => 'Beta',
 	'Génère automatiquement le livre de chaque profil choisi, à intervalle régulier, dans un dossier du serveur (les anciens fichiers sont supprimés au-delà du nombre conservé).' => 'Automatically generates the book of each chosen profile at regular intervals into a server folder (older files are deleted beyond the number kept).',
 	'Enregistrez d’abord un profil de livre (ci-dessus) : la génération automatique se règle profil par profil.' => 'First save a book profile (above): automatic generation is set up profile by profile.',
 	'Le planificateur interne de WordPress est désactivé sur ce site : vérifiez qu’une tâche cron du serveur appelle bien wp-cron.php (par exemple toutes les heures).' => 'WordPress’s internal scheduler is disabled on this site: make sure a server cron job calls wp-cron.php (for example every hour).',
@@ -1238,4 +1238,5 @@ return array(
 	'Listes fournies proposées dans le formulaire du livre' => 'Supplied lists offered in the book form',
 	'Décochez celles dont vous n’avez pas besoin pour les retirer ; elles restent disponibles ci-dessus comme modèles à copier.' => 'Untick the ones you do not need to remove them; they remain available above as templates to copy.',
 	'Aucune liste pour le moment.' => 'No list yet.',
+	'1 par défaut, 3 au maximum.' => '1 by default, 3 at most.',
 );

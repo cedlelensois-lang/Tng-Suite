@@ -1,6 +1,6 @@
 <?php
 /**
- * Livre : génération automatique planifiée par profil (bêta).
+ * Livre : génération automatique planifiée par profil.
  *
  * Chaque profil enregistré peut être généré chaque jour, semaine ou mois, dans un dossier du serveur, avec rotation des anciens fichiers.
  * La planification repose sur WP-Cron : un contrôle toutes les heures lance les tâches arrivées à échéance, une à la fois.
@@ -8,6 +8,7 @@
 if (!defined('ABSPATH')) exit;
 
 class TNGBook_Auto {
+    const KEEP_MAX = 3;                   // fichiers conservés par profil : 3 au plus (1 par défaut)
     const OPT   = 'tngbook_auto';        // réglages communs : dossier, nombre de fichiers conservés, e-mail…
     const JOBS  = 'tngbook_auto_jobs';   // nom du profil => tâche
     const KEY   = 'tngbook_auto_key';    // suffixe aléatoire du dossier par défaut
@@ -26,8 +27,8 @@ class TNGBook_Auto {
     /* ---------- Données ---------- */
 
     public static function settings() {
-        $s = wp_parse_args(get_option(self::OPT, []), ['dir' => '', 'keep' => 4, 'only_changed' => 1, 'mail' => '', 'mail_on' => 'fail']);
-        $s['keep'] = max(1, min(30, (int) $s['keep']));
+        $s = wp_parse_args(get_option(self::OPT, []), ['dir' => '', 'keep' => 1, 'only_changed' => 1, 'mail' => '', 'mail_on' => 'fail']);
+        $s['keep'] = max(1, min(self::KEEP_MAX, (int) $s['keep']));
         $s['mail_on'] = in_array($s['mail_on'], ['never', 'fail', 'always'], true) ? $s['mail_on'] : 'fail';
         return $s;
     }
@@ -314,7 +315,7 @@ class TNGBook_Auto {
         }
         update_option(self::OPT, [
             'dir' => $dir,
-            'keep' => max(1, min(30, (int) ($set['keep'] ?? 4))),
+            'keep' => max(1, min(self::KEEP_MAX, (int) ($set['keep'] ?? 1))),
             'only_changed' => empty($set['only_changed']) ? 0 : 1,
             'mail' => sanitize_email((string) ($set['mail'] ?? '')),
             'mail_on' => in_array($set['mail_on'] ?? '', ['never', 'fail', 'always'], true) ? $set['mail_on'] : 'fail',
@@ -359,7 +360,7 @@ class TNGBook_Auto {
         $j = array_merge(self::job_defaults(), ($active !== '' ? ($jobs[$active] ?? []) : []));
         $days = [1 => 'Lundi', 2 => 'Mardi', 3 => 'Mercredi', 4 => 'Jeudi', 5 => 'Vendredi', 6 => 'Samedi', 0 => 'Dimanche'];
         $k = 'tngbook_auto_job';
-        echo '<h2 id="tngbook-auto-job">' . esc_html(tngs_t('Génération automatique de ce profil')) . ' <span style="background:#dba617;color:#1d2327;font-size:11px;padding:2px 7px;border-radius:9px;vertical-align:middle">' . esc_html(tngs_t('Bêta')) . '</span></h2>';
+        echo '<h2 id="tngbook-auto-job">' . esc_html(tngs_t('Génération automatique de ce profil')) . '</h2>';
         echo '<p class="description">' . esc_html($active !== ''
             ? tngs_t('Profil actif :') . ' ' . $active . ' — ' . tngs_t('ces réglages sont enregistrés avec le profil (bouton « Mettre à jour le profil actif »).')
             : tngs_t('Ces réglages sont enregistrés avec le profil : donnez un nom au profil, puis « Enregistrer comme profil ».')) . '</p>';
@@ -405,7 +406,7 @@ class TNGBook_Auto {
 
     /* ---------- Page d'administration ---------- */
 
-    /** Bandeau de bêta + notes de retour d'action. */
+    /** Notes de retour d'action. */
     private static function notices(array $keys) {
         $notes = ['auto_saved' => ['success', 'Réglages communs de la génération automatique enregistrés.'], 'auto_ok' => ['success', 'Livre généré : voir la colonne « Dernière génération ».'],
             'auto_fail' => ['error', 'La génération a échoué : voir le message dans la colonne « Dernière génération ».'], 'auto_skip' => ['info', 'Génération non lancée : voir le message dans la colonne « Dernière génération ».'],
@@ -418,15 +419,11 @@ class TNGBook_Auto {
         }
     }
 
-    private static function beta_badge() {
-        return ' <span style="background:#dba617;color:#1d2327;font-size:11px;padding:2px 7px;border-radius:9px;vertical-align:middle">' . esc_html(tngs_t('Bêta')) . '</span>';
-    }
-
     /** Onglet « Vue d'ensemble des profils » : tableau en lecture seule (planification, dernière génération, générer maintenant, modifier). */
     public static function overview() {
         $profiles = TNGBook::profiles();
         $jobs = self::jobs();
-        echo '<div id="tngbook-overview"><h2>' . esc_html(tngs_t('Vue d’ensemble des profils')) . self::beta_badge() . '</h2>';
+        echo '<div id="tngbook-overview"><h2>' . esc_html(tngs_t('Vue d’ensemble des profils')) . '</h2>';
         self::notices(['auto_ok', 'auto_fail', 'auto_skip', 'missing']);
         echo '<p class="description">' . esc_html(tngs_t('Génère automatiquement le livre des profils pour lesquels la génération automatique est activée, à intervalle régulier, dans un dossier du serveur (les anciens fichiers sont supprimés au-delà du nombre conservé).')) . '</p>';
         if (!$profiles) {
@@ -460,8 +457,13 @@ class TNGBook_Auto {
             }
             $files = self::files($name);
             if ($files) {
-                $url = wp_nonce_url(add_query_arg(['action' => 'tngbook_auto_dl', 'f' => $files[0]], admin_url('admin-post.php')), 'tngbook_auto', '_tngauto');
-                echo '<br><a href="' . esc_url($url) . '">' . esc_html($files[0]) . '</a>' . ($j['size'] && $files[0] === $j['file'] ? ' (' . esc_html(size_format((int) $j['size'])) . ')' : '') . ' <span class="description">· ' . (int) count($files) . ' ' . esc_html(tngs_t('fichier(s) conservé(s)')) . '</span>';
+                $dir = self::dir(false);
+                foreach (count($files) > 1 ? $files : [$files[0]] as $i => $f) {   // plusieurs fichiers conservés : la liste complète, du plus récent au plus ancien
+                    $url = wp_nonce_url(add_query_arg(['action' => 'tngbook_auto_dl', 'f' => $f], admin_url('admin-post.php')), 'tngbook_auto', '_tngauto');
+                    $sz = ($f === $j['file'] && $j['size']) ? (int) $j['size'] : (int) @filesize($dir . '/' . $f);
+                    echo '<br><a href="' . esc_url($url) . '">' . esc_html($f) . '</a>' . ($sz ? ' (' . esc_html(size_format($sz)) . ')' : '');
+                }
+                echo '<br><span class="description">' . (int) count($files) . ' ' . esc_html(tngs_t('fichier(s) conservé(s)')) . '</span>';
             }
             echo '</td><td style="white-space:nowrap"><button type="submit" class="button" name="now" value="' . esc_attr($name) . '" formaction="' . esc_url(admin_url('admin-post.php?action=tngbook_auto_now')) . '">' . esc_html(tngs_t('Générer maintenant')) . '</button> '
                 . '<button type="submit" class="button" name="bg_profile" value="' . esc_attr($name) . '" formaction="' . esc_url(admin_url('admin-post.php?action=tngbook_bg_start')) . '">' . esc_html(tngs_t('En arrière-plan')) . '</button> '
@@ -473,7 +475,7 @@ class TNGBook_Auto {
     /** Réglages communs à tous les profils (dossier, rotation, e-mail), à placer dans l'onglet « Réglages ». */
     public static function settings_form() {
         $s = self::settings();
-        echo '<div id="tngbook-auto" style="margin-top:28px"><h2>' . esc_html(tngs_t('Génération automatique')) . self::beta_badge() . '</h2>';
+        echo '<div id="tngbook-auto" style="margin-top:28px"><h2>' . esc_html(tngs_t('Génération automatique')) . '</h2>';
         self::notices(['auto_saved', 'auto_dir']);
         echo '<p class="description">' . esc_html(tngs_t('Réglages communs à tous les profils. La planification (fréquence, jour, heure) se règle dans chaque profil.')) . '</p>';
         echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '">';
@@ -481,7 +483,7 @@ class TNGBook_Auto {
         echo '<table class="form-table" style="max-width:1100px">';
         echo '<tr><th scope="row">' . esc_html(tngs_t('Dossier de destination')) . '</th><td><input type="text" class="large-text code" name="tngbook_auto[settings][dir]" value="' . esc_attr($s['dir']) . '" placeholder="' . esc_attr(self::default_dir()) . '">'
             . '<p class="description">' . esc_html(tngs_t('Chemin absolu sur le serveur. Vide = dossier protégé dans les téléversements de WordPress (nom aléatoire). Idéalement, choisissez un dossier situé hors du site web. Seuls les fichiers créés par le plugin peuvent être supprimés.')) . '</p></td></tr>';
-        echo '<tr><th scope="row">' . esc_html(tngs_t('Fichiers conservés par profil')) . '</th><td><input type="number" min="1" max="30" class="small-text" name="tngbook_auto[settings][keep]" value="' . (int) $s['keep'] . '"></td></tr>';
+        echo '<tr><th scope="row">' . esc_html(tngs_t('Fichiers conservés par profil')) . '</th><td><input type="number" min="1" max="' . self::KEEP_MAX . '" class="small-text" name="tngbook_auto[settings][keep]" value="' . (int) $s['keep'] . '"> <span class="description">' . esc_html(tngs_t('1 par défaut, 3 au maximum.')) . '</span></td></tr>';
         echo '<tr><th scope="row">' . esc_html(tngs_t('Seulement si les données ont changé')) . '</th><td><label><input type="checkbox" name="tngbook_auto[settings][only_changed]" value="1"' . checked(!empty($s['only_changed']), true, false) . '> '
             . esc_html(tngs_t('Ne pas régénérer si rien n’a été modifié dans la base TNG (personnes, familles, médias) ni dans le profil depuis la dernière fois.')) . '</label></td></tr>';
         echo '<tr><th scope="row">' . esc_html(tngs_t('E-mail')) . '</th><td><input type="email" class="regular-text" name="tngbook_auto[settings][mail]" value="' . esc_attr($s['mail']) . '" placeholder="' . esc_attr(get_option('admin_email')) . '"> <select name="tngbook_auto[settings][mail_on]">';
