@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.13.3
+Stable tag: 2.14.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,6 +81,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.14.0 =
+* Livre : troisième pochette pleine page (PDF), « chêne et ses racines, campagne, texte sur fond blanc flouté » : le texte de la couverture (titre, auteur, chiffres, date) se pose sur un panneau blanc flouté en haut de page.
 
 = 2.13.3 =
 * Livre : arbre « racines » de la couverture : racines dessinées à part, courbes souples qui s'effilent et s'infléchissent vers le bas, avec quelques radicelles (au lieu de branches rectilignes).

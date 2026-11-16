@@ -215,12 +215,12 @@ class TNGBook_Art {
 
     /** Valeurs du réglage « illustration de couverture » : none, ornament, puis un arbre (tree = chêne, olive, willow, roots). */
     public static function cover_choices() {
-        return array('none', 'ornament', 'tree', 'olive', 'willow', 'roots', 'color', 'page', 'meadow', 'farm');
+        return array('none', 'ornament', 'tree', 'olive', 'willow', 'roots', 'color', 'page', 'meadow', 'farm', 'chene');
     }
 
     /** Pochettes pleine page (fond de la 1re page du PDF). */
     public static function page_covers() {
-        return array('page', 'meadow', 'farm');
+        return array('page', 'meadow', 'farm', 'chene');
     }
 
     /** Style d'arbre correspondant à une valeur du réglage (tree → oak). */
@@ -228,7 +228,7 @@ class TNGBook_Art {
         if ($art === 'winter') $art = 'roots';   // ancien nom (2.8.2)
         if ($art === 'page') return 'olive';   // hors PDF : l'arbre penché, sans fond de page
         if ($art === 'meadow') return 'color';
-        if ($art === 'farm') return 'oak';
+        if ($art === 'farm' || $art === 'chene') return 'oak';
         return $art === 'tree' ? 'oak' : (in_array($art, self::tree_styles(), true) ? $art : 'oak');
     }
 
@@ -446,7 +446,7 @@ class TNGBook_Art {
      * feuilles gris-bleu (teinte du livre atténuée), place libre dessous pour le titre. Posée en fond de la première page du PDF.
      */
     public static function cover_page($hex, $w = 1240, $h = 1754, $variant = 'page') {
-        if ($variant === 'meadow' || $variant === 'farm') {   // illustrations fournies (assets/img), déjà au format A4
+        if ($variant === 'meadow' || $variant === 'farm' || $variant === 'chene') {   // illustrations fournies (assets/img), déjà au format A4
             $bin = @file_get_contents(TNGBOOK_DIR . 'assets/img/cover-' . $variant . '.jpg');
             if ($bin !== false && $bin !== '') return $bin;
         }
