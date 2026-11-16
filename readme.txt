@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.15.1
+Stable tag: 2.15.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,6 +81,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.15.2 =
+* Livre : pochettes à chêne ou peinture : le panneau du texte est un cadre blanc net (sans flou) à 80 % d'opacité, le décor reste visible au travers.
 
 = 2.15.1 =
 * Livre : pochettes à chêne ou peinture : le panneau flouté du texte est transparent à 80 % (le décor reste bien visible), le texte d'auteur, de chiffres et de date est en gras foncé pour rester lisible.

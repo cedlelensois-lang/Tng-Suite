@@ -3526,20 +3526,20 @@ msgstr "Colour tree: green foliage, brown trunk, roots in the soil and medallion
 msgid "Pochette pleine page (PDF) : arbre aux étiquettes vierges et oiseaux, prairie fleurie"
 msgstr "Full-page cover (PDF): tree with blank ribbons and birds, flowering meadow"
 
-msgid "Pochette pleine page (PDF) : chêne ensoleillé, prairie, texte sur fond blanc flouté"
-msgstr "Full-page cover (PDF): sunlit oak, meadow, text on a blurred white background"
+msgid "Pochette pleine page (PDF) : chêne ensoleillé, prairie, texte sur fond blanc"
+msgstr "Full-page cover (PDF): sunlit oak, meadow, text on a white background"
 
-msgid "Pochette pleine page (PDF) : chêne vert, ciel bleu et ferme, texte sur fond blanc flouté"
-msgstr "Full-page cover (PDF): green oak, blue sky and farmhouse, text on a blurred white background"
+msgid "Pochette pleine page (PDF) : chêne vert, ciel bleu et ferme, texte sur fond blanc"
+msgstr "Full-page cover (PDF): green oak, blue sky and farmhouse, text on a white background"
 
-msgid "Pochette pleine page (PDF) : chêne aux couleurs éclatantes, texte sur fond blanc flouté"
-msgstr "Full-page cover (PDF): vividly coloured oak, text on a blurred white background"
+msgid "Pochette pleine page (PDF) : chêne aux couleurs éclatantes, texte sur fond blanc"
+msgstr "Full-page cover (PDF): vividly coloured oak, text on a white background"
 
-msgid "Pochette pleine page (PDF) : peinture impressionniste, chêne et coquelicots, texte sur fond blanc flouté"
-msgstr "Full-page cover (PDF): impressionist painting, oak and poppies, text on a blurred white background"
+msgid "Pochette pleine page (PDF) : peinture impressionniste, chêne et coquelicots, texte sur fond blanc"
+msgstr "Full-page cover (PDF): impressionist painting, oak and poppies, text on a white background"
 
-msgid "Pochette pleine page (PDF) : chêne et ses racines, campagne, texte sur fond blanc flouté"
-msgstr "Full-page cover (PDF): oak and its roots, countryside, text on a blurred white background"
+msgid "Pochette pleine page (PDF) : chêne et ses racines, campagne, texte sur fond blanc"
+msgstr "Full-page cover (PDF): oak and its roots, countryside, text on a white background"
 
 msgid "Pochette pleine page (PDF) : grand tronc, feuillage pastel et campagne"
 msgstr "Full-page cover (PDF): large trunk, pastel foliage and countryside"

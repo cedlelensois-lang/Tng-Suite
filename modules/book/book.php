@@ -555,11 +555,11 @@ final class TNGBook {
             'page' => 'Pochette pleine page (PDF) : arbre à l’aquarelle sur fond crème, titre dessous',
             'meadow' => 'Pochette pleine page (PDF) : arbre aux étiquettes vierges et oiseaux, prairie fleurie',
             'farm' => 'Pochette pleine page (PDF) : grand tronc, feuillage pastel et campagne',
-            'chene' => 'Pochette pleine page (PDF) : chêne et ses racines, campagne, texte sur fond blanc flouté',
-            'chene2' => 'Pochette pleine page (PDF) : chêne ensoleillé, prairie, texte sur fond blanc flouté',
-            'chene3' => 'Pochette pleine page (PDF) : chêne vert, ciel bleu et ferme, texte sur fond blanc flouté',
-            'chene4' => 'Pochette pleine page (PDF) : chêne aux couleurs éclatantes, texte sur fond blanc flouté',
-            'peinture' => 'Pochette pleine page (PDF) : peinture impressionniste, chêne et coquelicots, texte sur fond blanc flouté',
+            'chene' => 'Pochette pleine page (PDF) : chêne et ses racines, campagne, texte sur fond blanc',
+            'chene2' => 'Pochette pleine page (PDF) : chêne ensoleillé, prairie, texte sur fond blanc',
+            'chene3' => 'Pochette pleine page (PDF) : chêne vert, ciel bleu et ferme, texte sur fond blanc',
+            'chene4' => 'Pochette pleine page (PDF) : chêne aux couleurs éclatantes, texte sur fond blanc',
+            'peinture' => 'Pochette pleine page (PDF) : peinture impressionniste, chêne et coquelicots, texte sur fond blanc',
         ], $o['cover_art'] ?? 'tree', 'Les arbres sont dessinés par le plugin dans la couleur du livre (« en-têtes et liens »). Les pochettes illustrées (oiseaux, campagne, chênes, peinture) sont des illustrations fournies, qui gardent leurs couleurs.');
         echo TNGBook_History::form_row(self::OPT, $o, $admin);
         $fmt = ['html' => 'Page imprimable (Imprimer → Enregistrer en PDF)'];
