@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.8.5
+Stable tag: 2.8.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -82,9 +82,11 @@ Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding`
 
 == Changelog ==
 
-= 2.8.5 =
-* Livre (PDF) : la couverture avec illustration ne déborde plus sur une 2e page quand le titre est long (trois lignes) ; marges de la date et des chiffres réduites.
+= 2.8.6 =
 * Livre : nouvelle couverture « Pochette pleine page » (PDF) : fond crème sur toute la première page, arbre à l'aquarelle qui part du bord gauche, feuilles gris-bleu, titre dessous ; dans les autres formats, l'arbre penché habituel.
+* Livre (PDF) : la couverture avec illustration ne déborde plus sur une 2e page quand le titre est long (trois lignes) ; marges de la date et des chiffres réduites.
+
+= 2.8.5 =
 * Livre (PDF direct) : plus de page blanche entre la table des matières et la première partie (mPDF saute déjà une page après la table des matières) ; le filet sous le titre d'une fiche ne traverse plus la photo (modèle Élégant).
 
 = 2.8.4 =
