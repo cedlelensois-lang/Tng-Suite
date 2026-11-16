@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.17.0
+Stable tag: 2.17.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,7 +53,8 @@ To display charts, graphs and maps, the plugin needs these JavaScript/CSS librar
 * vis-network 9.1.9 (MIT or Apache-2.0) – cdnjs.cloudflare.com – implex module.
 * Leaflet 1.9.4 (BSD-2-Clause) – unpkg.com, and leaflet.heat 0.2.0 – cdnjs.cloudflare.com – heatmap module. Terms: https://unpkg.com/
 * GLightbox 3.3.0 (MIT) – cdn.jsdelivr.net – media gallery module. Privacy: https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net
-* The map module displays tiles from a tile provider chosen in its settings (OpenStreetMap or another provider), which receives the visitor's IP address and the tile coordinates being viewed.
+* The map module displays tiles from a tile provider chosen in its settings (Esri by default, or OpenStreetMap, OpenTopoMap, etc.), which receives the visitor's IP address and the tile coordinates being viewed.
+* Automatic updates: the site periodically contacts the GitHub API (api.github.com) to look for a new release of this plugin (repository `cedlelensois-lang/Tng-Suite`). Only the request itself (server IP, WordPress and plugin version) reaches GitHub; nothing about your visitors or your TNG data. Terms: https://docs.github.com/site-policy/github-terms/github-terms-of-service – Privacy: https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement. To disable: `define( 'TNGSUITE_GITHUB_REPO', '' );` in wp-config.php.
 
 The vis-timeline library (8.5.4, MIT or Apache-2.0) is bundled in `modules/timeline/assets/` and is not loaded from any external site.
 
@@ -81,6 +82,11 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.17.1 =
+* Documentation entièrement revue en français et en anglais : une page par menu avec tous les réglages, un tableau des attributs de chaque shortcode (dont les 11 statistiques), référence rapide des shortcodes, rubrique confidentialité et sécurité ; correction de `[tng_stat stat="…"]` (l'exemple indiquait `type`), de `[liste_enfants_tng]` (identifiant de famille) et des guides texte (numéros de version obsolètes). README GitHub complété et fichier SECURITY.md ajouté ; le zip des Releases n'embarque plus le dossier docs/ (5 Mo de captures).
+* Désinstallation : supprime aussi les options de la fiche (`tngfg_options`), de l'éventail (`tngfan_gen_saved`), des listes de faits historiques du livre, le verrou de purge du cache du livre et l'état du vérificateur de mises à jour GitHub.
+* Conformité : texte de confidentialité suggéré dans Réglages > Confidentialité (français / anglais) ; section « External services » complétée (vérification des mises à jour auprès de l'API GitHub, fond de carte Esri par défaut).
 
 = 2.17.0 =
 * Livre : deux ornements dans le style de Monet, dessinés par le plugin : l'illustration de couverture « Nymphéas et coquelicots » (nymphéas, galettes, coquelicots et roseaux au-dessus et au-dessous du titre, rides dans la couleur du livre) et le cadre de page « Cadre fleuri » (filet fin et coins de coquelicots et de feuillages ; double filet dans Word et OpenDocument).

@@ -1,8 +1,7 @@
-TNG SUITE 1.28.0 – USER GUIDE
+TNG SUITE – USER GUIDE
+======================
 
-============================
-
-(Version française : LISEZ-MOI.txt. The WordPress.org description is in readme.txt.)
+(Version française : LISEZ-MOI.txt. Version number and changelog: readme.txt. Module-by-module guide: docs/en/README.md on GitHub.)
 
 One plugin instead of eleven:
 

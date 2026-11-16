@@ -1,11 +1,10 @@
 # Nuage de noms & anniversaires
 
-Nuage des noms de famille et anniversaires du jour (naissances, mariages, décès). Module sans réglages : la page d’administration est une aide.
+Nuage des noms de famille, anniversaires du jour (naissances, mariages, décès) et dernières mises à jour. Module sans réglages propres : la page d’administration est une aide. Les vivants et les personnes privées sont masqués par défaut.
 
 ## Dans l’administration
 
-Menu **TNG Suite > Médias & widgets > Nuage de noms & anniversaires**.
-
+Menu **TNG Suite > Médias & widgets**, section **Nuage de noms & anniversaires**.
 
 ![Nuage de noms & anniversaires](../images/Name%20cloud%20%26%20birthdays.png)
 
@@ -15,31 +14,62 @@ Menu **TNG Suite > Médias & widgets > Nuage de noms & anniversaires**.
 [tng_name_cloud limit="50"]
 ```
 
+Nuage des noms de famille les plus fréquents.
+
 ```
 [tng_births_today]
 ```
+
+Naissances survenues ce jour-ci les années passées.
 
 ```
 [tng_marriages_today]
 ```
 
+Mariages de ce jour.
+
 ```
 [tng_deaths_today]
 ```
 
+Décès de ce jour.
+
 ```
-[tng_recent_updates limit="10"]
+[tng_recent_updates limit="10" date="yes" link="yes" title="Nouveautés"]
 ```
 
-Derniers individus mis à jour dans TNG (nom en gras, date de dernière modification à droite), le plus récent en premier. Paramètres : `limit` (1 à 100, défaut 10), `tree` (arbre TNG, par défaut celui des réglages communs), `date` (`yes`/`no`), `date_format` (codes PHP, par exemple `d/m/Y` ou `j F Y`), `link` (`yes`/`no`, lien vers la fiche TNG) et `title` (titre au-dessus de la liste). Les personnes vivantes ou privées sont exclues par défaut ; la liste est mise en cache une heure.
+Dernières fiches modifiées.
+
+### `[tng_name_cloud]`
+
+| Attribut | Valeurs | Défaut | Rôle |
+|---|---|---|---|
+| limit | 1 – 200 | 50 | Nombre de noms. |
+
+### `[tng_recent_updates]`
+
+| Attribut | Valeurs | Défaut | Rôle |
+|---|---|---|---|
+| limit | 1 – 100 | 10 | Nombre de fiches. |
+| tree | {'fr': 'identifiant d’arbre', 'en': 'tree ID'} | {'fr': 'arbre de Général', 'en': 'tree from General'} | Arbre (gedcom). |
+| date | yes / no | yes | Afficher la date de modification. |
+| date_format | {'fr': 'format PHP', 'en': 'PHP format'} | {'fr': 'format WordPress', 'en': 'WordPress format'} | Format de la date. |
+| link | yes / no | yes | Lien vers la fiche TNG. |
+| title | {'fr': 'texte', 'en': 'text'} | {'fr': '(vide)', 'en': '(empty)'} | Titre affiché au-dessus de la liste. |
 
 ## Utilisation
 
-1. Collez le shortcode voulu dans une page ou un widget.
+1. Collez le shortcode voulu dans une page, un article ou un widget « Shortcode ».
 
 ## Résultat sur le site
 
 ![Nuage de noms & anniversaires](../images/Exemple_Name%20cloud%20%26%20birthdays.png)
+
+## Remarques
+
+- Les personnes vivantes ou privées suivent le réglage de **Général > Modules** (masquées par défaut, recommandé pour le RGPD).
+- Les listes du jour sont mises en cache jusqu’à 24 h ; les mises à jour récentes moins d’une heure.
+- Les résultats sont mis en cache ; après une modification dans TNG, utilisez **Général > Maintenance > Vider les caches** pour les voir tout de suite.
 
 ---
 [← Guide des modules](README.md)

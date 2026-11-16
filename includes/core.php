@@ -830,3 +830,31 @@ function tngs_register_chartjs() {
     }
     return 'tngs-chartjs';
 }
+
+/* ------------------------------------------------------------------
+ * Politique de confidentialité (Réglages > Confidentialité > « Texte de politique suggéré »)
+ * ------------------------------------------------------------------ */
+add_action( 'admin_init', function () {
+    if ( ! function_exists( 'wp_add_privacy_policy_content' ) ) {
+        return;
+    }
+    $fr = 'fr' === ( function_exists( 'tngs_lang' ) ? tngs_lang() : 'fr' );
+    if ( $fr ) {
+        $txt = '<h2>TNG Suite</h2>'
+            . '<p class="privacy-policy-tutorial">Ce texte est une suggestion : adaptez-le à votre site.</p>'
+            . '<p><strong>Ce que le plugin affiche.</strong> TNG Suite lit la base de données de votre site TNG (généalogie) et affiche des personnes, des dates, des lieux, des photos et des statistiques. Par défaut, les personnes vivantes et les personnes marquées « privées » sont masquées ; vous restez responsable des choix faits dans Général > Modules et dans chaque module.</p>'
+            . '<p><strong>Données des visiteurs.</strong> Le plugin n\'enregistre aucune donnée personnelle sur vos visiteurs (pas de cookie, pas de statistiques de visite ; seul le choix de langue du panneau « fiche » est mémorisé dans le navigateur du visiteur, via localStorage) et n\'envoie aucune donnée à l\'auteur du plugin.</p>'
+            . '<p><strong>Services tiers.</strong> Pour afficher les graphiques, les réseaux et les cartes, le navigateur du visiteur peut charger des bibliothèques depuis un CDN public (cdnjs.cloudflare.com, unpkg.com, cdn.jsdelivr.net), sauf si elles ont été copiées dans le dossier libs/ du plugin. La carte de chaleur charge des tuiles de carte auprès du fournisseur choisi dans ses réglages (Esri, OpenStreetMap, OpenTopoMap…) : ce fournisseur reçoit l\'adresse IP du visiteur.</p>'
+            . '<p><strong>Mises à jour.</strong> Le site vérifie périodiquement les nouvelles versions du plugin auprès de GitHub (api.github.com) ; aucune donnée sur vos visiteurs n\'est transmise.</p>'
+            . '<p><strong>Livre généalogique.</strong> Les PDF, DOCX et ODT générés contiennent des données de votre base TNG ; les fichiers du livre automatique sont enregistrés dans un dossier protégé de votre site.</p>';
+    } else {
+        $txt = '<h2>TNG Suite</h2>'
+            . '<p class="privacy-policy-tutorial">This text is a suggestion: adapt it to your site.</p>'
+            . '<p><strong>What the plugin displays.</strong> TNG Suite reads the database of your TNG (genealogy) site and displays people, dates, places, photos and statistics. By default living people and people flagged “private” are hidden; you remain responsible for the choices made in General > Modules and in each module.</p>'
+            . '<p><strong>Visitor data.</strong> The plugin stores no personal data about your visitors (no cookie, no visit statistics; only the language choice of the “fiche” panel is remembered in the visitor\'s browser, via localStorage) and sends no data to the plugin author.</p>'
+            . '<p><strong>Third-party services.</strong> To display charts, networks and maps, the visitor\'s browser may load libraries from a public CDN (cdnjs.cloudflare.com, unpkg.com, cdn.jsdelivr.net), unless they have been copied into the plugin\'s libs/ folder. The heatmap loads map tiles from the provider chosen in its settings (Esri, OpenStreetMap, OpenTopoMap…): that provider receives the visitor\'s IP address.</p>'
+            . '<p><strong>Updates.</strong> The site periodically checks GitHub (api.github.com) for new plugin versions; no data about your visitors is sent.</p>'
+            . '<p><strong>Genealogy book.</strong> Generated PDF, DOCX and ODT files contain data from your TNG database; files from the automatic book are saved in a protected folder of your site.</p>';
+    }
+    wp_add_privacy_policy_content( 'TNG Suite', wp_kses_post( wpautop( $txt, false ) ) );
+} );

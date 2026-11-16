@@ -33,3 +33,30 @@ The **TNG Suite** menu has five entries: **General** and four families. Each for
   - [Media gallery](gallery.md)
   - [Name cloud & birthdays](extra.md)
   - [Random individual](random.md)
+
+## Shortcodes quick reference
+
+| Module | Shortcodes |
+|---|---|
+| [Trees & descendants](trees.md) | `[arbre_tng]` `[enfants_tng]` `[patronyme_tng]` `[liste_enfants_tng]` `[stats_descendants_tng]` `[lien_fiche_tng]` |
+| [Record link button](link.md) | `[tng_link]` |
+| [Timeline](timeline.md) | `[tng_timeline]` |
+| [Fan / kinship wheel](fan.md) | `[tng_fan]` `[tng_roue]` |
+| [Statistics & charts](stats.md) | `[tng_stat stat="…"]` and `[tng_stat_centenaires]` `[tng_stat_genre]` `[tng_stat_vivants]` `[tng_stat_age_union]` `[tng_stat_esperance]` `[tng_stat_pyramide]` `[tng_stat_distance]` `[tng_stat_demi_siecle]` `[tng_stat_mois]` `[tng_stat_villes]` `[tng_stat_metiers]` |
+| [Places heatmap](heatmap.md) | `[tng_heatmap]` |
+| [Implex & inbreeding](implexe.md) | `[tng_implexe]` `[tng_consanguinite]` |
+| [Family book](book.md) | `[tng_book]` |
+| [Individual sheet & document lists](fiche.md) | `[tng_listes]` `[tng_fiche]` |
+| [Media gallery](gallery.md) | `[tng_media_gallery]` |
+| [Name cloud & birthdays](extra.md) | `[tng_name_cloud]` `[tng_births_today]` `[tng_marriages_today]` `[tng_deaths_today]` `[tng_recent_updates]` |
+| [Random individual](random.md) | `[tng_random_individual]` |
+
+## Privacy and security at a glance
+
+- By default, **living and private people are hidden** in every module (shared setting in General, adjustable per module). “Random individual” and the birthdays stay hidden by default.
+- The plugin **reads** your TNG database: use a read-only MySQL account. A password entered in the plugin is encrypted; with `wp-config.php`, nothing is stored.
+- No cookie, no visit statistics, no data sent to the author. Charts, networks and maps may load libraries from a public CDN (local copy possible in `libs/`) and map tiles from the chosen provider; the site queries GitHub for updates (can be disabled). Details are in `readme.txt` (“External services”) and in the suggested privacy text in WordPress.
+- Admin actions are protected (`manage_options` capability, nonces); automatic-book downloads are protected; uninstalling removes the plugin’s settings, caches and tasks, never your TNG data.
+
+---
+[Back to top](#tng-suite--module-guide)

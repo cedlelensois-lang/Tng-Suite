@@ -25,8 +25,10 @@ $options = array(
     'tri_photo_dir', 'tri_cache_minutes', 'tri_show_photo', 'tri_show_name', 'tri_show_dates', 'tri_avatar', 'tri_cache_version',
     // Extra
     'tng_exsc_gen',
+    // Fiche généalogique (bouton / panneau)
+    'tngfg_options',
     // Éventail
-    'tngfan_options',
+    'tngfan_options', 'tngfan_gen_saved',
     // Statistiques
     'tngstats_options',
     // Implexe
@@ -39,6 +41,8 @@ $options = array(
     'tngbook_auto_jobs',
     'tngbook_auto_key',
     'tngbook_bg_job',
+    'tngbook_history_lists',
+    'tngbook_history_hidden',
     // Migration
     'tngs_migrated',
 );
@@ -46,12 +50,14 @@ foreach ( $options as $option ) {
     delete_option( $option );
 }
 
-foreach ( array( 'tngs_db_down', 'tng_heatmap_data_v2', 'tng_heatmap_recent_error', 'tng_heatmap_build_lock', 'tngbook_auto_lock', 'tngbook_auto_why' ) as $transient ) {
+foreach ( array( 'tngs_db_down', 'tng_heatmap_data_v2', 'tng_heatmap_recent_error', 'tng_heatmap_build_lock', 'tngbook_auto_lock', 'tngbook_auto_why', 'tngbook_cache_purge' ) as $transient ) {
     delete_transient( $transient );
 }
 
 wp_clear_scheduled_hook( 'tng_heatmap_cron_refresh' );
 wp_clear_scheduled_hook( 'tngbook_auto_tick' );
+wp_clear_scheduled_hook( 'puc_cron_check_updates-tng-suite' );
+delete_site_option( 'external_updates-tng-suite' );   // état du vérificateur de mises à jour GitHub
 if ( function_exists( 'wp_unschedule_hook' ) ) {
     wp_unschedule_hook( 'tngbook_bg_run' );
 }

@@ -1,8 +1,10 @@
-TNG SUITE 1.28.0
+TNG SUITE – GUIDE D'UTILISATION
+===============================
 
-===============
+(English version: USER-GUIDE.txt. Numéro de version et historique : readme.txt. Guide module par module : docs/fr/README.md sur GitHub.)
 
-Un seul plugin à la place des dix :
+
+Un seul plugin à la place des onze :
 
   Ancien plugin                          Module TNG Suite     Shortcodes
   -------------------------------------  -------------------  ----------------------------------------------

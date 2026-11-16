@@ -29,6 +29,13 @@ Les réglages communs (connexion à la base TNG, préfixe, adresse de TNG, vivan
 2. Dans WordPress : Extensions → Ajouter → Téléverser une extension.
 3. Réglez la connexion à la base TNG dans **TNG Suite → Général**.
 
+## Confidentialité et sécurité
+
+- Les **personnes vivantes et privées sont masquées par défaut** (réglage commun dans Général, modifiable module par module).
+- Le plugin ne fait que **lire** votre base TNG : utilisez un compte MySQL en lecture seule. Le mot de passe, s'il est saisi dans le plugin, est chiffré ; avec `wp-config.php`, rien n'est stocké.
+- Aucun cookie ni statistique de visite ; rien n'est envoyé à l'auteur. Services tiers possibles (CDN de bibliothèques, tuiles de carte, GitHub pour les mises à jour) : voir la rubrique « External services » de [readme.txt](readme.txt).
+- Signaler une faille de sécurité : ouvrez une [alerte de sécurité privée](../../security/advisories/new) sur ce dépôt plutôt qu'un ticket public.
+
 ## Mises à jour automatiques
 
 Elles fonctionnent d'office : WordPress affiche « mise à jour disponible » dès qu'une nouvelle Release est publiée sur ce dépôt (public). Rien à ajouter dans `wp-config.php`.
@@ -43,13 +50,13 @@ define( 'TNGSUITE_GITHUB_REPO', '' );                                           
 ## Publier une version (mainteneur)
 
 1. Mettre à jour le numéro de version dans `tng-suite.php` (en-tête et `TNGSUITE_VERSION`) et dans `readme.txt` (`Stable tag`, changelog).
-2. Pousser sur `main`, puis créer une **Release** sur GitHub avec l'étiquette `vX.Y.Z` (par exemple `v2.9.1`), sans « pre-release » pour une version stable.
+2. Pousser sur `main`, puis créer une **Release** sur GitHub avec l'étiquette `vX.Y.Z` (par exemple `v2.18.0`), sans « pre-release » pour une version stable.
 3. L'action GitHub (`.github/workflows/release.yml`) construit `tng-suite.zip` (avec mPDF et les bibliothèques JavaScript) et l'ajoute à la Release.
 
 ## Notes
 
 - Le nom « TNG » désigne un logiciel tiers ; ce projet n'est pas affilié à son auteur.
-- Bibliothèques tierces : voir `libs/LISEZ-MOI.txt`.
+- Bibliothèques tierces : voir `libs/LISEZ-MOI.txt`. Le moteur PDF mPDF (GPL-2.0-only) est fourni dans `modules/book/vendor/` avec ses licences.
 
 ---
 
@@ -82,6 +89,13 @@ Shared settings (TNG database connection, table prefix, TNG URL, living / privat
 2. In WordPress: Plugins → Add New → Upload Plugin.
 3. Set the TNG database connection in **TNG Suite → General**.
 
+### Privacy and security
+
+- **Living and private people are hidden by default** (shared setting in General, adjustable per module).
+- The plugin only **reads** your TNG database: use a read-only MySQL account. A password entered in the plugin is encrypted; with `wp-config.php`, nothing is stored.
+- No cookie and no visit statistics; nothing is sent to the author. Possible third-party services (library CDNs, map tiles, GitHub for updates): see the “External services” section of [readme.txt](readme.txt).
+- To report a security issue, open a [private security advisory](../../security/advisories/new) on this repository rather than a public issue.
+
 ### Automatic updates
 
 They work out of the box: WordPress shows “update available” as soon as a new Release is published on this (public) repository. Nothing to add to `wp-config.php`.
@@ -96,4 +110,4 @@ define( 'TNGSUITE_GITHUB_REPO', '' );                                           
 ### Notes
 
 - “TNG” is the name of third-party software; this project is not affiliated with its author.
-- Third-party libraries: see `libs/LISEZ-MOI.txt`.
+- Third-party libraries: see `libs/LISEZ-MOI.txt`. The mPDF PDF engine (GPL-2.0-only) is bundled in `modules/book/vendor/` with its licences.

@@ -1,28 +1,57 @@
 # Bouton vers la fiche
 
-Un bouton qui renvoie vers la fiche d’une personne dans TNG. Réglages : onglet **Arbres & visualisations**, section **Bouton vers la fiche** ; activé avec le module Arbres & descendance.
+Un bouton (emoji + texte) qui renvoie vers la fiche d’une personne dans TNG. Activé avec le module Arbres & descendance.
 
 ## Dans l’administration
 
-Menu **TNG Suite > Arbres & visualisations > Bouton vers la fiche**.
-
+Menu **TNG Suite > Arbres & visualisations**, section **Bouton vers la fiche**.
 
 ![Bouton vers la fiche](../images/record%20link.png)
+
+## Réglages du module
+
+| Réglage | Effet |
+|---|---|
+| Emoji | Symbole affiché avant le texte. |
+| Texte du bouton | Libellé par défaut (modifiable par bouton avec `text`). |
+| Couleur de fond / du texte | Apparence normale du bouton. |
+| Couleur au survol / texte au survol | Apparence quand la souris passe dessus. |
+| Aperçu | Affiche le bouton en direct pendant le réglage. |
 
 ## Shortcodes
 
 ```
-[tng_link id="I1" text="Voir la fiche"]
+[tng_link id="I12"]
 ```
+
+Bouton vers la fiche de la personne I12.
+
+```
+[tng_link id="I12" tree="monarbre" text="Voir la fiche"]
+```
+
+Avec un arbre précis et un texte personnalisé.
+
+### Attributs
+
+| Attribut | Valeurs | Défaut | Rôle |
+|---|---|---|---|
+| id | I12 | {'fr': '(vide : rien)', 'en': '(empty: nothing)'} | Identifiant TNG de la personne. |
+| tree | {'fr': 'identifiant d’arbre', 'en': 'tree ID'} | {'fr': 'arbre de Général', 'en': 'tree from General'} | Arbre (gedcom) de la personne. |
+| text | {'fr': 'texte', 'en': 'text'} | {'fr': 'texte des réglages', 'en': 'text from settings'} | Libellé de ce bouton. |
 
 ## Utilisation
 
-1. Réglez le style du bouton (texte, couleurs) sur la page du module.
-2. Collez le shortcode avec l’id de la personne ; l’attribut tree précise l’arbre si besoin, text change le libellé.
+1. Réglez le style du bouton (emoji, texte, couleurs) dans la section du module.
+2. Collez le shortcode avec l’identifiant de la personne.
 
 ## Résultat sur le site
 
 ![Bouton vers la fiche](../images/Exemple%20record%20link.png)
+
+## Remarques
+
+- L’URL de TNG se règle dans **Général**.
 
 ---
 [← Guide des modules](README.md)
