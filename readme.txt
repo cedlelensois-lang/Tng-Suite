@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.19.2
+Stable tag: 2.19.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -84,12 +84,10 @@ Only the plugin's own settings, caches, scheduled task and the tables it created
 
 == Changelog ==
 
-= 2.19.2 =
-* Cohérence des données : filtre par anomalie (liste des contrôles groupée par type, avec le nombre de cas), colonne « Anomalie » (intitulé du contrôle) et colonne « Fiches » triables, colonne « Détail » pour le message ; les liens des fiches ouvrent la page d'édition de TNG (admin_editperson.php / admin_editfamily.php) ; l'export CSV reprend l'intitulé de l'anomalie.
-* Cohérence des données : le chiffre dans un nom et le point d'interrogation sont deux contrôles distincts. Un nom ou un prénom réduit à « ? » ou placé entre crochets (« [Marie] »), conventions généalogiques d'un nom inconnu ou supposé, n'est plus signalé ; un « ? » mêlé à des lettres (« Dup?nt ») est signalé en information comme lecture incertaine.
-
 = 2.19.1 =
 * Livre (PDF) : avec une pochette pleine page à panneau en bas (chênes et peinture) et un titre long, la ligne « Document généré le… » passait seule sur une page presque blanche ; le titre long est désormais réduit pour tenir sur deux lignes dans le panneau.
+* Cohérence des données : filtre par anomalie (liste des contrôles groupée par type, avec le nombre de cas), colonne « Anomalie » (intitulé du contrôle) et colonne « Fiches » triables, colonne « Détail » pour le message ; les liens des fiches ouvrent la page d'édition de TNG (admin_editperson.php / admin_editfamily.php) ; l'export CSV reprend l'intitulé de l'anomalie.
+* Cohérence des données : le chiffre dans un nom et le point d'interrogation sont deux contrôles distincts. Un nom ou un prénom réduit à « ? » ou placé entre crochets (« [Marie] »), conventions généalogiques d'un nom inconnu ou supposé, n'est plus signalé ; un « ? » mêlé à des lettres (« Dup?nt ») est signalé en information comme lecture incertaine.
 
 = 2.19.0 =
 * Nouveau module « Cohérence des données » (TNG Suite > Analyses, réservé aux administrateurs, sans shortcode) : contrôle en lecture seule de l'arbre TNG. Dates impossibles ou incohérentes (naissance après le décès, enfant né après la mort de la mère ou plus de 9 mois après celle du père, mariage hors de la vie des époux, âges au mariage et à la naissance des enfants, personne « vivante » trop âgée…), sexe incompatible avec le rôle de père ou de mère ou avec le prénom, structure des familles (boucles d'ascendance, enfant de plusieurs familles, couples en double, références à des personnes absentes), noms mal saisis, lieux écrits de plusieurs façons, et doublons possibles avec un score de probabilité triable. Seuils réglables, anomalies ignorables et restaurables, export CSV, lancement manuel par lots avec barre de progression (adapté aux grands arbres), résultats conservés jusqu'à la prochaine analyse. Rien n'est écrit dans la base TNG ; les résultats sont stockés dans deux tables de la base WordPress, supprimées à la désinstallation.
