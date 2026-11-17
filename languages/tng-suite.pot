@@ -4354,6 +4354,9 @@ msgstr ""
 msgid "Détail"
 msgstr ""
 
+msgid "Ouvrir la fiche en édition dans TNG"
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""

@@ -85,7 +85,7 @@ Only the plugin's own settings, caches, scheduled task and the tables it created
 == Changelog ==
 
 = 2.19.2 =
-* Cohérence des données : filtre par anomalie (liste des contrôles groupée par type, avec le nombre de cas), colonne « Anomalie » (intitulé du contrôle) et colonne « Fiches » triables, colonne « Détail » pour le message ; l'export CSV reprend l'intitulé de l'anomalie.
+* Cohérence des données : filtre par anomalie (liste des contrôles groupée par type, avec le nombre de cas), colonne « Anomalie » (intitulé du contrôle) et colonne « Fiches » triables, colonne « Détail » pour le message ; les liens des fiches ouvrent la page d'édition de TNG (admin_editperson.php / admin_editfamily.php) ; l'export CSV reprend l'intitulé de l'anomalie.
 * Cohérence des données : le chiffre dans un nom et le point d'interrogation sont deux contrôles distincts. Un nom ou un prénom réduit à « ? » ou placé entre crochets (« [Marie] »), conventions généalogiques d'un nom inconnu ou supposé, n'est plus signalé ; un « ? » mêlé à des lettres (« Dup?nt ») est signalé en information comme lecture incertaine.
 
 = 2.19.1 =

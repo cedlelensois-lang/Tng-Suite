@@ -4354,6 +4354,9 @@ msgstr "Place written in several ways"
 msgid "Détail"
 msgstr "Detail"
 
+msgid "Ouvrir la fiche en édition dans TNG"
+msgstr "Open the record in edit mode in TNG"
+
 msgctxt "js"
 msgid " Page "
 msgstr " Page "

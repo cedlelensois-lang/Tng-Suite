@@ -141,9 +141,10 @@ class TNGCoh_Admin {
 			return '<code>' . esc_html( $id ) . '</code>';
 		}
 		$u = 'F' === $kind
-			? add_query_arg( array( 'familyID' => $id, 'tree' => $tree ), $base . 'familygroup.php' )
-			: add_query_arg( array( 'personID' => $id, 'tree' => $tree ), $base . 'getperson.php' );
-		return '<a href="' . esc_url( $u ) . '" target="_blank" rel="noopener noreferrer"><code>' . esc_html( $id ) . '</code></a>';
+			? add_query_arg( array( 'familyID' => $id, 'tree' => $tree ), $base . 'admin_editfamily.php' )
+			: add_query_arg( array( 'personID' => $id, 'tree' => $tree ), $base . 'admin_editperson.php' );
+		// Page d'édition de TNG (connexion à l'administration de TNG requise), pour corriger tout de suite l'anomalie.
+		return '<a href="' . esc_url( $u ) . '" target="_blank" rel="noopener noreferrer" title="' . esc_attr( tngs_t( 'Ouvrir la fiche en édition dans TNG' ) ) . '"><code>' . esc_html( $id ) . '</code></a>';
 	}
 
 	private static function message( array $row ) {

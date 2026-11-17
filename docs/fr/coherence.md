@@ -1,6 +1,6 @@
 # Cohérence des données
 
-Contrôle de votre arbre TNG : dates impossibles ou incohérentes, âges, sexe, structure des familles, noms mal saisis, lieux écrits de plusieurs façons et **doublons possibles** (avec un score de probabilité). Module réservé aux administrateurs, **sans shortcode** et en **lecture seule** : rien n’est modifié dans TNG, chaque anomalie renvoie vers la fiche TNG pour que vous la corrigiez vous-même.
+Contrôle de votre arbre TNG : dates impossibles ou incohérentes, âges, sexe, structure des familles, noms mal saisis, lieux écrits de plusieurs façons et **doublons possibles** (avec un score de probabilité). Module réservé aux administrateurs, **sans shortcode** et en **lecture seule** : rien n’est modifié dans TNG, chaque anomalie renvoie vers la page d’édition de la fiche dans TNG pour que vous la corrigiez vous-même.
 
 ## Dans l’administration
 
@@ -9,7 +9,7 @@ Menu **TNG Suite > Analyses**, sections **Cohérence : contrôle des données** 
 ## Utilisation
 
 1. Choisissez l’**arbre**, puis cliquez sur **Lancer l’analyse**. L’analyse se fait par lots avec une barre de progression (personnes, familles, boucles d’ascendance, enfants de plusieurs familles, couples en double, doublons, lieux) : elle convient aux grands arbres et peut durer plusieurs minutes. Vous pouvez l’**annuler** (les résultats sont alors partiels) ; si la page est fermée en cours de route, un bouton **Reprendre** apparaît au retour.
-2. Les anomalies s’affichent dans un tableau : **gravité** (Erreur, Avertissement, Information), **type**, **anomalie** (l’intitulé du contrôle, par exemple « Décès avant la naissance »), **détail** (le message avec les noms et dates), **fiches** concernées (liens vers TNG, dans un nouvel onglet) et **score** pour les doublons. Les colonnes Gravité, Type, Anomalie, Fiches et Score sont **triables** ; la liste se filtre par type, par **anomalie** (liste groupée par type, avec le nombre de cas), par gravité et par texte (nom, identifiant…). Le CSV exporté respecte les filtres et le tri.
+2. Les anomalies s’affichent dans un tableau : **gravité** (Erreur, Avertissement, Information), **type**, **anomalie** (l’intitulé du contrôle, par exemple « Décès avant la naissance »), **détail** (le message avec les noms et dates), **fiches** concernées (un clic ouvre la fiche **en édition** dans TNG, dans un nouvel onglet ; il faut être connecté à l’administration de TNG) et **score** pour les doublons. Les colonnes Gravité, Type, Anomalie, Fiches et Score sont **triables** ; la liste se filtre par type, par **anomalie** (liste groupée par type, avec le nombre de cas), par gravité et par texte (nom, identifiant…). Le CSV exporté respecte les filtres et le tri.
 3. Corrigez dans TNG, puis relancez l’analyse pour mettre les résultats à jour.
 4. **Ignorer cette anomalie** retire une fausse alerte de la liste ; elle reste ignorée aux analyses suivantes (même contrôle, mêmes personnes ou famille). La section **Seuils et anomalies ignorées** les liste et permet de les **restaurer** une à une ou toutes ensemble.
 5. **Exporter en CSV** télécharge la liste filtrée (séparateur point-virgule, UTF-8 avec BOM : s’ouvre directement dans Excel ou LibreOffice).

@@ -1460,4 +1460,5 @@ return array(
 	'Point d’interrogation dans le nom' => 'Question mark in the name',
 	'Lieu écrit de plusieurs façons' => 'Place written in several ways',
 	'Détail' => 'Detail',
+	'Ouvrir la fiche en édition dans TNG' => 'Open the record in edit mode in TNG',
 );

@@ -1,6 +1,6 @@
 # Data consistency
 
-Check of your TNG tree: impossible or inconsistent dates, ages, sex, family structure, badly typed names, places written in several ways and **possible duplicates** (with a probability score). The module is reserved for administrators, has **no shortcode** and is **read-only**: nothing is changed in TNG, each anomaly links to the TNG record so that you can correct it yourself.
+Check of your TNG tree: impossible or inconsistent dates, ages, sex, family structure, badly typed names, places written in several ways and **possible duplicates** (with a probability score). The module is reserved for administrators, has **no shortcode** and is **read-only**: nothing is changed in TNG, each anomaly links to the record’s edit page in TNG so that you can correct it yourself.
 
 ## In the administration
 
@@ -9,7 +9,7 @@ Menu **TNG Suite > Analyses**, sections **Consistency: data check** and **Consis
 ## Usage
 
 1. Choose the **tree**, then click **Start the analysis**. The analysis runs in batches with a progress bar (people, families, ancestry loops, children of several families, duplicate couples, duplicates, places): it suits large trees and can take several minutes. You can **cancel** it (the results are then partial); if the page is closed midway, a **Resume** button appears when you come back.
-2. Anomalies are shown in a table: **severity** (Error, Warning, Information), **type**, **anomaly** (the title of the check, for example “Death before birth”), **detail** (the message with names and dates), the **records** concerned (links to TNG, opened in a new tab) and the **score** for duplicates. The Severity, Type, Anomaly, Records and Score columns are **sortable**; the list can be filtered by type, by **anomaly** (list grouped by type, with the number of cases), by severity and by text (name, ID…). The exported CSV follows the filters and the sort order.
+2. Anomalies are shown in a table: **severity** (Error, Warning, Information), **type**, **anomaly** (the title of the check, for example “Death before birth”), **detail** (the message with names and dates), the **records** concerned (a click opens the record **in edit mode** in TNG, in a new tab; you must be logged in to the TNG administration) and the **score** for duplicates. The Severity, Type, Anomaly, Records and Score columns are **sortable**; the list can be filtered by type, by **anomaly** (list grouped by type, with the number of cases), by severity and by text (name, ID…). The exported CSV follows the filters and the sort order.
 3. Correct in TNG, then run the analysis again to update the results.
 4. **Ignore this anomaly** removes a false alarm from the list; it stays ignored in later analyses (same check, same people or family). The **Thresholds and ignored anomalies** section lists them and lets you **restore** them one by one or all at once.
 5. **Export as CSV** downloads the filtered list (semicolon separator, UTF-8 with BOM: opens directly in Excel or LibreOffice).
