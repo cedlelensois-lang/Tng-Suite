@@ -129,6 +129,9 @@ class TNGCoh_Store {
 		if ( ! empty( $f['cat'] ) && isset( TNGCoh_Rules::cats()[ $f['cat'] ] ) ) {
 			$w[] = $wpdb->prepare( 'cat = %s', $f['cat'] );
 		}
+		if ( ! empty( $f['code'] ) && isset( TNGCoh_Rules::rules()[ $f['code'] ] ) ) {
+			$w[] = $wpdb->prepare( 'code = %s', $f['code'] );
+		}
 		if ( isset( $f['sev'] ) && '' !== $f['sev'] && in_array( (int) $f['sev'], array( 0, 1, 2 ), true ) ) {
 			$w[] = $wpdb->prepare( 'sev = %d', (int) $f['sev'] );
 		}
@@ -182,6 +185,18 @@ class TNGCoh_Store {
 		$r   = $wpdb->get_results( $wpdb->prepare( "SELECT sev, COUNT(*) n FROM {$t} WHERE tree = %s AND ign = 0 GROUP BY sev", $tree ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		foreach ( (array) $r as $x ) {
 			$out[ (int) $x['sev'] ] = (int) $x['n'];
+		}
+		return $out;
+	}
+
+	/** Effectifs par contrôle (hors anomalies ignorées) : [ code => n ]. */
+	public static function code_counts( $tree ) {
+		global $wpdb;
+		$t   = self::table( 'res' );
+		$out = array();
+		$r   = $wpdb->get_results( $wpdb->prepare( "SELECT code, COUNT(*) n FROM {$t} WHERE tree = %s AND ign = 0 GROUP BY code", $tree ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		foreach ( (array) $r as $x ) {
+			$out[ (string) $x['code'] ] = (int) $x['n'];
 		}
 		return $out;
 	}

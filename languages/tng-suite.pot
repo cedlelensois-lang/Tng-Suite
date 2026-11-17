@@ -4231,6 +4231,129 @@ msgstr ""
 msgid "Point d’interrogation dans le nom (lecture incertaine) : « {txt} »"
 msgstr ""
 
+msgid "Date impossible"
+msgstr ""
+
+msgid "Date non reconnue"
+msgstr ""
+
+msgid "Date dans le futur"
+msgstr ""
+
+msgid "Décès avant la naissance"
+msgstr ""
+
+msgid "Baptême avant la naissance"
+msgstr ""
+
+msgid "Sépulture avant le décès"
+msgstr ""
+
+msgid "Âge au décès excessif"
+msgstr ""
+
+msgid "Personne « vivante » trop âgée"
+msgstr ""
+
+msgid "Personne « vivante » avec un décès"
+msgstr ""
+
+msgid "Mariage avant la naissance d’un époux"
+msgstr ""
+
+msgid "Mariage après le décès d’un époux"
+msgstr ""
+
+msgid "Âge trop jeune au mariage"
+msgstr ""
+
+msgid "Enfant né avant son parent"
+msgstr ""
+
+msgid "Enfant né après le décès de sa mère"
+msgstr ""
+
+msgid "Enfant né longtemps après le décès du père"
+msgstr ""
+
+msgid "Âge de la mère à la naissance"
+msgstr ""
+
+msgid "Âge du père à la naissance"
+msgstr ""
+
+msgid "Divorce avant le mariage"
+msgstr ""
+
+msgid "Père de sexe féminin"
+msgstr ""
+
+msgid "Mère de sexe masculin"
+msgstr ""
+
+msgid "Sexe inconnu avec enfants"
+msgstr ""
+
+msgid "Couple de même sexe"
+msgstr ""
+
+msgid "Prénom du sexe opposé"
+msgstr ""
+
+msgid "Doublon possible"
+msgstr ""
+
+msgid "Enfants en double dans une famille"
+msgstr ""
+
+msgid "Personne sans lien"
+msgstr ""
+
+msgid "Boucle d’ascendance"
+msgstr ""
+
+msgid "Personne son propre conjoint"
+msgstr ""
+
+msgid "Famille sans époux ni épouse"
+msgstr ""
+
+msgid "Famille vide"
+msgstr ""
+
+msgid "Enfant de plusieurs familles"
+msgstr ""
+
+msgid "Parent et enfant de la même famille"
+msgstr ""
+
+msgid "Enfant enregistré deux fois"
+msgstr ""
+
+msgid "Couple dans plusieurs familles"
+msgstr ""
+
+msgid "Nom de famille en minuscules"
+msgstr ""
+
+msgid "Espaces superflus dans le nom"
+msgstr ""
+
+msgid "Chiffre dans le nom"
+msgstr ""
+
+msgid "Personne référencée absente de la base"
+msgstr ""
+
+msgid "Point d’interrogation dans le nom"
+msgstr ""
+
+msgid "Lieu écrit de plusieurs façons"
+msgstr ""
+
+msgid "Détail"
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""

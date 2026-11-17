@@ -4231,6 +4231,129 @@ msgstr "Digit in the name: “{txt}”"
 msgid "Point d’interrogation dans le nom (lecture incertaine) : « {txt} »"
 msgstr "Question mark in the name (uncertain reading): “{txt}”"
 
+msgid "Date impossible"
+msgstr "Impossible date"
+
+msgid "Date non reconnue"
+msgstr "Unrecognised date"
+
+msgid "Date dans le futur"
+msgstr "Date in the future"
+
+msgid "Décès avant la naissance"
+msgstr "Death before birth"
+
+msgid "Baptême avant la naissance"
+msgstr "Baptism before birth"
+
+msgid "Sépulture avant le décès"
+msgstr "Burial before death"
+
+msgid "Âge au décès excessif"
+msgstr "Excessive age at death"
+
+msgid "Personne « vivante » trop âgée"
+msgstr "“Living” person too old"
+
+msgid "Personne « vivante » avec un décès"
+msgstr "“Living” person with a death recorded"
+
+msgid "Mariage avant la naissance d’un époux"
+msgstr "Marriage before a spouse’s birth"
+
+msgid "Mariage après le décès d’un époux"
+msgstr "Marriage after a spouse’s death"
+
+msgid "Âge trop jeune au mariage"
+msgstr "Too young at marriage"
+
+msgid "Enfant né avant son parent"
+msgstr "Child born before a parent"
+
+msgid "Enfant né après le décès de sa mère"
+msgstr "Child born after the mother’s death"
+
+msgid "Enfant né longtemps après le décès du père"
+msgstr "Child born long after the father’s death"
+
+msgid "Âge de la mère à la naissance"
+msgstr "Mother’s age at birth"
+
+msgid "Âge du père à la naissance"
+msgstr "Father’s age at birth"
+
+msgid "Divorce avant le mariage"
+msgstr "Divorce before marriage"
+
+msgid "Père de sexe féminin"
+msgstr "Father recorded as female"
+
+msgid "Mère de sexe masculin"
+msgstr "Mother recorded as male"
+
+msgid "Sexe inconnu avec enfants"
+msgstr "Unknown sex with children"
+
+msgid "Couple de même sexe"
+msgstr "Same-sex couple"
+
+msgid "Prénom du sexe opposé"
+msgstr "First name of the opposite sex"
+
+msgid "Doublon possible"
+msgstr "Possible duplicate"
+
+msgid "Enfants en double dans une famille"
+msgstr "Duplicate children in a family"
+
+msgid "Personne sans lien"
+msgstr "Person with no link"
+
+msgid "Boucle d’ascendance"
+msgstr "Ancestry loop"
+
+msgid "Personne son propre conjoint"
+msgstr "Person is their own spouse"
+
+msgid "Famille sans époux ni épouse"
+msgstr "Family without husband or wife"
+
+msgid "Famille vide"
+msgstr "Empty family"
+
+msgid "Enfant de plusieurs familles"
+msgstr "Child of several families"
+
+msgid "Parent et enfant de la même famille"
+msgstr "Parent and child of the same family"
+
+msgid "Enfant enregistré deux fois"
+msgstr "Child recorded twice"
+
+msgid "Couple dans plusieurs familles"
+msgstr "Couple in several families"
+
+msgid "Nom de famille en minuscules"
+msgstr "Lowercase family name"
+
+msgid "Espaces superflus dans le nom"
+msgstr "Extra spaces in the name"
+
+msgid "Chiffre dans le nom"
+msgstr "Digit in the name"
+
+msgid "Personne référencée absente de la base"
+msgstr "Referenced person missing from the database"
+
+msgid "Point d’interrogation dans le nom"
+msgstr "Question mark in the name"
+
+msgid "Lieu écrit de plusieurs façons"
+msgstr "Place written in several ways"
+
+msgid "Détail"
+msgstr "Detail"
+
 msgctxt "js"
 msgid " Page "
 msgstr " Page "

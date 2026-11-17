@@ -117,6 +117,53 @@ class TNGCoh_Rules {
 		);
 	}
 
+	/** Intitulé court de chaque contrôle (liste de filtre et colonne « Anomalie »). */
+	public static function titles() {
+		return array(
+			'D01' => 'Date impossible',
+			'D02' => 'Date non reconnue',
+			'D03' => 'Date dans le futur',
+			'D04' => 'Décès avant la naissance',
+			'D05' => 'Baptême avant la naissance',
+			'D06' => 'Sépulture avant le décès',
+			'D07' => 'Âge au décès excessif',
+			'D08' => 'Personne « vivante » trop âgée',
+			'D09' => 'Personne « vivante » avec un décès',
+			'D10' => 'Mariage avant la naissance d’un époux',
+			'D11' => 'Mariage après le décès d’un époux',
+			'D12' => 'Âge trop jeune au mariage',
+			'D13' => 'Enfant né avant son parent',
+			'D14' => 'Enfant né après le décès de sa mère',
+			'D15' => 'Enfant né longtemps après le décès du père',
+			'D16' => 'Âge de la mère à la naissance',
+			'D17' => 'Âge du père à la naissance',
+			'D18' => 'Divorce avant le mariage',
+			'S01' => 'Père de sexe féminin',
+			'S02' => 'Mère de sexe masculin',
+			'S03' => 'Sexe inconnu avec enfants',
+			'S04' => 'Couple de même sexe',
+			'S05' => 'Prénom du sexe opposé',
+			'P01' => 'Doublon possible',
+			'P02' => 'Enfants en double dans une famille',
+			'T01' => 'Personne sans lien',
+			'T02' => 'Boucle d’ascendance',
+			'T03' => 'Personne son propre conjoint',
+			'T04' => 'Famille sans époux ni épouse',
+			'T05' => 'Famille vide',
+			'T06' => 'Enfant de plusieurs familles',
+			'T07' => 'Parent et enfant de la même famille',
+			'T08' => 'Enfant enregistré deux fois',
+			'T09' => 'Couple dans plusieurs familles',
+			'T10' => 'Nom de famille en minuscules',
+			'T11' => 'Espaces superflus dans le nom',
+			'T12' => 'Chiffre dans le nom',
+			'T13' => 'Personne sans nom ni prénom',
+			'T14' => 'Personne référencée absente de la base',
+			'T15' => 'Point d’interrogation dans le nom',
+			'L01' => 'Lieu écrit de plusieurs façons',
+		);
+	}
+
 	public static function cats() {
 		return array(
 			'date'   => 'Dates',

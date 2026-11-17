@@ -97,11 +97,13 @@ class TNGCoh_Admin {
 		}
 		$cat = isset( $g['cat'] ) ? sanitize_key( wp_unslash( $g['cat'] ) ) : '';
 		$sev = isset( $g['sev'] ) ? sanitize_text_field( wp_unslash( $g['sev'] ) ) : '';
+		$cod = isset( $g['code'] ) ? strtoupper( sanitize_key( wp_unslash( $g['code'] ) ) ) : '';
 		$ord = isset( $g['orderby'] ) ? sanitize_key( wp_unslash( $g['orderby'] ) ) : 'sev';
 		return array(
 			'tree'    => $tree,
 			'cat'     => isset( TNGCoh_Rules::cats()[ $cat ] ) ? $cat : '',
 			'sev'     => in_array( $sev, array( '0', '1', '2' ), true ) ? $sev : '',
+			'code'    => isset( TNGCoh_Rules::rules()[ $cod ] ) ? $cod : '',
 			'q'       => isset( $g['q'] ) ? mb_substr( sanitize_text_field( wp_unslash( $g['q'] ) ), 0, 80 ) : '',
 			'orderby' => in_array( $ord, array( 'sev', 'score', 'cat', 'code', 'pid' ), true ) ? $ord : 'sev',
 			'order'   => ( isset( $g['order'] ) && 'asc' === sanitize_key( wp_unslash( $g['order'] ) ) ) ? 'asc' : 'desc',
@@ -117,7 +119,7 @@ class TNGCoh_Admin {
 	private static function url( array $f, array $over = array() ) {
 		list( $base, $page ) = self::here();
 		$a                   = array( 'page' => $page, 'tngtree' => $f['tree'] );
-		foreach ( array( 'cat', 'sev', 'q' ) as $k ) {
+		foreach ( array( 'cat', 'code', 'sev', 'q' ) as $k ) {
 			if ( '' !== $f[ $k ] ) {
 				$a[ $k ] = $f[ $k ];
 			}
@@ -193,6 +195,22 @@ class TNGCoh_Admin {
 			echo '<option value="' . esc_attr( $k ) . '"' . selected( $f['cat'], $k, false ) . '>' . esc_html( tngs_t( $l ) ) . '</option>';
 		}
 		echo '</select></label> ';
+		$cc = TNGCoh_Store::code_counts( $tree );
+		echo '<label>' . esc_html( tngs_t( 'Anomalie' ) ) . ' <select name="code"><option value="">' . esc_html( tngs_t( 'Toutes' ) ) . '</option>';
+		$ti   = TNGCoh_Rules::titles();
+		$cats = TNGCoh_Rules::cats();
+		foreach ( $cats as $ck => $cl ) {
+			$o = '';
+			foreach ( TNGCoh_Rules::rules() as $code => $rule ) {
+				if ( $rule[0] === $ck && ! empty( $cc[ $code ] ) ) {
+					$o .= '<option value="' . esc_attr( $code ) . '"' . selected( $f['code'], $code, false ) . '>' . esc_html( tngs_t( $ti[ $code ] ) . ' (' . $cc[ $code ] . ')' ) . '</option>';
+				}
+			}
+			if ( '' !== $o ) {
+				echo '<optgroup label="' . esc_attr( tngs_t( $cl ) ) . '">' . $o . '</optgroup>'; // phpcs:ignore WordPress.Security.EscapeOutput -- options échappées ci-dessus.
+			}
+		}
+		echo '</select></label> ';
 		echo '<label>' . esc_html( tngs_t( 'Gravité' ) ) . ' <select name="sev"><option value="">' . esc_html( tngs_t( 'Toutes' ) ) . '</option>';
 		foreach ( TNGCoh_Rules::sev_labels() as $k => $l ) {
 			echo '<option value="' . esc_attr( (string) $k ) . '"' . selected( $f['sev'], (string) $k, false ) . '>' . esc_html( tngs_t( $l ) ) . '</option>';
@@ -245,7 +263,7 @@ class TNGCoh_Admin {
 		$rows  = TNGCoh_Store::query( $tree, $f, $f['orderby'], $f['order'], ( $cur - 1 ) * self::PER_PAGE, self::PER_PAGE );
 
 		echo '<p>' . esc_html( number_format_i18n( $total ) ) . ' ' . esc_html( tngs_t( 'anomalie(s) affichée(s)' ) ) . ' ';
-		$csv = wp_nonce_url( add_query_arg( array_merge( array( 'action' => 'tngcoh_csv', 'tngtree' => $tree ), array_filter( array( 'cat' => $f['cat'], 'sev' => $f['sev'], 'q' => $f['q'] ), 'strlen' ) ), admin_url( 'admin-post.php' ) ), 'tngcoh_csv' );
+		$csv = wp_nonce_url( add_query_arg( array_merge( array( 'action' => 'tngcoh_csv', 'tngtree' => $tree ), array_filter( array( 'cat' => $f['cat'], 'code' => $f['code'], 'sev' => $f['sev'], 'q' => $f['q'] ), 'strlen' ) ), admin_url( 'admin-post.php' ) ), 'tngcoh_csv' );
 		echo '<a class="button button-small" href="' . esc_url( $csv ) . '">' . esc_html( tngs_t( 'Exporter en CSV' ) ) . '</a> ';
 		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" class="tngcoh-inline" onsubmit="return confirm(\'' . esc_js( tngs_t( 'Effacer les résultats de cet arbre ?' ) ) . '\');">';
 		wp_nonce_field( 'tngcoh_clear' );
@@ -262,12 +280,14 @@ class TNGCoh_Admin {
 			$mk  = $f['orderby'] === $key ? ( 'desc' === $f['order'] ? ' ▾' : ' ▴' ) : '';
 			return '<a href="' . esc_url( self::url( $f, array( 'orderby' => $key, 'order' => $dir ) ) ) . '">' . esc_html( tngs_t( $label ) ) . $mk . '</a>';
 		};
-		echo '<table class="widefat striped tngcoh-table"><thead><tr><th>' . $th( 'sev', 'Gravité' ) . '</th><th>' . $th( 'cat', 'Type' ) . '</th><th>' . esc_html( tngs_t( 'Anomalie' ) ) . '</th><th>' . esc_html( tngs_t( 'Fiches' ) ) . '</th><th>' . $th( 'score', 'Score' ) . '</th><th></th></tr></thead><tbody>'; // phpcs:ignore WordPress.Security.EscapeOutput
+		echo '<table class="widefat striped tngcoh-table"><thead><tr><th>' . $th( 'sev', 'Gravité' ) . '</th><th>' . $th( 'cat', 'Type' ) . '</th><th>' . $th( 'code', 'Anomalie' ) . '</th><th>' . esc_html( tngs_t( 'Détail' ) ) . '</th><th>' . $th( 'pid', 'Fiches' ) . '</th><th>' . $th( 'score', 'Score' ) . '</th><th></th></tr></thead><tbody>'; // phpcs:ignore WordPress.Security.EscapeOutput
 		$sev  = TNGCoh_Rules::sev_labels();
-		$cats = TNGCoh_Rules::cats();
+		$cats   = TNGCoh_Rules::cats();
+		$titles = TNGCoh_Rules::titles();
 		foreach ( $rows as $r ) {
 			echo '<tr><td><span class="tngcoh-sev tngcoh-sev-' . (int) $r['sev'] . '">' . esc_html( tngs_t( $sev[ (int) $r['sev'] ] ) ) . '</span></td>';
 			echo '<td>' . esc_html( tngs_t( isset( $cats[ $r['cat'] ] ) ? $cats[ $r['cat'] ] : $r['cat'] ) ) . '</td>';
+			echo '<td>' . esc_html( isset( $titles[ $r['code'] ] ) ? tngs_t( $titles[ $r['code'] ] ) : $r['code'] ) . '</td>';
 			echo '<td>' . esc_html( self::message( $r ) ) . '</td>';
 			$links = array_filter( array( self::link( 'P', $r['pid'], $tree ), self::link( 'F', $r['fid'], $tree ), self::link( 'P', $r['pid2'], $tree ) ), 'strlen' );
 			echo '<td>' . implode( ' ', $links ) . '</td>'; // phpcs:ignore WordPress.Security.EscapeOutput -- liens construits par self::link() (échappés).
@@ -412,10 +432,11 @@ class TNGCoh_Admin {
 		header( 'Content-Disposition: attachment; filename="coherence-' . sanitize_file_name( $f['tree'] ) . '-' . gmdate( 'Y-m-d' ) . '.csv"' );
 		$out = fopen( 'php://output', 'w' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen
 		fwrite( $out, "\xEF\xBB\xBF" ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
-		fputcsv( $out, array( tngs_t( 'Gravité' ), tngs_t( 'Type' ), tngs_t( 'Anomalie' ), tngs_t( 'Personne' ), tngs_t( 'Famille' ), tngs_t( 'Seconde personne' ), tngs_t( 'Score' ), tngs_t( 'Arbre' ) ), ';' );
+		fputcsv( $out, array( tngs_t( 'Gravité' ), tngs_t( 'Type' ), tngs_t( 'Anomalie' ), tngs_t( 'Détail' ), tngs_t( 'Personne' ), tngs_t( 'Famille' ), tngs_t( 'Seconde personne' ), tngs_t( 'Score' ), tngs_t( 'Arbre' ) ), ';' );
 		$sev  = TNGCoh_Rules::sev_labels();
-		$cats = TNGCoh_Rules::cats();
-		$off  = 0;
+		$cats   = TNGCoh_Rules::cats();
+		$titles = TNGCoh_Rules::titles();
+		$off    = 0;
 		do {
 			$rows = TNGCoh_Store::query( $f['tree'], $f, $f['orderby'], $f['order'], $off, 2000 );
 			foreach ( $rows as $r ) {
@@ -424,6 +445,7 @@ class TNGCoh_Admin {
 					array(
 						self::cell( tngs_t( $sev[ (int) $r['sev'] ] ) ),
 						self::cell( tngs_t( isset( $cats[ $r['cat'] ] ) ? $cats[ $r['cat'] ] : $r['cat'] ) ),
+						self::cell( isset( $titles[ $r['code'] ] ) ? tngs_t( $titles[ $r['code'] ] ) : $r['code'] ),
 						self::cell( self::message( $r ) ),
 						self::cell( $r['pid'] ),
 						self::cell( $r['fid'] ),
