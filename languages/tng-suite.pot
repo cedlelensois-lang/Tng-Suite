@@ -4381,6 +4381,15 @@ msgstr ""
 msgid "Supprimer tous les fichiers hors profil du serveur ?"
 msgstr ""
 
+msgid "{name} porte le nom « {txt} », différent de celui de son père {name2} (« {txt2} »)"
+msgstr ""
+
+msgid "Patronyme différent de celui du père"
+msgstr ""
+
+msgid "Patronyme de l’enfant et de son père : similarité minimale pour les juger identiques, en % (0 = contrôle désactivé)"
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""

@@ -1469,4 +1469,7 @@ return array(
 	'Hors profil' => 'No profile',
 	'Livres générés en arrière-plan depuis le formulaire' => 'Books generated in the background from the form',
 	'Supprimer tous les fichiers hors profil du serveur ?' => 'Delete all files that belong to no profile from the server?',
+	'{name} porte le nom « {txt} », différent de celui de son père {name2} (« {txt2} »)' => '{name} has the surname “{txt}”, which differs from that of the father {name2} (“{txt2}”)',
+	'Patronyme différent de celui du père' => 'Surname different from the father’s',
+	'Patronyme de l’enfant et de son père : similarité minimale pour les juger identiques, en % (0 = contrôle désactivé)' => 'Surname of the child and of the father: minimum similarity to consider them identical, in % (0 = check switched off)',
 );

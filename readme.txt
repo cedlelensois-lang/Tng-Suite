@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.19.4
+Stable tag: 2.19.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the tables it created in the WordPress database (`tngi_inbreeding` for the implex module; `tngs_coh_res` and `tngs_coh_key` for the data consistency check). Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.19.5 =
+* Cohérence des données : nouveau contrôle T16, « patronyme différent de celui du père » (enfant de naissance dont le nom de famille diffère de celui de son père ; les enfants adoptés, naturels ou recueillis sont exclus, de même que les noms voisins, les noms doubles, les « dit » et les noms inconnus). Seuil de similarité réglable, 0 pour désactiver. Le mariage posthume (D11) et l’âge de la mère à la naissance (D16, seuils réglables) étaient déjà contrôlés.
 
 = 2.19.4 =
 * Livre : les livres générés en arrière-plan depuis le formulaire (sans profil) sont listés sur une ligne « Hors profil » de la vue d’ensemble, avec les mêmes suppressions (« Supprimer », « Tout supprimer »).

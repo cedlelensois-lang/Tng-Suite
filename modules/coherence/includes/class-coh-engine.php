@@ -600,6 +600,7 @@ class TNGCoh_Engine {
 			$P[ $p['personID'] ] = array(
 				'name' => TNGCoh_Rules::name( $p['lastname'], $p['firstname'] ),
 				'nm'   => TNGCoh_Rules::norm( $p['firstname'] . ' ' . $p['lastname'] ),
+				'ln'   => trim( (string) $p['lastname'] ),
 				'sex'  => strtoupper( (string) $p['sex'] ),
 				'b'    => $this->range( $p['birthdatetr'], $p['birthdate'] ),
 				'd'    => $this->range( $p['deathdatetr'], $p['deathdate'] ),
@@ -723,6 +724,12 @@ class TNGCoh_Engine {
 			$key = TNGCoh_Rules::norm( $ch['nm'] );
 			if ( '' !== $key ) {
 				$byname[ $key ][ $id ] = $ch;
+			}
+			// Transmission du patronyme : enfant de naissance (ni adopté, ni naturel, ni recueilli) dont le nom diffère de celui de son père.
+			if ( $c['patro_sim'] > 0 && '' !== (string) $h && $h !== $id && isset( $P[ $h ] ) && 'F' !== $P[ $h ]['sex'] && in_array( strtolower( trim( (string) $k['frel'] ) ), array( '', 'birth', 'biological' ), true )
+				&& '' !== $ch['ln'] && '' !== $P[ $h ]['ln'] && ! TNGCoh_Rules::convention( $ch['ln'] ) && ! TNGCoh_Rules::convention( $P[ $h ]['ln'] )
+				&& ! TNGCoh_Rules::same_surname( $ch['ln'], $P[ $h ]['ln'], $c['patro_sim'] ) ) {
+				$this->add( 'T16', $id, $fid, $h, array( 'name' => $ch['name'], 'name2' => $P[ $h ]['name'], 'txt' => $ch['ln'], 'txt2' => $P[ $h ]['ln'] ) );
 			}
 			if ( ! $ch['b'] ) {
 				continue;

@@ -340,9 +340,10 @@ class TNGCoh_Admin {
 			array( 'tol', 'Tolérance sur les dates approximatives : « vers », « avant », « après »… (ans)' ),
 			array( 'dup_min', 'Score minimal pour signaler un doublon possible (0 à 100)' ),
 			array( 'loop_depth', 'Profondeur de la recherche des boucles d’ascendance (générations)' ),
+			array( 'patro_sim', 'Patronyme de l’enfant et de son père : similarité minimale pour les juger identiques, en % (0 = contrôle désactivé)' ),
 			array( 'max_rule', 'Nombre maximal d’anomalies conservées par contrôle' ),
 		);
-		$b = array( 'mother_min' => array( 8, 25 ), 'mother_max' => array( 35, 70 ), 'father_min' => array( 8, 30 ), 'father_max' => array( 45, 100 ), 'marr_min' => array( 8, 30 ), 'age_max' => array( 80, 130 ), 'living_max' => array( 80, 150 ), 'posthumous' => array( 9, 24 ), 'tol' => array( 0, 10 ), 'dup_min' => array( 30, 100 ), 'loop_depth' => array( 5, 100 ), 'max_rule' => array( 100, 50000 ) );
+		$b = array( 'mother_min' => array( 8, 25 ), 'mother_max' => array( 35, 70 ), 'father_min' => array( 8, 30 ), 'father_max' => array( 45, 100 ), 'marr_min' => array( 8, 30 ), 'age_max' => array( 80, 130 ), 'living_max' => array( 80, 150 ), 'posthumous' => array( 9, 24 ), 'tol' => array( 0, 10 ), 'dup_min' => array( 30, 100 ), 'loop_depth' => array( 5, 100 ), 'max_rule' => array( 100, 50000 ), 'patro_sim' => array( 0, 100 ) );
 		$d = TNGCoh_Rules::defaults();
 		foreach ( $f as $row ) {
 			$k = $row[0];

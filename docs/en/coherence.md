@@ -21,7 +21,7 @@ Menu **TNG Suite > Analyses**, sections **Consistency: data check** and **Consis
 |---|---|
 | Dates | impossible date (31 February, non-existent month), unrecognised date, date in the future; death, baptism or burial before birth or death; excessive age at death; person flagged “living” although born very long ago or although a death is recorded; marriage before birth or after the death of a spouse; minimum age at marriage; child born before the parents, after the mother’s death, or more than 9 months after the father’s death; age of the mother and father at the children’s births; divorce before marriage. Approximate dates (“about”, “before”, “after”…) are compared with a tolerance. |
 | Sex | father (husband) who is female, mother (wife) who is male, unknown sex although the person has children, same-sex couple, first name usually of the opposite sex (indicative only, based on a list of common French first names). |
-| Structure | person with no link at all, ancestry loop (a person who is their own ancestor), person who is their own spouse, family with no husband or wife, empty family, natural child of several families, parent and child of the same family, child recorded twice, couple in several families, reference to a person missing from the database; names: lowercase family name, extra spaces, digit in the name, question mark mixed with letters (uncertain reading), person with no name or first name. |
+| Structure | surname of a birth child that differs from the father’s (adopted, natural and foster children excluded; ignored when the names are close, share a word or contain “dit”; adjustable or can be switched off), person with no link at all, ancestry loop (a person who is their own ancestor), person who is their own spouse, family with no husband or wife, empty family, natural child of several families, parent and child of the same family, child recorded twice, couple in several families, reference to a person missing from the database; names: lowercase family name, extra spaces, digit in the name, question mark mixed with letters (uncertain reading), person with no name or first name. |
 | Places | place written in several ways (case, accents, spaces…). |
 | Duplicates | people who seem to be one person; children of the same family who seem to be the same person. |
 
@@ -48,6 +48,7 @@ Section **Consistency: thresholds and ignored anomalies**. Thresholds apply to t
 | Tolerance for approximate dates | 2 years | Margin applied to “about”, “before”, “after”… dates. |
 | Minimum score to report a possible duplicate | 70 | From 30 to 100. |
 | Ancestry loops (tick-box) and search depth | yes / 40 generations | The search can lengthen the analysis of a large tree. |
+| Surname of the child and of the father: minimum similarity to consider them identical, in % | 75 | 0 switches the check off. Two names are also treated as identical if they share a word (double surnames) or contain “dit” or “alias”. |
 | Maximum number of anomalies kept per check | 5,000 | Checks that reach this cap are flagged. |
 
 ## Notes

@@ -4381,6 +4381,15 @@ msgstr "Books generated in the background from the form"
 msgid "Supprimer tous les fichiers hors profil du serveur ?"
 msgstr "Delete all files that belong to no profile from the server?"
 
+msgid "{name} porte le nom « {txt} », différent de celui de son père {name2} (« {txt2} »)"
+msgstr "{name} has the surname “{txt}”, which differs from that of the father {name2} (“{txt2}”)"
+
+msgid "Patronyme différent de celui du père"
+msgstr "Surname different from the father’s"
+
+msgid "Patronyme de l’enfant et de son père : similarité minimale pour les juger identiques, en % (0 = contrôle désactivé)"
+msgstr "Surname of the child and of the father: minimum similarity to consider them identical, in % (0 = check switched off)"
+
 msgctxt "js"
 msgid " Page "
 msgstr " Page "

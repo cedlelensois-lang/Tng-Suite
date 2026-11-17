@@ -29,6 +29,7 @@ class TNGCoh_Rules {
 			'dup_min'       => 70,   // score minimal (0 à 100) pour signaler un doublon possible.
 			'loops'         => 1,    // recherche des boucles d'ascendance.
 			'loop_depth'    => 40,
+			'patro_sim'     => 75,   // similarité minimale (%) pour juger deux noms de famille identiques ; 0 = contrôle du patronyme désactivé.
 			'max_rule'      => 5000, // nombre maximal d'anomalies conservées par contrôle.
 		);
 	}
@@ -41,7 +42,7 @@ class TNGCoh_Rules {
 			'marr_min'   => array( 8, 30 ), 'age_max' => array( 80, 130 ),
 			'living_max' => array( 80, 150 ), 'posthumous' => array( 9, 24 ),
 			'tol'        => array( 0, 10 ), 'dup_min' => array( 30, 100 ),
-			'loop_depth' => array( 5, 100 ), 'max_rule' => array( 100, 50000 ),
+			'loop_depth' => array( 5, 100 ), 'max_rule' => array( 100, 50000 ), 'patro_sim' => array( 0, 100 ),
 		);
 	}
 
@@ -112,6 +113,7 @@ class TNGCoh_Rules {
 			'T13' => array( 'struct', self::INFO, 'Personne sans nom ni prénom' ),
 			'T14' => array( 'struct', self::WARN, 'Référence à une personne qui n’existe pas dans la base : {pid2}' ),
 			'T15' => array( 'struct', self::INFO, 'Point d’interrogation dans le nom (lecture incertaine) : « {txt} »' ),
+			'T16' => array( 'struct', self::INFO, '{name} porte le nom « {txt} », différent de celui de son père {name2} (« {txt2} »)' ),
 			// Lieux.
 			'L01' => array( 'place', self::INFO, 'Lieu écrit de plusieurs façons : {list}' ),
 		);
@@ -160,6 +162,7 @@ class TNGCoh_Rules {
 			'T13' => 'Personne sans nom ni prénom',
 			'T14' => 'Personne référencée absente de la base',
 			'T15' => 'Point d’interrogation dans le nom',
+			'T16' => 'Patronyme différent de celui du père',
 			'L01' => 'Lieu écrit de plusieurs façons',
 		);
 	}
@@ -384,6 +387,38 @@ class TNGCoh_Rules {
 			return false;
 		}
 		return (bool) preg_match( '/^[\s?*._\-…\[\]()]+$/u', $s ) || (bool) preg_match( '/^\[[^\[\]]*\]$/u', $s );
+	}
+
+	/** Nom de famille comparable : sans accents ni casse, sans particules d'introduction (de, du, van, di…). */
+	public static function surname_key( $s ) {
+		$k = self::norm( $s );
+		return trim( (string) preg_replace( '/^(?:(?:de|du|des|d|le|la|les|l|van|von|der|den|di|da|del|della|dos|das|y|e)\s+)+/', '', $k ) );
+	}
+
+	/**
+	 * Deux noms de famille sont-ils « le même » ? Oui s'ils sont identiques à la graphie près (accents, casse, particules, similarité
+	 * au moins $sim %), s'ils partagent un mot (noms doubles, usage espagnol ou portugais) ou s'ils contiennent « dit » ou « alias ».
+	 */
+	public static function same_surname( $a, $b, $sim ) {
+		$x = self::surname_key( $a );
+		$y = self::surname_key( $b );
+		if ( '' === $x || '' === $y || $x === $y ) {
+			return true;
+		}
+		if ( preg_match( '/\b(?:dit|alias|ou)\b/', $x . ' ' . $y ) ) {
+			return true;
+		}
+		$wx = array_filter( explode( ' ', $x ), static function ( $w ) {
+			return strlen( $w ) >= 3;
+		} );
+		$wy = array_filter( explode( ' ', $y ), static function ( $w ) {
+			return strlen( $w ) >= 3;
+		} );
+		if ( array_intersect( $wx, $wy ) ) {
+			return true;
+		}
+		similar_text( $x, $y, $pct );
+		return $pct >= $sim;
 	}
 
 	/** Minuscules, sans accents, lettres et chiffres séparés par une seule espace. */

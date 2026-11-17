@@ -21,7 +21,7 @@ Menu **TNG Suite > Analyses**, sections **Cohérence : contrôle des données** 
 |---|---|
 | Dates | date impossible (31 février, mois inexistant), date non reconnue, date dans le futur ; décès, baptême ou sépulture avant la naissance ou le décès ; âge au décès excessif ; personne marquée « vivante » alors qu’elle est née il y a très longtemps ou qu’un décès est renseigné ; mariage avant la naissance ou après le décès d’un époux ; âge minimal au mariage ; enfant né avant ses parents, après le décès de sa mère, ou plus de 9 mois après le décès de son père ; âge de la mère et du père à la naissance des enfants ; divorce avant le mariage. Les dates approximatives (« vers », « avant », « après »…) sont comparées avec une tolérance. |
 | Sexe | père (époux) de sexe féminin, mère (épouse) de sexe masculin, sexe inconnu alors que la personne a des enfants, couple de même sexe, prénom généralement du sexe opposé (information indicative, d’après une liste de prénoms français courants). |
-| Structure | personne sans aucun lien, boucle d’ascendance (une personne qui est son propre ancêtre), personne son propre conjoint, famille sans époux ni épouse, famille vide, enfant naturel de plusieurs familles, parent et enfant de la même famille, enfant enregistré deux fois, couple présent dans plusieurs familles, référence à une personne absente de la base ; noms : nom de famille en minuscules, espaces superflus, chiffre dans le nom, point d’interrogation mêlé à des lettres (lecture incertaine), personne sans nom ni prénom. |
+| Structure | nom de famille d’un enfant de naissance différent de celui de son père (hors enfants adoptés, naturels ou recueillis ; ignoré si les noms sont voisins, partagent un mot ou contiennent « dit » ; réglable ou désactivable), personne sans aucun lien, boucle d’ascendance (une personne qui est son propre ancêtre), personne son propre conjoint, famille sans époux ni épouse, famille vide, enfant naturel de plusieurs familles, parent et enfant de la même famille, enfant enregistré deux fois, couple présent dans plusieurs familles, référence à une personne absente de la base ; noms : nom de famille en minuscules, espaces superflus, chiffre dans le nom, point d’interrogation mêlé à des lettres (lecture incertaine), personne sans nom ni prénom. |
 | Lieux | lieu écrit de plusieurs façons (majuscules, accents, espaces…). |
 | Doublons | personnes qui semblent n’en faire qu’une ; enfants d’une même famille qui semblent être la même personne. |
 
@@ -48,6 +48,7 @@ Section **Cohérence : seuils et anomalies ignorées**. Les seuils s’appliquen
 | Tolérance sur les dates approximatives | 2 ans | Marge appliquée aux dates « vers », « avant », « après »… |
 | Score minimal pour signaler un doublon possible | 70 | De 30 à 100. |
 | Boucles d’ascendance (case) et profondeur de recherche | oui / 40 générations | La recherche peut allonger l’analyse d’un grand arbre. |
+| Patronyme de l’enfant et de son père : similarité minimale pour les juger identiques, en % | 75 | 0 désactive le contrôle. Deux noms sont aussi considérés comme identiques s’ils partagent un mot (noms doubles) ou contiennent « dit » ou « alias ». |
 | Nombre maximal d’anomalies conservées par contrôle | 5 000 | Les contrôles qui atteignent ce plafond sont signalés. |
 
 ## Remarques
