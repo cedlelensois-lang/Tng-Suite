@@ -470,7 +470,7 @@ class TNGCoh_Engine {
 		if ( '' === trim( $ln ) && '' === trim( $fn ) ) {
 			$this->add( 'T13', $pid, '', '', array( 'name' => $name ) );
 		}
-		if ( '' !== trim( $ln ) && preg_match( '/\p{L}/u', $ln ) && mb_strtolower( $ln ) === $ln ) {
+		if ( '' !== trim( $ln ) && ! TNGCoh_Rules::convention( $ln ) && preg_match( '/\p{L}/u', $ln ) && mb_strtolower( $ln ) === $ln ) {
 			$this->add( 'T10', $pid, '', '', array( 'name' => $name, 'txt' => $ln ) );
 		}
 		foreach ( array( $ln, $fn ) as $part ) {
@@ -479,9 +479,18 @@ class TNGCoh_Engine {
 				break;
 			}
 		}
+		// Chiffre dans un nom : probablement une erreur de saisie. Le point d'interrogation est distinct : « ? » seul ou un nom entre crochets est la convention
+		// généalogique d'un nom inconnu ou supposé (jamais signalé) ; mêlé à des lettres (« Dup?nt »), il signale une lecture incertaine (information).
 		foreach ( array( $ln, $fn ) as $part ) {
-			if ( '' !== $part && preg_match( '/[?\d*]/u', $part ) ) {
+			if ( '' !== $part && preg_match( '/\d/u', $part ) ) {
 				$this->add( 'T12', $pid, '', '', array( 'name' => $name, 'txt' => $part ) );
+				break;
+			}
+		}
+		foreach ( array( $ln, $fn ) as $part ) {
+			$free = preg_replace( '/\[[^\]]*\]/u', '', $part ); // hors crochets
+			if ( '' !== $part && false !== strpos( (string) $free, '?' ) && ! TNGCoh_Rules::convention( $part ) && preg_match( '/\p{L}/u', (string) $free ) ) {
+				$this->add( 'T15', $pid, '', '', array( 'name' => $name, 'txt' => $part ) );
 				break;
 			}
 		}

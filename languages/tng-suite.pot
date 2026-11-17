@@ -4213,9 +4213,6 @@ msgstr ""
 msgid "Espaces superflus dans le nom : « {txt} »"
 msgstr ""
 
-msgid "Point d’interrogation ou chiffre dans le nom : « {txt} »"
-msgstr ""
-
 msgid "Personne sans nom ni prénom"
 msgstr ""
 
@@ -4226,6 +4223,12 @@ msgid "Lieu écrit de plusieurs façons : {list}"
 msgstr ""
 
 msgid "Une anomalie ignorée reste ignorée aux analyses suivantes (même contrôle, mêmes personnes ou famille) ; « Restaurer » la remet dans la liste."
+msgstr ""
+
+msgid "Chiffre dans le nom : « {txt} »"
+msgstr ""
+
+msgid "Point d’interrogation dans le nom (lecture incertaine) : « {txt} »"
 msgstr ""
 
 msgctxt "js"

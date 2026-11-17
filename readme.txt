@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.19.1
+Stable tag: 2.19.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the tables it created in the WordPress database (`tngi_inbreeding` for the implex module; `tngs_coh_res` and `tngs_coh_key` for the data consistency check). Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.19.2 =
+* Cohérence des données : le chiffre dans un nom et le point d'interrogation sont deux contrôles distincts. Un nom ou un prénom réduit à « ? » ou placé entre crochets (« [Marie] »), conventions généalogiques d'un nom inconnu ou supposé, n'est plus signalé ; un « ? » mêlé à des lettres (« Dup?nt ») est signalé en information comme lecture incertaine.
 
 = 2.19.1 =
 * Livre (PDF) : avec une pochette pleine page à panneau en bas (chênes et peinture) et un titre long, la ligne « Document généré le… » passait seule sur une page presque blanche ; le titre long est désormais réduit pour tenir sur deux lignes dans le panneau.

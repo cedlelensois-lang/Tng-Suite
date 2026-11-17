@@ -1413,9 +1413,10 @@ return array(
 	'Le couple {name} et {name2} apparaît dans plusieurs familles : {list}' => 'The couple {name} and {name2} appears in several families: {list}',
 	'Nom de famille écrit en minuscules : « {txt} »' => 'Family name written in lowercase: “{txt}”',
 	'Espaces superflus dans le nom : « {txt} »' => 'Extra spaces in the name: “{txt}”',
-	'Point d’interrogation ou chiffre dans le nom : « {txt} »' => 'Question mark or digit in the name: “{txt}”',
 	'Personne sans nom ni prénom' => 'Person with no name or first name',
 	'Référence à une personne qui n’existe pas dans la base : {pid2}' => 'Reference to a person who does not exist in the database: {pid2}',
 	'Lieu écrit de plusieurs façons : {list}' => 'Place written in several ways: {list}',
 	'Une anomalie ignorée reste ignorée aux analyses suivantes (même contrôle, mêmes personnes ou famille) ; « Restaurer » la remet dans la liste.' => 'An ignored anomaly stays ignored in later analyses (same check, same people or family); “Restore” puts it back in the list.',
+	'Chiffre dans le nom : « {txt} »' => 'Digit in the name: “{txt}”',
+	'Point d’interrogation dans le nom (lecture incertaine) : « {txt} »' => 'Question mark in the name (uncertain reading): “{txt}”',
 );

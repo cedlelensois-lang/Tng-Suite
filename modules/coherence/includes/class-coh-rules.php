@@ -108,9 +108,10 @@ class TNGCoh_Rules {
 			'T09' => array( 'struct', self::WARN, 'Le couple {name} et {name2} apparaît dans plusieurs familles : {list}' ),
 			'T10' => array( 'struct', self::INFO, 'Nom de famille écrit en minuscules : « {txt} »' ),
 			'T11' => array( 'struct', self::INFO, 'Espaces superflus dans le nom : « {txt} »' ),
-			'T12' => array( 'struct', self::INFO, 'Point d’interrogation ou chiffre dans le nom : « {txt} »' ),
+			'T12' => array( 'struct', self::INFO, 'Chiffre dans le nom : « {txt} »' ),
 			'T13' => array( 'struct', self::INFO, 'Personne sans nom ni prénom' ),
 			'T14' => array( 'struct', self::WARN, 'Référence à une personne qui n’existe pas dans la base : {pid2}' ),
+			'T15' => array( 'struct', self::INFO, 'Point d’interrogation dans le nom (lecture incertaine) : « {txt} »' ),
 			// Lieux.
 			'L01' => array( 'place', self::INFO, 'Lieu écrit de plusieurs façons : {list}' ),
 		);
@@ -325,6 +326,17 @@ class TNGCoh_Rules {
 		$fn = trim( (string) $fn );
 		$s  = trim( ( '' !== $ln ? mb_strtoupper( $ln ) : '' ) . ' ' . $fn );
 		return '' === $s ? '?' : $s;
+	}
+
+	/**
+	 * Convention généalogique, pas une erreur : nom ou prénom inconnu (« ? », « ??? », « … », « - ») ou conjecturé entre crochets (« [Marie] »).
+	 */
+	public static function convention( $s ) {
+		$s = trim( (string) $s );
+		if ( '' === $s ) {
+			return false;
+		}
+		return (bool) preg_match( '/^[\s?*._\-…\[\]()]+$/u', $s ) || (bool) preg_match( '/^\[[^\[\]]*\]$/u', $s );
 	}
 
 	/** Minuscules, sans accents, lettres et chiffres séparés par une seule espace. */

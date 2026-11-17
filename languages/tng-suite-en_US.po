@@ -4213,9 +4213,6 @@ msgstr "Family name written in lowercase: “{txt}”"
 msgid "Espaces superflus dans le nom : « {txt} »"
 msgstr "Extra spaces in the name: “{txt}”"
 
-msgid "Point d’interrogation ou chiffre dans le nom : « {txt} »"
-msgstr "Question mark or digit in the name: “{txt}”"
-
 msgid "Personne sans nom ni prénom"
 msgstr "Person with no name or first name"
 
@@ -4227,6 +4224,12 @@ msgstr "Place written in several ways: {list}"
 
 msgid "Une anomalie ignorée reste ignorée aux analyses suivantes (même contrôle, mêmes personnes ou famille) ; « Restaurer » la remet dans la liste."
 msgstr "An ignored anomaly stays ignored in later analyses (same check, same people or family); “Restore” puts it back in the list."
+
+msgid "Chiffre dans le nom : « {txt} »"
+msgstr "Digit in the name: “{txt}”"
+
+msgid "Point d’interrogation dans le nom (lecture incertaine) : « {txt} »"
+msgstr "Question mark in the name (uncertain reading): “{txt}”"
 
 msgctxt "js"
 msgid " Page "
