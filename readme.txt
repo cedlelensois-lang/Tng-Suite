@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.19.3
+Stable tag: 2.19.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -84,8 +84,11 @@ Only the plugin's own settings, caches, scheduled task and the tables it created
 
 == Changelog ==
 
+= 2.19.4 =
+* Livre : les livres générés en arrière-plan depuis le formulaire (sans profil) sont listés sur une ligne « Hors profil » de la vue d’ensemble, avec les mêmes suppressions (« Supprimer », « Tout supprimer »).
+
 = 2.19.3 =
-* Livre : dans la vue d’ensemble des profils, chaque fichier généré (génération automatique ou manuelle) peut être supprimé du serveur (lien « Supprimer », ou « Tout supprimer » pour le profil), après confirmation. Les livres générés en arrière-plan depuis le formulaire (sans profil) sont désormais listés sur une ligne « Hors profil », avec les mêmes suppressions.
+* Livre : dans la vue d’ensemble des profils, chaque fichier généré (génération automatique ou manuelle) peut être supprimé du serveur (lien « Supprimer », ou « Tout supprimer » pour le profil), après confirmation.
 * Livre (PDF) : les renvois (A1, D12, numéros des listes et des index…) ouvrent maintenant la bonne page au lieu de la première.
 
 = 2.19.2 =
