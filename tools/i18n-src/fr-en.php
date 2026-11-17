@@ -1466,4 +1466,7 @@ return array(
 	'Tout supprimer' => 'Delete all',
 	'Fichier supprimé.' => 'File deleted.',
 	'Fichiers supprimés.' => 'Files deleted.',
+	'Hors profil' => 'No profile',
+	'Livres générés en arrière-plan depuis le formulaire' => 'Books generated in the background from the form',
+	'Supprimer tous les fichiers hors profil du serveur ?' => 'Delete all files that belong to no profile from the server?',
 );

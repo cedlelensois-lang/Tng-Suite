@@ -224,6 +224,21 @@ class TNGBook_Auto {
         return $out;
     }
 
+    /** Fichiers générés qui ne sont rattachés à aucun profil (génération en arrière-plan lancée depuis le formulaire, profil supprimé depuis), du plus récent au plus ancien. */
+    public static function orphans() {
+        $dir = self::dir(false);
+        if (!is_dir($dir)) return [];
+        $bases = [];
+        foreach (array_keys(TNGBook::profiles()) as $n) $bases[] = self::base((string) $n);
+        $out = [];
+        foreach ((array) scandir($dir) as $f) {
+            if (!preg_match('/^([a-z0-9-]+)__\d{4}-\d{2}-\d{2}_\d{6}\.(' . implode('|', self::EXTS) . ')$/', $f, $m)) continue;
+            if (!in_array($m[1], $bases, true)) $out[] = $f;
+        }
+        rsort($out);
+        return $out;
+    }
+
     /** Ne garde que les $keep derniers fichiers du profil (et uniquement ceux qui portent le nom généré par le plugin). */
     private static function rotate($dir, $base, $keep) {
         $all = [];
@@ -399,6 +414,8 @@ class TNGBook_Auto {
         $n = 0;
         if ($f !== '') {
             if (preg_match('/^[a-z0-9-]+__\d{4}-\d{2}-\d{2}_\d{6}\.(' . implode('|', self::EXTS) . ')$/', $f) && is_file($dir . '/' . $f)) { wp_delete_file($dir . '/' . $f); $n = 1; }
+        } elseif (isset($_POST['delorph'])) {   // phpcs:ignore WordPress.Security.NonceVerification.Missing -- jeton vérifié par guard()
+            foreach (self::orphans() as $x) { wp_delete_file($dir . '/' . $x); $n++; }
         } elseif ($all !== '' && isset(TNGBook::profiles()[$all])) {
             foreach (self::files($all) as $x) { wp_delete_file($dir . '/' . $x); $n++; }
         }
@@ -437,6 +454,24 @@ class TNGBook_Auto {
         }
     }
 
+    /** Ligne « Hors profil » du tableau de la vue d'ensemble : fichiers qui ne dépendent d'aucun profil. */
+    private static function orphan_row() {
+        $orph = self::orphans();
+        if (!$orph) return;
+        $dir = self::dir(false);
+        $del = esc_url(admin_url('admin-post.php?action=tngbook_auto_del'));
+        echo '<tr><td><strong>' . esc_html(tngs_t('Hors profil')) . '</strong><br><span class="description">' . esc_html(tngs_t('Livres générés en arrière-plan depuis le formulaire')) . '</span></td><td></td><td>';
+        foreach ($orph as $i => $f) {
+            $url = wp_nonce_url(add_query_arg(['action' => 'tngbook_auto_dl', 'f' => $f], admin_url('admin-post.php')), 'tngbook_auto', '_tngauto');
+            $sz = (int) @filesize($dir . '/' . $f);
+            echo ($i ? '<br>' : '') . '<a href="' . esc_url($url) . '">' . esc_html($f) . '</a>' . ($sz ? ' (' . esc_html(size_format($sz)) . ')' : '')
+                . ' <button type="submit" class="button-link button-link-delete" name="del" value="' . esc_attr($f) . '" formaction="' . $del . '" onclick="return confirm(' . esc_attr(wp_json_encode(tngs_t('Supprimer ce fichier du serveur ?'))) . ')">' . esc_html(tngs_t('Supprimer')) . '</button>';
+        }
+        echo '<br><span class="description">' . (int) count($orph) . ' ' . esc_html(tngs_t('fichier(s) conservé(s)')) . '</span>';
+        if (count($orph) > 1) echo ' <button type="submit" class="button-link button-link-delete" name="delorph" value="1" formaction="' . $del . '" onclick="return confirm(' . esc_attr(wp_json_encode(tngs_t('Supprimer tous les fichiers hors profil du serveur ?'))) . ')">' . esc_html(tngs_t('Tout supprimer')) . '</button>';
+        echo '</td><td></td></tr>';
+    }
+
     /** Onglet « Vue d'ensemble des profils » : tableau en lecture seule (planification, dernière génération, générer maintenant, modifier). */
     public static function overview() {
         $profiles = TNGBook::profiles();
@@ -445,7 +480,14 @@ class TNGBook_Auto {
         self::notices(['auto_ok', 'auto_fail', 'auto_skip', 'missing', 'file_deleted', 'files_deleted', 'file_missing']);
         echo '<p class="description">' . esc_html(tngs_t('Génère automatiquement le livre des profils pour lesquels la génération automatique est activée, à intervalle régulier, dans un dossier du serveur (les anciens fichiers sont supprimés au-delà du nombre conservé).')) . '</p>';
         if (!$profiles) {
-            echo '<p>' . esc_html(tngs_t('Aucun profil pour le moment. Réglez un livre dans l’onglet « Générer un livre », puis enregistrez-le comme profil : la génération automatique se règle dans chaque profil.')) . '</p></div>';
+            echo '<p>' . esc_html(tngs_t('Aucun profil pour le moment. Réglez un livre dans l’onglet « Générer un livre », puis enregistrez-le comme profil : la génération automatique se règle dans chaque profil.')) . '</p>';
+            if (self::orphans()) {
+                echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '"><input type="hidden" name="_tngauto" value="' . esc_attr(wp_create_nonce('tngbook_auto')) . '">'
+                    . '<table class="widefat striped" style="max-width:1100px"><thead><tr><th>' . esc_html(tngs_t('Profil')) . '</th><th></th><th>' . esc_html(tngs_t('Dernière génération')) . '</th><th></th></tr></thead><tbody>';
+                self::orphan_row();
+                echo '</tbody></table></form>';
+            }
+            echo '</div>';
             return;
         }
         if (defined('DISABLE_WP_CRON') && DISABLE_WP_CRON) {
@@ -489,6 +531,7 @@ class TNGBook_Auto {
                 . '<button type="submit" class="button" name="bg_profile" value="' . esc_attr($name) . '" formaction="' . esc_url(admin_url('admin-post.php?action=tngbook_bg_start')) . '">' . esc_html(tngs_t('En arrière-plan')) . '</button> '
                 . '<button type="submit" class="button" name="tngbook_profile" value="' . esc_attr($name) . '" formaction="' . esc_url(admin_url('admin-post.php?action=tngbook_profile_apply')) . '">' . esc_html(tngs_t('Modifier')) . '</button></td></tr>';
         }
+        self::orphan_row();
         echo '</tbody></table></form></div>';
     }
 

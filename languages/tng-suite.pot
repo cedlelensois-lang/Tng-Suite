@@ -4372,6 +4372,15 @@ msgstr ""
 msgid "Fichiers supprimés."
 msgstr ""
 
+msgid "Hors profil"
+msgstr ""
+
+msgid "Livres générés en arrière-plan depuis le formulaire"
+msgstr ""
+
+msgid "Supprimer tous les fichiers hors profil du serveur ?"
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""

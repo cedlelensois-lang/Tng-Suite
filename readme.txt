@@ -85,7 +85,7 @@ Only the plugin's own settings, caches, scheduled task and the tables it created
 == Changelog ==
 
 = 2.19.3 =
-* Livre : dans la vue d’ensemble des profils, chaque fichier généré (génération automatique ou manuelle) peut être supprimé du serveur (lien « Supprimer », ou « Tout supprimer » pour le profil), après confirmation.
+* Livre : dans la vue d’ensemble des profils, chaque fichier généré (génération automatique ou manuelle) peut être supprimé du serveur (lien « Supprimer », ou « Tout supprimer » pour le profil), après confirmation. Les livres générés en arrière-plan depuis le formulaire (sans profil) sont désormais listés sur une ligne « Hors profil », avec les mêmes suppressions.
 * Livre (PDF) : les renvois (A1, D12, numéros des listes et des index…) ouvrent maintenant la bonne page au lieu de la première.
 
 = 2.19.2 =
