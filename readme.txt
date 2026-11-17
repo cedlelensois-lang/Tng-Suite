@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.19.2
+Stable tag: 2.19.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the tables it created in the WordPress database (`tngi_inbreeding` for the implex module; `tngs_coh_res` and `tngs_coh_key` for the data consistency check). Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.19.3 =
+* Livre (PDF) : les renvois (A1, D12, numéros des listes et des index…) ouvrent maintenant la bonne page au lieu de la première.
 
 = 2.19.2 =
 * Cohérence des données : filtre par anomalie (liste des contrôles groupée par type, avec le nombre de cas), colonne « Anomalie » (intitulé du contrôle) et colonne « Fiches » triables, colonne « Détail » pour le message ; les liens des fiches ouvrent la page d'édition de TNG (admin_editperson.php / admin_editfamily.php) ; l'export CSV reprend l'intitulé de l'anomalie.

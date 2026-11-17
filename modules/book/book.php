@@ -918,6 +918,16 @@ final class TNGBook {
     }
 
     /**
+     * mPDF ne reconnaît pas l'attribut id comme cible d'un lien interne (seul <a name="…"> l'est) : sans cela, tous les renvois (A1, D12, I…)
+     * pointent vers la première page. Une ancre vide est donc ajoutée au début de chaque bloc portant un identifiant.
+     */
+    public static function pdf_anchors($html) {
+        return preg_replace_callback('#<(div|h[1-6])\b[^>]*?\sid="([^"]+)"[^>]*>#i', function ($m) {
+            return $m[2] === 'surn-root' ? $m[0] : $m[0] . '<a name="' . $m[2] . '"></a>';
+        }, (string) $html);
+    }
+
+    /**
      * Cadre autour des pages (PDF) : mPDF ne sait pas tracer de bordure de page ; le cadre est donc une image PNG transparente de la taille
      * de la page, posée en fond de toutes les pages sauf la première (couverture). Le repère <meta name="tng-frame"> du HTML est retiré.
      */
@@ -969,7 +979,7 @@ final class TNGBook {
         self::pdf_prepare();
         $mpdf = self::pdf_make();
         self::beat('images');
-        $html = self::pdf_images($mpdf, self::pdf_cover($mpdf, self::pdf_frame($mpdf, self::pdf_smallcaps((string) $html))));
+        $html = self::pdf_images($mpdf, self::pdf_cover($mpdf, self::pdf_frame($mpdf, self::pdf_anchors(self::pdf_smallcaps((string) $html)))));
         self::pdf_write($mpdf, $html);
         $html = '';
         $mpdf->imageVars = array_intersect_key($mpdf->imageVars, ['tngframe' => 1, 'tngcover' => 1]);   // les images sont désormais dans le PDF : mémoire libérée avant l'écriture du fichier
@@ -984,7 +994,7 @@ final class TNGBook {
     public static function pdf_stage_init(&$html) {
         $mpdf = self::pdf_make();
         self::beat('images');
-        $html = self::pdf_images($mpdf, self::pdf_cover($mpdf, self::pdf_frame($mpdf, self::pdf_smallcaps((string) $html))));
+        $html = self::pdf_images($mpdf, self::pdf_cover($mpdf, self::pdf_frame($mpdf, self::pdf_anchors(self::pdf_smallcaps((string) $html)))));
         $pieces = self::pdf_pieces($mpdf, $html);
         $html = '';
         if ($pieces === null) throw new Exception(tngs_t('Le livre n’a pas pu être découpé pour le PDF.'));
