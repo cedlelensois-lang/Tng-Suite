@@ -4357,6 +4357,21 @@ msgstr ""
 msgid "Ouvrir la fiche en édition dans TNG"
 msgstr ""
 
+msgid "Supprimer ce fichier du serveur ?"
+msgstr ""
+
+msgid "Supprimer tous les fichiers de ce profil du serveur ?"
+msgstr ""
+
+msgid "Tout supprimer"
+msgstr ""
+
+msgid "Fichier supprimé."
+msgstr ""
+
+msgid "Fichiers supprimés."
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""

@@ -22,6 +22,7 @@ class TNGBook_Auto {
         add_action('admin_post_tngbook_auto_save', [__CLASS__, 'save']);
         add_action('admin_post_tngbook_auto_now', [__CLASS__, 'now']);
         add_action('admin_post_tngbook_auto_dl', [__CLASS__, 'download']);
+        add_action('admin_post_tngbook_auto_del', [__CLASS__, 'delete_files']);
     }
 
     /* ---------- Données ---------- */
@@ -389,6 +390,21 @@ class TNGBook_Auto {
         self::back('auto_' . $res[0], 'tngbook-overview');
     }
 
+    /** Suppression de fichiers générés : un fichier (champ « del ») ou tous ceux d'un profil (champ « delall »). Seuls les noms produits par le plugin sont acceptés. */
+    public static function delete_files() {
+        self::guard('tngbook_auto');
+        $dir = self::dir(false);
+        $f = sanitize_text_field(wp_unslash((string) ($_POST['del'] ?? '')));   // phpcs:ignore WordPress.Security.NonceVerification.Missing -- jeton vérifié par guard()
+        $all = sanitize_text_field(wp_unslash((string) ($_POST['delall'] ?? '')));   // phpcs:ignore WordPress.Security.NonceVerification.Missing -- jeton vérifié par guard()
+        $n = 0;
+        if ($f !== '') {
+            if (preg_match('/^[a-z0-9-]+__\d{4}-\d{2}-\d{2}_\d{6}\.(' . implode('|', self::EXTS) . ')$/', $f) && is_file($dir . '/' . $f)) { wp_delete_file($dir . '/' . $f); $n = 1; }
+        } elseif ($all !== '' && isset(TNGBook::profiles()[$all])) {
+            foreach (self::files($all) as $x) { wp_delete_file($dir . '/' . $x); $n++; }
+        }
+        self::back($n > 1 ? 'files_deleted' : ($n === 1 ? 'file_deleted' : 'file_missing'), 'tngbook-overview');
+    }
+
     /** Téléchargement d'un livre généré (le dossier peut se trouver hors du site). */
     public static function download() {
         self::guard('tngbook_auto');
@@ -411,7 +427,8 @@ class TNGBook_Auto {
     private static function notices(array $keys) {
         $notes = ['auto_saved' => ['success', 'Réglages communs de la génération automatique enregistrés.'], 'auto_ok' => ['success', 'Livre généré : voir la colonne « Dernière génération ».'],
             'auto_fail' => ['error', 'La génération a échoué : voir le message dans la colonne « Dernière génération ».'], 'auto_skip' => ['info', 'Génération non lancée : voir le message dans la colonne « Dernière génération ».'],
-            'auto_dir' => ['warning', 'Dossier refusé : l’ancien réglage est conservé.'], 'missing' => ['warning', 'Profil introuvable.']];
+            'auto_dir' => ['warning', 'Dossier refusé : l’ancien réglage est conservé.'], 'missing' => ['warning', 'Profil introuvable.'],
+            'file_deleted' => ['success', 'Fichier supprimé.'], 'files_deleted' => ['success', 'Fichiers supprimés.'], 'file_missing' => ['warning', 'Fichier introuvable.']];
         $m = isset($_GET['tngbook_msg']) ? sanitize_key(wp_unslash($_GET['tngbook_msg'])) : '';   // phpcs:ignore WordPress.Security.NonceVerification.Recommended
         if (in_array($m, $keys, true) && isset($notes[$m])) {
             echo '<div class="notice notice-' . esc_attr($notes[$m][0]) . ' is-dismissible"><p>' . esc_html(tngs_t($notes[$m][1]));
@@ -425,7 +442,7 @@ class TNGBook_Auto {
         $profiles = TNGBook::profiles();
         $jobs = self::jobs();
         echo '<div id="tngbook-overview"><h2>' . esc_html(tngs_t('Vue d’ensemble des profils')) . '</h2>';
-        self::notices(['auto_ok', 'auto_fail', 'auto_skip', 'missing']);
+        self::notices(['auto_ok', 'auto_fail', 'auto_skip', 'missing', 'file_deleted', 'files_deleted', 'file_missing']);
         echo '<p class="description">' . esc_html(tngs_t('Génère automatiquement le livre des profils pour lesquels la génération automatique est activée, à intervalle régulier, dans un dossier du serveur (les anciens fichiers sont supprimés au-delà du nombre conservé).')) . '</p>';
         if (!$profiles) {
             echo '<p>' . esc_html(tngs_t('Aucun profil pour le moment. Réglez un livre dans l’onglet « Générer un livre », puis enregistrez-le comme profil : la génération automatique se règle dans chaque profil.')) . '</p></div>';
@@ -462,9 +479,11 @@ class TNGBook_Auto {
                 foreach (count($files) > 1 ? $files : [$files[0]] as $i => $f) {   // plusieurs fichiers conservés : la liste complète, du plus récent au plus ancien
                     $url = wp_nonce_url(add_query_arg(['action' => 'tngbook_auto_dl', 'f' => $f], admin_url('admin-post.php')), 'tngbook_auto', '_tngauto');
                     $sz = ($f === $j['file'] && $j['size']) ? (int) $j['size'] : (int) @filesize($dir . '/' . $f);
-                    echo '<br><a href="' . esc_url($url) . '">' . esc_html($f) . '</a>' . ($sz ? ' (' . esc_html(size_format($sz)) . ')' : '');
+                    echo '<br><a href="' . esc_url($url) . '">' . esc_html($f) . '</a>' . ($sz ? ' (' . esc_html(size_format($sz)) . ')' : '')
+                        . ' <button type="submit" class="button-link button-link-delete" name="del" value="' . esc_attr($f) . '" formaction="' . esc_url(admin_url('admin-post.php?action=tngbook_auto_del')) . '" onclick="return confirm(' . esc_attr(wp_json_encode(tngs_t('Supprimer ce fichier du serveur ?'))) . ')">' . esc_html(tngs_t('Supprimer')) . '</button>';
                 }
                 echo '<br><span class="description">' . (int) count($files) . ' ' . esc_html(tngs_t('fichier(s) conservé(s)')) . '</span>';
+                if (count($files) > 1) echo ' <button type="submit" class="button-link button-link-delete" name="delall" value="' . esc_attr($name) . '" formaction="' . esc_url(admin_url('admin-post.php?action=tngbook_auto_del')) . '" onclick="return confirm(' . esc_attr(wp_json_encode(tngs_t('Supprimer tous les fichiers de ce profil du serveur ?'))) . ')">' . esc_html(tngs_t('Tout supprimer')) . '</button>';
             }
             echo '</td><td style="white-space:nowrap"><button type="submit" class="button" name="now" value="' . esc_attr($name) . '" formaction="' . esc_url(admin_url('admin-post.php?action=tngbook_auto_now')) . '">' . esc_html(tngs_t('Générer maintenant')) . '</button> '
                 . '<button type="submit" class="button" name="bg_profile" value="' . esc_attr($name) . '" formaction="' . esc_url(admin_url('admin-post.php?action=tngbook_bg_start')) . '">' . esc_html(tngs_t('En arrière-plan')) . '</button> '

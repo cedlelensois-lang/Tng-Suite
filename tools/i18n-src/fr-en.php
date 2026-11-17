@@ -1461,4 +1461,9 @@ return array(
 	'Lieu écrit de plusieurs façons' => 'Place written in several ways',
 	'Détail' => 'Detail',
 	'Ouvrir la fiche en édition dans TNG' => 'Open the record in edit mode in TNG',
+	'Supprimer ce fichier du serveur ?' => 'Delete this file from the server?',
+	'Supprimer tous les fichiers de ce profil du serveur ?' => 'Delete all of this profile\'s files from the server?',
+	'Tout supprimer' => 'Delete all',
+	'Fichier supprimé.' => 'File deleted.',
+	'Fichiers supprimés.' => 'Files deleted.',
 );
