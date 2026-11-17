@@ -35,9 +35,9 @@ Timeline of a family (couple and children).
 
 | Attribute | Values | Default | Role |
 |---|---|---|---|
-| person | I1 | {'fr': '(vide)', 'en': '(empty)'} | Person ID. `person` or `family` is required. |
-| family | F12 | {'fr': '(vide)', 'en': '(empty)'} | Family ID. |
-| tree | {'fr': 'identifiant d’arbre', 'en': 'tree ID'} | {'fr': 'arbre de Général', 'en': 'tree from General'} | Tree (gedcom). |
+| person | I1 | (empty) | Person ID. `person` or `family` is required. |
+| family | F12 | (empty) | Family ID. |
+| tree | tree ID | tree from General | Tree (gedcom). |
 
 ## Usage
 

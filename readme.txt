@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.18.0
+Stable tag: 2.19.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,6 +26,7 @@ TNG Suite brings the display of your TNG genealogy data into WordPress through s
 * Fan / kinship wheel: ancestors (up to 12 generations), descendants or mixed wheel, spouses, text that adapts when zooming, PDF export, generator in the administration, adjustable shapes and colour palettes (`[tng_fan]`)
 * Implex and inbreeding analysis (`[tng_implexe]`, `[tng_consanguinite]`)
 * Family book: Sosa ancestry and d'Aboville descendants, printable page or PDF (`[tng_book]`)
+* Data consistency check (administrators only, no shortcode): impossible dates, ages, sex, family structure and possible duplicates with a score, read-only on your TNG data (TNG Suite > Analyses)
 
 **Connection to the TNG database** (TNG Suite > General), three modes:
 
@@ -79,9 +80,15 @@ TNG Suite > General > Language: Automatic (WordPress language), French or Englis
 Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation are shown. By default living and private people are hidden.
 
 = Which files are removed when I delete the plugin? =
-Only the plugin's own settings, caches, scheduled task and the `tngi_inbreeding` table created by the implex module. Your TNG data is never touched.
+Only the plugin's own settings, caches, scheduled task and the tables it created in the WordPress database (`tngi_inbreeding` for the implex module; `tngs_coh_res` and `tngs_coh_key` for the data consistency check). Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.19.0 =
+* Nouveau module « Cohérence des données » (TNG Suite > Analyses, réservé aux administrateurs, sans shortcode) : contrôle en lecture seule de l'arbre TNG. Dates impossibles ou incohérentes (naissance après le décès, enfant né après la mort de la mère ou plus de 9 mois après celle du père, mariage hors de la vie des époux, âges au mariage et à la naissance des enfants, personne « vivante » trop âgée…), sexe incompatible avec le rôle de père ou de mère ou avec le prénom, structure des familles (boucles d'ascendance, enfant de plusieurs familles, couples en double, références à des personnes absentes), noms mal saisis, lieux écrits de plusieurs façons, et doublons possibles avec un score de probabilité triable. Seuils réglables, anomalies ignorables et restaurables, export CSV, lancement manuel par lots avec barre de progression (adapté aux grands arbres), résultats conservés jusqu'à la prochaine analyse. Rien n'est écrit dans la base TNG ; les résultats sont stockés dans deux tables de la base WordPress, supprimées à la désinstallation.
+* Livre : formulaire simplifié. Palettes de couleurs regroupées par famille (24 palettes, mieux différenciées, six renommées) ; « Titre, auteur, préface et page sur le patronyme » dans un volet repliable (replié quand tout est vide) ; « Génération automatique de ce profil » repliable ; une case à cocher par partie directement dans la liste « Ordre et affichage des parties du livre » (les parties masquées restent à leur place) ; phrases détaillées, lieux traduits (pays et départements) et lieux de résidence toujours actifs (cases retirées) ; index des noms et index des lieux séparés. Les réglages et profils enregistrés sont convertis automatiquement.
+* Livre (PDF, modèle Moderne) : le filet vert à gauche des fiches reste continu même quand une photo accompagne le mini-arbre.
+* Éventail : export PNG en plus du PDF, avec les mêmes options que le PDF (format de feuille, orientation, contenu) ; résolution au choix (150, 200 ou 300 dpi), fond blanc ou transparent ; la résolution est réduite automatiquement si elle dépasse la limite d'image du navigateur.
 
 = 2.18.0 =
 * Livre : deux ornements à feuilles d'arbre, dessinés par le plugin en camaïeu de la couleur du livre : le cadre « Cadre feuillage » (filet fin et petites branches de feuilles aux quatre coins, 9 mm) et l'illustration de couverture « Petit arbre et feuillages » (un petit arbre entre deux branches feuillues, au-dessus et au-dessous du titre). Word et OpenDocument : double filet pour le cadre, comme les autres cadres ornés.

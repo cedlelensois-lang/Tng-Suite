@@ -51,11 +51,11 @@ Dernières fiches modifiées.
 | Attribut | Valeurs | Défaut | Rôle |
 |---|---|---|---|
 | limit | 1 – 100 | 10 | Nombre de fiches. |
-| tree | {'fr': 'identifiant d’arbre', 'en': 'tree ID'} | {'fr': 'arbre de Général', 'en': 'tree from General'} | Arbre (gedcom). |
+| tree | identifiant d’arbre | arbre de Général | Arbre (gedcom). |
 | date | yes / no | yes | Afficher la date de modification. |
-| date_format | {'fr': 'format PHP', 'en': 'PHP format'} | {'fr': 'format WordPress', 'en': 'WordPress format'} | Format de la date. |
+| date_format | format PHP | format WordPress | Format de la date. |
 | link | yes / no | yes | Lien vers la fiche TNG. |
-| title | {'fr': 'texte', 'en': 'text'} | {'fr': '(vide)', 'en': '(empty)'} | Titre affiché au-dessus de la liste. |
+| title | texte | (vide) | Titre affiché au-dessus de la liste. |
 
 ## Utilisation
 

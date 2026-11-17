@@ -59,11 +59,11 @@ Forme générique : `stat` = clé de la statistique, `type` = type de graphique.
 
 | Attribut | Valeurs | Défaut | Rôle |
 |---|---|---|---|
-| type | {'fr': 'selon la statistique (voir ci-dessous)', 'en': 'depends on the statistic (see below)'} | {'fr': '1er type de la liste', 'en': 'first type in the list'} | Type de graphique : `pie`, `doughnut`, `polarArea`, `bar`, `hbar`, `line`, `area`, `radar`, `pyramid` ou `table`. |
-| tree | {'fr': 'identifiant d’arbre', 'en': 'tree ID'} | {'fr': 'arbre de Général', 'en': 'tree from General'} | Arbre (gedcom). |
-| height | {'fr': 'pixels', 'en': 'pixels'} | 380 | Hauteur du graphique. |
-| title | {'fr': 'texte', 'en': 'text'} | {'fr': 'titre du réglage', 'en': 'title from settings'} | Remplace le titre. |
-| class | {'fr': 'classe CSS', 'en': 'CSS class'} | {'fr': '(vide)', 'en': '(empty)'} | Classe CSS ajoutée au conteneur. |
+| type | selon la statistique (voir ci-dessous) | 1er type de la liste | Type de graphique : `pie`, `doughnut`, `polarArea`, `bar`, `hbar`, `line`, `area`, `radar`, `pyramid` ou `table`. |
+| tree | identifiant d’arbre | arbre de Général | Arbre (gedcom). |
+| height | pixels | 380 | Hauteur du graphique. |
+| title | texte | titre du réglage | Remplace le titre. |
+| class | classe CSS | (vide) | Classe CSS ajoutée au conteneur. |
 
 ### Statistiques disponibles
 
@@ -71,7 +71,7 @@ Forme générique : `stat` = clé de la statistique, `type` = type de graphique.
 |---|---|---|---|
 | centenarians — `[tng_stat_centenaires]` | table, hbar, bar | table | Les plus longues vies. `limit` (10), `min_age` (100), `precision` (`day` ou `year`), `person` (limiter aux ancêtres d’une personne). |
 | gender — `[tng_stat_genre]` | pie, doughnut, polarArea, bar, hbar, table | doughnut | Hommes, femmes, inconnus (vivants inclus). |
-| living — `[tng_stat_vivants]` | {'fr': 'idem', 'en': 'same'} | polarArea | Nombre de personnes décédées et vivantes (totaux seulement). Les libellés se renomment dans Stats : graphiques. |
+| living — `[tng_stat_vivants]` | idem | polarArea | Nombre de personnes décédées et vivantes (totaux seulement). Les libellés se renomment dans Stats : graphiques. |
 | marriage_age — `[tng_stat_age_union]` | line, area, bar, table | line | Âge moyen à la première union (H/F) par siècle. `min_n` (3) : cas minimum par siècle et sexe. |
 | life_expectancy — `[tng_stat_esperance]` | line, area, bar, table | line | Âge moyen au décès par siècle du décès. `min_age` (0 ; 5 ou 20 pour écarter la mortalité infantile), `min_n` (5). |
 | pyramid — `[tng_stat_pyramide]` | pyramid, bar, table | pyramid | Sans `year` : âges au décès (hommes à gauche, femmes à droite). Avec `year="1850"` : âges des personnes vivantes cette année-là. `step` (10 ; 5 ou 10), `max_age` (100). |

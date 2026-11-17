@@ -1,6 +1,6 @@
 # Fan / kinship wheel
 
-Ancestors, descendants or mixed wheel, interactive (zoom, pan, PDF export). The page has two sections: **Generate a wheel** (preview + shortcode to copy) and **Settings** (default values).
+Ancestors, descendants or mixed wheel, interactive (zoom, pan, PDF or PNG export). The page has two sections: **Generate a wheel** (preview + shortcode to copy) and **Settings** (default values).
 
 ## In the admin
 
@@ -44,25 +44,25 @@ French alias of `[tng_fan]`.
 
 | Attribute | Values | Default | Role |
 |---|---|---|---|
-| person | I1 | {'fr': 'réglage', 'en': 'setting'} | Starting person (required if there is no default). |
-| tree | {'fr': 'identifiant d’arbre', 'en': 'tree ID'} | {'fr': 'Général', 'en': 'General'} | Tree (gedcom). |
-| mode | ancestors, descendants, mixed | {'fr': 'réglage', 'en': 'setting'} | Wheel type. |
-| asc / desc | {'fr': '1–12 / 1–plafond', 'en': '1–12 / 1–cap'} | {'fr': 'réglage', 'en': 'setting'} | Ancestor / descendant generations. |
-| shape | full, three, half | {'fr': 'réglage', 'en': 'setting'} | Full circle, three quarters, half circle. |
-| color | generation, branch, sex | {'fr': 'réglage', 'en': 'setting'} | Colouring mode. |
-| style | tint, solid | {'fr': 'réglage', 'en': 'setting'} | Light tint or solid colour. |
-| palette | {'fr': 'id de palette ou `custom`', 'en': 'palette id or `custom`'} | {'fr': 'réglage', 'en': 'setting'} | Colour palette. |
-| colors | {'fr': '`#aabbcc,#112233…`', 'en': '`#aabbcc,#112233…`'} | {'fr': '(vide)', 'en': '(empty)'} | Forced colours (up to 12), take priority over the palette. |
-| dates | years, full, none | {'fr': 'réglage', 'en': 'setting'} | Date format. |
-| places | none, commune, full | {'fr': 'réglage', 'en': 'setting'} | Places displayed. |
-| spouses | 1 / 0 | {'fr': 'réglage', 'en': 'setting'} | Show spouses. |
+| person | I1 | setting | Starting person (required if there is no default). |
+| tree | tree ID | General | Tree (gedcom). |
+| mode | ancestors, descendants, mixed | setting | Wheel type. |
+| asc / desc | 1–12 / 1–cap | setting | Ancestor / descendant generations. |
+| shape | full, three, half | setting | Full circle, three quarters, half circle. |
+| color | generation, branch, sex | setting | Colouring mode. |
+| style | tint, solid | setting | Light tint or solid colour. |
+| palette | palette id or `custom` | setting | Colour palette. |
+| colors | `#aabbcc,#112233…` | (empty) | Forced colours (up to 12), take priority over the palette. |
+| dates | years, full, none | setting | Date format. |
+| places | none, commune, full | setting | Places displayed. |
+| spouses | 1 / 0 | setting | Show spouses. |
 | living | default, hide, show | default | `hide` hides living people; `show` displays them only if General allows it. |
-| zoomdetail | 1 / 0 | {'fr': 'réglage', 'en': 'setting'} | Richer text when zooming. |
-| labels | symbols, letters | {'fr': 'réglage', 'en': 'setting'} | Symbols (° †) or letters. |
-| pdf | 1 / 0 | 1 | PDF export button. |
+| zoomdetail | 1 / 0 | setting | Richer text when zooming. |
+| labels | symbols, letters | setting | Symbols (° †) or letters. |
+| pdf | 1 / 0 | 1 | Export button (PDF or PNG). |
 | controls | 1 / 0 | 1 | Zoom / navigation buttons. |
-| height | {'fr': 'pixels', 'en': 'pixels'} | {'fr': 'réglage', 'en': 'setting'} | Wheel height. |
-| class | {'fr': 'classe CSS', 'en': 'CSS class'} | {'fr': '(vide)', 'en': '(empty)'} | CSS class added to the container. |
+| height | pixels | setting | Wheel height. |
+| class | CSS class | (empty) | CSS class added to the container. |
 
 ## Usage
 
@@ -72,6 +72,7 @@ French alias of `[tng_fan]`.
 
 ## Notes
 
+- Export: the **Export as PDF or PNG** button opens a dialog with the **output format** (vector PDF or PNG), the sheet size (fit to text, automatic, A4 to A0), the orientation and the content (as on screen, or full dates and places). **PNG** is an image: pick the resolution (150, 200 — recommended — or 300 dpi) and a white or **transparent** background (tick-box). If the requested size exceeds the browser’s image limit, the resolution is reduced automatically and a message says so. The PNG is built in the browser: nothing is sent to the server.
 - `living="show"` has no effect if “Always hide” is chosen in **General**.
 - If access is restricted (logged-in / administrators), other visitors see a message instead of the chart.
 - Results are cached; after a change in TNG, use **General > Maintenance > Flush caches** to see it immediately.

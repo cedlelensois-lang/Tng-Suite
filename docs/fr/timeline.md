@@ -35,9 +35,9 @@ Frise d’une famille (couple et enfants).
 
 | Attribut | Valeurs | Défaut | Rôle |
 |---|---|---|---|
-| person | I1 | {'fr': '(vide)', 'en': '(empty)'} | Identifiant de la personne. `person` ou `family` est obligatoire. |
-| family | F12 | {'fr': '(vide)', 'en': '(empty)'} | Identifiant de la famille. |
-| tree | {'fr': 'identifiant d’arbre', 'en': 'tree ID'} | {'fr': 'arbre de Général', 'en': 'tree from General'} | Arbre (gedcom). |
+| person | I1 | (vide) | Identifiant de la personne. `person` ou `family` est obligatoire. |
+| family | F12 | (vide) | Identifiant de la famille. |
+| tree | identifiant d’arbre | arbre de Général | Arbre (gedcom). |
 
 ## Utilisation
 

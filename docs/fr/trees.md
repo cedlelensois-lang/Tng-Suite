@@ -51,7 +51,7 @@ Bouton qui renvoie vers la fiche TNG de la personne (voir aussi le module « Bou
 | Attribut | Valeurs | Défaut | Rôle |
 |---|---|---|---|
 | id | I1, I25… | I1 | Identifiant TNG de la personne (`personID=I12` dans l’adresse de sa page) ; pour `liste_enfants_tng`, identifiant de la famille (F12). |
-| generations | {'fr': 'nombre entier', 'en': 'whole number'} | {'fr': '3 (arbre), 5 (patronyme)', 'en': '3 (tree), 5 (patronymic)'} | Nombre de générations. Plafond : 5 pour `arbre_tng`, 30 pour `patronyme_tng`, 15 niveaux pour les descendants. |
+| generations | nombre entier | 3 (arbre), 5 (patronyme) | Nombre de générations. Plafond : 5 pour `arbre_tng`, 30 pour `patronyme_tng`, 15 niveaux pour les descendants. |
 
 ## Utilisation
 

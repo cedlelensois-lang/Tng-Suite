@@ -36,9 +36,9 @@ With a specific tree and a custom text.
 
 | Attribute | Values | Default | Role |
 |---|---|---|---|
-| id | I12 | {'fr': '(vide : rien)', 'en': '(empty: nothing)'} | TNG person ID. |
-| tree | {'fr': 'identifiant d’arbre', 'en': 'tree ID'} | {'fr': 'arbre de Général', 'en': 'tree from General'} | Tree (gedcom) of the person. |
-| text | {'fr': 'texte', 'en': 'text'} | {'fr': 'texte des réglages', 'en': 'text from settings'} | Label of this button. |
+| id | I12 | (empty: nothing) | TNG person ID. |
+| tree | tree ID | tree from General | Tree (gedcom) of the person. |
+| text | text | text from settings | Label of this button. |
 
 ## Usage
 

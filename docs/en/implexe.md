@@ -36,16 +36,16 @@ Ranking of people by inbreeding coefficient (calculated by an administrator, res
 
 | Attribute | Values | Default | Role |
 |---|---|---|---|
-| tree | {'fr': 'identifiant d’arbre', 'en': 'tree ID'} | {'fr': 'réglage Général', 'en': 'General setting'} | Tree (gedcom). |
-| person | I1 | {'fr': 'réglage', 'en': 'setting'} | Starting person. |
-| generations | 2 – max | {'fr': 'maximum du réglage', 'en': 'setting maximum'} | Analysed generations. |
-| network_generations | 2 – 10 | {'fr': 'réglage', 'en': 'setting'} | Network generations. |
+| tree | tree ID | General setting | Tree (gedcom). |
+| person | I1 | setting | Starting person. |
+| generations | 2 – max | setting maximum | Analysed generations. |
+| network_generations | 2 – 10 | setting | Network generations. |
 
 ### `[tng_consanguinite]`
 
 | Attribute | Values | Default | Role |
 |---|---|---|---|
-| tree | {'fr': 'identifiant d’arbre', 'en': 'tree ID'} | {'fr': 'réglage Général', 'en': 'General setting'} | Tree (gedcom). |
+| tree | tree ID | General setting | Tree (gedcom). |
 | per_page | 10 – 100 | 50 | Rows per page. |
 
 ## Usage

@@ -1,0 +1,12 @@
+.tngcoh-filters { margin: 12px 0; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+.tngcoh-run { margin: 12px 0 18px; }
+.tngcoh-bar { height: 14px; max-width: 520px; background: #dcdcde; border-radius: 7px; overflow: hidden; margin: 10px 0 4px; }
+.tngcoh-fill { height: 100%; width: 0; background: #2271b1; transition: width .25s; }
+.tngcoh-status { margin: 4px 0; min-height: 1.4em; }
+.tngcoh-inline { display: inline; margin: 0; }
+.tngcoh-table td, .tngcoh-table th { vertical-align: top; }
+.tngcoh-sev { display: inline-block; padding: 1px 8px; border-radius: 3px; font-size: 12px; font-weight: 600; background: #f0f0f1; color: #1d2327; }
+.tngcoh-sev-2 { background: #fcf0f1; color: #8a1f2d; border: 1px solid #e6b3ba; }
+.tngcoh-sev-1 { background: #fcf9e8; color: #6b4e00; border: 1px solid #ecd98a; }
+.tngcoh-sev-0 { background: #f0f6fc; color: #1d4f7c; border: 1px solid #b6d3ec; }
+.tngcoh-sum .tngcoh-sev { font-size: 13px; margin-right: 6px; }

@@ -51,11 +51,11 @@ Latest modified records.
 | Attribute | Values | Default | Role |
 |---|---|---|---|
 | limit | 1 – 100 | 10 | Number of records. |
-| tree | {'fr': 'identifiant d’arbre', 'en': 'tree ID'} | {'fr': 'arbre de Général', 'en': 'tree from General'} | Tree (gedcom). |
+| tree | tree ID | tree from General | Tree (gedcom). |
 | date | yes / no | yes | Show the modification date. |
-| date_format | {'fr': 'format PHP', 'en': 'PHP format'} | {'fr': 'format WordPress', 'en': 'WordPress format'} | Date format. |
+| date_format | PHP format | WordPress format | Date format. |
 | link | yes / no | yes | Link to the TNG record. |
-| title | {'fr': 'texte', 'en': 'text'} | {'fr': '(vide)', 'en': '(empty)'} | Title shown above the list. |
+| title | text | (empty) | Title shown above the list. |
 
 ## Usage
 

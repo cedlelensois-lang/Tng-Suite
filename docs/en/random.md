@@ -35,8 +35,8 @@ Draw restricted to a surname and a tree.
 
 | Attribute | Values | Default | Role |
 |---|---|---|---|
-| name | {'fr': 'nom de famille', 'en': 'surname'} | {'fr': '(vide : tous)', 'en': '(empty: all)'} | Restricts the draw to this surname. |
-| tree | {'fr': 'identifiant d’arbre', 'en': 'tree ID'} | {'fr': 'arbre de Général', 'en': 'tree from General'} | Tree (gedcom). |
+| name | surname | (empty: all) | Restricts the draw to this surname. |
+| tree | tree ID | tree from General | Tree (gedcom). |
 
 ## Usage
 

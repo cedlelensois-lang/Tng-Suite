@@ -89,7 +89,7 @@ final class TNGBook {
             'personID' => '', 'tree' => '', 'lang' => tngs_lang(),
             'gen_up' => 6, 'gen_down' => 4, 'max_people' => self::MAX_PEOPLE, 'living' => 'anonymize', 'place_parts' => 1,
             // réglages d'un nouveau livre (2.12.0) : contenu complet, modèle Élégant, PDF, contexte historique
-            'photos' => 1, 'spphotos' => 1, 'spfiche' => 1, 'generic' => 1, 'avatar' => 'portrait', 'sources' => 0, 'index' => 1, 'notes' => 1, 'military' => 1, 'mpf' => 1, 'mini' => 1, 'imgq' => 0, 'trees' => 1, 'stats' => 1, 'stats_first' => 1, 'stats_last' => 1, 'desclist' => 1, 'chrono' => 1, 'kids' => 1, 'histfiche' => 1, 'map' => 1, 'bapt' => 1, 'burial' => 1, 'verbose' => 1, 'country' => 1, 'regions' => 1, 'asclist' => 1, 'resi' => 1, 'sibs' => 0, 'marrage' => 1, 'cous' => 1, 'allunions' => 1, 'order' => ['asc', 'desc', 'stats', 'chrono', 'map', 'idxn', 'idxp', 'src', 'alist', 'dlist'],
+            'photos' => 1, 'spphotos' => 1, 'spfiche' => 1, 'generic' => 1, 'avatar' => 'portrait', 'sources' => 0, 'index' => 1, 'idxn' => 1, 'idxp' => 1, 'notes' => 1, 'military' => 1, 'mpf' => 1, 'mini' => 1, 'imgq' => 0, 'trees' => 1, 'stats' => 1, 'stats_first' => 1, 'stats_last' => 1, 'desclist' => 1, 'chrono' => 1, 'kids' => 1, 'histfiche' => 1, 'map' => 1, 'bapt' => 1, 'burial' => 1, 'verbose' => 1, 'country' => 1, 'regions' => 1, 'asclist' => 1, 'resi' => 1, 'sibs' => 0, 'marrage' => 1, 'cous' => 1, 'allunions' => 1, 'order' => ['asc', 'desc', 'stats', 'chrono', 'map', 'idxn', 'idxp', 'src', 'alist', 'dlist'],
             'title' => '', 'author' => '', 'preface' => '', 'surname' => '', 'surname_title' => '', 'format' => self::mpdf_available() ? 'pdf' : 'html', 'template' => 'elegant', 'frame' => 'single', 'cover_art' => 'color', 'history' => 1, 'history_lists' => [tngs_lang() === 'fr' ? 'tpl-FR' : 'tpl-GB'], 'history_default' => '', 'history_scope' => 'all',
             'colors' => TNGBook_Renderer::defaultColors(),
         ];
@@ -99,6 +99,7 @@ final class TNGBook {
     private static function saved_opts() {
         $saved = get_option(self::OPT, []);
         if (is_array($saved) && $saved && !array_key_exists('spfiche', $saved)) $saved['spfiche'] = 0;
+        if (is_array($saved) && $saved && !array_key_exists('idxn', $saved)) $saved['idxn'] = $saved['idxp'] = array_key_exists('index', $saved) ? (empty($saved['index']) ? 0 : 1) : 1;   // avant la 2.19.0 : une seule case pour les deux index
         if (is_array($saved) && $saved && !array_key_exists('history_lists', $saved)) $saved = array_merge($saved, TNGBook_History::legacy_selection($saved));   // avant la 2.10.0 : pays par défaut + événements personnalisés
         return wp_parse_args($saved, self::defaults());
     }
@@ -305,14 +306,14 @@ final class TNGBook {
         $bm = (string) ($in['bapt_mode'] ?? 'burial');
         $in['bapt'] = $bm === 'both' ? 1 : 0;
         $in['burial'] = $bm === 'none' ? 0 : 1;
-        $cm = (string) ($in['chrono_mode'] ?? 'none');
-        $in['chrono'] = $cm === 'none' ? 0 : 1;
-        $in['history'] = $cm === 'history' ? 1 : 0;
-        $in['verbose'] = $in['marrage'] = $in['resi'] = empty($in['verbose_all']) ? 0 : 1;
-        $in['country'] = $in['regions'] = empty($in['places_tr']) ? 0 : 1;
+        $cm = (string) ($in['chrono_mode'] ?? 'chrono');
+        $con = !empty($in['chrono_on']);
+        $in['chrono'] = $con ? 1 : 0;
+        $in['history'] = $con && $cm === 'history' ? 1 : 0;
+        $in['idxn'] = empty($in['idxn']) ? 0 : 1;   // une case par partie du livre (liste d'ordre) ; une case absente du formulaire = partie masquée
+        $in['idxp'] = empty($in['idxp']) ? 0 : 1;
         $in['military'] = $in['mpf'] = empty($in['military_all']) ? 0 : 1;
         $in['mini'] = $in['trees'] = empty($in['trees_all']) ? 0 : 1;
-        $in['asclist'] = $in['desclist'] = empty($in['lists']) ? 0 : 1;
         $in['stats_first'] = $in['stats_last'] = empty($in['stats']) ? 0 : 1;
         return $in;
     }
@@ -330,9 +331,13 @@ final class TNGBook {
         if (!tngs_hide_living('book')) $out['living'] = 'include';
         $out['place_parts'] = max(0, min(5, (int) ($in['place_parts'] ?? 2)));
         $out['avatar'] = (($in['avatar'] ?? '') === 'round') ? 'round' : 'portrait';
-        foreach (['photos', 'spphotos', 'spfiche', 'generic', 'sources', 'index', 'notes', 'military', 'mpf', 'mini', 'imgq', 'trees', 'stats', 'stats_first', 'stats_last', 'desclist', 'kids', 'histfiche', 'chrono', 'history', 'map', 'bapt', 'burial', 'verbose', 'country', 'regions', 'asclist', 'resi', 'sibs', 'marrage', 'cous', 'allunions'] as $k) {
+        foreach (['photos', 'spphotos', 'spfiche', 'generic', 'sources', 'idxn', 'idxp', 'notes', 'military', 'mpf', 'mini', 'imgq', 'trees', 'stats', 'stats_first', 'stats_last', 'desclist', 'kids', 'histfiche', 'chrono', 'history', 'map', 'bapt', 'burial', 'asclist', 'sibs', 'cous', 'allunions'] as $k) {
             $out[$k] = empty($in[$k]) ? 0 : 1;
         }
+        if (!array_key_exists('idxn', $in)) $out['idxn'] = $out['idxp'] = empty($in['index']) ? 0 : 1;   // profil d'avant la 2.19.0 : l'ancienne case commande les deux index
+        $out['index'] = $out['idxn'] || $out['idxp'] ? 1 : 0;
+        // Toujours actifs depuis la 2.19.0 : phrases détaillées (âge des époux au mariage et lieux de résidence compris), pays entre parenthèses et lieux traduits
+        $out['verbose'] = $out['marrage'] = $out['resi'] = $out['country'] = $out['regions'] = 1;
         $out['order'] = self::clean_order($in['order'] ?? null);
         if (!empty($out['history'])) $out['chrono'] = 1;   // le contexte historique s'affiche dans la chronologie : elle est donc générée
         $out['title'] = sanitize_text_field($in['title'] ?? '');
@@ -419,6 +424,59 @@ final class TNGBook {
         return '<label><input type="checkbox" name="' . esc_attr(self::OPT . '[' . $key . ']') . '" value="1"' . checked(!empty($o[$key]), true, false) . '> ' . $label . '</label><br>';
     }
 
+    /**
+     * Parties du livre : une ligne par partie, avec sa case à cocher (partie masquée = ligne grisée, qui reste à sa place) ;
+     * l'administrateur règle aussi l'ordre avec les flèches. Les trois premières parties n'ont pas de case : elles dépendent
+     * du texte du patronyme et du nombre de générations.
+     */
+    private static function parts_list($o, $admin) {
+        $lab = self::partLabels();
+        $ord = $admin ? self::clean_order($o['order'] ?? null) : self::clean_order(null);
+        $on = [
+            'stats' => !empty($o['stats']), 'chrono' => !empty($o['chrono']) || !empty($o['history']), 'cous' => !empty($o['cous']),
+            'alist' => !empty($o['asclist']), 'dlist' => !empty($o['desclist']), 'map' => !empty($o['map']),
+            'idxn' => !empty($o['idxn']), 'idxp' => !empty($o['idxp']), 'src' => !empty($o['sources']),
+        ];
+        $name = ['stats' => 'stats', 'chrono' => 'chrono_on', 'cous' => 'cous', 'alist' => 'asclist', 'dlist' => 'desclist', 'map' => 'map', 'idxn' => 'idxn', 'idxp' => 'idxp', 'src' => 'sources'];
+        $tip = [
+            'stats' => 'Statistiques, prénoms et noms les plus fréquents, histogrammes, complétude de l’ascendance, frise, et chiffres clés sur la page de titre',
+            'chrono' => 'Naissances, mariages et décès par date et par décennie',
+            'cous' => 'Ajoutée seulement si un même ancêtre apparaît plusieurs fois : liste des implexes et des unions entre apparentés',
+            'alist' => 'Tableau : naissance, conjoint, décès, âge',
+            'dlist' => 'Tableau : naissance, conjoint, décès, âge',
+            'map' => 'Nombre de personnes par département ou province, en noir et blanc ; fond de carte précis si des fichiers GeoJSON sont déposés dans le dossier data du module (voir le guide)',
+            'idxn' => '', 'idxp' => '', 'src' => 'Notes de sources citées dans les fiches, puis liste numérotée',
+        ];
+        $badge = 'background:#f0f0f1;border-radius:3px;padding:2px 8px;color:#50575e;font-size:12px;white-space:nowrap';
+        echo '<tr><th>' . esc_html(tngs_t($admin ? 'Ordre et affichage des parties du livre' : 'Parties du livre')) . '</th><td><ul id="tngbook-order" style="margin:0;max-width:640px">';
+        foreach ($ord as $k) {
+            $fixed = !isset($name[$k]);
+            $row = '<li data-k="' . esc_attr($k) . '" style="display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #c3c4c7;padding:4px 8px;margin:0 0 3px">';
+            if ($admin) $row .= '<input type="hidden" name="' . esc_attr(self::OPT) . '[order][]" value="' . esc_attr($k) . '">';
+            if ($fixed) {
+                $row .= '<span style="width:16px;flex:none"></span><span style="flex:1">' . esc_html(tngs_t($lab[$k])) . '</span>';
+                if ($k === 'surn') $row .= '<span style="' . $badge . '">' . esc_html(tngs_t('selon le texte saisi')) . '</span>';
+                else $row .= '<span style="' . $badge . '" data-gen="' . ($k === 'asc' ? 'gen_up' : 'gen_down') . '">' . esc_html(tngs_t('selon les générations')) . ' (' . (int) ($o[$k === 'asc' ? 'gen_up' : 'gen_down'] ?? 0) . ')</span>';
+            } else {
+                $row .= '<label style="flex:1;display:flex;align-items:center;gap:8px;white-space:nowrap"><input type="checkbox" name="' . esc_attr(self::OPT . '[' . $name[$k] . ']') . '" value="1"' . checked($on[$k], true, false) . '><span class="tngbook-pl">' . esc_html(tngs_t($lab[$k])) . '</span></label>';
+                if ($k === 'chrono') {
+                    $row .= '<select name="' . esc_attr(self::OPT) . '[chrono_mode]"><option value="chrono"' . selected(empty($o['history']), true, false) . '>' . esc_html(tngs_t('sans contexte historique')) . '</option><option value="history"' . selected(!empty($o['history']), true, false) . '>' . esc_html(tngs_t('avec contexte historique')) . '</option></select>';
+                } elseif ($tip[$k] !== '') {
+                    $row .= '<span title="' . esc_attr(tngs_t($tip[$k])) . '" style="color:#787c82;cursor:help">ⓘ</span>';
+                }
+            }
+            if ($admin) $row .= '<button type="button" class="button button-small" data-d="-1" title="' . esc_attr(tngs_t('Monter')) . '">↑</button><button type="button" class="button button-small" data-d="1" title="' . esc_attr(tngs_t('Descendre')) . '">↓</button>';
+            echo $row . '</li>';   // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- composé ci-dessus avec esc_*
+        }
+        echo '</ul><p class="description">' . esc_html(tngs_t($admin ? 'Cochez les parties à inclure et ordonnez-les avec les flèches. Une ligne grisée est une partie masquée : elle reste à sa place et on peut la réactiver. Les trois premières lignes n’ont pas de case : elles dépendent du texte du patronyme et du nombre de générations. Les index sont toujours complets, quelle que soit leur place.' : 'Cochez les parties à inclure dans le livre.')) . '</p>'
+            . '<script>(function(){var u=document.getElementById("tngbook-order");if(!u)return;'
+            . 'function sync(){u.querySelectorAll("li").forEach(function(li){var c=li.querySelector("input[type=checkbox]");var off=c&&!c.checked;li.style.opacity=off?".55":"";li.style.background=off?"#f6f7f7":"#fff";li.querySelectorAll("button,select").forEach(function(b){b.disabled=!!off;});});}'
+            . 'u.addEventListener("click",function(e){var b=e.target.closest("button[data-d]");if(!b||b.disabled)return;var li=b.closest("li"),d=+b.getAttribute("data-d");if(d<0&&li.previousElementSibling)u.insertBefore(li,li.previousElementSibling);else if(d>0&&li.nextElementSibling)u.insertBefore(li.nextElementSibling,li);});'
+            . 'u.addEventListener("change",sync);sync();'
+            . 'document.querySelectorAll("input[name$=\"[gen_up]\"],input[name$=\"[gen_down]\"]").forEach(function(i){i.addEventListener("input",function(){var k=i.name.indexOf("gen_up")>-1?"gen_up":"gen_down",s=u.querySelector("[data-gen="+k+"]");if(s)s.textContent=s.textContent.replace(/\(.*\)$/,"("+(parseInt(i.value,10)||0)+")");});});'
+            . '})();</script></td></tr>';
+    }
+
     /** Lignes du formulaire « Livre à générer » (admin et formulaire public). */
     private static function gen_fields($o, $admin) {
         self::field('Identifiant de la personne', 'personID', $o, 'text', 'Ex. <code>I1239</code> (dans l’URL TNG : <code>getperson.php?personID=I1239</code>).', 'placeholder="I1"');
@@ -446,13 +504,11 @@ final class TNGBook {
         $v = function ($k) use ($o) { return !empty($o[$k]); };
         $pm = !$v('photos') ? 'none' : ($v('generic') ? 'full' : 'photos');
         $bm = $v('bapt') ? 'both' : ($v('burial') ? 'burial' : 'none');
-        $cm = $v('history') ? 'history' : ($v('chrono') ? 'chrono' : 'none');
         echo '<tr><th>Contenu des fiches</th><td>'
             . self::isel('photos_mode', 'Photos', ['none' => 'Aucune', 'photos' => 'Photos TNG (statut « Photo par défaut »), avec photo du conjoint', 'full' => 'Photos TNG, et silhouettes génériques (homme / femme) à défaut de photo'], $pm)
             . self::isel('bapt_mode', 'Baptême et sépulture', ['none' => 'Aucun', 'burial' => 'Sépulture seule (inhumation ou incinération : date et lieu)', 'both' => 'Baptême et sépulture (dates et lieux renseignés dans TNG)'], $bm)
-            . self::chk('verbose_all', 'Phrases détaillées (« Il est né le … à …, fils de … ; il est décédé le …, à l’âge de … ans ») avec l’âge des époux au mariage et les lieux de résidence', ['verbose_all' => $v('verbose')])
-            . self::chk('places_tr', 'Lieux : pays entre parenthèses après le lieu (« Lyon, Rhône (France) ») et départements, provinces et États traduits dans la langue du livre', ['places_tr' => $v('country') || $v('regions')])
             . self::chk('military_all', 'Informations militaires : événements de guerre et mention « Mort pour la France »', ['military_all' => $v('military') || $v('mpf')])
+            . self::chk('trees_all', 'Arbres : mini-arbre d’ascendance en tête de chaque fiche d’ancêtre, arbres visuels en ouverture et à chaque génération', ['trees_all' => $v('mini') || $v('trees')])
             . self::chk('notes', 'Notes (générales de chaque personne et de chaque union, et notes des événements : naissance, mariage, décès…)', $o)
             . self::chk('sibs', 'Frères et sœurs sur les fiches (liste des autres enfants de la famille d’origine, avec lien vers leur fiche si elle existe)', $o)
             . self::chk('allunions', 'Autres mariages et unions des ancêtres (en plus de l’union dont descend la lignée)', $o)
@@ -460,29 +516,9 @@ final class TNGBook {
             . self::chk('kids', 'Enfants des couples dans l’ascendance : « X et Y ont N enfants : » suivi de la liste (modèles Classique, Élégant et Moderne ; le modèle Récit les présente déjà)', $o)
             . self::chk('histfiche', 'Contexte historique dans les fiches : une ligne « Contexte historique : la Première Guerre mondiale et la Seconde Guerre mondiale » qui énumère, d’après les listes cochées, les périodes (guerres, régimes…) où tombe une date de la fiche ou que la personne a traversées de son vivant', $o)
             . '</td></tr>';
-        echo '<tr><th>Parties du livre</th><td>'
-            . self::isel('chrono_mode', 'Chronologie', ['none' => 'Aucune', 'chrono' => 'Chronologie familiale (naissances, mariages et décès par date et par décennie)', 'history' => 'Chronologie familiale avec contexte historique (guerres, révolutions… du pays de naissance)'], $cm)
-            . self::chk('stats', 'Chapitre « En chiffres » (statistiques, prénoms et noms les plus fréquents, histogrammes, complétude de l’ascendance, frise) et chiffres clés sur la page de titre', $o)
-            . self::chk('trees_all', 'Arbres : mini-arbre d’ascendance en tête de chaque fiche d’ancêtre, arbres visuels en ouverture et à chaque génération', ['trees_all' => $v('mini') || $v('trees')])
-            . self::chk('lists', 'Listes récapitulatives des ascendants et des descendants (tableaux : naissance, conjoint, décès, âge)', ['lists' => $v('asclist') || $v('desclist')])
-            . self::chk('cous', 'Cousinages et implexes (partie ajoutée seulement si un même ancêtre apparaît plusieurs fois : liste des implexes et des unions entre apparentés)', $o)
-            . self::chk('sources', 'Sources', $o)
-            . self::chk('index', 'Index des noms et des lieux', $o)
-            . self::chk('map', 'Carte des lieux de vie en noir et blanc (nombre de personnes par département ou province ; fond de carte précis si des fichiers GeoJSON sont déposés dans le dossier data du module, voir le guide)', $o)
-            . '</td></tr>';
+        self::parts_list($o, $admin);
         if ($admin) {
             echo '<tr><th>Options avancées</th><td><details><summary>Afficher</summary><label><input type="checkbox" name="' . esc_attr(self::OPT) . '[debug]" value="1"> Mode diagnostic (en haut du livre : pourquoi une photo n’est pas trouvée ; à la fin du chapitre « Carte des lieux de vie » : chaque lieu pris en compte, son origine et la raison de son classement)</label></details></td></tr>';
-        }
-        if ($admin) {
-            $ord = self::clean_order($o['order'] ?? null);
-            $lab = self::partLabels();
-            echo '<tr><th>Ordre des parties du livre</th><td><ul id="tngbook-order" style="margin:0;max-width:340px">';
-            foreach ($ord as $k) {
-                echo '<li style="display:flex;align-items:center;gap:6px;background:#fff;border:1px solid #c3c4c7;padding:4px 8px;margin:0 0 3px"><input type="hidden" name="' . esc_attr(self::OPT) . '[order][]" value="' . esc_attr($k) . '"><span style="flex:1">' . esc_html($lab[$k]) . '</span>'
-                    . '<button type="button" class="button button-small" data-d="-1" title="Monter">↑</button><button type="button" class="button button-small" data-d="1" title="Descendre">↓</button></li>';
-            }
-            echo '</ul><p class="description">Les parties désactivées plus haut (statistiques, carte, index, listes…) sont simplement ignorées. Les index sont toujours complets, quelle que soit leur place.</p>'
-                . '<script>(function(){var u=document.getElementById("tngbook-order");if(!u)return;u.addEventListener("click",function(e){var b=e.target.closest("button[data-d]");if(!b)return;var li=b.closest("li"),d=+b.getAttribute("data-d");if(d<0&&li.previousElementSibling)u.insertBefore(li,li.previousElementSibling);else if(d>0&&li.nextElementSibling)u.insertBefore(li.nextElementSibling,li);});})();</script></td></tr>';
         }
         $cl = isset($o['colors']) && is_array($o['colors']) ? $o['colors'] : TNGBook_Renderer::defaultColors();
         $cl = array_merge(TNGBook_Renderer::defaultColors(), $cl);
@@ -492,41 +528,60 @@ final class TNGBook {
             echo '<label style="display:inline-block;margin:0 16px 6px 0"><input type="color" name="' . esc_attr(self::OPT . '[colors][' . $k . ']') . '" value="' . esc_attr($cl[$k]) . '" style="vertical-align:middle"> ' . esc_html($l) . '</label>';
         }
         $pal = [
-            'Bordeaux classique' => ['#222222', '#222222', '#7a1f1f', '#222222', '#555555', '#8a6a6a', '#7a2e2e'],
-            'Bleu marine' => ['#1f2430', '#14284b', '#1d4e89', '#14284b', '#5b6678', '#6f8db3', '#1d4e89'],
-            'Forêt' => ['#1f2a24', '#1e3a2b', '#2f6b4f', '#1e3a2b', '#5a6b60', '#7fa38f', '#2f6b4f'],
-            'Terre de Sienne' => ['#2b221b', '#4a2c17', '#9a4a1f', '#4a2c17', '#6b5b4e', '#b08a6a', '#9a4a1f'],
-            'Ardoise et cuivre' => ['#23272b', '#2f3a44', '#b0602a', '#2f3a44', '#5f6a73', '#8794a0', '#b0602a'],
-            'Prune' => ['#261f26', '#4a1d4a', '#7b2d7b', '#4a1d4a', '#6b5c6b', '#a98aa9', '#7b2d7b'],
-            'Bleu canard' => ['#1d2a2c', '#0f4c5c', '#0f6b7a', '#0f4c5c', '#566b6e', '#6fa3ab', '#b5481b'],
-            'Vieux papier' => ['#3b2f25', '#5c4033', '#8c5a3c', '#3b2f25', '#7a6a5a', '#a89078', '#8c5a3c'],
-            'Sépia & Tradition Chaleureuse' => ['#222222', '#2c221e', '#8c4a32', '#3d2e28', '#6b605a', '#9e938b', '#c27e58'],
-            'Forêt Ancienne' => ['#1a1a1a', '#1b2e23', '#2e5a44', '#16231c', '#54625a', '#85948c', '#5b8c73'],
-            'Bleu Nuit & Or' => ['#1c1c1c', '#101820', '#1e3d59', '#0d1b2a', '#5c6b73', '#7b9ea8', '#b08d57'],
-            'Héritage & parchemin' => ['#333333', '#4b2e1f', '#8a6a44', '#2f1b12', '#786c5a', '#bbae9a', '#a76a3a'],
-            'Ardoise & vieux rose' => ['#2e2e2e', '#2f4858', '#51728c', '#1f2933', '#6e7b87', '#bac6cf', '#a04b65'],
-            'Vert sauge & cuivre' => ['#2d2d2d', '#33463a', '#58715f', '#223028', '#6d776f', '#b7c1b9', '#b07a44'],
-            'Chêne et prairie' => ['#252a1f', '#2d4a22', '#4f7a2f', '#2d4a22', '#62695a', '#8fae6b', '#6b8e3a'],
-            'Écorce et ciel d’été' => ['#2b241d', '#4a3524', '#6e4b2d', '#4a3524', '#6b6258', '#7fa3c9', '#2f6aa3'],
-            'Ciel de campagne' => ['#1f2733', '#2a4a73', '#3b6ea5', '#2a4a73', '#5d6b7d', '#8fb2d6', '#c97a3c'],
-            'Terre et racines' => ['#2c231b', '#5a3c22', '#8a5a32', '#5a3c22', '#6f6354', '#c0a07a', '#8a5a32'],
-            'Ferme en pierre et tuiles' => ['#2d2822', '#6b3b25', '#b0562e', '#6b3b25', '#756a5c', '#c9b08a', '#b0562e'],
-            'Peinture impressionniste' => ['#2a2a30', '#3d4f7a', '#5a73a8', '#3d4f7a', '#6a6e78', '#a9b88a', '#c0603b'],
-            'Coquelicot et feuillage' => ['#232620', '#3c5a2a', '#a8402a', '#3c5a2a', '#666a5c', '#98b070', '#a8402a'],
-            'Prairie fleurie' => ['#232a25', '#3a5a43', '#4f7a5a', '#3a5a43', '#65705f', '#a7bf9a', '#d17a2a'],
-            'Pastel de la campagne' => ['#2b2a30', '#4d4a6e', '#7a6aa6', '#4d4a6e', '#6c6a78', '#9cc5c0', '#c98a7a'],
-            'Sobre (noir et gris)' => ['#000000', '#000000', '#333333', '#000000', '#555555', '#777777', '#000000'],
+            'Classiques et sobres' => [
+                'Bordeaux classique' => ['#222222', '#222222', '#7a1f1f', '#222222', '#555555', '#8a6a6a', '#7a2e2e'],
+                'Sobre (noir et gris)' => ['#000000', '#000000', '#333333', '#000000', '#555555', '#777777', '#000000'],
+                'Prune' => ['#261f26', '#4a1d4a', '#7b2d7b', '#4a1d4a', '#6b5c6b', '#a98aa9', '#7b2d7b'],
+                'Vieux papier' => ['#3b2f25', '#5a4a2a', '#8f7432', '#3b2f25', '#7a6a5a', '#b9a46a', '#8f7432'],
+            ],
+            'Bruns et terres' => [
+                'Terre de Sienne' => ['#2b221b', '#4a2c17', '#9a4a1f', '#4a2c17', '#6b5b4e', '#b08a6a', '#9a4a1f'],
+                'Sépia chaleureux' => ['#222222', '#2c221e', '#8c4a32', '#3d2e28', '#6b605a', '#9e938b', '#c27e58'],
+                'Parchemin et noyer' => ['#333333', '#4b2e1f', '#7d6240', '#2f1b12', '#786c5a', '#bbae9a', '#a76a3a'],
+                'Terre et racines' => ['#2c231b', '#3d2b1a', '#6a4a2a', '#3d2b1a', '#6f6354', '#b49a72', '#4f6b3a'],
+                'Ferme en pierre et tuiles' => ['#2d2a26', '#5a5a58', '#c9502a', '#5a5a58', '#7a7468', '#a9a193', '#c9502a'],
+                'Ardoise et cuivre' => ['#23272b', '#26394a', '#a8663a', '#26394a', '#5f6a73', '#7f9bb0', '#a8663a'],
+                'Vert sauge et cuivre' => ['#2d2d2d', '#33463a', '#58715f', '#223028', '#6d776f', '#b7c1b9', '#b07a44'],
+            ],
+            'Bleus' => [
+                'Bleu marine' => ['#1f2430', '#14284b', '#1d4e89', '#14284b', '#5b6678', '#6f8db3', '#1d4e89'],
+                'Bleu canard' => ['#1d2a2c', '#0f4c5c', '#0f6b7a', '#0f4c5c', '#566b6e', '#6fa3ab', '#b5481b'],
+                'Nuit et or' => ['#1c1c1c', '#101820', '#1e3d59', '#0d1b2a', '#5c6b73', '#7b9ea8', '#b08d57'],
+                'Ardoise et vieux rose' => ['#2e2e2e', '#2f4858', '#51728c', '#1f2933', '#6e7b87', '#bac6cf', '#a04b65'],
+            ],
+            'Verts' => [
+                'Forêt' => ['#1f2a24', '#14472f', '#1f7a4f', '#14472f', '#5a6b60', '#6fbf95', '#1f7a4f'],
+                'Forêt profonde' => ['#1a1a1a', '#1b2e23', '#2e5a44', '#16231c', '#54625a', '#85948c', '#5b8c73'],
+                'Chêne et prairie' => ['#252a1f', '#2d4a22', '#4f7a2f', '#2d4a22', '#62695a', '#8fae6b', '#6b8e3a'],
+            ],
+            'Campagne et peinture' => [
+                'Écorce et ciel d’été' => ['#2b241d', '#4a3524', '#6e4b2d', '#4a3524', '#6b6258', '#7fa3c9', '#2f6aa3'],
+                'Ciel de campagne' => ['#1f2733', '#2a4a73', '#3b6ea5', '#2a4a73', '#5d6b7d', '#8fb2d6', '#c97a3c'],
+                'Peinture impressionniste' => ['#2a2a30', '#2f5a6a', '#4a8a9a', '#2f5a6a', '#6a6e78', '#c4b46a', '#c0603b'],
+                'Coquelicot et feuillage' => ['#232620', '#3c5a2a', '#b3302a', '#3c5a2a', '#666a5c', '#98b070', '#b3302a'],
+                'Prairie fleurie' => ['#232a25', '#2f5a48', '#3f8a6a', '#2f5a48', '#65705f', '#a8d0b8', '#c85a8a'],
+                'Pastel de la campagne' => ['#2b2a30', '#4d4a6e', '#7a6aa6', '#4d4a6e', '#6c6a78', '#9cc5c0', '#c98a7a'],
+            ],
         ];
         $ord = ['text', 'title', 'head', 'name', 'meta', 'tree', 'treehl'];
         echo '<br><span style="display:block;margin:6px 0 4px"><strong>' . esc_html(tngs_t('Palettes harmonisées :')) . '</strong></span><span id="tngbook-pal">';
-        foreach ($pal as $nm => $v) {
-            echo '<button type="button" class="button" data-pal="' . esc_attr(wp_json_encode(array_combine($ord, $v))) . '" style="margin:0 6px 6px 0"><span style="display:inline-flex;vertical-align:middle;margin-right:6px">';
-            foreach ([2, 3, 5, 6] as $i) echo '<i style="display:inline-block;width:12px;height:12px;background:' . esc_attr($v[$i]) . ';border:1px solid #0003"></i>';
-            echo '</span>' . esc_html(tngs_t($nm)) . '</button>';
+        foreach ($pal as $fam => $list) {
+            echo '<span style="display:block;margin:6px 0 2px;color:#50575e;font-size:12px;text-transform:uppercase;letter-spacing:.03em">' . esc_html(tngs_t($fam)) . '</span>';
+            foreach ($list as $nm => $v) {
+                echo '<button type="button" class="button" data-pal="' . esc_attr(wp_json_encode(array_combine($ord, $v))) . '" style="margin:0 6px 6px 0"><span style="display:inline-flex;vertical-align:middle;margin-right:6px">';
+                foreach ([2, 3, 5, 6] as $i) echo '<i style="display:inline-block;width:12px;height:12px;background:' . esc_attr($v[$i]) . ';border:1px solid #0003"></i>';
+                echo '</span>' . esc_html(tngs_t($nm)) . '</button>';
+            }
         }
         echo '</span><script>(function(){var b=document.getElementById("tngbook-pal");if(!b)return;b.addEventListener("click",function(e){var t=e.target.closest("button[data-pal]");if(!t)return;var p=JSON.parse(t.getAttribute("data-pal"));for(var k in p){var i=document.querySelector("input[type=color][name$=\"[colors]["+k+"]\"]");if(i)i.value=p[k];}var r=document.querySelector("input[name$=\"[colors_reset]\"]");if(r)r.checked=false;});})();</script>';
         echo '<br><label><input type="checkbox" name="' . esc_attr(self::OPT) . '[colors_reset]" value="1"> Revenir aux couleurs par défaut</label>'
             . '<p class="description">S’appliquent à la page imprimable, au PDF, au fichier Word (.docx) et au fichier OpenDocument (.odt).</p></td></tr>';
+        $filled = false;   // le volet s'ouvre seul si l'un des champs contient du texte, et reste replié si tous sont vides
+        foreach (['title', 'author', 'preface'] as $fk) if (trim((string) ($o[$fk] ?? '')) !== '') $filled = true;
+        if ($admin) foreach (['surname', 'surname_title'] as $fk) if (trim((string) ($o[$fk] ?? '')) !== '') $filled = true;
+        echo '<tr><td colspan="2" style="padding:0"><details id="tngbook-front"' . ($filled ? ' open' : '') . ' style="border:1px solid #c3c4c7;background:#fff;padding:0 12px;margin:8px 0">'
+            . '<summary style="cursor:pointer;font-weight:600;padding:10px 0">' . esc_html(tngs_t($admin ? 'Titre, auteur, préface et page sur le patronyme' : 'Titre, auteur et préface')) . '</summary>'
+            . '<table class="form-table" role="presentation"><tbody>';
         self::field('Titre', 'title', $o, 'text', 'Vide = titre automatique dans la langue choisie.');
         self::field('Auteur', 'author', $o);
         echo '<tr><th scope="row"><label for="tngbook_preface">Préface</label></th><td><textarea id="tngbook_preface" name="' . esc_attr(self::OPT) . '[preface]" rows="4" class="large-text">' . esc_textarea($o['preface']) . '</textarea></td></tr>';
@@ -540,6 +595,7 @@ final class TNGBook {
             ]);
             echo '<p class="description">Texte de présentation du patronyme (origine, signification, répartition…) : mise en forme, listes, tableaux (mode « Texte ») et images (bouton Ajouter un média). Vide = pas de page. La page fait partie du livre : elle se place dans « Ordre des parties » et s’enregistre dans le profil du livre. Les images (JPEG, PNG, GIF) sont intégrées au PDF, à Word et à OpenDocument.</p></td></tr>';
         }
+        echo '</tbody></table></details><script>(function(){var d=document.getElementById("tngbook-front");if(d)d.addEventListener("toggle",function(){if(d.open)window.dispatchEvent(new Event("resize"));});})();</script></td></tr>';
         self::select('Modèle de mise en page', 'template', [
             'classic' => 'Classique (modèle d’origine) : une colonne, texte justifié, photo à droite',
             'recit' => 'Récit en 2 colonnes : bandeaux de génération, âge des parents, « autres informations », couples et enfants en puces',
@@ -803,8 +859,8 @@ final class TNGBook {
         $opts = [
             'root' => $pid, 'up' => $up, 'down' => $down,
             'photos' => (bool) $o['photos'], 'spphotos' => (bool) $o['spphotos'], 'spfiche' => !empty($o['spfiche']), 'generic' => (bool) $o['generic'], 'avatar' => ($o['avatar'] ?? '') === 'round' ? 'round' : 'portrait',
-            'sources' => (bool) $o['sources'], 'index' => (bool) $o['index'],
-            'notes' => (bool) $o['notes'], 'military' => (bool) $o['military'], 'mpf' => !empty($o['mpf']), 'mini' => !empty($o['mini']), 'imgq' => !empty($o['imgq']), 'trees' => !empty($o['trees']), 'stats' => !empty($o['stats']), 'stats_first' => !empty($o['stats_first']), 'stats_last' => !empty($o['stats_last']), 'desclist' => !empty($o['desclist']), 'chrono' => !empty($o['chrono']), 'map' => !empty($o['map']), 'bapt' => !empty($o['bapt']), 'burial' => !empty($o['burial']), 'verbose' => !empty($o['verbose']), 'country' => !empty($o['country']), 'regions' => !empty($o['regions']), 'asclist' => !empty($o['asclist']), 'resi' => !empty($o['resi']), 'sibs' => !empty($o['sibs']), 'cous' => !empty($o['cous']), 'allunions' => !empty($o['allunions']), 'marrage' => !empty($o['marrage']),
+            'sources' => (bool) $o['sources'], 'index' => !empty($o['idxn']) || !empty($o['idxp']), 'idxn' => !empty($o['idxn']), 'idxp' => !empty($o['idxp']),
+            'notes' => (bool) $o['notes'], 'military' => (bool) $o['military'], 'mpf' => !empty($o['mpf']), 'mini' => !empty($o['mini']), 'imgq' => !empty($o['imgq']), 'trees' => !empty($o['trees']), 'stats' => !empty($o['stats']), 'stats_first' => !empty($o['stats_first']), 'stats_last' => !empty($o['stats_last']), 'desclist' => !empty($o['desclist']), 'chrono' => !empty($o['chrono']), 'map' => !empty($o['map']), 'bapt' => !empty($o['bapt']), 'burial' => !empty($o['burial']), 'verbose' => true, 'country' => true, 'regions' => true, 'asclist' => !empty($o['asclist']), 'resi' => true, 'sibs' => !empty($o['sibs']), 'cous' => !empty($o['cous']), 'allunions' => !empty($o['allunions']), 'marrage' => true,
             'debug' => $debug, 'place_parts' => (int) $o['place_parts'],
             'title' => $o['title'], 'author' => $o['author'], 'preface' => $o['preface'], 'surname' => (string) ($o['surname'] ?? ''), 'surname_title' => (string) ($o['surname_title'] ?? ''), 'colors' => $o['colors'] ?? [],
             'template' => $o['template'] ?? 'classic', 'frame' => in_array($o['frame'] ?? '', ['single', 'double', 'ornate', 'floral', 'leaves'], true) ? $o['frame'] : 'none', 'cover_art' => in_array($o['cover_art'] ?? 'tree', TNGBook_Art::cover_choices(), true) ? $o['cover_art'] : 'tree', 'kids' => !empty($o['kids']), 'histfiche' => !empty($o['histfiche']), 'history' => !empty($o['history']), 'history_lists' => (array) ($o['history_lists'] ?? []), 'history_default' => (string) ($o['history_default'] ?? ''), 'history_scope' => (string) ($o['history_scope'] ?? 'all'), 'order' => self::clean_order($o['order'] ?? null),

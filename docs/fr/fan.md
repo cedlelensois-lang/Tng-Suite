@@ -1,6 +1,6 @@
 # Éventail / roue de parenté
 
-Roue d’ascendants, de descendants ou mixte, interactive (zoom, déplacement, export PDF). La page comporte deux sections : **Générer une roue** (aperçu + shortcode à copier) et **Réglages** (valeurs par défaut).
+Roue d’ascendants, de descendants ou mixte, interactive (zoom, déplacement, export PDF ou PNG). La page comporte deux sections : **Générer une roue** (aperçu + shortcode à copier) et **Réglages** (valeurs par défaut).
 
 ## Dans l’administration
 
@@ -44,25 +44,25 @@ Alias français de `[tng_fan]`.
 
 | Attribut | Valeurs | Défaut | Rôle |
 |---|---|---|---|
-| person | I1 | {'fr': 'réglage', 'en': 'setting'} | Personne de départ (obligatoire si aucune valeur par défaut). |
-| tree | {'fr': 'identifiant d’arbre', 'en': 'tree ID'} | {'fr': 'Général', 'en': 'General'} | Arbre (gedcom). |
-| mode | ancestors, descendants, mixed | {'fr': 'réglage', 'en': 'setting'} | Type de roue. |
-| asc / desc | {'fr': '1–12 / 1–plafond', 'en': '1–12 / 1–cap'} | {'fr': 'réglage', 'en': 'setting'} | Générations d’ascendants / de descendants. |
-| shape | full, three, half | {'fr': 'réglage', 'en': 'setting'} | Cercle complet, trois quarts, demi-cercle. |
-| color | generation, branch, sex | {'fr': 'réglage', 'en': 'setting'} | Mode de coloration. |
-| style | tint, solid | {'fr': 'réglage', 'en': 'setting'} | Teinte légère ou couleur pleine. |
-| palette | {'fr': 'id de palette ou `custom`', 'en': 'palette id or `custom`'} | {'fr': 'réglage', 'en': 'setting'} | Palette de couleurs. |
-| colors | {'fr': '`#aabbcc,#112233…`', 'en': '`#aabbcc,#112233…`'} | {'fr': '(vide)', 'en': '(empty)'} | Couleurs imposées (jusqu’à 12), prioritaires sur la palette. |
-| dates | years, full, none | {'fr': 'réglage', 'en': 'setting'} | Format des dates. |
-| places | none, commune, full | {'fr': 'réglage', 'en': 'setting'} | Lieux affichés. |
-| spouses | 1 / 0 | {'fr': 'réglage', 'en': 'setting'} | Afficher les conjoints. |
+| person | I1 | réglage | Personne de départ (obligatoire si aucune valeur par défaut). |
+| tree | identifiant d’arbre | Général | Arbre (gedcom). |
+| mode | ancestors, descendants, mixed | réglage | Type de roue. |
+| asc / desc | 1–12 / 1–plafond | réglage | Générations d’ascendants / de descendants. |
+| shape | full, three, half | réglage | Cercle complet, trois quarts, demi-cercle. |
+| color | generation, branch, sex | réglage | Mode de coloration. |
+| style | tint, solid | réglage | Teinte légère ou couleur pleine. |
+| palette | id de palette ou `custom` | réglage | Palette de couleurs. |
+| colors | `#aabbcc,#112233…` | (vide) | Couleurs imposées (jusqu’à 12), prioritaires sur la palette. |
+| dates | years, full, none | réglage | Format des dates. |
+| places | none, commune, full | réglage | Lieux affichés. |
+| spouses | 1 / 0 | réglage | Afficher les conjoints. |
 | living | default, hide, show | default | `hide` masque les vivants ; `show` les affiche seulement si Général l’autorise. |
-| zoomdetail | 1 / 0 | {'fr': 'réglage', 'en': 'setting'} | Texte enrichi au zoom. |
-| labels | symbols, letters | {'fr': 'réglage', 'en': 'setting'} | Symboles (° †) ou lettres. |
-| pdf | 1 / 0 | 1 | Bouton d’export PDF. |
+| zoomdetail | 1 / 0 | réglage | Texte enrichi au zoom. |
+| labels | symbols, letters | réglage | Symboles (° †) ou lettres. |
+| pdf | 1 / 0 | 1 | Bouton d’export (PDF ou PNG). |
 | controls | 1 / 0 | 1 | Boutons de zoom / navigation. |
-| height | {'fr': 'pixels', 'en': 'pixels'} | {'fr': 'réglage', 'en': 'setting'} | Hauteur de la roue. |
-| class | {'fr': 'classe CSS', 'en': 'CSS class'} | {'fr': '(vide)', 'en': '(empty)'} | Classe CSS ajoutée au conteneur. |
+| height | pixels | réglage | Hauteur de la roue. |
+| class | classe CSS | (vide) | Classe CSS ajoutée au conteneur. |
 
 ## Utilisation
 
@@ -72,6 +72,7 @@ Alias français de `[tng_fan]`.
 
 ## Remarques
 
+- Export : le bouton **Exporter en PDF ou en PNG** ouvre une boîte de dialogue avec le **format de sortie** (PDF vectoriel ou PNG), le format de la feuille (adapté au texte, automatique, A4 à A0), l’orientation et le contenu (comme à l’écran, ou dates et lieux complets). Le **PNG** est une image : résolution au choix (150, 200 — recommandé — ou 300 dpi) et fond blanc ou **transparent** (case à cocher). Si la taille demandée dépasse la limite d’image du navigateur, la résolution est réduite automatiquement et le message l’indique. Le PNG est généré dans le navigateur : rien n’est envoyé au serveur.
 - `living="show"` n’a aucun effet si « Toujours masquer » est choisi dans **Général**.
 - Si l’accès est limité (connectés / administrateurs), les autres visiteurs voient un message à la place du graphique.
 - Les résultats sont mis en cache ; après une modification dans TNG, utilisez **Général > Maintenance > Vider les caches** pour les voir tout de suite.

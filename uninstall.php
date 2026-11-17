@@ -33,6 +33,8 @@ $options = array(
     'tngstats_options',
     // Implexe
     'tngi_options', 'tngi_inb_meta', 'tngi_db_version',
+    // Cohérence des données
+    'tngcoh_options', 'tngcoh_ignored', 'tngcoh_last', 'tngcoh_run', 'tngcoh_dbver',
     // Livre généalogique
     'tngbook_options',
     'tngbook_profiles',
@@ -50,7 +52,7 @@ foreach ( $options as $option ) {
     delete_option( $option );
 }
 
-foreach ( array( 'tngs_db_down', 'tng_heatmap_data_v2', 'tng_heatmap_recent_error', 'tng_heatmap_build_lock', 'tngbook_auto_lock', 'tngbook_auto_why', 'tngbook_cache_purge' ) as $transient ) {
+foreach ( array( 'tngs_db_down', 'tng_heatmap_data_v2', 'tng_heatmap_recent_error', 'tng_heatmap_build_lock', 'tngbook_auto_lock', 'tngcoh_lock', 'tngbook_auto_why', 'tngbook_cache_purge' ) as $transient ) {
     delete_transient( $transient );
 }
 
@@ -77,6 +79,9 @@ $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name RE
 
 // Implexe : table des coefficients de consanguinité (créée dans la base WordPress par le module).
 $wpdb->query( 'DROP TABLE IF EXISTS `' . esc_sql( $wpdb->prefix . 'tngi_inbreeding' ) . '`' );
+// Cohérence des données : résultats et clés de travail (base WordPress).
+$wpdb->query( 'DROP TABLE IF EXISTS `' . esc_sql( $wpdb->prefix . 'tngs_coh_res' ) . '`' );
+$wpdb->query( 'DROP TABLE IF EXISTS `' . esc_sql( $wpdb->prefix . 'tngs_coh_key' ) . '`' );
 
 // Livre généalogique : cache temporaire des PDF.
 $upload = wp_upload_dir();

@@ -42,8 +42,8 @@ Médias d’une personne.
 | Attribut | Valeurs | Défaut | Rôle |
 |---|---|---|---|
 | limit | 1 – 100 | 30 | Nombre maximum de médias. |
-| personid | I12 | {'fr': '(vide)', 'en': '(empty)'} | Limiter à une personne. |
-| surname | {'fr': 'nom', 'en': 'name'} | {'fr': '(vide)', 'en': '(empty)'} | Limiter à un nom de famille. |
+| personid | I12 | (vide) | Limiter à une personne. |
+| surname | nom | (vide) | Limiter à un nom de famille. |
 
 ## Utilisation
 

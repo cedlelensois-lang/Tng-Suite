@@ -42,8 +42,8 @@ Media of one person.
 | Attribute | Values | Default | Role |
 |---|---|---|---|
 | limit | 1 – 100 | 30 | Maximum number of media. |
-| personid | I12 | {'fr': '(vide)', 'en': '(empty)'} | Restrict to one person. |
-| surname | {'fr': 'nom', 'en': 'name'} | {'fr': '(vide)', 'en': '(empty)'} | Restrict to one surname. |
+| personid | I12 | (empty) | Restrict to one person. |
+| surname | name | (empty) | Restrict to one surname. |
 
 ## Usage
 

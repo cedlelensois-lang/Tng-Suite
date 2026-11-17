@@ -26,6 +26,7 @@ One plugin instead of eleven:
                                                                     or [tng_stat stat="…"]
   (new)                                  Fan / kinship wheel        [tng_fan]
   TNG Implexe & Ancêtres 1.0             Implex & inbreeding        [tng_implexe] [tng_consanguinite]
+  (new)                                  Data consistency (administrators, no shortcode)
   TNG Livre Généalogique 1.1             Family book                [tng_book] + generation in the admin area
   TNG Fiche Généalogique 1.1             Sheet & document lists     [tng_listes]
 
@@ -55,7 +56,7 @@ DON'T FORGET
 THE MENU: FIVE ENTRIES (since 2.8.0)
  The "TNG Suite" menu has General plus four families; every former sub-page is now a section (bar at the top of the page):
   - Trees & visualisations: Trees & descendants, Record link button, Timeline, Fan chart.
-  - Analyses: Statistics & charts, Places heatmap, Implex & inbreeding.
+  - Analyses: Statistics & charts, Places heatmap, Implex & inbreeding, Data consistency.
   - Documents: Family book, Fiche & document lists.
   - Media & widgets: Media gallery, Name cloud & birthdays, Random individual.
  Where this guide says "TNG Suite > Analyses > Statistics & charts" or "TNG Suite > Documents > Family book", open the family tab, then the section of that name.
@@ -113,6 +114,7 @@ LIVING / PRIVATE PEOPLE: ONE SETTING PER MODULE (TNG Suite > General > Modules)
    non-printing GDPR banner). The public [tng_book] form NEVER includes living people in full.
  - Statistics: only totals are published; "Hide" masks the names of private people in the centenarians list.
  - Record link button: not applicable (a simple link; TNG itself protects the record).
+ - Data consistency: not applicable (administration page reserved for administrators, nothing is published).
  - Migration: if an old plugin was already showing living people, its module is imported as "Show" (and flagged).
 
 
@@ -159,11 +161,13 @@ FAN / KINSHIP WHEEL (TNG Suite > Trees & visualisations > Fan / kinship wheel)
  - Smart zoom (zoomdetail="1"): at every zoom level the texts are recomputed to fit the enlarged box. The more you
    zoom, the more lines appear: name, then years, then towns, then full dates and places. Only visible boxes are
    written, so the display stays smooth even at 12 generations.
- - PDF export ("PDF" button, pdf="0" to remove it): vector PDF built in the browser, no library, text included (names
+ - PDF or PNG export ("Export as PDF or PNG" button, pdf="0" to remove it): the PDF is vector, built in the browser, no library, text included (names
    follow the arcs). A dialog lets you choose the sheet size (A4, A3, A2, A1, A0, or "Fit to the text"), the
    orientation and the content (as on screen, or full dates and places). It shows live "N / M boxes with their full
    text" for the chosen sheet. "Fit to the text" picks the smallest sheet on which all the text fits in full (beyond
    A0, a custom size up to 5 m).
+   The "PNG" output format produces an image with the same choices: resolution of 150, 200 (recommended) or 300 dpi,
+   white or transparent background; the resolution is lowered automatically if the image exceeds the browser limit.
  - Living / private people: the module setting (General > Modules) AND the shortcode parameter
    living="default|hide|show". "default" follows the module setting; "hide" hides them on this wheel; "show" displays
    them on this wheel (⚠️ GDPR: their names, dates and places are visible to every visitor of the page).
@@ -369,7 +373,14 @@ NEW MODULES: THINGS TO KNOW
    loaded from libs/ if present, otherwise from cdnjs.cloudflare.com (the visitor's IP address is then sent to
    that CDN).
 
+ - Data consistency (TNG Suite > Analyses > Consistency: data check / thresholds and ignored anomalies): read-only check (never
+   writes to the TNG database) reserved for administrators: impossible dates, ages, sex, family structure, names, places and
+   possible duplicates with a score. The analysis is started by hand, in batches with a progress bar. The results (names,
+   identifiers and dates, including living people) are stored in two tables of the WordPress database (<WP prefix>tngs_coh_res
+   and tngs_coh_key) and the list of ignored anomalies in the options; "Clear results" deletes them, and uninstalling the
+   suite removes everything. See docs/en/coherence.md.
+
 UNINSTALLING
 ------------
-Deleting TNG Suite removes its own settings, caches and scheduled task. Your TNG data and the options of the old
+Deleting TNG Suite removes its own settings, caches, scheduled task and the tables created in the WordPress database. Your TNG data and the options of the old
 plugins are not touched.

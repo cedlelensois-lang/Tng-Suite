@@ -2434,24 +2434,6 @@ msgstr ""
 msgid "Mettre à jour le profil"
 msgstr ""
 
-msgid "Sépia & Tradition Chaleureuse"
-msgstr ""
-
-msgid "Forêt Ancienne"
-msgstr ""
-
-msgid "Bleu Nuit & Or"
-msgstr ""
-
-msgid "Héritage & parchemin"
-msgstr ""
-
-msgid "Ardoise & vieux rose"
-msgstr ""
-
-msgid "Vert sauge & cuivre"
-msgstr ""
-
 msgid "En chiffres"
 msgstr ""
 
@@ -3751,6 +3733,501 @@ msgstr ""
 msgid "1 par défaut, 3 au maximum."
 msgstr ""
 
+msgid "Classiques et sobres"
+msgstr ""
+
+msgid "Bruns et terres"
+msgstr ""
+
+msgid "Bleus"
+msgstr ""
+
+msgid "Verts"
+msgstr ""
+
+msgid "Campagne et peinture"
+msgstr ""
+
+msgid "Sépia chaleureux"
+msgstr ""
+
+msgid "Forêt profonde"
+msgstr ""
+
+msgid "Nuit et or"
+msgstr ""
+
+msgid "Parchemin et noyer"
+msgstr ""
+
+msgid "Ardoise et vieux rose"
+msgstr ""
+
+msgid "Vert sauge et cuivre"
+msgstr ""
+
+msgid "Ordre et affichage des parties du livre"
+msgstr ""
+
+msgid "selon le texte saisi"
+msgstr ""
+
+msgid "selon les générations"
+msgstr ""
+
+msgid "sans contexte historique"
+msgstr ""
+
+msgid "avec contexte historique"
+msgstr ""
+
+msgid "Statistiques, prénoms et noms les plus fréquents, histogrammes, complétude de l’ascendance, frise, et chiffres clés sur la page de titre"
+msgstr ""
+
+msgid "Naissances, mariages et décès par date et par décennie"
+msgstr ""
+
+msgid "Ajoutée seulement si un même ancêtre apparaît plusieurs fois : liste des implexes et des unions entre apparentés"
+msgstr ""
+
+msgid "Tableau : naissance, conjoint, décès, âge"
+msgstr ""
+
+msgid "Nombre de personnes par département ou province, en noir et blanc ; fond de carte précis si des fichiers GeoJSON sont déposés dans le dossier data du module (voir le guide)"
+msgstr ""
+
+msgid "Notes de sources citées dans les fiches, puis liste numérotée"
+msgstr ""
+
+msgid "Cochez les parties à inclure et ordonnez-les avec les flèches. Une ligne grisée est une partie masquée : elle reste à sa place et on peut la réactiver. Les trois premières lignes n’ont pas de case : elles dépendent du texte du patronyme et du nombre de générations. Les index sont toujours complets, quelle que soit leur place."
+msgstr ""
+
+msgid "Cochez les parties à inclure dans le livre."
+msgstr ""
+
+msgid "Titre, auteur, préface et page sur le patronyme"
+msgstr ""
+
+msgid "Titre, auteur et préface"
+msgstr ""
+
+msgid "Cohérence des données"
+msgstr ""
+
+msgid "Cohérence : contrôle des données"
+msgstr ""
+
+msgid "Cohérence : seuils et anomalies ignorées"
+msgstr ""
+
+msgid "(aucun shortcode : page d’administration réservée aux administrateurs)"
+msgstr ""
+
+msgid "Sans objet : page d’administration, rien n’est publié sur le site."
+msgstr ""
+
+msgid "Contrôle en lecture seule de votre arbre TNG : dates impossibles ou incohérentes, sexe, âges, structure des familles et doublons possibles. Rien n’est modifié dans TNG : chaque anomalie renvoie vers la fiche pour que vous la corrigiez vous-même. L’analyse se lance à la main et peut durer plusieurs minutes sur un grand arbre ; ses résultats sont conservés jusqu’à la prochaine analyse."
+msgstr ""
+
+msgid "Page réservée aux administrateurs. Les résultats contiennent des noms de personnes, y compris vivantes ; ils sont stockés dans la base WordPress (jamais dans la base TNG), sans shortcode ni affichage public, et sont effacés par « Effacer les résultats » ou à la désinstallation du plugin."
+msgstr ""
+
+msgid "Aucun arbre trouvé : vérifiez la connexion à la base TNG (TNG Suite > Général)."
+msgstr ""
+
+msgid "Arbre"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Tous"
+msgstr ""
+
+msgid "Toutes"
+msgstr ""
+
+msgid "Gravité"
+msgstr ""
+
+msgid "Recherche"
+msgstr ""
+
+msgid "nom, identifiant, texte"
+msgstr ""
+
+msgid "Lancer l’analyse"
+msgstr ""
+
+msgid "Relancer l’analyse"
+msgstr ""
+
+msgid "Reprendre"
+msgstr ""
+
+msgid "Une analyse est en cours ou a été interrompue :"
+msgstr ""
+
+msgid "Aucun résultat pour cet arbre : lancez l’analyse."
+msgstr ""
+
+msgid "Dernière analyse :"
+msgstr ""
+
+msgid "familles"
+msgstr ""
+
+msgid "durée"
+msgstr ""
+
+msgid "Analyse incomplète (annulée) : les résultats sont partiels."
+msgstr ""
+
+msgid "Certains contrôles ont atteint le nombre maximal d’anomalies conservées (réglable dans « Seuils et anomalies ignorées ») :"
+msgstr ""
+
+msgid "groupes de personnes aux noms très répandus n’ont pas été comparés pour les doublons."
+msgstr ""
+
+msgid "anomalie(s) affichée(s)"
+msgstr ""
+
+msgid "Exporter en CSV"
+msgstr ""
+
+msgid "Effacer les résultats de cet arbre ?"
+msgstr ""
+
+msgid "Effacer les résultats"
+msgstr ""
+
+msgid "Aucune anomalie pour ces filtres."
+msgstr ""
+
+msgid "Anomalie"
+msgstr ""
+
+msgid "Fiches"
+msgstr ""
+
+msgid "Score"
+msgstr ""
+
+msgid "Ignorer cette anomalie"
+msgstr ""
+
+msgid "Valeurs au-delà desquelles une anomalie est signalée. Elles s’appliquent à la prochaine analyse ; relancez-la pour mettre les résultats à jour."
+msgstr ""
+
+msgid "par défaut"
+msgstr ""
+
+msgid "Âge minimal d’une mère à la naissance d’un enfant (ans)"
+msgstr ""
+
+msgid "Âge maximal d’une mère à la naissance d’un enfant (ans)"
+msgstr ""
+
+msgid "Âge minimal d’un père à la naissance d’un enfant (ans)"
+msgstr ""
+
+msgid "Âge maximal d’un père à la naissance d’un enfant (ans)"
+msgstr ""
+
+msgid "Âge minimal au mariage (ans)"
+msgstr ""
+
+msgid "Âge maximal au décès (ans)"
+msgstr ""
+
+msgid "Personne marquée « vivante » née il y a plus de (ans)"
+msgstr ""
+
+msgid "Enfant né plus de (mois) après le décès de son père"
+msgstr ""
+
+msgid "Tolérance sur les dates approximatives : « vers », « avant », « après »… (ans)"
+msgstr ""
+
+msgid "Score minimal pour signaler un doublon possible (0 à 100)"
+msgstr ""
+
+msgid "Profondeur de la recherche des boucles d’ascendance (générations)"
+msgstr ""
+
+msgid "Nombre maximal d’anomalies conservées par contrôle"
+msgstr ""
+
+msgid "Boucles d’ascendance"
+msgstr ""
+
+msgid "Rechercher les personnes qui sont leur propre ancêtre (peut allonger l’analyse sur un grand arbre)"
+msgstr ""
+
+msgid "Anomalies ignorées"
+msgstr ""
+
+msgid "Aucune anomalie ignorée."
+msgstr ""
+
+msgid "Tout restaurer"
+msgstr ""
+
+msgid "Ignorée le"
+msgstr ""
+
+msgid "Restaurer"
+msgstr ""
+
+msgid "Les 500 plus récentes sont affichées."
+msgstr ""
+
+msgid "Famille"
+msgstr ""
+
+msgid "Seconde personne"
+msgstr ""
+
+msgid "Démarrage…"
+msgstr ""
+
+msgid "Analyse terminée."
+msgstr ""
+
+msgid "Analyse annulée : les résultats sont partiels."
+msgstr ""
+
+msgid "Erreur pendant l’analyse :"
+msgstr ""
+
+msgid "Connexion interrompue. Vous pouvez reprendre l’analyse."
+msgstr ""
+
+msgid "anomalie(s) trouvée(s)"
+msgstr ""
+
+msgid "Arbre inconnu."
+msgstr ""
+
+msgid "Analyse inconnue ou remplacée."
+msgstr ""
+
+msgid "Doublons"
+msgstr ""
+
+msgid "Structure"
+msgstr ""
+
+msgid "Avertissement"
+msgstr ""
+
+msgid "Information"
+msgstr ""
+
+msgid "Personnes : dates, sexe, noms, liens"
+msgstr ""
+
+msgid "Familles : mariages, parents et enfants"
+msgstr ""
+
+msgid "Recherche des boucles d’ascendance"
+msgstr ""
+
+msgid "Enfants de plusieurs familles"
+msgstr ""
+
+msgid "Couples en double"
+msgstr ""
+
+msgid "Recherche des doublons"
+msgstr ""
+
+msgid "Orthographe des lieux"
+msgstr ""
+
+msgid "Analyse terminée"
+msgstr ""
+
+msgid "baptême"
+msgstr ""
+
+msgid "sépulture"
+msgstr ""
+
+msgid "mariage"
+msgstr ""
+
+msgid "divorce"
+msgstr ""
+
+msgid "noms identiques"
+msgstr ""
+
+msgid "noms proches"
+msgstr ""
+
+msgid "même date de naissance"
+msgstr ""
+
+msgid "même année de naissance"
+msgstr ""
+
+msgid "naissances proches"
+msgstr ""
+
+msgid "même année de décès"
+msgstr ""
+
+msgid "même lieu de naissance"
+msgstr ""
+
+msgid "mêmes parents"
+msgstr ""
+
+msgid "même père"
+msgstr ""
+
+msgid "même mère"
+msgstr ""
+
+msgid "même sexe"
+msgstr ""
+
+msgid "même famille"
+msgstr ""
+
+msgid "masculin"
+msgstr ""
+
+msgid "féminin"
+msgstr ""
+
+msgid "inconnu"
+msgstr ""
+
+msgid "Date impossible : « {txt} » ({field})"
+msgstr ""
+
+msgid "Date non reconnue : « {txt} » ({field})"
+msgstr ""
+
+msgid "Date dans le futur : {txt} ({field})"
+msgstr ""
+
+msgid "Décès ({d2}) avant la naissance ({d1})"
+msgstr ""
+
+msgid "Baptême ({d2}) avant la naissance ({d1})"
+msgstr ""
+
+msgid "Sépulture ({d2}) avant le décès ({d1})"
+msgstr ""
+
+msgid "Âge au décès de {age} ans, au-delà de {max} ans"
+msgstr ""
+
+msgid "Marquée « vivante » alors qu’elle est née il y a {age} ans (limite : {max} ans)"
+msgstr ""
+
+msgid "Marquée « vivante » alors qu’un décès est renseigné ({d1})"
+msgstr ""
+
+msgid "Mariage ({d2}) avant la naissance de {name2} ({d1})"
+msgstr ""
+
+msgid "Mariage ({d2}) après le décès de {name2} ({d1})"
+msgstr ""
+
+msgid "{name2} se marie à {age} ans (âge minimal attendu : {min} ans)"
+msgstr ""
+
+msgid "{name} est né(e) ({d2}) avant la naissance de son parent {name2} ({d1})"
+msgstr ""
+
+msgid "{name} est né(e) ({d2}) après le décès de sa mère {name2} ({d1})"
+msgstr ""
+
+msgid "{name} est né(e) ({d2}) plus de {months} mois après le décès de son père {name2} ({d1})"
+msgstr ""
+
+msgid "La mère {name2} avait {age} ans à la naissance de {name} (âge attendu : de {min} à {max} ans)"
+msgstr ""
+
+msgid "Le père {name2} avait {age} ans à la naissance de {name} (âge attendu : de {min} à {max} ans)"
+msgstr ""
+
+msgid "Divorce ({d2}) avant le mariage ({d1})"
+msgstr ""
+
+msgid "{name} est indiqué comme père (époux) mais est de sexe féminin"
+msgstr ""
+
+msgid "{name} est indiquée comme mère (épouse) mais est de sexe masculin"
+msgstr ""
+
+msgid "Le sexe de {name} est inconnu alors qu’il ou elle a des enfants"
+msgstr ""
+
+msgid "Couple de même sexe : {name} et {name2}"
+msgstr ""
+
+msgid "Le prénom « {txt} » est généralement {typ}, mais le sexe renseigné est {sex}"
+msgstr ""
+
+msgid "Doublon possible avec {name2} ({pid2}) : {why}"
+msgstr ""
+
+msgid "Dans cette famille, les enfants {name} et {name2} semblent être la même personne : {why}"
+msgstr ""
+
+msgid "Personne sans aucun lien : ni parents, ni conjoint, ni enfant"
+msgstr ""
+
+msgid "Boucle d’ascendance : {name} est son propre ancêtre"
+msgstr ""
+
+msgid "{name} est son propre conjoint"
+msgstr ""
+
+msgid "Famille sans époux ni épouse, mais avec {n} enfant(s)"
+msgstr ""
+
+msgid "Famille vide : ni époux, ni épouse, ni enfant"
+msgstr ""
+
+msgid "{name} est enfant naturel de plusieurs familles : {list}"
+msgstr ""
+
+msgid "{name} est à la fois parent et enfant de cette famille"
+msgstr ""
+
+msgid "{name} est enregistré(e) deux fois comme enfant de cette famille"
+msgstr ""
+
+msgid "Le couple {name} et {name2} apparaît dans plusieurs familles : {list}"
+msgstr ""
+
+msgid "Nom de famille écrit en minuscules : « {txt} »"
+msgstr ""
+
+msgid "Espaces superflus dans le nom : « {txt} »"
+msgstr ""
+
+msgid "Point d’interrogation ou chiffre dans le nom : « {txt} »"
+msgstr ""
+
+msgid "Personne sans nom ni prénom"
+msgstr ""
+
+msgid "Référence à une personne qui n’existe pas dans la base : {pid2}"
+msgstr ""
+
+msgid "Lieu écrit de plusieurs façons : {list}"
+msgstr ""
+
+msgid "Une anomalie ignorée reste ignorée aux analyses suivantes (même contrôle, mêmes personnes ou famille) ; « Restaurer » la remet dans la liste."
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""
@@ -4517,5 +4994,57 @@ msgstr ""
 
 msgctxt "js"
 msgid "Éléments affichés"
+msgstr ""
+
+msgctxt "js"
+msgid "Exporter en PDF ou en PNG"
+msgstr ""
+
+msgctxt "js"
+msgid "Exporter"
+msgstr ""
+
+msgctxt "js"
+msgid "Format de sortie"
+msgstr ""
+
+msgctxt "js"
+msgid "recommandé"
+msgstr ""
+
+msgctxt "js"
+msgid "Résolution"
+msgstr ""
+
+msgctxt "js"
+msgid "Fond"
+msgstr ""
+
+msgctxt "js"
+msgid "transparent (sinon blanc)"
+msgstr ""
+
+msgctxt "js"
+msgid "résolution réduite : limite de taille d'image du navigateur."
+msgstr ""
+
+msgctxt "js"
+msgid "Exporter en PNG"
+msgstr ""
+
+msgctxt "js"
+msgid "Création du PNG…"
+msgstr ""
+
+msgctxt "js"
+msgid "Résolution réduite à"
+msgstr ""
+
+msgctxt "js"
+msgid "limite de taille d'image du navigateur"
+msgstr ""
+
+msgctxt "js"
+msgid "Échec de l'export PNG."
 msgstr ""
 

@@ -51,7 +51,7 @@ Button linking to the person’s TNG record (see also the “Record link button�
 | Attribute | Values | Default | Role |
 |---|---|---|---|
 | id | I1, I25… | I1 | TNG person ID (`personID=I12` in the page address); for `liste_enfants_tng`, the family ID (F12). |
-| generations | {'fr': 'nombre entier', 'en': 'whole number'} | {'fr': '3 (arbre), 5 (patronyme)', 'en': '3 (tree), 5 (patronymic)'} | Number of generations. Cap: 5 for `arbre_tng`, 30 for `patronyme_tng`, 15 levels for descendants. |
+| generations | whole number | 3 (tree), 5 (patronymic) | Number of generations. Cap: 5 for `arbre_tng`, 30 for `patronyme_tng`, 15 levels for descendants. |
 
 ## Usage
 

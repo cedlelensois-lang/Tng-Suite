@@ -229,6 +229,8 @@ function tngs_page_modules() {
         'tng-implexe'             => 'implexe',
         'tng-implexe-inbreeding'  => 'implexe',
         'tng-implexe-settings'    => 'implexe',
+        'tng-coherence'           => 'coherence',
+        'tng-coherence-settings'  => 'coherence',
         'tngbook'                 => 'book',
         'tngbook-settings'        => 'book',
         'tngbook-overview'        => 'book',
@@ -658,7 +660,11 @@ function tngs_render_general_page() {
                                 <span class="tngs-priv-warn" style="color:#b32d2e;display:none">⚠️ RGPD</span>
                                 <br><span class="description"><?php echo esc_html( $info[2] ); ?></span>
                             <?php else : ?>
-                                <span class="description">Sans objet : simple lien, c'est TNG qui protège la fiche.</span>
+                                <?php if ( 'coherence' === $slug ) : ?>
+                                    <span class="description">Sans objet : page d’administration, rien n’est publié sur le site.</span>
+                                <?php else : ?>
+                                    <span class="description">Sans objet : simple lien, c'est TNG qui protège la fiche.</span>
+                                <?php endif; ?>
                             <?php endif; ?>
                         </td>
                     </tr>

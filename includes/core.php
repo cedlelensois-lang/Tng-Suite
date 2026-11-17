@@ -212,6 +212,7 @@ function tngs_modules() {
         'random'   => array( 'Individu au hasard', '[tng_random_individual]', 'Tirage au sort parmi les personnes vivantes ou privées.' ),
         'extra'    => array( 'Nuage de noms & anniversaires', '[tng_name_cloud] [tng_births_today] [tng_marriages_today] [tng_deaths_today] [tng_recent_updates]', 'Noms de famille et anniversaires du jour des personnes vivantes ou privées.' ),
         'implexe'  => array( 'Implexe & consanguinité', '[tng_implexe] [tng_consanguinite]', 'Noms des personnes vivantes ou privées dans les graphes et les listes.' ),
+        'coherence' => array( 'Cohérence des données', '(aucun shortcode : page d’administration réservée aux administrateurs)', null ),
         'book'     => array( 'Livre généalogique', '[tng_book] (et génération depuis l\'administration)', 'Personnes vivantes ou privées dans le livre (noms, dates, photos).' ),
         'fiche'    => array( 'Fiche & listes de documents', '[tng_listes]', 'Noms et dates des personnes vivantes ou privées dans les listes et les fiches individuelles.' ),
     );
@@ -232,7 +233,7 @@ function tngs_module_root( $slug ) {
     return isset( $a[ $slug ] ) ? $a[ $slug ] : $slug;
 }
 
-/** Modules tels que l'utilisateur les voit : 10 lignes (link et random sont regroupés avec tree et extra). */
+/** Modules tels que l’utilisateur les voit : 11 lignes (link et random sont regroupés avec tree et extra). */
 function tngs_modules_ui() {
     $all   = tngs_modules();
     $label = array(
@@ -264,7 +265,7 @@ function tngs_modules_ui() {
 function tngs_families() {
     return array(
         'trees'   => array( 'Arbres & visualisations', array( 'tree', 'link', 'timeline', 'fan' ) ),
-        'analyse' => array( 'Analyses', array( 'stats', 'heatmap', 'implexe' ) ),
+        'analyse' => array( 'Analyses', array( 'stats', 'heatmap', 'implexe', 'coherence' ) ),
         'docs'    => array( 'Documents', array( 'book', 'fiche' ) ),
         'media'   => array( 'Médias & widgets', array( 'gallery', 'extra', 'random' ) ),
     );
@@ -846,7 +847,8 @@ add_action( 'admin_init', function () {
             . '<p><strong>Données des visiteurs.</strong> Le plugin n\'enregistre aucune donnée personnelle sur vos visiteurs (pas de cookie, pas de statistiques de visite ; seul le choix de langue du panneau « fiche » est mémorisé dans le navigateur du visiteur, via localStorage) et n\'envoie aucune donnée à l\'auteur du plugin.</p>'
             . '<p><strong>Services tiers.</strong> Pour afficher les graphiques, les réseaux et les cartes, le navigateur du visiteur peut charger des bibliothèques depuis un CDN public (cdnjs.cloudflare.com, unpkg.com, cdn.jsdelivr.net), sauf si elles ont été copiées dans le dossier libs/ du plugin. La carte de chaleur charge des tuiles de carte auprès du fournisseur choisi dans ses réglages (Esri, OpenStreetMap, OpenTopoMap…) : ce fournisseur reçoit l\'adresse IP du visiteur.</p>'
             . '<p><strong>Mises à jour.</strong> Le site vérifie périodiquement les nouvelles versions du plugin auprès de GitHub (api.github.com) ; aucune donnée sur vos visiteurs n\'est transmise.</p>'
-            . '<p><strong>Livre généalogique.</strong> Les PDF, DOCX et ODT générés contiennent des données de votre base TNG ; les fichiers du livre automatique sont enregistrés dans un dossier protégé de votre site.</p>';
+            . '<p><strong>Livre généalogique.</strong> Les PDF, DOCX et ODT générés contiennent des données de votre base TNG ; les fichiers du livre automatique sont enregistrés dans un dossier protégé de votre site.</p>'
+            . '<p><strong>Cohérence des données.</strong> Les résultats du contrôle (noms, identifiants et dates des personnes concernées par une anomalie, y compris vivantes) sont conservés dans deux tables de la base WordPress, visibles des seuls administrateurs. La liste des anomalies que vous avez choisi d’ignorer (message, identifiants) est conservée dans les options du site. Les résultats sont effacés par le bouton « Effacer les résultats » (la liste des anomalies ignorées par « Tout restaurer ») et tout est supprimé à la désinstallation du plugin.</p>';
     } else {
         $txt = '<h2>TNG Suite</h2>'
             . '<p class="privacy-policy-tutorial">This text is a suggestion: adapt it to your site.</p>'
@@ -854,7 +856,8 @@ add_action( 'admin_init', function () {
             . '<p><strong>Visitor data.</strong> The plugin stores no personal data about your visitors (no cookie, no visit statistics; only the language choice of the “fiche” panel is remembered in the visitor\'s browser, via localStorage) and sends no data to the plugin author.</p>'
             . '<p><strong>Third-party services.</strong> To display charts, networks and maps, the visitor\'s browser may load libraries from a public CDN (cdnjs.cloudflare.com, unpkg.com, cdn.jsdelivr.net), unless they have been copied into the plugin\'s libs/ folder. The heatmap loads map tiles from the provider chosen in its settings (Esri, OpenStreetMap, OpenTopoMap…): that provider receives the visitor\'s IP address.</p>'
             . '<p><strong>Updates.</strong> The site periodically checks GitHub (api.github.com) for new plugin versions; no data about your visitors is sent.</p>'
-            . '<p><strong>Genealogy book.</strong> Generated PDF, DOCX and ODT files contain data from your TNG database; files from the automatic book are saved in a protected folder of your site.</p>';
+            . '<p><strong>Genealogy book.</strong> Generated PDF, DOCX and ODT files contain data from your TNG database; files from the automatic book are saved in a protected folder of your site.</p>'
+            . '<p><strong>Data consistency.</strong> The check results (names, identifiers and dates of people concerned by an anomaly, including living people) are kept in two tables of the WordPress database, visible to administrators only. The list of anomalies you chose to ignore (message, identifiers) is kept in the site options. The results are erased by the “Clear results” button (the ignored list by “Restore all”), and everything is deleted when the plugin is uninstalled.</p>';
     }
     wp_add_privacy_policy_content( 'TNG Suite', wp_kses_post( wpautop( $txt, false ) ) );
 } );

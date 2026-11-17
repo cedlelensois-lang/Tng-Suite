@@ -59,11 +59,11 @@ Generic form: `stat` = statistic key, `type` = chart type.
 
 | Attribute | Values | Default | Role |
 |---|---|---|---|
-| type | {'fr': 'selon la statistique (voir ci-dessous)', 'en': 'depends on the statistic (see below)'} | {'fr': '1er type de la liste', 'en': 'first type in the list'} | Chart type: `pie`, `doughnut`, `polarArea`, `bar`, `hbar`, `line`, `area`, `radar`, `pyramid` or `table`. |
-| tree | {'fr': 'identifiant d’arbre', 'en': 'tree ID'} | {'fr': 'arbre de Général', 'en': 'tree from General'} | Tree (gedcom). |
-| height | {'fr': 'pixels', 'en': 'pixels'} | 380 | Chart height. |
-| title | {'fr': 'texte', 'en': 'text'} | {'fr': 'titre du réglage', 'en': 'title from settings'} | Overrides the title. |
-| class | {'fr': 'classe CSS', 'en': 'CSS class'} | {'fr': '(vide)', 'en': '(empty)'} | CSS class added to the container. |
+| type | depends on the statistic (see below) | first type in the list | Chart type: `pie`, `doughnut`, `polarArea`, `bar`, `hbar`, `line`, `area`, `radar`, `pyramid` or `table`. |
+| tree | tree ID | tree from General | Tree (gedcom). |
+| height | pixels | 380 | Chart height. |
+| title | text | title from settings | Overrides the title. |
+| class | CSS class | (empty) | CSS class added to the container. |
 
 ### Available statistics
 
@@ -71,7 +71,7 @@ Generic form: `stat` = statistic key, `type` = chart type.
 |---|---|---|---|
 | centenarians — `[tng_stat_centenaires]` | table, hbar, bar | table | Longest lives. `limit` (10), `min_age` (100), `precision` (`day` or `year`), `person` (restrict to a person’s ancestors). |
 | gender — `[tng_stat_genre]` | pie, doughnut, polarArea, bar, hbar, table | doughnut | Men, women, unknown (living included). |
-| living — `[tng_stat_vivants]` | {'fr': 'idem', 'en': 'same'} | polarArea | Number of deceased and living people (totals only). Labels can be renamed in Stats: charts. |
+| living — `[tng_stat_vivants]` | same | polarArea | Number of deceased and living people (totals only). Labels can be renamed in Stats: charts. |
 | marriage_age — `[tng_stat_age_union]` | line, area, bar, table | line | Mean age at first marriage (M/F) per century. `min_n` (3): minimum cases per century and sex. |
 | life_expectancy — `[tng_stat_esperance]` | line, area, bar, table | line | Mean age at death per century of death. `min_age` (0; 5 or 20 to exclude infant mortality), `min_n` (5). |
 | pyramid — `[tng_stat_pyramide]` | pyramid, bar, table | pyramid | Without `year`: ages at death (men left, women right). With `year="1850"`: ages of people alive that year. `step` (10; 5 or 10), `max_age` (100). |

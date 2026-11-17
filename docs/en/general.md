@@ -22,7 +22,7 @@ Menu **TNG Suite > General**.
 | TNG tree ID | `gedcom` column: tree used by default. Leave empty for no filter (all trees). |
 | Living / private (default) | Hide living or private people (recommended, GDPR). Value used by modules set to “Same as the shared setting”. |
 | Tree cache (hours) | 0 = no cache (12 by default). The other modules have their own duration in their section. |
-| Modules table | For each module: enabled / disabled and Living / private setting (Same as the shared setting, Hide, Show ⚠️ GDPR). “Record link button” follows “Trees & descendants”; “Random individual” follows “Name cloud & birthdays”; the latter two are hidden by default. |
+| Modules table | For each module: enabled / disabled and Living / private setting (Same as the shared setting, Hide, Show ⚠️ GDPR). “Record link button” follows “Trees & descendants”; “Random individual” follows “Name cloud & birthdays”; the latter two are hidden by default. “Data consistency” (administration page, no shortcode) has no Living / private setting: nothing is published. |
 | Maintenance: flush all caches | Flushes the caches of all modules; useful after a change in TNG. |
 | Migration from the old plugins | If old standalone plugins are detected, their settings are imported and compared; deactivate them to enable the matching modules. A button clears the MySQL passwords they still keep in clear text. |
 

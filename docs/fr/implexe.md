@@ -36,16 +36,16 @@ Classement des personnes par coefficient de consanguinité (calcul fait par un a
 
 | Attribut | Valeurs | Défaut | Rôle |
 |---|---|---|---|
-| tree | {'fr': 'identifiant d’arbre', 'en': 'tree ID'} | {'fr': 'réglage Général', 'en': 'General setting'} | Arbre (gedcom). |
-| person | I1 | {'fr': 'réglage', 'en': 'setting'} | Personne de départ. |
-| generations | 2 – max | {'fr': 'maximum du réglage', 'en': 'setting maximum'} | Générations analysées. |
-| network_generations | 2 – 10 | {'fr': 'réglage', 'en': 'setting'} | Générations du réseau. |
+| tree | identifiant d’arbre | réglage Général | Arbre (gedcom). |
+| person | I1 | réglage | Personne de départ. |
+| generations | 2 – max | maximum du réglage | Générations analysées. |
+| network_generations | 2 – 10 | réglage | Générations du réseau. |
 
 ### `[tng_consanguinite]`
 
 | Attribut | Valeurs | Défaut | Rôle |
 |---|---|---|---|
-| tree | {'fr': 'identifiant d’arbre', 'en': 'tree ID'} | {'fr': 'réglage Général', 'en': 'General setting'} | Arbre (gedcom). |
+| tree | identifiant d’arbre | réglage Général | Arbre (gedcom). |
 | per_page | 10 – 100 | 50 | Lignes par page. |
 
 ## Utilisation

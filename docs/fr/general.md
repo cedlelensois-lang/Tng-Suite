@@ -22,7 +22,7 @@ Menu **TNG Suite > Général**.
 | Identifiant de l’arbre TNG | Colonne `gedcom` : arbre utilisé par défaut. Laisser vide pour ne pas filtrer (tous les arbres). |
 | Vivants / privés (par défaut) | Masquer les personnes vivantes ou privées (recommandé, RGPD). Valeur utilisée par les modules réglés sur « Comme le réglage commun ». |
 | Cache des arbres (heures) | 0 = pas de cache (12 par défaut). Les autres modules ont leur propre durée dans leur section. |
-| Tableau Modules | Pour chaque module : activé / désactivé et réglage Vivants / privés (Comme le réglage commun, Masquer, Afficher ⚠️ RGPD). « Bouton vers la fiche » suit « Arbres & descendance » ; « Individu au hasard » suit « Nuage de noms & anniversaires » ; ces deux derniers sont masqués par défaut. |
+| Tableau Modules | Pour chaque module : activé / désactivé et réglage Vivants / privés (Comme le réglage commun, Masquer, Afficher ⚠️ RGPD). « Bouton vers la fiche » suit « Arbres & descendance » ; « Individu au hasard » suit « Nuage de noms & anniversaires » ; ces deux derniers sont masqués par défaut. « Cohérence des données » (page d’administration, sans shortcode) n’a pas de réglage Vivants / privés : rien n’est publié. |
 | Maintenance : vider tous les caches | Vide les caches de tous les modules ; utile après une modification dans TNG. |
 | Migration depuis les anciens plugins | Si d’anciens plugins autonomes sont détectés, leurs réglages sont repris et comparés ; désactivez-les pour activer les modules correspondants. Un bouton efface les mots de passe MySQL qu’ils conservent encore en clair. |
 

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: TNG Suite
  * Description: Suite unifiée pour TNG : arbres et descendance, bouton vers la fiche, frise chronologique, heatmap des lieux, galerie de médias, individu au hasard, nuage de noms et anniversaires, statistiques et graphiques, éventail (roue de parenté), implexe et consanguinité, livre généalogique, fiche et listes de documents. Un seul réglage de connexion (wp-config.php ou saisie dans le plugin), de préfixe et d'URL, et un réglage « vivants / privés » par module, en français ou en anglais.
- * Version: 2.18.0
+ * Version: 2.19.0
  * Requires PHP: 7.4
  * Requires at least: 5.8
  * Author: Cédric Malvache
@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'TNGSUITE_VERSION', '2.18.0' );
+define( 'TNGSUITE_VERSION', '2.19.0' );
 define( 'TNGSUITE_FILE', __FILE__ );
 define( 'TNGSUITE_DIR', plugin_dir_path( __FILE__ ) );
 define( 'TNGSUITE_URL', plugin_dir_url( __FILE__ ) );
@@ -60,6 +60,7 @@ function tngs_boot() {
         'fan'      => array( 'modules/fan/fan.php',           'class:TNGFan_Front',                       'TNG Fan' ),
         'stats'    => array( 'modules/stats/stats.php',       'class:TNGS_Settings',                      'TNG Stats' ),
         'implexe'  => array( 'modules/implexe/implexe.php',   'class:TNGI_Admin',                         'TNG Implexe & Ancêtres' ),
+        'coherence' => array( 'modules/coherence/coherence.php', 'class:TNGCoh_Rules',                      'TNG Cohérence' ),
         'book'     => array( 'modules/book/book.php',         'class:TNGBook',                            'TNG Livre Généalogique' ),
         'fiche'    => array( 'modules/fiche/fiche.php',       'function:tngfg_defaults',                  'TNG Fiche Généalogique' ),
     );

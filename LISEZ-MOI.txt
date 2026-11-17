@@ -26,6 +26,7 @@ Un seul plugin à la place des onze :
                                                               ou [tng_stat stat="…"]
   (nouveau)                              Éventail / roue de parenté [tng_fan]
   TNG Implexe & Ancêtres 1.0             Implexe & consanguinité [tng_implexe] [tng_consanguinite]
+  (nouveau)                              Cohérence des données (administrateurs, sans shortcode)
   TNG Livre Généalogique 1.1             Livre généalogique   [tng_book] + génération en administration
   TNG Fiche Généalogique 1.1             Fiche & listes       [tng_listes]
 
@@ -54,7 +55,7 @@ INSTALLATION / MIGRATION
 LE MENU : CINQ ENTRÉES (depuis la 2.8.0)
  Le menu « TNG Suite » compte Général et quatre familles ; chaque ancienne sous-page est maintenant une section (barre en haut de la page) :
   - Arbres & visualisations : Arbres & descendance, Bouton vers la fiche, Frise chronologique, Éventail.
-  - Analyses : Statistiques & graphiques, Heatmap des lieux, Implexe & consanguinité.
+  - Analyses : Statistiques & graphiques, Heatmap des lieux, Implexe & consanguinité, Cohérence des données.
   - Documents : Livre généalogique, Fiche & listes de documents.
   - Médias & widgets : Galerie de médias, Nuage de noms & anniversaires, Individu au hasard.
  Quand ce guide indique « TNG Suite > Analyses > Statistiques & graphiques » ou « TNG Suite > Documents > Livre généalogique », ouvrez l'onglet de la famille, puis la section du même nom.
@@ -112,6 +113,7 @@ VIVANTS / PRIVÉS : UN RÉGLAGE PAR MODULE (TNG Suite > Général > Modules)
  - Statistiques : seuls des totaux sont publiés ; « Masquer » cache le nom des personnes privées dans la liste des
    centenaires.
  - Bouton vers la fiche : sans objet (simple lien, c'est TNG qui protège la fiche).
+ - Cohérence des données : sans objet (page d'administration réservée aux administrateurs, rien n'est publié).
  - Migration : si un ancien plugin affichait déjà les vivants, son module est repris sur « Afficher » (et signalé).
 
 
@@ -157,11 +159,13 @@ LIVRE : COUPLE MARIÉ OU EN COUPLE
  - Zoom intelligent (zoomdetail="1") : à chaque zoom, les textes sont recalculés pour tenir dans la case agrandie. Plus
    on zoome, plus il y a de lignes : nom, puis années, puis communes, puis dates et lieux complets. Seules les cases
    visibles sont écrites, ce qui garde un affichage fluide même à 12 générations.
- - Export PDF (bouton « PDF », pdf="0" pour le retirer) : PDF vectoriel généré dans le navigateur, sans bibliothèque,
+ - Export PDF ou PNG (bouton « Exporter en PDF ou en PNG », pdf="0" pour le retirer) : le PDF est vectoriel, généré dans le navigateur, sans bibliothèque,
    texte compris (les noms suivent les arcs). Une boîte de dialogue permet de choisir le format de la feuille
    (A4, A3, A2, A1, A0, ou « Adapté au texte »), l'orientation et le contenu (comme à l'écran, ou dates et lieux complets).
    Elle indique en direct « N / M cases avec le texte complet » pour la feuille choisie. « Adapté au texte » retient la plus
    petite feuille où tout le texte tient en entier (au-delà de l'A0, un format sur mesure jusqu'à 5 m).
+   Le format de sortie « PNG » produit une image avec les mêmes choix : résolution de 150, 200 (recommandé) ou 300 dpi,
+   fond blanc ou transparent ; la résolution est réduite d'office si l'image dépasse la limite du navigateur.
  - Personnes vivantes / privées : réglage du module (Général > Modules) ET paramètre du shortcode
    living="default|hide|show". « default » suit le réglage du module ; « hide » masque sur cette roue ; « show » les
    affiche sur cette roue (⚠️ RGPD : leurs noms, dates et lieux sont visibles de tous les visiteurs de la page).
@@ -366,7 +370,14 @@ NOUVEAUX MODULES : POINTS D'ATTENTION
    (<préfixe WP>tngi_inbreeding), supprimée à la désinstallation de la suite. Chart.js et vis-network sont chargés
    depuis libs/ s'ils y sont, sinon depuis cdnjs.cloudflare.com (l'adresse IP du visiteur est alors transmise à ce CDN).
 
+ - Cohérence des données (TNG Suite > Analyses > Cohérence : contrôle des données / seuils et anomalies ignorées) : contrôle en lecture
+   seule (jamais d'écriture dans la base TNG) réservé aux administrateurs : dates impossibles, âges, sexe, structure des familles,
+   noms, lieux et doublons possibles avec un score. L'analyse se lance à la main, par lots avec barre de progression. Les résultats
+   (noms, identifiants et dates, y compris de personnes vivantes) sont stockés dans deux tables de la base WordPress
+   (<préfixe WP>tngs_coh_res et tngs_coh_key) et la liste des anomalies ignorées dans les options ; « Effacer les résultats »
+   les supprime, et la désinstallation de la suite supprime tout. Voir docs/fr/coherence.md.
+
 DÉSINSTALLATION
 ---------------
-Supprimer TNG Suite efface ses propres réglages, caches et tâche planifiée. Vos données TNG et les options des
+Supprimer TNG Suite efface ses propres réglages, caches, tâche planifiée et tables créées dans la base WordPress. Vos données TNG et les options des
 anciens plugins ne sont pas touchées.

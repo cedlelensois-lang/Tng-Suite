@@ -35,8 +35,8 @@ Tirage limité à un nom de famille et à un arbre.
 
 | Attribut | Valeurs | Défaut | Rôle |
 |---|---|---|---|
-| name | {'fr': 'nom de famille', 'en': 'surname'} | {'fr': '(vide : tous)', 'en': '(empty: all)'} | Limite le tirage à ce nom. |
-| tree | {'fr': 'identifiant d’arbre', 'en': 'tree ID'} | {'fr': 'arbre de Général', 'en': 'tree from General'} | Arbre (gedcom). |
+| name | nom de famille | (vide : tous) | Limite le tirage à ce nom. |
+| tree | identifiant d’arbre | arbre de Général | Arbre (gedcom). |
 
 ## Utilisation
 

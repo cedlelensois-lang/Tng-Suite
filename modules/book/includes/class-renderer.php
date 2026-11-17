@@ -1112,10 +1112,17 @@ class TNGBook_Renderer {
             $html .= '<h4><span class="num">' . $this->e($ref) . '</span> ' . $this->e($this->plain($pid))
                 . ($symbol ? ' <span class="sx">' . $symbol . '</span>' : '') . ($yr ? ' <span class="yrs">' . $this->e($yr) . '</span>' : '') . '</h4>';
         }
-        if ($this->mode === 'pdf') $html .= $phHtml;
-
         /* Mini-arbre d'ascendance (parents et grands-parents) en tête de la fiche d'un ancêtre */
-        if (!empty($this->o['mini']) && $ref[0] === 'A') $html .= $this->miniTree((int) substr($ref, 1));
+        $mini = !empty($this->o['mini']) && $ref[0] === 'A' ? $this->miniTree((int) substr($ref, 1)) : '';
+        if ($this->mode === 'pdf' && ($this->o['template'] ?? '') === 'modern') {
+            // Modèle Moderne en PDF : le filet vert de la carte se perd à la coupure de page quand la carte contient un bloc flottant.
+            // La photo n'est donc jamais flottante : dans un tableau, à côté du mini-arbre ; sans mini-arbre, seule sur sa ligne.
+            if ($phHtml !== '' && $mini !== '') $html .= '<table class="topt" width="100%"><tr><td valign="top">' . $mini . '</td><td valign="top" align="right" width="3cm">' . $phHtml . '</td></tr></table>';
+            else $html .= $phHtml . $mini;
+        } else {
+            if ($this->mode === 'pdf') $html .= $phHtml;
+            $html .= $mini;
+        }
 
         /* Naissance et parents */
         $bits = [];
@@ -2289,7 +2296,7 @@ CSS;
         $raw = $this->cssRaw();
         if ($this->mode !== 'pdf') return $raw;
         $raw = (string) preg_replace('/^@page [^\n]*\n/m', '', $raw, 1);
-        return $raw . ".cover { page-break-after: auto; }\n.fiche .phw { float: right; width: 3.2cm; margin: 0 0 .3cm 0; padding-left: .6cm; }\n.fiche .phw img.ph { float: none; margin: 0; display: block; width: 100%; }\ndiv.fiche, div.fiche.hasnotes { page-break-inside: auto; break-inside: auto; }\n.part.nopb { page-break-before: auto; }\n.fiche h4 { overflow: hidden; }\n";  // mPDF : « page-break-inside: avoid » casse les blocs flottants (textes superposés)
+        return $raw . ".cover { page-break-after: auto; }\n.fiche .phw { float: right; width: 3.2cm; margin: 0 0 .3cm 0; padding-left: .6cm; }\n.fiche .phw img.ph { float: none; margin: 0; display: block; width: 100%; }\n" . (($this->o['template'] ?? '') === 'modern' ? ".fiche .phw { float: none; width: 2.6cm; margin: 0 0 .2cm auto; padding: 0; }\ntable.topt { width: 100%; border-collapse: collapse; margin: 0; }\ntable.topt td { padding: 0; border: 0; }\n" : '') . "div.fiche, div.fiche.hasnotes { page-break-inside: auto; break-inside: auto; }\n.part.nopb { page-break-before: auto; }\n.fiche h4 { overflow: hidden; }\n";  // mPDF : « page-break-inside: avoid » casse les blocs flottants (textes superposés)
     }
 
     private function cssRaw() {
@@ -2435,7 +2442,8 @@ CSS;
         if (!empty($o['stats'])) $run('stats', function () { return $this->statsPart(); });
         if (!empty($o['cous']) && $o['up'] > 0) $run('cous', function () { return $this->cousinsPart(); });
         if (!empty($o['map'])) $run('map', function () { return $this->mapPart(); });
-        if ($o['index']) { $run('idxn', function () { return $this->indexNames(); }); $run('idxp', function () { return $this->indexPlaces(); }); }
+        if (array_key_exists('idxn', $o) ? !empty($o['idxn']) : !empty($o['index'])) $run('idxn', function () { return $this->indexNames(); });
+        if (array_key_exists('idxp', $o) ? !empty($o['idxp']) : !empty($o['index'])) $run('idxp', function () { return $this->indexPlaces(); });
         $run('src', function () { return $this->sourcesPart(); });
         if (!empty($o['asclist']) && $o['up'] > 0) $run('alist', function () { return $this->ascListPart(); });
         if (!empty($o['desclist']) && $o['down'] > 0) $run('dlist', function () { return $this->descListPart(); });

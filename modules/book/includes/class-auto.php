@@ -360,7 +360,8 @@ class TNGBook_Auto {
         $j = array_merge(self::job_defaults(), ($active !== '' ? ($jobs[$active] ?? []) : []));
         $days = [1 => 'Lundi', 2 => 'Mardi', 3 => 'Mercredi', 4 => 'Jeudi', 5 => 'Vendredi', 6 => 'Samedi', 0 => 'Dimanche'];
         $k = 'tngbook_auto_job';
-        echo '<h2 id="tngbook-auto-job">' . esc_html(tngs_t('Génération automatique de ce profil')) . '</h2>';
+        // Volet replié quand la génération automatique est désactivée, ouvert quand elle est activée (aucune mémoire de l'ouverture manuelle)
+        echo '<details id="tngbook-auto-job"' . (!empty($j['on']) ? ' open' : '') . ' style="border:1px solid #c3c4c7;background:#fff;padding:0 12px;margin:16px 0"><summary style="cursor:pointer;font-weight:600;font-size:1.1em;padding:10px 0">' . esc_html(tngs_t('Génération automatique de ce profil')) . '</summary>';
         echo '<p class="description">' . esc_html($active !== ''
             ? tngs_t('Profil actif :') . ' ' . $active . ' — ' . tngs_t('ces réglages sont enregistrés avec le profil (bouton « Mettre à jour le profil actif »).')
             : tngs_t('Ces réglages sont enregistrés avec le profil : donnez un nom au profil, puis « Enregistrer comme profil ».')) . '</p>';
@@ -375,7 +376,7 @@ class TNGBook_Auto {
         for ($h = 0; $h < 24; $h++) echo '<option value="' . (int) $h . '"' . selected((int) $j['hour'], $h, false) . '>' . sprintf('%02d h', $h) . '</option>';
         echo '</select>';
         if (!empty($j['on']) && $j['next']) echo '<p class="description">' . esc_html(tngs_t('Prochaine génération :')) . ' ' . esc_html(wp_date('d/m/Y H:i', (int) $j['next'])) . '</p>';
-        echo '<p class="description">' . esc_html(tngs_t('Le dossier de destination, le nombre de fichiers conservés et l’e-mail sont communs à tous les profils : voir l’onglet « Réglages ».')) . '</p></td></tr></table>';
+        echo '<p class="description">' . esc_html(tngs_t('Le dossier de destination, le nombre de fichiers conservés et l’e-mail sont communs à tous les profils : voir l’onglet « Réglages ».')) . '</p></td></tr></table></details>';
         echo '<script>(function(){var t=document.querySelector("[data-tngjob]");if(!t)return;var f=t.querySelector(".tngauto-freq"),w=t.querySelector(".tngauto-dow"),d=t.querySelector(".tngauto-dom");function u(){w.style.display=f.value==="weekly"?"":"none";d.style.display=f.value==="monthly"?"":"none";}f.addEventListener("change",u);u();})();</script>';
     }
 
