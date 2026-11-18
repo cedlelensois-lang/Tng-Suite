@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.20.0
+Stable tag: 2.20.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the tables it created in the WordPress database (`tngi_inbreeding` for the implex module; `tngs_coh_res` and `tngs_coh_key` for the data consistency check). Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.20.1 =
+* Cohérence des données : une erreur PHP survenue dans la partie « Événements » ou « Sources et médias » ne provoque plus d’erreur 500 : la partie est passée et l’erreur (message et ligne) s’affiche sous le résumé de l’analyse.
 
 = 2.20.0 =
 * Cohérence des données : on choisit les parties à analyser avant de lancer l’analyse (personnes, familles, boucles, enfants de plusieurs familles, doublons, événements, sources et médias, lieux). Seules les parties cochées sont relancées, les résultats des autres sont conservés avec leur date.

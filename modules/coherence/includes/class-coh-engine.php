@@ -153,7 +153,7 @@ class TNGCoh_Engine {
 		try {
 			$e  = new self( $st );
 			$st = $e->run();
-		} catch ( Exception $ex ) {
+		} catch ( Throwable $ex ) {
 			$st['status'] = 'error';
 			$st['err']    = $ex->getMessage();
 			update_option( TNGCoh_Store::RUN, $st, false );
@@ -1235,8 +1235,12 @@ class TNGCoh_Engine {
 	}
 
 	/** Une phase qui lit les tables d'événements, de citations ou de médias : si ces tables diffèrent de ce qui est attendu, la partie est passée et signalée. */
-	private function fail_phase( $key, RuntimeException $ex ) {
-		$this->st['fail'][ $key ] = mb_substr( $ex->getMessage(), 0, 240 );
+	private function fail_phase( $key, Throwable $ex ) {
+		$msg = $ex->getMessage();
+		if ( ! ( $ex instanceof RuntimeException ) ) {   // erreur PHP : on indique où, pour pouvoir la corriger.
+			$msg .= ' (' . basename( $ex->getFile() ) . ':' . $ex->getLine() . ')';
+		}
+		$this->st['fail'][ $key ] = mb_substr( $msg, 0, 300 );
 	}
 
 	/** Événements (profession, résidence, émigration…) : dates, avant la naissance, après le décès. */
@@ -1271,11 +1275,15 @@ class TNGCoh_Engine {
 					'ds' => TNGCoh_Rules::show( $p['deathdatetr'], $p['deathdate'] ),
 				);
 			}
-		} catch ( RuntimeException $ex ) {
+			$this->events_batch( $rows, $own, $P );
+		} catch ( Throwable $ex ) {
 			$this->fail_phase( 'events', $ex );
 			$this->next_phase();
-			return;
 		}
+	}
+
+	/** Contrôles d'un lot d'événements. */
+	private function events_batch( array $rows, array $own, array $P ) {
 		foreach ( $rows as $r ) {
 			$this->st['cur'] = (int) $r['eventID'];
 			$pf              = (string) $r['persfamID'];
@@ -1288,7 +1296,7 @@ class TNGCoh_Engine {
 			$pid = $fam ? '' : $pf;
 			$fid = $fam ? $pf : '';
 			$x   = (string) $r['eventID'];
-			$a   = array( 'ev' => mb_substr( $ev, 0, 60 ), 'who' => $own[ $pf ]['who'], 'txt' => $txt );
+			$a   = array( 'ev' => mb_substr( $ev, 0, 60 ), 'who' => $own[ $pf ]['who'], 'txt' => mb_substr( $txt, 0, 60 ) );
 			if ( $fam ) {
 				$a['wk'] = 'F';
 			}
@@ -1336,7 +1344,7 @@ class TNGCoh_Engine {
 		$sub  = isset( $this->st['sub'] ) && '' !== $this->st['sub'] ? $this->st['sub'] : 'cit';
 		try {
 			$done = $this->refs_step( $sub );
-		} catch ( RuntimeException $ex ) {
+		} catch ( Throwable $ex ) {
 			$this->fail_phase( $sub, $ex );
 			$done = true;
 		}
