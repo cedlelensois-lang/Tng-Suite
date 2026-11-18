@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.20.3
+Stable tag: 2.20.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the tables it created in the WordPress database (`tngi_inbreeding` for the implex module; `tngs_coh_res` and `tngs_coh_key` for the data consistency check). Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.20.4 =
+* Cohérence des données : une date saisie « Y » (ou « Yes », « Oui »), convention de TNG et de GEDCOM pour « l’événement a eu lieu, date inconnue », n’est plus signalée comme date non reconnue (contrôles D02 et E02). Relancer l’analyse pour retirer les anciens résultats.
 
 = 2.20.3 =
 * Livre : sur les pochettes pleine page (chêne, peinture…), un titre long associé à un sous-titre (auteur / mention) ne fait plus déborder « Document généré le… » sur la page 2 ; la police et les espacements du cartouche s’adaptent à la longueur du titre.

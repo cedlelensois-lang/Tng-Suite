@@ -421,6 +421,10 @@ class TNGCoh_Rules {
 		if ( '' === $t ) {
 			return 'ok';
 		}
+		// « Y » (yes) : convention TNG / GEDCOM = l’événement a eu lieu, date inconnue. Ce n’est pas une date à contrôler.
+		if ( preg_match( '/^(y|yes|oui)\.?$/i', $t ) ) {
+			return 'ok';
+		}
 		$mon = self::months();
 		if ( preg_match_all( '/(?<!\d)(\d{1,2})[\s\/\.\-]+([^\s\/\.\-\d]+|\d{1,2})[\s\/\.\-]+(\d{3,4})(?!\d)/u', $t, $all, PREG_SET_ORDER ) ) {
 			foreach ( $all as $m ) {
