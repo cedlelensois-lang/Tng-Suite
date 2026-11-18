@@ -309,6 +309,7 @@ class TNGCoh_Engine {
 			'cut'      => array_keys( (array) $st['cut'] ),
 			'cfg'      => $st['cfg'],
 			'parts'    => $parts,
+			'run'      => isset( $st['parts'] ) ? (array) $st['parts'] : array(),
 			'fail'     => isset( $st['fail'] ) ? (array) $st['fail'] : array(),
 		);
 		update_option( TNGCoh_Store::LAST, $last, false );

@@ -226,6 +226,18 @@ class TNGCoh_Store {
 		return $out;
 	}
 
+	/** Effectifs par type (hors anomalies ignorées) : [ catégorie => n ]. */
+	public static function cat_counts( $tree ) {
+		global $wpdb;
+		$t   = self::table( 'res' );
+		$out = array();
+		$r   = $wpdb->get_results( $wpdb->prepare( "SELECT cat, COUNT(*) n FROM {$t} WHERE tree = %s AND ign = 0 GROUP BY cat", $tree ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery -- table du plugin.
+		foreach ( (array) $r as $x ) {
+			$out[ (string) $x['cat'] ] = (int) $x['n'];
+		}
+		return $out;
+	}
+
 	/** Effectifs par contrôle (hors anomalies ignorées) : [ code => n ]. */
 	public static function code_counts( $tree ) {
 		global $wpdb;

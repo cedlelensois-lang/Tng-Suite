@@ -1528,4 +1528,7 @@ return array(
 	'Liens vers les médias' => 'Links to media',
 	'Part des personnes sans source' => 'Share of people without a source',
 	'Personne sans décès connu, non marquée « vivante » ni « privée », née il y a moins de (ans) : signalée avant un export' => 'Person with no known death, marked neither “living” nor “private”, born less than (years) ago: flagged before an export',
+	'Par type :' => 'By type:',
+	'parties' => 'parts',
+	'Analyse partielle : seules les parties ci-dessus ont été relancées. Les autres anomalies de la liste viennent de leur analyse précédente (voir « Parties analysées »).' => 'Partial analysis: only the parts listed above were run again. The other anomalies in the list come from their previous analysis (see “Parts analysed”).',
 );

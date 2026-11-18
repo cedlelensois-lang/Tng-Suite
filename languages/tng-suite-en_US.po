@@ -4558,6 +4558,15 @@ msgstr "Share of people without a source"
 msgid "Personne sans décès connu, non marquée « vivante » ni « privée », née il y a moins de (ans) : signalée avant un export"
 msgstr "Person with no known death, marked neither “living” nor “private”, born less than (years) ago: flagged before an export"
 
+msgid "Par type :"
+msgstr "By type:"
+
+msgid "parties"
+msgstr "parts"
+
+msgid "Analyse partielle : seules les parties ci-dessus ont été relancées. Les autres anomalies de la liste viennent de leur analyse précédente (voir « Parties analysées »)."
+msgstr "Partial analysis: only the parts listed above were run again. The other anomalies in the list come from their previous analysis (see “Parts analysed”)."
+
 msgctxt "js"
 msgid " Page "
 msgstr " Page "

@@ -256,9 +256,30 @@ class TNGCoh_Admin {
 		foreach ( TNGCoh_Rules::sev_labels() as $k => $lab ) {
 			echo '<span class="tngcoh-sev tngcoh-sev-' . (int) $k . '">' . esc_html( tngs_t( $lab ) ) . ' : ' . (int) $cnt[ $k ] . '</span> ';
 		}
-		echo '</p><p class="description">' . esc_html( tngs_t( 'Dernière analyse :' ) ) . ' ' . esc_html( wp_date( 'd/m/Y H:i', (int) $l['ts'] ) ) . ' – '
-			. esc_html( number_format_i18n( (int) $l['people'] ) ) . ' ' . esc_html( tngs_t( 'personnes' ) ) . ', ' . esc_html( number_format_i18n( (int) $l['fam'] ) ) . ' ' . esc_html( tngs_t( 'familles' ) )
-			. ' – ' . esc_html( tngs_t( 'durée' ) ) . ' ' . (int) $l['dur'] . ' s</p>';
+		echo '</p>';
+		$cc2 = TNGCoh_Store::cat_counts( $tree );
+		if ( $cc2 ) {
+			echo '<p class="tngcoh-types">' . esc_html( tngs_t( 'Par type :' ) ) . ' <a href="' . esc_url( self::url( $f, array( 'cat' => '', 'code' => '', 'paged' => 1 ) ) ) . '"' . ( '' === $f['cat'] ? ' style="font-weight:600"' : '' ) . '>' . esc_html( tngs_t( 'Tous' ) ) . ' (' . (int) array_sum( $cc2 ) . ')</a>';
+			foreach ( TNGCoh_Rules::cats() as $ck => $cl ) {
+				if ( ! empty( $cc2[ $ck ] ) ) {
+					echo ' · <a href="' . esc_url( self::url( $f, array( 'cat' => $ck, 'code' => '', 'paged' => 1 ) ) ) . '"' . ( $f['cat'] === $ck ? ' style="font-weight:600"' : '' ) . '>' . esc_html( tngs_t( $cl ) ) . ' (' . (int) $cc2[ $ck ] . ')</a>';
+				}
+			}
+			echo '</p>';
+		}
+		$short = function ( $k ) {
+			$all = TNGCoh_Rules::parts();
+			$t   = isset( $all[ $k ] ) ? tngs_t( $all[ $k ] ) : $k;
+			return trim( (string) preg_replace( '/\s*[:(].*$/u', '', $t ) );
+		};
+		$ran     = ! empty( $l['run'] ) && is_array( $l['run'] ) ? $l['run'] : array();
+		$partial = $ran && count( $ran ) < count( TNGCoh_Rules::parts() );
+		echo '<p class="description">' . esc_html( tngs_t( 'Dernière analyse :' ) ) . ' ' . esc_html( wp_date( 'd/m/Y H:i', (int) $l['ts'] ) ) . ' – '
+			. ( $ran ? esc_html( tngs_t( 'parties' ) ) . ' : ' . esc_html( implode( ', ', array_map( $short, $ran ) ) ) . ' – ' : '' )
+			. esc_html( tngs_t( 'durée' ) ) . ' ' . (int) $l['dur'] . ' s</p>';
+		if ( $partial ) {
+			echo '<div class="notice notice-info inline"><p>' . esc_html( tngs_t( 'Analyse partielle : seules les parties ci-dessus ont été relancées. Les autres anomalies de la liste viennent de leur analyse précédente (voir « Parties analysées »).' ) ) . '</p></div>';
+		}
 		if ( ! empty( $l['parts'] ) && is_array( $l['parts'] ) ) {
 			$bits = array();
 			foreach ( TNGCoh_Rules::parts() as $pk => $pl ) {

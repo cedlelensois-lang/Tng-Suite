@@ -11,7 +11,7 @@
   var status = document.getElementById('tngcoh-status');
   var box = document.getElementById('tngcoh-run');
   var treeSel = document.getElementById('tngcoh-tree');
-  var token = '', tree = '', stopped = false;
+  var token = '', tree = '', stopped = false, lastParts = [];
 
   function post(action, data) {
     var body = new URLSearchParams();
@@ -33,6 +33,11 @@
   function reload() {
     var u = new URL(window.location.href);
     u.searchParams.set('tngtree', tree);
+    // Analyse d'une seule partie : on affiche d'emblée les anomalies de ce type.
+    var one = { events: 'event', refs: 'source', places: 'place', dupes: 'dup' };
+    u.searchParams.delete('code');
+    u.searchParams.delete('paged');
+    if (lastParts.length === 1 && one[lastParts[0]]) { u.searchParams.set('cat', one[lastParts[0]]); } else { u.searchParams.delete('cat'); }
     u.hash = '#tng-coherence';
     window.location.href = u.toString();
   }
@@ -78,6 +83,7 @@
   go.addEventListener('click', function () {
     tree = treeSel ? treeSel.value : '';
     var parts = chosen();
+    lastParts = parts;
     if (partBoxes.length && !parts.length) { text(M.nopart || ''); return; }
     ui(true);
     text(M.starting || '');

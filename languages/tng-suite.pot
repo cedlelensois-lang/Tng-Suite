@@ -4558,6 +4558,15 @@ msgstr ""
 msgid "Personne sans décès connu, non marquée « vivante » ni « privée », née il y a moins de (ans) : signalée avant un export"
 msgstr ""
 
+msgid "Par type :"
+msgstr ""
+
+msgid "parties"
+msgstr ""
+
+msgid "Analyse partielle : seules les parties ci-dessus ont été relancées. Les autres anomalies de la liste viennent de leur analyse précédente (voir « Parties analysées »)."
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""
