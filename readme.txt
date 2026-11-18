@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.20.2
+Stable tag: 2.20.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the tables it created in the WordPress database (`tngi_inbreeding` for the implex module; `tngs_coh_res` and `tngs_coh_key` for the data consistency check). Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.20.3 =
+* Livre : sur les pochettes pleine page (chêne, peinture…), un titre long associé à un sous-titre (auteur / mention) ne fait plus déborder « Document généré le… » sur la page 2 ; la police et les espacements du cartouche s’adaptent à la longueur du titre.
 
 = 2.20.2 =
 * Cohérence des données : après une analyse partielle, le résumé indique les parties relancées et précise que les autres anomalies datent de leur analyse précédente ; les effectifs par type sont cliquables (filtre) ; la liste s’ouvre sur le type analysé quand une seule partie (événements, sources et médias, lieux, doublons) a été relancée.
