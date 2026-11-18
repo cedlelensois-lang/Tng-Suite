@@ -34,7 +34,7 @@ $options = array(
     // Implexe
     'tngi_options', 'tngi_inb_meta', 'tngi_db_version',
     // Cohérence des données
-    'tngcoh_options', 'tngcoh_ignored', 'tngcoh_last', 'tngcoh_run', 'tngcoh_dbver',
+    'tngcoh_options', 'tngcoh_ignored', 'tngcoh_last', 'tngcoh_run', 'tngcoh_dbver', 'tngcoh_parts',
     // Livre généalogique
     'tngbook_options',
     'tngbook_profiles',

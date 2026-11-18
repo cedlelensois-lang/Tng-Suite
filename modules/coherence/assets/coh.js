@@ -57,11 +57,31 @@
     step();
   }
 
+  var partBoxes = Array.prototype.slice.call(document.querySelectorAll('.tngcoh-part'));
+  var nsel = document.getElementById('tngcoh-nsel');
+  function partBox(v) { return partBoxes.filter(function (b) { return b.value === v; })[0]; }
+  function chosen() { return partBoxes.filter(function (b) { return b.checked; }).map(function (b) { return b.value; }); }
+  function count() { if (nsel) { nsel.textContent = String(chosen().length); } }
+  partBoxes.forEach(function (b) {
+    b.addEventListener('change', function () {
+      // Les doublons ont besoin des clés calculées avec les personnes.
+      var people = partBox('people'), dupes = partBox('dupes');
+      if (b === dupes && dupes.checked && people) { people.checked = true; }
+      if (b === people && !people.checked && dupes) { dupes.checked = false; }
+      count();
+    });
+  });
+  var allBtn = document.getElementById('tngcoh-all'), noneBtn = document.getElementById('tngcoh-none');
+  if (allBtn) { allBtn.addEventListener('click', function () { partBoxes.forEach(function (b) { b.checked = true; }); count(); }); }
+  if (noneBtn) { noneBtn.addEventListener('click', function () { partBoxes.forEach(function (b) { b.checked = false; }); count(); }); }
+
   go.addEventListener('click', function () {
     tree = treeSel ? treeSel.value : '';
+    var parts = chosen();
+    if (partBoxes.length && !parts.length) { text(M.nopart || ''); return; }
     ui(true);
     text(M.starting || '');
-    post('tngcoh_start', { tree: tree }).then(function (r) {
+    post('tngcoh_start', { tree: tree, parts: parts.join(',') }).then(function (r) {
       if (!r.success) { ui(false); text((M.error || '') + ' ' + ((r.data && r.data.message) || '')); return; }
       begin(tree, r.data.token);
     }).catch(function () { ui(false); text(M.network || ''); });

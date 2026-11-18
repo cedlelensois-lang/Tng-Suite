@@ -10,3 +10,7 @@
 .tngcoh-sev-1 { background: #fcf9e8; color: #6b4e00; border: 1px solid #ecd98a; }
 .tngcoh-sev-0 { background: #f0f6fc; color: #1d4f7c; border: 1px solid #b6d3ec; }
 .tngcoh-sum .tngcoh-sev { font-size: 13px; margin-right: 6px; }
+.tngcoh-parts { margin: 0 0 10px; }
+.tngcoh-parts summary { cursor: pointer; font-weight: 600; }
+.tngcoh-part-l { display: inline-block; margin: 2px 0; }
+.tngcoh-partsinfo { margin: 6px 0; }

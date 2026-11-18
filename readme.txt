@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.19.5
+Stable tag: 2.20.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,11 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the tables it created in the WordPress database (`tngi_inbreeding` for the implex module; `tngs_coh_res` and `tngs_coh_key` for the data consistency check). Your TNG data is never touched.
 
 == Changelog ==
+
+= 2.20.0 =
+* Cohérence des données : on choisit les parties à analyser avant de lancer l’analyse (personnes, familles, boucles, enfants de plusieurs familles, doublons, événements, sources et médias, lieux). Seules les parties cochées sont relancées, les résultats des autres sont conservés avec leur date.
+* Cohérence des données, nouveaux contrôles avant un export GEDCOM : vie privée (personne probablement vivante non marquée « vivante » ni « privée », seuil réglable), événements (date impossible, non reconnue, dans le futur ; avant la naissance ; plus d’un an après le décès), sources et médias (citation d’une source inexistante, source jamais citée, part des personnes sans source, lien vers un média inexistant), caractères GEDCOM (barre oblique, caractère invisible, nom de plus de 120 caractères).
+* Cohérence des données : la case « boucles d’ascendance » des réglages passe dans « Parties à analyser ».
 
 = 2.19.5 =
 * Cohérence des données : nouveau contrôle T16, « patronyme différent de celui du père » (enfant de naissance dont le nom de famille diffère de celui de son père ; les enfants adoptés, naturels ou recueillis sont exclus, de même que les noms voisins, les noms doubles, les « dit » et les noms inconnus). Seuil de similarité réglable, 0 pour désactiver. Le mariage posthume (D11) et l’âge de la mère à la naissance (D16, seuils réglables) étaient déjà contrôlés.

@@ -4390,6 +4390,174 @@ msgstr "Surname different from the father’s"
 msgid "Patronyme de l’enfant et de son père : similarité minimale pour les juger identiques, en % (0 = contrôle désactivé)"
 msgstr "Surname of the child and of the father: minimum similarity to consider them identical, in % (0 = check switched off)"
 
+msgid "{name} (née ou né il y a {age} ans environ) n’a aucun décès connu et n’est marqué(e) ni « vivant(e) » ni « privé(e) » : la fiche serait exportée en clair"
+msgstr "{name} (born about {age} years ago) has no known death and is marked neither “living” nor “private”: the record would be exported in clear"
+
+msgid "Événement « {ev} » de {who} : date impossible « {txt} »"
+msgstr "Event “{ev}” of {who}: impossible date “{txt}”"
+
+msgid "Événement « {ev} » de {who} : date non reconnue « {txt} »"
+msgstr "Event “{ev}” of {who}: unrecognised date “{txt}”"
+
+msgid "Événement « {ev} » de {who} : date dans le futur ({txt})"
+msgstr "Event “{ev}” of {who}: date in the future ({txt})"
+
+msgid "Événement « {ev} » de {who} ({d2}) avant sa naissance ({d1})"
+msgstr "Event “{ev}” of {who} ({d2}) before birth ({d1})"
+
+msgid "Événement « {ev} » de {who} ({d2}) plus d’un an après son décès ({d1})"
+msgstr "Event “{ev}” of {who} ({d2}) more than a year after death ({d1})"
+
+msgid "Citation de {who} : la source « {src} » n’existe pas"
+msgstr "Citation of {who}: source “{src}” does not exist"
+
+msgid "Source « {src} » jamais citée{title}"
+msgstr "Source “{src}” never cited{title}"
+
+msgid "{pct} % des personnes ({n} sur {tot}) n’ont aucune source citée"
+msgstr "{pct}% of people ({n} of {tot}) have no source cited"
+
+msgid "Lien média de {who} : le média n° {mid} n’existe pas"
+msgstr "Media link of {who}: media no. {mid} does not exist"
+
+msgid "Barre oblique « / » dans le nom : « {txt} » (elle délimite le nom de famille dans un fichier GEDCOM)"
+msgstr "Slash “/” in the name: “{txt}” (it delimits the surname in a GEDCOM file)"
+
+msgid "Caractère de contrôle ou invisible dans le nom : « {txt} »"
+msgstr "Control or invisible character in the name: “{txt}”"
+
+msgid "Nom très long ({n} caractères, limite GEDCOM : 120) : « {txt} »"
+msgstr "Very long name ({n} characters, GEDCOM limit: 120): “{txt}”"
+
+msgid "Non marquée vivante ou privée, sans décès connu"
+msgstr "Not marked living or private, no known death"
+
+msgid "Événement : date impossible"
+msgstr "Event: impossible date"
+
+msgid "Événement : date non reconnue"
+msgstr "Event: unrecognised date"
+
+msgid "Événement : date dans le futur"
+msgstr "Event: date in the future"
+
+msgid "Événement avant la naissance"
+msgstr "Event before birth"
+
+msgid "Événement après le décès"
+msgstr "Event after death"
+
+msgid "Citation d’une source inexistante"
+msgstr "Citation of a missing source"
+
+msgid "Source jamais citée"
+msgstr "Source never cited"
+
+msgid "Personnes sans aucune source"
+msgstr "People with no source"
+
+msgid "Lien vers un média inexistant"
+msgstr "Link to a missing media item"
+
+msgid "Barre oblique dans le nom"
+msgstr "Slash in the name"
+
+msgid "Caractère invisible dans le nom"
+msgstr "Invisible character in the name"
+
+msgid "Nom trop long pour GEDCOM"
+msgstr "Name too long for GEDCOM"
+
+msgid "Enfants de plusieurs familles et couples en double"
+msgstr "Children of several families and duplicate couples"
+
+msgid "Vie privée"
+msgstr "Privacy"
+
+msgid "Événements"
+msgstr "Events"
+
+msgid "Sources et médias"
+msgstr "Sources and media"
+
+msgid "Export GEDCOM"
+msgstr "GEDCOM export"
+
+msgid "Personnes : dates, sexe, noms, vie privée, caractères GEDCOM"
+msgstr "People: dates, sex, names, privacy, GEDCOM characters"
+
+msgid "Doublons possibles (la partie la plus longue)"
+msgstr "Possible duplicates (the longest part)"
+
+msgid "Événements : dates et cohérence avec la vie"
+msgstr "Events: dates and consistency with life dates"
+
+msgid "Sources et médias : liens cassés, sources inutilisées"
+msgstr "Sources and media: broken links, unused sources"
+
+msgid "Sources et médias : liens et sources inutilisées"
+msgstr "Sources and media: links and unused sources"
+
+msgid "famille"
+msgstr "family"
+
+msgid "source"
+msgstr "source"
+
+msgid "dépôt"
+msgstr "repository"
+
+msgid "lieu"
+msgstr "place"
+
+msgid "enfant"
+msgstr "child"
+
+msgid "Aucune partie sélectionnée."
+msgstr "No part selected."
+
+msgid "Cochez au moins une partie à analyser."
+msgstr "Tick at least one part to analyse."
+
+msgid "Parties à analyser"
+msgstr "Parts to analyse"
+
+msgid "sur"
+msgstr "of"
+
+msgid "Tout cocher"
+msgstr "Tick all"
+
+msgid "Tout décocher"
+msgstr "Untick all"
+
+msgid "Seules les parties cochées sont relancées : les résultats des autres parties sont conservés. Les doublons possibles ont besoin de la partie « Personnes »."
+msgstr "Only the ticked parts are run again: the results of the other parts are kept. Possible duplicates need the “People” part."
+
+msgid "Parties analysées"
+msgstr "Parts analysed"
+
+msgid "non analysée"
+msgstr "not analysed"
+
+msgid "Cette partie n’a pas pu être analysée (tables ou colonnes TNG inattendues) :"
+msgstr "This part could not be analysed (unexpected TNG tables or columns):"
+
+msgid "Citations de sources"
+msgstr "Source citations"
+
+msgid "Sources jamais citées"
+msgstr "Sources never cited"
+
+msgid "Liens vers les médias"
+msgstr "Links to media"
+
+msgid "Part des personnes sans source"
+msgstr "Share of people without a source"
+
+msgid "Personne sans décès connu, non marquée « vivante » ni « privée », née il y a moins de (ans) : signalée avant un export"
+msgstr "Person with no known death, marked neither “living” nor “private”, born less than (years) ago: flagged before an export"
+
 msgctxt "js"
 msgid " Page "
 msgstr " Page "

@@ -84,6 +84,43 @@ class TNGCoh_Store {
 		}
 	}
 
+	/**
+	 * Efface les résultats des seules parties relancées (les autres parties gardent leurs résultats et leur date d'analyse).
+	 * Les dates (D01 à D03) viennent des personnes (famille vide) ou des familles (famille renseignée).
+	 */
+	public static function clear_parts( $tree, array $parts ) {
+		global $wpdb;
+		self::install();
+		$res   = self::table( 'res' );
+		$codes = array();
+		foreach ( TNGCoh_Rules::part_codes() as $part => $list ) {
+			if ( in_array( $part, $parts, true ) ) {
+				$codes = array_merge( $codes, $list );
+			}
+		}
+		if ( $codes ) {
+			$ph = implode( ',', array_fill( 0, count( $codes ), '%s' ) );
+			$wpdb->query( $wpdb->prepare( "DELETE FROM {$res} WHERE tree = %s AND code IN ({$ph})", array_merge( array( $tree ), $codes ) ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare, WordPress.DB.DirectDatabaseQuery -- table du plugin, marqueurs générés ci-dessus.
+		}
+		foreach ( array( 'people' => "fid = ''", 'families' => "fid <> ''" ) as $p => $cond ) {
+			if ( in_array( $p, $parts, true ) ) {
+				$wpdb->query( $wpdb->prepare( "DELETE FROM {$res} WHERE tree = %s AND code IN ('D01','D02','D03') AND {$cond}", $tree ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery -- table du plugin, condition fixe.
+			}
+		}
+		if ( in_array( 'people', $parts, true ) ) {
+			$wpdb->delete( self::table( 'key' ), array( 'tree' => $tree ), array( '%s' ) );
+		}
+		$last = get_option( self::LAST, array() );
+		if ( is_array( $last ) && isset( $last[ $tree ] ) ) {
+			$prev = isset( $last[ $tree ]['parts'] ) && is_array( $last[ $tree ]['parts'] ) ? $last[ $tree ]['parts'] : array_fill_keys( array_keys( TNGCoh_Rules::parts() ), (int) $last[ $tree ]['ts'] );
+			foreach ( $parts as $p ) {
+				unset( $prev[ $p ] );
+			}
+			$last[ $tree ]['parts'] = $prev;
+			update_option( self::LAST, $last, false );
+		}
+	}
+
 	public static function sig( $tree, $code, $a, $b, $c ) {
 		return md5( $tree . '|' . $code . '|' . $a . '|' . $b . '|' . $c );
 	}

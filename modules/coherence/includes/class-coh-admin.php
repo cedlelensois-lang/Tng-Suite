@@ -63,6 +63,9 @@ class TNGCoh_Admin {
 						'error'    => tngs_t( 'Erreur pendant l’analyse :' ),
 						'network'  => tngs_t( 'Connexion interrompue. Vous pouvez reprendre l’analyse.' ),
 						'found'    => tngs_t( 'anomalie(s) trouvée(s)' ),
+						'nopart'   => tngs_t( 'Cochez au moins une partie à analyser.' ),
+						'sel'      => tngs_t( 'Parties à analyser' ),
+						'of'       => tngs_t( 'sur' ),
 					),
 				)
 			) . ';',
@@ -225,6 +228,14 @@ class TNGCoh_Admin {
 		$running = ( ! empty( $run['status'] ) && 'running' === $run['status'] );
 		$has     = isset( $last[ $tree ] );
 		echo '<div class="tngcoh-run" id="tngcoh-run"' . ( $running ? ' data-resume="' . esc_attr( (string) $run['token'] ) . '" data-resume-tree="' . esc_attr( (string) $run['tree'] ) . '"' : '' ) . '>';
+		$sel   = TNGCoh_Rules::parts_selected();
+		$all   = TNGCoh_Rules::parts();
+		echo '<details class="tngcoh-parts" id="tngcoh-parts"' . ( count( $sel ) < count( $all ) ? ' open' : '' ) . '><summary>' . esc_html( tngs_t( 'Parties à analyser' ) ) . ' (<span id="tngcoh-nsel">' . (int) count( $sel ) . '</span> ' . esc_html( tngs_t( 'sur' ) ) . ' ' . (int) count( $all ) . ')</summary><p>';
+		foreach ( $all as $pk => $pl ) {
+			echo '<label class="tngcoh-part-l"><input type="checkbox" class="tngcoh-part" value="' . esc_attr( $pk ) . '"' . ( in_array( $pk, $sel, true ) ? ' checked' : '' ) . '> ' . esc_html( tngs_t( $pl ) ) . '</label><br>';
+		}
+		echo '</p><p><button type="button" class="button-link" id="tngcoh-all">' . esc_html( tngs_t( 'Tout cocher' ) ) . '</button> · <button type="button" class="button-link" id="tngcoh-none">' . esc_html( tngs_t( 'Tout décocher' ) ) . '</button></p><p class="description">'
+			. esc_html( tngs_t( 'Seules les parties cochées sont relancées : les résultats des autres parties sont conservés. Les doublons possibles ont besoin de la partie « Personnes ».' ) ) . '</p></details>';
 		echo '<button type="button" class="button button-primary" id="tngcoh-go">' . esc_html( tngs_t( $has ? 'Relancer l’analyse' : 'Lancer l’analyse' ) ) . '</button> ';
 		echo '<button type="button" class="button" id="tngcoh-cancel" hidden>' . esc_html( tngs_t( 'Annuler' ) ) . '</button>';
 		echo '<div class="tngcoh-bar" id="tngcoh-bar" hidden><div class="tngcoh-fill" id="tngcoh-fill"></div></div>';
@@ -248,6 +259,19 @@ class TNGCoh_Admin {
 		echo '</p><p class="description">' . esc_html( tngs_t( 'Dernière analyse :' ) ) . ' ' . esc_html( wp_date( 'd/m/Y H:i', (int) $l['ts'] ) ) . ' – '
 			. esc_html( number_format_i18n( (int) $l['people'] ) ) . ' ' . esc_html( tngs_t( 'personnes' ) ) . ', ' . esc_html( number_format_i18n( (int) $l['fam'] ) ) . ' ' . esc_html( tngs_t( 'familles' ) )
 			. ' – ' . esc_html( tngs_t( 'durée' ) ) . ' ' . (int) $l['dur'] . ' s</p>';
+		if ( ! empty( $l['parts'] ) && is_array( $l['parts'] ) ) {
+			$bits = array();
+			foreach ( TNGCoh_Rules::parts() as $pk => $pl ) {
+				$bits[] = esc_html( tngs_t( $pl ) ) . ' : ' . ( isset( $l['parts'][ $pk ] ) ? esc_html( wp_date( 'd/m/Y H:i', (int) $l['parts'][ $pk ] ) ) : '<em>' . esc_html( tngs_t( 'non analysée' ) ) . '</em>' );
+			}
+			echo '<details class="tngcoh-partsinfo"><summary>' . esc_html( tngs_t( 'Parties analysées' ) ) . '</summary><ul><li>' . implode( '</li><li>', $bits ) . '</li></ul></details>'; // phpcs:ignore WordPress.Security.EscapeOutput -- éléments échappés ci-dessus.
+		}
+		if ( ! empty( $l['fail'] ) && is_array( $l['fail'] ) ) {
+			$fl = array( 'events' => 'Événements', 'cit' => 'Citations de sources', 'src' => 'Sources jamais citées', 'med' => 'Liens vers les médias', 'cov' => 'Part des personnes sans source' );
+			foreach ( $l['fail'] as $fk => $fm ) {
+				echo '<div class="notice notice-warning inline"><p>' . esc_html( tngs_t( 'Cette partie n’a pas pu être analysée (tables ou colonnes TNG inattendues) :' ) ) . ' <strong>' . esc_html( tngs_t( isset( $fl[ $fk ] ) ? $fl[ $fk ] : (string) $fk ) ) . '</strong> – <code>' . esc_html( (string) $fm ) . '</code></p></div>';
+			}
+		}
 		if ( empty( $l['complete'] ) ) {
 			echo '<div class="notice notice-warning inline"><p>' . esc_html( tngs_t( 'Analyse incomplète (annulée) : les résultats sont partiels.' ) ) . '</p></div>';
 		}
@@ -340,16 +364,16 @@ class TNGCoh_Admin {
 			array( 'tol', 'Tolérance sur les dates approximatives : « vers », « avant », « après »… (ans)' ),
 			array( 'dup_min', 'Score minimal pour signaler un doublon possible (0 à 100)' ),
 			array( 'loop_depth', 'Profondeur de la recherche des boucles d’ascendance (générations)' ),
+			array( 'priv_years', 'Personne sans décès connu, non marquée « vivante » ni « privée », née il y a moins de (ans) : signalée avant un export' ),
 			array( 'patro_sim', 'Patronyme de l’enfant et de son père : similarité minimale pour les juger identiques, en % (0 = contrôle désactivé)' ),
 			array( 'max_rule', 'Nombre maximal d’anomalies conservées par contrôle' ),
 		);
-		$b = array( 'mother_min' => array( 8, 25 ), 'mother_max' => array( 35, 70 ), 'father_min' => array( 8, 30 ), 'father_max' => array( 45, 100 ), 'marr_min' => array( 8, 30 ), 'age_max' => array( 80, 130 ), 'living_max' => array( 80, 150 ), 'posthumous' => array( 9, 24 ), 'tol' => array( 0, 10 ), 'dup_min' => array( 30, 100 ), 'loop_depth' => array( 5, 100 ), 'max_rule' => array( 100, 50000 ), 'patro_sim' => array( 0, 100 ) );
+		$b = array( 'mother_min' => array( 8, 25 ), 'mother_max' => array( 35, 70 ), 'father_min' => array( 8, 30 ), 'father_max' => array( 45, 100 ), 'marr_min' => array( 8, 30 ), 'age_max' => array( 80, 130 ), 'living_max' => array( 80, 150 ), 'posthumous' => array( 9, 24 ), 'tol' => array( 0, 10 ), 'dup_min' => array( 30, 100 ), 'loop_depth' => array( 5, 100 ), 'max_rule' => array( 100, 50000 ), 'patro_sim' => array( 0, 100 ), 'priv_years' => array( 50, 130 ) );
 		$d = TNGCoh_Rules::defaults();
 		foreach ( $f as $row ) {
 			$k = $row[0];
 			echo '<tr><th scope="row"><label for="tngcoh_' . esc_attr( $k ) . '">' . esc_html( tngs_t( $row[1] ) ) . '</label></th><td><input id="tngcoh_' . esc_attr( $k ) . '" type="number" class="small-text" min="' . (int) $b[ $k ][0] . '" max="' . (int) $b[ $k ][1] . '" name="' . esc_attr( $n . '[' . $k . ']' ) . '" value="' . esc_attr( (string) $o[ $k ] ) . '"> <span class="description">' . esc_html( tngs_t( 'par défaut' ) ) . ' ' . (int) $d[ $k ] . '</span></td></tr>';
 		}
-		echo '<tr><th scope="row">' . esc_html( tngs_t( 'Boucles d’ascendance' ) ) . '</th><td><input type="hidden" name="' . esc_attr( $n ) . '[loops]" value="0"><label><input type="checkbox" name="' . esc_attr( $n ) . '[loops]" value="1"' . checked( ! empty( $o['loops'] ), true, false ) . '> ' . esc_html( tngs_t( 'Rechercher les personnes qui sont leur propre ancêtre (peut allonger l’analyse sur un grand arbre)' ) ) . '</label></td></tr>';
 		echo '</table>';
 		submit_button();
 		echo '</form>';
@@ -483,7 +507,12 @@ class TNGCoh_Admin {
 	public static function ajax_start() {
 		self::ajax_guard();
 		$tree = isset( $_POST['tree'] ) ? self::ok_tree( sanitize_text_field( wp_unslash( $_POST['tree'] ) ) ) : '';
-		self::reply( TNGCoh_Engine::start( $tree ) );
+		$parts = isset( $_POST['parts'] ) ? array_filter( explode( ',', sanitize_text_field( wp_unslash( $_POST['parts'] ) ) ), 'strlen' ) : array();
+		$parts = TNGCoh_Rules::parts_clean( $parts );
+		if ( ! $parts ) {
+			wp_send_json_error( array( 'message' => tngs_t( 'Aucune partie sélectionnée.' ) ) );
+		}
+		self::reply( TNGCoh_Engine::start( $tree, $parts ) );
 	}
 
 	public static function ajax_step() {

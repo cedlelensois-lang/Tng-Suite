@@ -53,6 +53,8 @@ class TNGCoh_Engine {
 			'struct'   => 'Enfants de plusieurs familles',
 			'struct2'  => 'Couples en double',
 			'dupes'    => 'Recherche des doublons',
+			'events'   => 'Événements : dates et cohérence avec la vie',
+			'refs'     => 'Sources et médias : liens et sources inutilisées',
 			'places'   => 'Orthographe des lieux',
 			'done'     => 'Analyse terminée',
 		);
@@ -64,7 +66,7 @@ class TNGCoh_Engine {
 	}
 
 	/** Démarre une analyse : efface les résultats précédents de l'arbre. */
-	public static function start( $tree ) {
+	public static function start( $tree, $parts = null ) {
 		$db = tngs_db();
 		if ( ! $db ) {
 			return new WP_Error( 'tngcoh_db', tngs_t( 'Connexion à la base TNG impossible.' ) );
@@ -73,8 +75,17 @@ class TNGCoh_Engine {
 		if ( ! isset( $trees[ $tree ] ) ) {
 			return new WP_Error( 'tngcoh_tree', tngs_t( 'Arbre inconnu.' ) );
 		}
+		$parts = TNGCoh_Rules::parts_clean( $parts );
+		if ( ! $parts ) {
+			$parts = array_keys( TNGCoh_Rules::parts() );
+		}
 		TNGCoh_Store::install();
-		TNGCoh_Store::clear( $tree );
+		if ( count( $parts ) === count( TNGCoh_Rules::parts() ) ) {
+			TNGCoh_Store::clear( $tree );
+		} else {
+			TNGCoh_Store::clear_parts( $tree, $parts );
+		}
+		update_option( TNGCoh_Rules::PARTS_OPT, $parts, false );
 		$p    = tngs_prefix();
 		$prev = $db->suppress_errors( true );
 		$mp   = (int) $db->get_var( $db->prepare( "SELECT MAX(ID) FROM `{$p}people` WHERE gedcom = %s", $tree ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -90,7 +101,12 @@ class TNGCoh_Engine {
 			'token'   => wp_generate_password( 20, false ),
 			'tree'    => $tree,
 			'status'  => 'running',
-			'phase'   => 'people',
+			'phase'   => self::first_phase( $parts ),
+			'parts'   => $parts,
+			'dp'      => array(),
+			'fail'    => array(),
+			'sub'     => '',
+			'scur'    => '',
 			'cur'     => 0,
 			'max'     => array( 'people' => $mp, 'fam' => $mf ),
 			'n'       => array( 'people' => $np, 'fam' => $nf ),
@@ -150,10 +166,23 @@ class TNGCoh_Engine {
 	public static function publish( array $st ) {
 		$lab   = self::labels();
 		$phase = isset( $st['phase'] ) ? $st['phase'] : 'people';
-		$w     = array(
-			'people' => array( 0, 38 ), 'families' => array( 38, 22 ), 'loops' => array( 60, 8 ), 'struct' => array( 68, 2 ),
-			'struct2' => array( 70, 1 ), 'dupes' => array( 71, 22 ), 'places' => array( 93, 7 ),
-		);
+		$base  = array( 'people' => 30, 'families' => 18, 'loops' => 6, 'struct' => 2, 'struct2' => 1, 'dupes' => 18, 'events' => 9, 'refs' => 9, 'places' => 7 );
+		$parts = isset( $st['parts'] ) && is_array( $st['parts'] ) ? $st['parts'] : array_keys( TNGCoh_Rules::parts() );
+		$tot   = 0;
+		foreach ( $base as $ph => $v ) {
+			if ( in_array( 'struct2' === $ph ? 'struct' : $ph, $parts, true ) ) {
+				$tot += $v;
+			}
+		}
+		$w   = array();
+		$off = 0;
+		foreach ( $base as $ph => $v ) {
+			if ( in_array( 'struct2' === $ph ? 'struct' : $ph, $parts, true ) && $tot > 0 ) {
+				$share     = 100 * $v / $tot;
+				$w[ $ph ]  = array( $off, $share );
+				$off      += $share;
+			}
+		}
 		$pct = 100;
 		if ( 'done' !== $phase && isset( $w[ $phase ] ) && ! empty( $st['status'] ) ) {
 			$f   = 0;
@@ -164,8 +193,12 @@ class TNGCoh_Engine {
 				$f = $st['cur'] / $max['fam'];
 			} elseif ( 'dupes' === $phase && $st['blocks'] > 0 ) {
 				$f = $st['boff'] / $st['blocks'];
+			} elseif ( 'events' === $phase && ! empty( $max['ev'] ) ) {
+				$f = $st['cur'] / $max['ev'];
+			} elseif ( 'refs' === $phase ) {
+				$f = array_search( isset( $st['sub'] ) ? $st['sub'] : '', array( '', 'cit', 'src', 'med', 'cov' ), true ) / 5;
 			}
-			$pct = (int) floor( $w[ $phase ][0] + $w[ $phase ][1] * min( 1, max( 0, $f ) ) );
+			$pct = (int) floor( $w[ $phase ][0] + $w[ $phase ][1] * min( 1, max( 0, (float) $f ) ) );
 		}
 		$found = 0;
 		foreach ( (array) ( isset( $st['counts'] ) ? $st['counts'] : array() ) as $n ) {
@@ -196,6 +229,12 @@ class TNGCoh_Engine {
 			'people'   => '`' . $p . 'people`',
 			'families' => '`' . $p . 'families`',
 			'children' => '`' . $p . 'children`',
+			'events'   => '`' . $p . 'events`',
+			'etypes'   => '`' . $p . 'eventtypes`',
+			'cites'    => '`' . $p . 'citations`',
+			'sources'  => '`' . $p . 'sources`',
+			'media'    => '`' . $p . 'media`',
+			'mlinks'   => '`' . $p . 'medialinks`',
 		);
 		$this->st           = $st;
 		$this->tree         = (string) $st['tree'];
@@ -225,6 +264,10 @@ class TNGCoh_Engine {
 					$this->phase_struct2();
 				} elseif ( 'dupes' === $ph ) {
 					$this->phase_dupes();
+				} elseif ( 'events' === $ph ) {
+					$this->phase_events();
+				} elseif ( 'refs' === $ph ) {
+					$this->phase_refs();
 				} elseif ( 'places' === $ph ) {
 					$this->phase_places();
 				} else {
@@ -250,7 +293,12 @@ class TNGCoh_Engine {
 		global $wpdb;
 		$tree = (string) $st['tree'];
 		$wpdb->delete( TNGCoh_Store::table( 'key' ), array( 'tree' => $tree ), array( '%s' ) );
-		$last          = TNGCoh_Store::last();
+		$last  = TNGCoh_Store::last();
+		$prev  = isset( $last[ $tree ] ) ? $last[ $tree ] : array();
+		$parts = isset( $prev['parts'] ) && is_array( $prev['parts'] ) ? $prev['parts'] : array();
+		foreach ( (array) ( isset( $st['dp'] ) ? $st['dp'] : array() ) as $p ) {
+			$parts[ $p ] = time();
+		}
 		$last[ $tree ] = array(
 			'ts'       => time(),
 			'dur'      => max( 0, time() - (int) $st['started'] ),
@@ -260,19 +308,46 @@ class TNGCoh_Engine {
 			'skipped'  => (int) $st['skipped'],
 			'cut'      => array_keys( (array) $st['cut'] ),
 			'cfg'      => $st['cfg'],
+			'parts'    => $parts,
+			'fail'     => isset( $st['fail'] ) ? (array) $st['fail'] : array(),
 		);
 		update_option( TNGCoh_Store::LAST, $last, false );
 	}
 
-	private function next_phase() {
-		$order = array( 'people', 'families', 'loops', 'struct', 'struct2', 'dupes', 'places', 'done' );
-		$i     = array_search( $this->st['phase'], $order, true );
-		$n     = $order[ min( count( $order ) - 1, (int) $i + 1 ) ];
-		if ( 'loops' === $n && empty( $this->cfg['loops'] ) ) {
-			$n = 'struct';
+	/** Partie à laquelle appartient chaque phase. */
+	private static function part_of( $phase ) {
+		return 'struct2' === $phase ? 'struct' : $phase;
+	}
+
+	private static function first_phase( array $parts ) {
+		foreach ( array( 'people', 'families', 'loops', 'struct', 'dupes', 'events', 'refs', 'places' ) as $ph ) {
+			if ( in_array( $ph, $parts, true ) ) {
+				return $ph;
+			}
 		}
+		return 'done';
+	}
+
+	private function selected( $phase ) {
+		$parts = isset( $this->st['parts'] ) && is_array( $this->st['parts'] ) ? $this->st['parts'] : array_keys( TNGCoh_Rules::parts() );
+		return in_array( self::part_of( $phase ), $parts, true );
+	}
+
+	private function next_phase() {
+		$order = array( 'people', 'families', 'loops', 'struct', 'struct2', 'dupes', 'events', 'refs', 'places', 'done' );
+		$cur   = $this->st['phase'];
+		$i     = (int) array_search( $cur, $order, true );
+		if ( 'struct' !== $cur && 'done' !== $cur ) {   // « struct » est suivie de « struct2 » : la partie n'est finie qu'après celle-ci.
+			$this->st['dp'][] = self::part_of( $cur );
+		}
+		do {
+			$i = min( count( $order ) - 1, $i + 1 );
+			$n = $order[ $i ];
+		} while ( 'done' !== $n && ! $this->selected( $n ) );
 		$this->st['phase'] = $n;
 		$this->st['cur']   = 0;
+		$this->st['sub']   = '';
+		$this->st['scur']  = '';
 	}
 
 	/* ------------------------------------------------------------------ requêtes */
@@ -367,7 +442,7 @@ class TNGCoh_Engine {
 	private function phase_people() {
 		$t    = $this->t;
 		$rows = $this->rows(
-			"SELECT ID, personID, lastname, firstname, sex, living, birthdate, birthdatetr, deathdate, deathdatetr, baptdate, baptdatetr, burialdate, burialdatetr, birthplace
+			"SELECT ID, personID, lastname, firstname, sex, living, private, birthdate, birthdatetr, deathdate, deathdatetr, baptdate, baptdatetr, burialdate, burialdatetr, birthplace, deathplace, burialplace
 			 FROM {$t['people']} WHERE gedcom = %s AND ID > %d ORDER BY ID LIMIT 400", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			array( $this->tree, (int) $this->st['cur'] )
 		);
@@ -464,6 +539,14 @@ class TNGCoh_Engine {
 				$this->add( 'D09', $pid, '', '', array( 'name' => $name, 'd1' => $show['death'] ) );
 			}
 		}
+		// Vie privée avant export : personne probablement vivante (aucun décès, aucune sépulture) que TNG ne masquerait pas.
+		if ( empty( $r['living'] ) && empty( $r['private'] ) && '' === trim( (string) $r['deathdate'] ) && '' === trim( (string) $r['burialdate'] )
+			&& '' === trim( (string) $r['deathplace'] ) && '' === trim( (string) $r['burialplace'] ) ) {
+			$ref = $b ? $b : $rg['bapt'];
+			if ( $ref && ( $this->today - $ref[1] ) / 365.25 < $c['priv_years'] ) {
+				$this->add( 'V01', $pid, '', '', array( 'name' => $name, 'age' => max( 0, (int) round( ( $this->today - ( $ref[0] + $ref[1] ) / 2 ) / 365.25 ) ), 'max' => $c['priv_years'] ) );
+			}
+		}
 		// Noms.
 		$ln = (string) $r['lastname'];
 		$fn = (string) $r['firstname'];
@@ -493,6 +576,23 @@ class TNGCoh_Engine {
 				$this->add( 'T15', $pid, '', '', array( 'name' => $name, 'txt' => $part ) );
 				break;
 			}
+		}
+		// Caractères qui posent problème dans un fichier GEDCOM : « / » (délimite le nom de famille), caractères de contrôle ou invisibles, nom trop long (120 caractères).
+		$bad = '/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F\x{200B}-\x{200D}\x{2060}\x{FEFF}]/u';
+		foreach ( array( $ln, $fn ) as $part ) {
+			if ( false !== strpos( $part, '/' ) ) {
+				$this->add( 'G01', $pid, '', '', array( 'name' => $name, 'txt' => $part ) );
+				break;
+			}
+		}
+		foreach ( array( $ln, $fn ) as $part ) {
+			if ( '' !== $part && 1 === preg_match( $bad, $part ) ) {
+				$this->add( 'G02', $pid, '', '', array( 'name' => $name, 'txt' => preg_replace( $bad, '▯', $part ) ) );
+				break;
+			}
+		}
+		if ( mb_strlen( $ln ) + mb_strlen( $fn ) + 3 > 120 ) {
+			$this->add( 'G03', $pid, '', '', array( 'name' => $name, 'n' => mb_strlen( $ln ) + mb_strlen( $fn ) + 3, 'txt' => mb_substr( trim( $fn . ' ' . $ln ), 0, 80 ) . '…' ) );
 		}
 		// Prénom habituellement porté par l'autre sexe (simple indice).
 		$sex = strtoupper( (string) $r['sex'] );
@@ -1099,6 +1199,239 @@ class TNGCoh_Engine {
 			$s -= 8;
 		}
 		return array( max( 0, min( 100, $s ) ), $why );
+	}
+
+	/* ------------------------------------------------------------------ phases : événements, sources et médias */
+
+	/** Noms et nature (personne ou famille) des fiches désignées par des identifiants : [ id => [ 'k' => 'P'|'F', 'who' => libellé ] ]. */
+	private function owners( array $ids ) {
+		$out = array();
+		$t   = $this->t;
+		foreach ( $this->rows_in( "SELECT personID, lastname, firstname FROM {$t['people']} WHERE gedcom = %s AND personID IN ({IN})", array( $this->tree ), $ids ) as $r ) { // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$out[ (string) $r['personID'] ] = array( 'k' => 'P', 'who' => TNGCoh_Rules::name( $r['lastname'], $r['firstname'] ) );
+		}
+		$rest = array();
+		foreach ( $ids as $id ) {
+			if ( '' !== (string) $id && ! isset( $out[ (string) $id ] ) ) {
+				$rest[] = (string) $id;
+			}
+		}
+		$fam = array();
+		$sp  = array();
+		foreach ( $this->rows_in( "SELECT familyID, husband, wife FROM {$t['families']} WHERE gedcom = %s AND familyID IN ({IN})", array( $this->tree ), $rest ) as $r ) { // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$fam[ (string) $r['familyID'] ] = array( (string) $r['husband'], (string) $r['wife'] );
+			$sp[]                           = (string) $r['husband'];
+			$sp[]                           = (string) $r['wife'];
+		}
+		$nm = array();
+		foreach ( $this->rows_in( "SELECT personID, lastname, firstname FROM {$t['people']} WHERE gedcom = %s AND personID IN ({IN})", array( $this->tree ), array_filter( $sp, 'strlen' ) ) as $r ) { // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$nm[ (string) $r['personID'] ] = TNGCoh_Rules::name( $r['lastname'], $r['firstname'] );
+		}
+		foreach ( $fam as $fid => $hw ) {
+			$names = array_filter( array( isset( $nm[ $hw[0] ] ) ? $nm[ $hw[0] ] : '', isset( $nm[ $hw[1] ] ) ? $nm[ $hw[1] ] : '' ), 'strlen' );
+			$out[ $fid ] = array( 'k' => 'F', 'who' => $fid . ( $names ? ' (' . implode( ' & ', $names ) . ')' : '' ) );
+		}
+		return $out;
+	}
+
+	/** Une phase qui lit les tables d'événements, de citations ou de médias : si ces tables diffèrent de ce qui est attendu, la partie est passée et signalée. */
+	private function fail_phase( $key, RuntimeException $ex ) {
+		$this->st['fail'][ $key ] = mb_substr( $ex->getMessage(), 0, 240 );
+	}
+
+	/** Événements (profession, résidence, émigration…) : dates, avant la naissance, après le décès. */
+	private function phase_events() {
+		$t = $this->t;
+		try {
+			if ( empty( $this->st['max']['ev'] ) ) {
+				$mx = $this->rows( "SELECT MAX(eventID) m FROM {$t['events']} WHERE gedcom = %s", array( $this->tree ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$this->st['max']['ev'] = max( 1, (int) ( $mx ? $mx[0]['m'] : 0 ) );
+			}
+			$rows = $this->rows(
+				"SELECT e.eventID, e.persfamID, e.eventdate, e.eventdatetr, e.eventtypeID, t.tag, t.display, t.type
+				 FROM {$t['events']} e LEFT JOIN {$t['etypes']} t ON t.eventtypeID = e.eventtypeID
+				 WHERE e.gedcom = %s AND e.eventID > %d AND e.eventdate <> '' ORDER BY e.eventID LIMIT 400", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				array( $this->tree, (int) $this->st['cur'] )
+			);
+			if ( ! $rows ) {
+				$this->next_phase();
+				return;
+			}
+			$ids = array();
+			foreach ( $rows as $r ) {
+				$ids[] = (string) $r['persfamID'];
+			}
+			$own = $this->owners( $ids );
+			$P   = array();
+			foreach ( $this->rows_in( "SELECT personID, birthdate, birthdatetr, deathdate, deathdatetr FROM {$t['people']} WHERE gedcom = %s AND personID IN ({IN})", array( $this->tree ), $ids ) as $p ) { // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$P[ (string) $p['personID'] ] = array(
+					'b'  => $this->range( $p['birthdatetr'], $p['birthdate'] ),
+					'd'  => $this->range( $p['deathdatetr'], $p['deathdate'] ),
+					'bs' => TNGCoh_Rules::show( $p['birthdatetr'], $p['birthdate'] ),
+					'ds' => TNGCoh_Rules::show( $p['deathdatetr'], $p['deathdate'] ),
+				);
+			}
+		} catch ( RuntimeException $ex ) {
+			$this->fail_phase( 'events', $ex );
+			$this->next_phase();
+			return;
+		}
+		foreach ( $rows as $r ) {
+			$this->st['cur'] = (int) $r['eventID'];
+			$pf              = (string) $r['persfamID'];
+			$fam             = 'F' === strtoupper( (string) $r['type'] );
+			if ( ! isset( $own[ $pf ] ) || ( $fam ? 'F' : 'P' ) !== $own[ $pf ]['k'] ) {
+				continue;
+			}
+			$txt = trim( (string) $r['eventdate'] );
+			$ev  = trim( (string) ( '' !== trim( (string) $r['display'] ) ? $r['display'] : ( '' !== trim( (string) $r['tag'] ) ? $r['tag'] : $r['eventtypeID'] ) ) );
+			$pid = $fam ? '' : $pf;
+			$fid = $fam ? $pf : '';
+			$x   = (string) $r['eventID'];
+			$a   = array( 'ev' => mb_substr( $ev, 0, 60 ), 'who' => $own[ $pf ]['who'], 'txt' => $txt );
+			if ( $fam ) {
+				$a['wk'] = 'F';
+			}
+			$ck  = TNGCoh_Rules::check_text( $txt );
+			if ( 'impossible' === $ck ) {
+				$this->add( 'E01', $pid, $fid, '', $a, 0, null, $x );
+				continue;
+			}
+			if ( 'unknown' === $ck ) {
+				$this->add( 'E02', $pid, $fid, '', $a, 0, null, $x );
+				continue;
+			}
+			$rg = $this->range( $r['eventdatetr'], $txt );
+			if ( ! $rg ) {
+				continue;
+			}
+			$es = TNGCoh_Rules::show( $r['eventdatetr'], $txt );
+			if ( $rg[0] > $this->today ) {
+				$this->add( 'E03', $pid, $fid, '', array( 'txt' => $es ) + $a, 0, null, $x );
+				continue;
+			}
+			if ( $fam || ! isset( $P[ $pf ] ) ) {
+				continue;
+			}
+			$pp = $P[ $pf ];
+			if ( $pp['b'] && $rg[1] < $pp['b'][0] ) {
+				$this->add( 'E04', $pid, '', '', $a + array( 'd1' => $pp['bs'], 'd2' => $es ), 0, null, $x );
+			} elseif ( $pp['d'] && $rg[0] > $pp['d'][1] + 366 && ! self::after_death_ok( $r['tag'], $r['display'] ) ) {
+				$this->add( 'E05', $pid, '', '', $a + array( 'd1' => $pp['ds'], 'd2' => $es ), 0, null, $x );
+			}
+		}
+	}
+
+	/** Événements normaux après un décès : sépulture, funérailles, testament, succession, commémoration… */
+	private static function after_death_ok( $tag, $display ) {
+		if ( in_array( strtoupper( trim( (string) $tag ) ), array( 'DEAT', 'BURI', 'CREM', 'PROB', 'WILL', '_FNRL', 'FUNR', 'CHAN', 'ADMN', '_BRTM' ), true ) ) {
+			return true;
+		}
+		return 1 === preg_match( '/buri|funer|crem|probate|\bwill\b|testament|succession|estate|inventor|inventaire|obs[èe]ques|sépult|sepult|inhum|exhum|d[ée]c[èe]s|death|memor|comm[ée]mor|anniv|tomb|grave|cemet|cimeti|heir|h[ée]ritier|legs|legacy|succ\b/iu', (string) $tag . ' ' . (string) $display );
+	}
+
+	/** Citations, sources, liens médias : références cassées, sources jamais citées, part des personnes sans source. */
+	private function phase_refs() {
+		$subs = array( 'cit', 'src', 'med', 'cov' );
+		$sub  = isset( $this->st['sub'] ) && '' !== $this->st['sub'] ? $this->st['sub'] : 'cit';
+		try {
+			$done = $this->refs_step( $sub );
+		} catch ( RuntimeException $ex ) {
+			$this->fail_phase( $sub, $ex );
+			$done = true;
+		}
+		if ( ! $done ) {
+			$this->st['sub'] = $sub;
+			return;
+		}
+		$i = array_search( $sub, $subs, true );
+		if ( false === $i || $i + 1 >= count( $subs ) ) {
+			$this->next_phase();
+			return;
+		}
+		$this->st['sub']  = $subs[ $i + 1 ];
+		$this->st['cur']  = 0;
+		$this->st['scur'] = '';
+	}
+
+	/** Un lot de la sous-partie $sub ; renvoie vrai quand elle est terminée. */
+	private function refs_step( $sub ) {
+		$t = $this->t;
+		if ( 'cit' === $sub ) {
+			$rows = $this->rows(
+				"SELECT c.citationID, c.persfamID, c.sourceID FROM {$t['cites']} c LEFT JOIN {$t['sources']} s ON s.sourceID = c.sourceID AND s.gedcom = c.gedcom
+				 WHERE c.gedcom = %s AND c.sourceID <> '' AND s.sourceID IS NULL AND c.citationID > %d ORDER BY c.citationID LIMIT 400", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				array( $this->tree, (int) $this->st['cur'] )
+			);
+			if ( ! $rows ) {
+				return true;
+			}
+			$ids = array();
+			foreach ( $rows as $r ) {
+				$ids[] = (string) $r['persfamID'];
+			}
+			$own = $this->owners( $ids );
+			foreach ( $rows as $r ) {
+				$this->st['cur'] = (int) $r['citationID'];
+				$pf              = (string) $r['persfamID'];
+				$o               = isset( $own[ $pf ] ) ? $own[ $pf ] : array( 'k' => '', 'who' => $pf );
+				$this->add( 'R01', 'P' === $o['k'] ? $pf : '', 'F' === $o['k'] ? $pf : '', '', array( 'who' => $o['who'], 'src' => (string) $r['sourceID'] ) + ( 'F' === $o['k'] ? array( 'wk' => 'F' ) : array() ), 0, null, (string) $r['citationID'] );
+			}
+			return false;
+		}
+		if ( 'src' === $sub ) {
+			$rows = $this->rows(
+				"SELECT s.sourceID, s.shorttitle, s.title FROM {$t['sources']} s WHERE s.gedcom = %s AND s.sourceID > %s
+				 AND NOT EXISTS (SELECT 1 FROM {$t['cites']} c WHERE c.gedcom = s.gedcom AND c.sourceID = s.sourceID) ORDER BY s.sourceID LIMIT 400", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				array( $this->tree, (string) $this->st['scur'] )
+			);
+			if ( ! $rows ) {
+				return true;
+			}
+			foreach ( $rows as $r ) {
+				$this->st['scur'] = (string) $r['sourceID'];
+				$ti               = trim( (string) ( '' !== trim( (string) $r['shorttitle'] ) ? $r['shorttitle'] : $r['title'] ) );
+				$this->add( 'R02', '', '', '', array( 'src' => (string) $r['sourceID'], 'title' => '' !== $ti ? ' : ' . mb_substr( $ti, 0, 80 ) : '' ), 0, null, (string) $r['sourceID'] );
+			}
+			return false;
+		}
+		if ( 'med' === $sub ) {
+			$rows = $this->rows(
+				"SELECT l.medialinkID, l.linktype, l.personID, l.mediaID FROM {$t['mlinks']} l LEFT JOIN {$t['media']} m ON m.mediaID = l.mediaID
+				 WHERE l.gedcom = %s AND m.mediaID IS NULL AND l.medialinkID > %d ORDER BY l.medialinkID LIMIT 400", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				array( $this->tree, (int) $this->st['cur'] )
+			);
+			if ( ! $rows ) {
+				return true;
+			}
+			$ids = array();
+			foreach ( $rows as $r ) {
+				if ( in_array( strtoupper( (string) $r['linktype'] ), array( 'I', 'F' ), true ) ) {
+					$ids[] = (string) $r['personID'];
+				}
+			}
+			$own = $this->owners( $ids );
+			foreach ( $rows as $r ) {
+				$this->st['cur'] = (int) $r['medialinkID'];
+				$pf              = (string) $r['personID'];
+				$lt              = strtoupper( (string) $r['linktype'] );
+				$o               = isset( $own[ $pf ] ) && in_array( $lt, array( 'I', 'F' ), true ) ? $own[ $pf ] : array( 'k' => '', 'who' => $pf );
+				$wk              = 'F' === $o['k'] ? 'F' : ( in_array( $lt, array( 'S', 'R', 'L', 'C' ), true ) ? $lt : '' );
+				$this->add( 'M01', 'P' === $o['k'] ? $pf : '', 'F' === $o['k'] ? $pf : '', '', array( 'who' => $o['who'], 'mid' => (string) $r['mediaID'] ) + ( '' !== $wk ? array( 'wk' => $wk ) : array() ), 0, null, (string) $r['medialinkID'] );
+			}
+			return false;
+		}
+		// 'cov' : part des personnes sans aucune source (seulement si la base cite des sources).
+		$n = $this->rows( "SELECT COUNT(*) n FROM {$t['cites']} WHERE gedcom = %s", array( $this->tree ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		if ( $n && (int) $n[0]['n'] > 0 && (int) $this->st['n']['people'] > 0 ) {
+			$z = $this->rows( "SELECT COUNT(*) n FROM {$t['people']} p WHERE p.gedcom = %s AND NOT EXISTS (SELECT 1 FROM {$t['cites']} c WHERE c.gedcom = p.gedcom AND c.persfamID = p.personID)", array( $this->tree ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$z = $z ? (int) $z[0]['n'] : 0;
+			if ( $z > 0 ) {
+				$tot = (int) $this->st['n']['people'];
+				$this->add( 'R03', '', '', '', array( 'pct' => (int) round( 100 * $z / $tot ), 'n' => $z, 'tot' => $tot ), 0, null, 'cov' );
+			}
+		}
+		return true;
 	}
 
 	/* ------------------------------------------------------------------ phase : lieux */

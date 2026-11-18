@@ -14,6 +14,60 @@ class TNGCoh_Rules {
 	const WARN = 1;
 	const INFO = 0;
 
+	/** Option : parties choisies pour la prochaine analyse. */
+	const PARTS_OPT = 'tngcoh_parts';
+
+	/** Parties de l'analyse, dans l'ordre d'exécution : clé => libellé. */
+	public static function parts() {
+		return array(
+			'people'   => 'Personnes : dates, sexe, noms, vie privée, caractères GEDCOM',
+			'families' => 'Familles : mariages, parents et enfants',
+			'loops'    => 'Boucles d’ascendance',
+			'struct'   => 'Enfants de plusieurs familles et couples en double',
+			'dupes'    => 'Doublons possibles (la partie la plus longue)',
+			'events'   => 'Événements : dates et cohérence avec la vie',
+			'refs'     => 'Sources et médias : liens cassés, sources inutilisées',
+			'places'   => 'Orthographe des lieux',
+		);
+	}
+
+	/** Contrôles produits par chaque partie (sert à n'effacer que les résultats des parties relancées). */
+	public static function part_codes() {
+		return array(
+			'people'   => array( 'D04', 'D05', 'D06', 'D07', 'D08', 'D09', 'S05', 'T01', 'T10', 'T11', 'T12', 'T13', 'T15', 'V01', 'G01', 'G02', 'G03' ),
+			'families' => array( 'D10', 'D11', 'D12', 'D13', 'D14', 'D15', 'D16', 'D17', 'D18', 'P02', 'S01', 'S02', 'S03', 'S04', 'T03', 'T04', 'T05', 'T07', 'T08', 'T14', 'T16' ),
+			'loops'    => array( 'T02' ),
+			'struct'   => array( 'T06', 'T09' ),
+			'dupes'    => array( 'P01' ),
+			'events'   => array( 'E01', 'E02', 'E03', 'E04', 'E05' ),
+			'refs'     => array( 'R01', 'R02', 'R03', 'M01' ),
+			'places'   => array( 'L01' ),
+		);
+	}
+
+	/** Parties valides, dans l'ordre ; les doublons ont besoin des clés calculées avec les personnes. Toutes si la liste est vide ou absente. */
+	public static function parts_clean( $in ) {
+		$all = array_keys( self::parts() );
+		$in  = is_array( $in ) ? array_map( 'strval', $in ) : array();
+		$out = array_values( array_intersect( $all, $in ) );
+		if ( in_array( 'dupes', $out, true ) && ! in_array( 'people', $out, true ) ) {
+			$out = array_values( array_intersect( $all, array_merge( $out, array( 'people' ) ) ) );
+		}
+		return $out;
+	}
+
+	/** Parties mémorisées (toutes par défaut ; « boucles » décochées si elles avaient été désactivées dans les anciens réglages). */
+	public static function parts_selected() {
+		$s = get_option( self::PARTS_OPT, null );
+		if ( is_array( $s ) ) {
+			$c = self::parts_clean( $s );
+			return $c ? $c : array_keys( self::parts() );
+		}
+		$o   = get_option( self::OPT, array() );
+		$all = array_keys( self::parts() );
+		return ( is_array( $o ) && array_key_exists( 'loops', $o ) && empty( $o['loops'] ) ) ? array_values( array_diff( $all, array( 'loops' ) ) ) : $all;
+	}
+
 	/** Seuils réglables (valeurs par défaut). */
 	public static function defaults() {
 		return array(
@@ -29,6 +83,7 @@ class TNGCoh_Rules {
 			'dup_min'       => 70,   // score minimal (0 à 100) pour signaler un doublon possible.
 			'loops'         => 1,    // recherche des boucles d'ascendance.
 			'loop_depth'    => 40,
+			'priv_years'    => 100,  // personne sans décès connu née il y a moins de N ans : doit être marquée « vivante » ou « privée » avant un export.
 			'patro_sim'     => 75,   // similarité minimale (%) pour juger deux noms de famille identiques ; 0 = contrôle du patronyme désactivé.
 			'max_rule'      => 5000, // nombre maximal d'anomalies conservées par contrôle.
 		);
@@ -42,7 +97,7 @@ class TNGCoh_Rules {
 			'marr_min'   => array( 8, 30 ), 'age_max' => array( 80, 130 ),
 			'living_max' => array( 80, 150 ), 'posthumous' => array( 9, 24 ),
 			'tol'        => array( 0, 10 ), 'dup_min' => array( 30, 100 ),
-			'loop_depth' => array( 5, 100 ), 'max_rule' => array( 100, 50000 ), 'patro_sim' => array( 0, 100 ),
+			'loop_depth' => array( 5, 100 ), 'max_rule' => array( 100, 50000 ), 'patro_sim' => array( 0, 100 ), 'priv_years' => array( 50, 130 ),
 		);
 	}
 
@@ -113,6 +168,19 @@ class TNGCoh_Rules {
 			'T13' => array( 'struct', self::INFO, 'Personne sans nom ni prénom' ),
 			'T14' => array( 'struct', self::WARN, 'Référence à une personne qui n’existe pas dans la base : {pid2}' ),
 			'T15' => array( 'struct', self::INFO, 'Point d’interrogation dans le nom (lecture incertaine) : « {txt} »' ),
+			'V01' => array( 'privacy', self::WARN, '{name} (née ou né il y a {age} ans environ) n’a aucun décès connu et n’est marqué(e) ni « vivant(e) » ni « privé(e) » : la fiche serait exportée en clair' ),
+			'E01' => array( 'event', self::ERR, 'Événement « {ev} » de {who} : date impossible « {txt} »' ),
+			'E02' => array( 'event', self::INFO, 'Événement « {ev} » de {who} : date non reconnue « {txt} »' ),
+			'E03' => array( 'event', self::ERR, 'Événement « {ev} » de {who} : date dans le futur ({txt})' ),
+			'E04' => array( 'event', self::WARN, 'Événement « {ev} » de {who} ({d2}) avant sa naissance ({d1})' ),
+			'E05' => array( 'event', self::WARN, 'Événement « {ev} » de {who} ({d2}) plus d’un an après son décès ({d1})' ),
+			'R01' => array( 'source', self::WARN, 'Citation de {who} : la source « {src} » n’existe pas' ),
+			'R02' => array( 'source', self::INFO, 'Source « {src} » jamais citée{title}' ),
+			'R03' => array( 'source', self::INFO, '{pct} % des personnes ({n} sur {tot}) n’ont aucune source citée' ),
+			'M01' => array( 'source', self::WARN, 'Lien média de {who} : le média n° {mid} n’existe pas' ),
+			'G01' => array( 'gedcom', self::WARN, 'Barre oblique « / » dans le nom : « {txt} » (elle délimite le nom de famille dans un fichier GEDCOM)' ),
+			'G02' => array( 'gedcom', self::WARN, 'Caractère de contrôle ou invisible dans le nom : « {txt} »' ),
+			'G03' => array( 'gedcom', self::INFO, 'Nom très long ({n} caractères, limite GEDCOM : 120) : « {txt} »' ),
 			'T16' => array( 'struct', self::INFO, '{name} porte le nom « {txt} », différent de celui de son père {name2} (« {txt2} »)' ),
 			// Lieux.
 			'L01' => array( 'place', self::INFO, 'Lieu écrit de plusieurs façons : {list}' ),
@@ -163,6 +231,19 @@ class TNGCoh_Rules {
 			'T14' => 'Personne référencée absente de la base',
 			'T15' => 'Point d’interrogation dans le nom',
 			'T16' => 'Patronyme différent de celui du père',
+			'V01' => 'Non marquée vivante ou privée, sans décès connu',
+			'E01' => 'Événement : date impossible',
+			'E02' => 'Événement : date non reconnue',
+			'E03' => 'Événement : date dans le futur',
+			'E04' => 'Événement avant la naissance',
+			'E05' => 'Événement après le décès',
+			'R01' => 'Citation d’une source inexistante',
+			'R02' => 'Source jamais citée',
+			'R03' => 'Personnes sans aucune source',
+			'M01' => 'Lien vers un média inexistant',
+			'G01' => 'Barre oblique dans le nom',
+			'G02' => 'Caractère invisible dans le nom',
+			'G03' => 'Nom trop long pour GEDCOM',
 			'L01' => 'Lieu écrit de plusieurs façons',
 		);
 	}
@@ -174,6 +255,10 @@ class TNGCoh_Rules {
 			'dup'    => 'Doublons',
 			'struct' => 'Structure',
 			'place'  => 'Lieux',
+			'privacy' => 'Vie privée',
+			'event'  => 'Événements',
+			'source' => 'Sources et médias',
+			'gedcom' => 'Export GEDCOM',
 		);
 	}
 
@@ -233,6 +318,10 @@ class TNGCoh_Rules {
 				}
 			}
 			$p['why'] = implode( ', ', $out );
+		}
+		if ( isset( $p['wk'], $p['who'] ) ) {   // nature de la fiche désignée : « famille F12 (…) », « source S3 », etc.
+			$kinds    = array( 'F' => 'famille', 'S' => 'source', 'R' => 'dépôt', 'L' => 'lieu', 'C' => 'enfant' );
+			$p['who'] = ( isset( $kinds[ $p['wk'] ] ) ? tngs_t( $kinds[ $p['wk'] ] ) . ' ' : '' ) . $p['who'];
 		}
 		if ( isset( $p['typ'] ) ) {
 			$p['typ'] = tngs_t( 'm' === $p['typ'] ? 'masculin' : 'féminin' );

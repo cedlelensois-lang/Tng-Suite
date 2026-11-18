@@ -4390,6 +4390,174 @@ msgstr ""
 msgid "Patronyme de l’enfant et de son père : similarité minimale pour les juger identiques, en % (0 = contrôle désactivé)"
 msgstr ""
 
+msgid "{name} (née ou né il y a {age} ans environ) n’a aucun décès connu et n’est marqué(e) ni « vivant(e) » ni « privé(e) » : la fiche serait exportée en clair"
+msgstr ""
+
+msgid "Événement « {ev} » de {who} : date impossible « {txt} »"
+msgstr ""
+
+msgid "Événement « {ev} » de {who} : date non reconnue « {txt} »"
+msgstr ""
+
+msgid "Événement « {ev} » de {who} : date dans le futur ({txt})"
+msgstr ""
+
+msgid "Événement « {ev} » de {who} ({d2}) avant sa naissance ({d1})"
+msgstr ""
+
+msgid "Événement « {ev} » de {who} ({d2}) plus d’un an après son décès ({d1})"
+msgstr ""
+
+msgid "Citation de {who} : la source « {src} » n’existe pas"
+msgstr ""
+
+msgid "Source « {src} » jamais citée{title}"
+msgstr ""
+
+msgid "{pct} % des personnes ({n} sur {tot}) n’ont aucune source citée"
+msgstr ""
+
+msgid "Lien média de {who} : le média n° {mid} n’existe pas"
+msgstr ""
+
+msgid "Barre oblique « / » dans le nom : « {txt} » (elle délimite le nom de famille dans un fichier GEDCOM)"
+msgstr ""
+
+msgid "Caractère de contrôle ou invisible dans le nom : « {txt} »"
+msgstr ""
+
+msgid "Nom très long ({n} caractères, limite GEDCOM : 120) : « {txt} »"
+msgstr ""
+
+msgid "Non marquée vivante ou privée, sans décès connu"
+msgstr ""
+
+msgid "Événement : date impossible"
+msgstr ""
+
+msgid "Événement : date non reconnue"
+msgstr ""
+
+msgid "Événement : date dans le futur"
+msgstr ""
+
+msgid "Événement avant la naissance"
+msgstr ""
+
+msgid "Événement après le décès"
+msgstr ""
+
+msgid "Citation d’une source inexistante"
+msgstr ""
+
+msgid "Source jamais citée"
+msgstr ""
+
+msgid "Personnes sans aucune source"
+msgstr ""
+
+msgid "Lien vers un média inexistant"
+msgstr ""
+
+msgid "Barre oblique dans le nom"
+msgstr ""
+
+msgid "Caractère invisible dans le nom"
+msgstr ""
+
+msgid "Nom trop long pour GEDCOM"
+msgstr ""
+
+msgid "Enfants de plusieurs familles et couples en double"
+msgstr ""
+
+msgid "Vie privée"
+msgstr ""
+
+msgid "Événements"
+msgstr ""
+
+msgid "Sources et médias"
+msgstr ""
+
+msgid "Export GEDCOM"
+msgstr ""
+
+msgid "Personnes : dates, sexe, noms, vie privée, caractères GEDCOM"
+msgstr ""
+
+msgid "Doublons possibles (la partie la plus longue)"
+msgstr ""
+
+msgid "Événements : dates et cohérence avec la vie"
+msgstr ""
+
+msgid "Sources et médias : liens cassés, sources inutilisées"
+msgstr ""
+
+msgid "Sources et médias : liens et sources inutilisées"
+msgstr ""
+
+msgid "famille"
+msgstr ""
+
+msgid "source"
+msgstr ""
+
+msgid "dépôt"
+msgstr ""
+
+msgid "lieu"
+msgstr ""
+
+msgid "enfant"
+msgstr ""
+
+msgid "Aucune partie sélectionnée."
+msgstr ""
+
+msgid "Cochez au moins une partie à analyser."
+msgstr ""
+
+msgid "Parties à analyser"
+msgstr ""
+
+msgid "sur"
+msgstr ""
+
+msgid "Tout cocher"
+msgstr ""
+
+msgid "Tout décocher"
+msgstr ""
+
+msgid "Seules les parties cochées sont relancées : les résultats des autres parties sont conservés. Les doublons possibles ont besoin de la partie « Personnes »."
+msgstr ""
+
+msgid "Parties analysées"
+msgstr ""
+
+msgid "non analysée"
+msgstr ""
+
+msgid "Cette partie n’a pas pu être analysée (tables ou colonnes TNG inattendues) :"
+msgstr ""
+
+msgid "Citations de sources"
+msgstr ""
+
+msgid "Sources jamais citées"
+msgstr ""
+
+msgid "Liens vers les médias"
+msgstr ""
+
+msgid "Part des personnes sans source"
+msgstr ""
+
+msgid "Personne sans décès connu, non marquée « vivante » ni « privée », née il y a moins de (ans) : signalée avant un export"
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""
