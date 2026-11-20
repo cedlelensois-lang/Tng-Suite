@@ -90,6 +90,8 @@ Only the plugin's own settings, caches, scheduled task and the tables it created
 * Compatibilité PHP 7.4 à 8.5 : les polygones des illustrations de couverture n’utilisent plus le paramètre « nombre de points » (obsolète depuis PHP 8.1), la libération des images GD n’appelle plus `imagedestroy()` sur PHP 8 (obsolète en 8.5), l’export CSV de la cohérence précise son caractère d’échappement (obsolète en 8.4) : plus d’avis « Deprecated » sur les hébergements qui les affichent.
 * Durcissement : fichiers `index.php` dans les dossiers du plugin ; outils de développement réservés à la ligne de commande et exclus du zip de la Release.
 * Documentation FR/EN et catalogue de traductions revus (1 728 textes, aucun manquant).
+* Livre : la couverture n’affiche plus de numéro de page et n’est plus comptée (PDF, Word, OpenDocument) : la page suivante porte le numéro 1, la table des matières suit les mêmes numéros.
+* Livre : nouvelle pochette pleine page « campagne espagnole » (variante du chêne ensoleillé : herbes sèches dorées, feuillage olive, ciel plus profond) ; aperçu de chaque pochette sous la liste « Illustration de couverture ».
 
 = 2.20.5 =
 * Livre : un aperçu de la pochette s’affiche sous la liste « Illustration de couverture » et change dès que l’on choisit une autre illustration (17 vignettes, titre d’exemple ; les illustrations dessinées prennent ensuite la couleur du livre).

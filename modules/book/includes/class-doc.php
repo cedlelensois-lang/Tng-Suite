@@ -325,16 +325,19 @@ class TNGBook_Doc {
         $gap = '<w:p><w:pPr><w:spacing w:before="0" w:after="60" w:line="120" w:lineRule="exact"/></w:pPr></w:p>';
         $colsOn = false; $secCount = 0; $openCols = false;
         $framed = false;   // le cadre commence après la couverture (première section sans bordure : fiable dans Word comme dans LibreOffice)
-        $sect = function ($cols, $cont) use (&$framed) {
+        $firstSect = true;   // la première section commence par la couverture : ni pied de page ni numéro, et la page suivante porte le numéro 1
+        $sect = function ($cols, $cont) use (&$framed, &$firstSect) {
             $pgb = '';
             if ($this->frame && $framed) {   // cadre autour des pages : pas sur la première page (couverture)
                 $dbl = ($this->frame['style'] ?? '') === 'double';
                 $side = function ($n) use ($dbl) { return '<w:' . $n . ' w:val="' . ($dbl ? 'double' : 'single') . '" w:sz="' . ($dbl ? 6 : 12) . '" w:space="24" w:color="' . self::hex($this->frame['color']) . '"/>'; };
                 $pgb = '<w:pgBorders w:offsetFrom="page">' . $side('top') . $side('left') . $side('bottom') . $side('right') . '</w:pgBorders>';
             }
-            return '<w:sectPr><w:footerReference w:type="default" r:id="rIdFooter"/>' . ($cont ? '<w:type w:val="continuous"/>' : '')
+            $first = $firstSect;
+            $firstSect = false;
+            return '<w:sectPr><w:footerReference w:type="default" r:id="rIdFooter"/>' . ($first ? '<w:footerReference w:type="first" r:id="rIdFooterFirst"/>' : '') . ($cont ? '<w:type w:val="continuous"/>' : '')
                 . '<w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1247" w:left="1134" w:header="567" w:footer="567" w:gutter="0"/>' . $pgb
-                . ($cols ? '<w:cols w:num="2" w:space="567"/>' : '') . '</w:sectPr>';
+                . ($first ? '<w:pgNumType w:start="0"/>' : '') . ($cols ? '<w:cols w:num="2" w:space="567"/>' : '') . ($first ? '<w:titlePg/>' : '') . '</w:sectPr>';
         };
         $closeTbl = function ($g, $cols) use (&$docPr, $media) {
             $im = $this->images[$this->groups[$g]]; $docPr++;
@@ -449,14 +452,16 @@ class TNGBook_Doc {
         $zip->addFromString('word/document.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document ' . $ns . '><w:body>' . $body . $sect($colsOn, $secCount > 0) . '</w:body></w:document>');
         $zip->addFromString('word/styles.xml', $this->docxStyles());
         $zip->addFromString('word/footer1.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:ftr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:rPr><w:color w:val="' . self::hex($this->c['meta']) . '"/><w:sz w:val="18"/></w:rPr><w:fldChar w:fldCharType="begin"/></w:r><w:r><w:instrText xml:space="preserve"> PAGE </w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:t>1</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r></w:p></w:ftr>');
+        $zip->addFromString('word/footer2.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:ftr xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:p/></w:ftr>');
         $zip->addFromString('word/_rels/document.xml.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
             . '<Relationship Id="rIdStyles" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>'
-            . '<Relationship Id="rIdFooter" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer" Target="footer1.xml"/>' . $rels . '</Relationships>');
+            . '<Relationship Id="rIdFooter" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer" Target="footer1.xml"/><Relationship Id="rIdFooterFirst" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer" Target="footer2.xml"/>' . $rels . '</Relationships>');
         $ct = '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/>'
             . '<Default Extension="jpg" ContentType="image/jpeg"/><Default Extension="png" ContentType="image/png"/><Default Extension="gif" ContentType="image/gif"/>'
             . '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>'
             . '<Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>'
             . '<Override PartName="/word/footer1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml"/>'
+            . '<Override PartName="/word/footer2.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml"/>'
             . '<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>';
         $zip->addFromString('[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' . $ct . '</Types>');
         $zip->addFromString('_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
@@ -577,7 +582,7 @@ class TNGBook_Doc {
             if (isset($b['fig'])) {
                 $im = $this->images[$b['fig']]; $frame++;
                 $cm = min($b['cm'], $colsOn ? 8.0 : 17.0); $hc = round($cm * $im['h'] / $im['w'], 3);
-                $ps = $reg('p', '<style:paragraph-properties fo:text-align="center" fo:margin-top="0.2cm" fo:margin-bottom="0.2cm"' . ($b['pb'] ? ' fo:break-before="page"' : '') . '/>', ' style:parent-style-name="Standard"' . ($firstBlock && $this->frame ? ' style:master-page-name="First"' : ''));
+                $ps = $reg('p', '<style:paragraph-properties fo:text-align="center" fo:margin-top="0.2cm" fo:margin-bottom="0.2cm"' . ($b['pb'] ? ' fo:break-before="page"' : '') . '/>', ' style:parent-style-name="Standard"' . ($firstBlock ? ' style:master-page-name="First"' : ''));
                 $firstBlock = false;
                 $bk = '';
                 foreach ($b['bm'] ?? [] as $name) { if (isset($bmUsed[$name])) continue; $bmUsed[$name] = 1; $bk .= '<text:bookmark text:name="' . $name . '"/>'; }
@@ -600,7 +605,7 @@ class TNGBook_Doc {
             }
             if (!isset($names[$b['style']])) $pp .= ' fo:margin-top="' . round($sp['bf'] * 0.0353, 3) . 'cm" fo:margin-bottom="' . round($sp['af'] * 0.0353, 3) . 'cm"';
             $parent = $names[$b['style']] ?? 'Standard';
-            $pstyle = $reg('p', '<style:paragraph-properties' . $pp . '/>' . (isset($names[$b['style']]) ? $genTp : '<style:text-properties fo:font-size="' . $sp['sz'] . 'pt"' . ($sp['b'] ? ' fo:font-weight="bold"' : '') . ($sp['i'] ? ' fo:font-style="italic"' : '') . ' fo:color="' . $sp['c'] . '"/>'), ' style:parent-style-name="' . $parent . '"' . ($firstBlock && $this->frame ? ' style:master-page-name="First"' : ''));
+            $pstyle = $reg('p', '<style:paragraph-properties' . $pp . '/>' . (isset($names[$b['style']]) ? $genTp : '<style:text-properties fo:font-size="' . $sp['sz'] . 'pt"' . ($sp['b'] ? ' fo:font-weight="bold"' : '') . ($sp['i'] ? ' fo:font-style="italic"' : '') . ' fo:color="' . $sp['c'] . '"/>'), ' style:parent-style-name="' . $parent . '"' . ($firstBlock ? ' style:master-page-name="First"' : ''));
             $firstBlock = false;
             $inner = '';
             foreach ($b['bm'] as $name) {
@@ -697,16 +702,16 @@ class TNGBook_Doc {
                 . '<style:text-properties fo:font-size="' . $sp['sz'] . 'pt" fo:font-weight="' . ($sp['b'] ? 'bold' : 'normal') . '" fo:color="' . $sp['c'] . '"/></style:style>';
         };
         $foot = '<style:footer-style><style:header-footer-properties fo:min-height="0.6cm" fo:margin-top="0.4cm"/></style:footer-style>';
-        $footer = '<style:footer><text:p text:style-name="Footer"><text:page-number text:select-page="current">1</text:page-number></text:p></style:footer>';
+        $footer = '<style:footer><text:p text:style-name="Footer"><text:page-number text:select-page="current" text:page-adjust="-1">1</text:page-number></text:p></style:footer>';   // la couverture (1re page) n'est pas comptée
         $plain = '<style:page-layout style:name="pm0"><style:page-layout-properties fo:page-width="21cm" fo:page-height="29.7cm" fo:margin-top="2cm" fo:margin-bottom="1cm" fo:margin-left="2cm" fo:margin-right="2cm"/>' . $foot . '</style:page-layout>';
         if ($this->frame) {   // cadre autour des pages (la première page, la couverture, n'en a pas)
             $dbl = ($this->frame['style'] ?? '') === 'double';
             $line = ($dbl ? '2.5pt double ' : '1.25pt solid ') . $this->frame['color'];
             $layouts = $plain . '<style:page-layout style:name="pm1"><style:page-layout-properties fo:page-width="21cm" fo:page-height="29.7cm" fo:margin-top="1.1cm" fo:margin-bottom="1.1cm" fo:margin-left="1.1cm" fo:margin-right="1.1cm" fo:padding="0.9cm" fo:border="' . $line . '"/>' . $foot . '</style:page-layout>';
-            $masters = '<style:master-page style:name="First" style:page-layout-name="pm0" style:next-style-name="Standard">' . $footer . '</style:master-page><style:master-page style:name="Standard" style:page-layout-name="pm1">' . $footer . '</style:master-page>';
+            $masters = '<style:master-page style:name="First" style:page-layout-name="pm0" style:next-style-name="Standard"></style:master-page><style:master-page style:name="Standard" style:page-layout-name="pm1">' . $footer . '</style:master-page>';
         } else {
             $layouts = str_replace('"pm0"', '"pm1"', $plain);
-            $masters = '<style:master-page style:name="Standard" style:page-layout-name="pm1">' . $footer . '</style:master-page>';
+            $masters = '<style:master-page style:name="First" style:page-layout-name="pm1" style:next-style-name="Standard"></style:master-page><style:master-page style:name="Standard" style:page-layout-name="pm1">' . $footer . '</style:master-page>';
         }
         return '<?xml version="1.0" encoding="UTF-8"?><office:document-styles ' . $ns . ' office:version="1.2">'
             . '<office:font-face-decls><style:font-face style:name="' . $this->docFont() . '" svg:font-family="' . $this->docFont() . '"/></office:font-face-decls>'

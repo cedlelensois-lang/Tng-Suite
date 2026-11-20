@@ -2409,7 +2409,7 @@ CSS;
         $img = function ($bin, $cm, $cls) { return '<img class="tpng cart ' . $cls . '" data-cm="' . $cm . '" src="data:image/png;base64,' . base64_encode($bin) . '" alt="">'; };
         $pageCover = in_array($art, TNGBook_Art::page_covers(), true) && $this->mode === 'pdf' && function_exists('imagecreatetruecolor');   // pochette pleine page : image de fond de la 1re page du PDF
         if ($pageCover) {
-            $front = '<div class="cover art-page art-' . $art . (mb_strlen($title) > 34 ? ' long' : '') . (mb_strlen($title) > 44 ? ' xlong' : '') . '"><h1>' . $this->e($title) . '</h1>';
+            $front = '<div class="cover art-page art-' . ($art === 'espagne' ? 'chene2' : $art) . (mb_strlen($title) > 34 ? ' long' : '') . (mb_strlen($title) > 44 ? ' xlong' : '') . '"><h1>' . $this->e($title) . '</h1>';
         } elseif ($art !== 'none' && function_exists('imagecreatetruecolor')) {
             $orn = in_array($art, ['ornament', 'nympheas', 'feuillage'], true);
             $fl = $img($art === 'nympheas' ? TNGBook_Art::garland($head) : ($art === 'feuillage' ? TNGBook_Art::leafgarland($head) : TNGBook_Art::flourish($head)), 12, 'fl');

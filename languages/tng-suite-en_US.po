@@ -4570,6 +4570,9 @@ msgstr "Partial analysis: only the parts listed above were run again. The other 
 msgid "Aperçu indicatif (titre d’exemple) : les illustrations dessinées prennent la couleur « en-têtes et liens » du livre."
 msgstr "Indicative preview (sample title): the drawn illustrations use the book’s “headings and links” colour."
 
+msgid "Pochette pleine page (PDF) : campagne espagnole, chêne ensoleillé, herbes sèches dorées et ciel profond, texte sur fond blanc"
+msgstr "Full-page cover (PDF): Spanish countryside, sunlit oak, golden dry grass and deep sky, text on a white panel"
+
 msgctxt "js"
 msgid " Page "
 msgstr " Page "

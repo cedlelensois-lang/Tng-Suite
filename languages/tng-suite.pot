@@ -4570,6 +4570,9 @@ msgstr ""
 msgid "Aperçu indicatif (titre d’exemple) : les illustrations dessinées prennent la couleur « en-têtes et liens » du livre."
 msgstr ""
 
+msgid "Pochette pleine page (PDF) : campagne espagnole, chêne ensoleillé, herbes sèches dorées et ciel profond, texte sur fond blanc"
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""

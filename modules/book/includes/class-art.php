@@ -230,17 +230,17 @@ class TNGBook_Art {
     }
 
     public static function cover_choices() {
-        return array('none', 'ornament', 'tree', 'olive', 'willow', 'roots', 'color', 'page', 'meadow', 'farm', 'chene', 'peinture', 'chene2', 'chene3', 'chene4', 'nympheas', 'feuillage');
+        return array('none', 'ornament', 'tree', 'olive', 'willow', 'roots', 'color', 'page', 'meadow', 'farm', 'chene', 'peinture', 'chene2', 'chene3', 'chene4', 'espagne', 'nympheas', 'feuillage');
     }
 
     /** Pochettes pleine page (fond de la 1re page du PDF). */
     public static function page_covers() {
-        return array('page', 'meadow', 'farm', 'chene', 'peinture', 'chene2', 'chene3', 'chene4');
+        return array('page', 'meadow', 'farm', 'chene', 'peinture', 'chene2', 'chene3', 'chene4', 'espagne');
     }
 
     /** Pochettes à image fournie (assets/img/cover-<nom>.jpg). */
     public static function image_covers() {
-        return array('meadow', 'farm', 'chene', 'peinture', 'chene2', 'chene3', 'chene4');
+        return array('meadow', 'farm', 'chene', 'peinture', 'chene2', 'chene3', 'chene4', 'espagne');
     }
 
     /** Style d'arbre correspondant à une valeur du réglage (tree → oak). */

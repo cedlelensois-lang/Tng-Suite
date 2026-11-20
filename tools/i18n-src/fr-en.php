@@ -1532,4 +1532,5 @@ return array(
 	'parties' => 'parts',
 	'Analyse partielle : seules les parties ci-dessus ont été relancées. Les autres anomalies de la liste viennent de leur analyse précédente (voir « Parties analysées »).' => 'Partial analysis: only the parts listed above were run again. The other anomalies in the list come from their previous analysis (see “Parts analysed”).',
 	'Aperçu indicatif (titre d’exemple) : les illustrations dessinées prennent la couleur « en-têtes et liens » du livre.' => 'Indicative preview (sample title): the drawn illustrations use the book’s “headings and links” colour.',
+	'Pochette pleine page (PDF) : campagne espagnole, chêne ensoleillé, herbes sèches dorées et ciel profond, texte sur fond blanc' => 'Full-page cover (PDF): Spanish countryside, sunlit oak, golden dry grass and deep sky, text on a white panel',
 );

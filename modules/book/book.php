@@ -278,7 +278,9 @@ final class TNGBook {
     public static function mpdf_available() {
         $auto = TNGBOOK_DIR . 'vendor/autoload.php';
         if (file_exists($auto)) require_once $auto;
-        return class_exists('\Mpdf\Mpdf');
+        if (!class_exists('\Mpdf\Mpdf')) return false;
+        require_once TNGBOOK_DIR . 'includes/class-mpdf.php';   // mPDF avec numérotation sans la couverture
+        return true;
     }
 
     /* ---------- Réglages : tout est sauvegardé ensemble ---------- */
@@ -637,6 +639,7 @@ final class TNGBook {
             'farm' => 'Pochette pleine page (PDF) : grand tronc, feuillage pastel et campagne',
             'chene' => 'Pochette pleine page (PDF) : chêne et ses racines, campagne, texte sur fond blanc',
             'chene2' => 'Pochette pleine page (PDF) : chêne ensoleillé, prairie, texte sur fond blanc',
+            'espagne' => 'Pochette pleine page (PDF) : campagne espagnole, chêne ensoleillé, herbes sèches dorées et ciel profond, texte sur fond blanc',
             'chene3' => 'Pochette pleine page (PDF) : chêne vert, ciel bleu et ferme, texte sur fond blanc',
             'chene4' => 'Pochette pleine page (PDF) : chêne aux couleurs éclatantes, texte sur fond blanc',
             'peinture' => 'Pochette pleine page (PDF) : peinture impressionniste, chêne et coquelicots, texte sur fond blanc',
@@ -956,7 +959,7 @@ final class TNGBook {
 
     /** Pochette pleine page : image JPEG posée en fond de la première page seulement (repère <meta name="tng-cover">, retiré avant mPDF). */
     public static function pdf_cover(\Mpdf\Mpdf $mpdf, $html) {
-        if (!preg_match('/<meta name="tng-cover" content="(#[0-9a-f]{6})(?: (meadow|farm|chene[234]?|peinture))?">/', $html, $m)) return $html;
+        if (!preg_match('/<meta name="tng-cover" content="(#[0-9a-f]{6})(?: (meadow|farm|chene[234]?|peinture|espagne))?">/', $html, $m)) return $html;
         $html = str_replace($m[0], '', $html);
         if (!function_exists('imagecreatetruecolor')) return $html;
         $mpdf->imageVars['tngcover'] = TNGBook_Art::cover_page($m[1], 1240, 1754, $m[2] ?? 'page');
@@ -973,10 +976,11 @@ final class TNGBook {
 
     /** Nouveau document mPDF (réglages communs au PDF direct et à la génération en arrière-plan). */
     private static function pdf_make() {
+        self::mpdf_available();   // charge mPDF et sa sous-classe (numérotation) avant toute création de document
         $up_dir = wp_upload_dir();
         $tmp = $up_dir['basedir'] . '/tngbook-cache/mpdf';
         wp_mkdir_p($tmp);
-        $mpdf = new \Mpdf\Mpdf([
+        $mpdf = new TNGBook_Mpdf([
             'mode' => 'utf-8', 'format' => 'A4', 'tempDir' => $tmp, 'default_font' => 'dejavuserif',
             'margin_left' => 20, 'margin_right' => 20, 'margin_top' => 20, 'margin_bottom' => 22,
         ]);
