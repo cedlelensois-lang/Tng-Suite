@@ -4,7 +4,7 @@
 
 Extension WordPress qui affiche vos données [TNG](https://tngsitebuilding.com/) (The Next Generation of Genealogy Sitebuilding) : arbres et descendance, frise chronologique, carte de chaleur des lieux, galerie de médias, statistiques, éventail, implexe et consanguinité, individu au hasard, nuage de noms, un **contrôle de cohérence des données** (administrateurs, lecture seule) et un **livre généalogique** (page imprimable, PDF, Word, OpenDocument).
 
-Licence : GPLv2 ou ultérieure. Prérequis : WordPress 5.8+, PHP 7.4+. Interface et textes publics en français et en anglais.
+Licence : GPLv2 ou ultérieure. Prérequis : WordPress 5.8+, PHP 7.4+ (code contrôlé de PHP 7.4 à 8.5 ; compatibilité WordPress vérifiée jusqu’à la 7.1). Interface et textes publics en français et en anglais.
 
 ## Présentation et documentation
 
@@ -51,7 +51,7 @@ define( 'TNGSUITE_GITHUB_REPO', '' );                                           
 ## Publier une version (mainteneur)
 
 1. Mettre à jour le numéro de version dans `tng-suite.php` (en-tête et `TNGSUITE_VERSION`) et dans `readme.txt` (`Stable tag`, changelog).
-2. Pousser sur `main`, puis créer une **Release** sur GitHub avec l'étiquette `vX.Y.Z` (par exemple `v2.19.0`), sans « pre-release » pour une version stable.
+2. Pousser sur `main`, puis créer une **Release** sur GitHub avec l'étiquette `vX.Y.Z` (par exemple `v3.0.0`), sans « pre-release » pour une version stable.
 3. L'action GitHub (`.github/workflows/release.yml`) construit `tng-suite.zip` (avec mPDF et les bibliothèques JavaScript) et l'ajoute à la Release.
 
 ## Notes
@@ -65,7 +65,7 @@ define( 'TNGSUITE_GITHUB_REPO', '' );                                           
 
 WordPress plugin that displays your [TNG](https://tngsitebuilding.com/) (The Next Generation of Genealogy Sitebuilding) data: trees and descendants, timeline, places heatmap, media gallery, statistics, fan chart, pedigree collapse (implex) and inbreeding coefficient, random individual, name cloud, a **data consistency check** (administrators, read-only) and a **genealogy book** (printable page, PDF, Word, OpenDocument).
 
-License: GPLv2 or later. Requirements: WordPress 5.8+, PHP 7.4+. Admin screens and public texts in French and English.
+License: GPLv2 or later. Requirements: WordPress 5.8+, PHP 7.4+ (code checked from PHP 7.4 to 8.5; WordPress compatibility checked up to 7.1). Admin screens and public texts in French and English.
 
 ### Overview and documentation
 

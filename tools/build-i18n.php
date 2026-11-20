@@ -1,4 +1,7 @@
 <?php
+if ( PHP_SAPI !== 'cli' ) {
+    exit; // outil de développement : ligne de commande uniquement
+}
 /**
  * Génère les catalogues gettext du plugin à partir des sources de tools/i18n-src/ :
  *   languages/tng-suite.pot            modèle (textes sources en français)

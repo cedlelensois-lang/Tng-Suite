@@ -26,7 +26,7 @@ class TNGBook_Art {
         ob_start();
         imagepng($im, null, 7);
         $b = ob_get_clean();
-        imagedestroy($im);
+        self::free($im);
         return $b;
     }
 
@@ -41,12 +41,12 @@ class TNGBook_Art {
         $dx = $x2 - $x1; $dy = $y2 - $y1;
         $l = max(0.0001, sqrt($dx * $dx + $dy * $dy));
         $nx = -$dy / $l; $ny = $dx / $l;
-        imagefilledpolygon($im, [
+        self::poly($im, [
             (int) round($x1 + $nx * $w1 / 2), (int) round($y1 + $ny * $w1 / 2),
             (int) round($x2 + $nx * $w2 / 2), (int) round($y2 + $ny * $w2 / 2),
             (int) round($x2 - $nx * $w2 / 2), (int) round($y2 - $ny * $w2 / 2),
             (int) round($x1 - $nx * $w1 / 2), (int) round($y1 - $ny * $w1 / 2),
-        ], 4, $col);
+        ], $col);
     }
 
     /** Feuille effilée, $len de long, de largeur $wr × longueur. */
@@ -59,7 +59,7 @@ class TNGBook_Art {
             $pts[] = (int) round($x + $lx * $ca - $ly * $sa);
             $pts[] = (int) round($y + $lx * $sa + $ly * $ca);
         }
-        imagefilledpolygon($im, $pts, 8, $col);
+        self::poly($im, $pts, $col);
     }
 
     /** Une feuille semi-transparente, posée seulement dans la silhouette de la cime, dans l'une des trois teintes. */
@@ -175,7 +175,7 @@ class TNGBook_Art {
         $pts[] = (int) round($L[$n][0] + 4 * $S); $pts[] = (int) round($y + 3 * $S);
         $pts[] = (int) round($R[$n][0] - 4 * $S); $pts[] = (int) round($y + 3 * $S);
         for ($i = $n; $i >= 0; $i--) { $pts[] = (int) round($R[$i][0]); $pts[] = (int) round($R[$i][1]); }
-        imagefilledpolygon($im, $pts, count($pts) / 2, $col);
+        self::poly($im, $pts, $col);
     }
 
     /** Lavis : taches douces et irrégulières (coussin de gaussiennes calculé en basse résolution puis agrandi sans crénelage). */
@@ -207,13 +207,28 @@ class TNGBook_Art {
             imagecopyresampled($big, $small, 0, 0, 0, 0, $W, $H, $sw, $sh);
         }
         imagealphablending($big, false); imagesavealpha($big, true);
-        imagedestroy($small);
+        self::free($small);
         imagealphablending($im, true);
         imagecopy($im, $big, 0, 0, 0, 0, $W, $H);
-        imagedestroy($big);
+        self::free($big);
     }
 
     /** Valeurs du réglage « illustration de couverture » : none, ornament, puis un arbre (tree = chêne, olive, willow, roots). */
+    /** Polygone plein : le paramètre « nombre de points » est obsolète depuis PHP 8.1 (avis « Deprecated » si l’hôte les affiche). */
+    public static function poly($im, array $pts, $col) {
+        if (PHP_VERSION_ID >= 80100) {
+            return imagefilledpolygon($im, $pts, $col);
+        }
+        return imagefilledpolygon($im, $pts, (int) (count($pts) / 2), $col);
+    }
+
+    /** Libère une image GD : inutile (et obsolète, PHP 8.5) depuis PHP 8.0, où les images sont des objets. */
+    public static function free($im) {
+        if (PHP_VERSION_ID < 80000 && is_resource($im)) {
+            imagedestroy($im);
+        }
+    }
+
     public static function cover_choices() {
         return array('none', 'ornament', 'tree', 'olive', 'willow', 'roots', 'color', 'page', 'meadow', 'farm', 'chene', 'peinture', 'chene2', 'chene3', 'chene4', 'nympheas', 'feuillage');
     }
@@ -301,7 +316,7 @@ class TNGBook_Art {
             imagefilledrectangle($tmp, 0, 0, $W, (int) ($ground + 1 * $S), self::col($tmp, 0, 0, 0, 127));
             imagealphablending($tmp, true);
             imagecopy($im, $tmp, 0, 0, 0, 0, $W, $H);
-            imagedestroy($tmp);
+            self::free($tmp);
         }
         // quelques feuilles qui tombent
         for ($k = 0; $k < ($style === 'roots' ? 4 : 7); $k++) {
@@ -312,7 +327,7 @@ class TNGBook_Art {
         imagealphablending($out, false); imagesavealpha($out, true);
         imagefill($out, 0, 0, imagecolorallocatealpha($out, 255, 255, 255, 127));
         imagecopyresampled($out, $im, 0, 0, 0, 0, $w, $h, $W, $H);
-        imagedestroy($im);
+        self::free($im);
         return self::png($out);
     }
 
@@ -365,7 +380,7 @@ class TNGBook_Art {
             for ($i = $n - 1; $i >= 0; $i--) { $pts[] = (int) round($lower[$i][0]); $pts[] = (int) round($lower[$i][1]); }
             return $pts;
         };
-        $fill = function ($off, $col) use ($im, $top, $bot, $poly) { $p = $poly($top, $bot, $off); imagefilledpolygon($im, $p, count($p) / 2, $col); };
+        $fill = function ($off, $col) use ($im, $top, $bot, $poly) { $p = $poly($top, $bot, $off); self::poly($im, $p, $col); };
         $fill(0, self::col($im, 126, 86, 56));
         $fill(0.1 * $H, self::col($im, 106, 71, 46));
         $fill(0.19 * $H, self::col($im, 84, 56, 38));
@@ -390,29 +405,29 @@ class TNGBook_Art {
         $up = array();
         foreach ($top as $p) { $up[] = (int) round($p[0]); $up[] = (int) round($p[1] + 4 * $S); }
         array_push($up, (int) $W, 0, 0, 0);
-        imagefilledpolygon($tmp, $up, count($up) / 2, self::col($tmp, 0, 0, 0, 127));
+        self::poly($tmp, $up, self::col($tmp, 0, 0, 0, 127));
         imagealphablending($tmp, true);
         imagecopy($im, $tmp, 0, 0, 0, 0, $W, $H);
-        imagedestroy($tmp);
+        self::free($tmp);
         imagealphablending($im, false);
         $clear = self::col($im, 0, 0, 0, 127);
         $out = array();
         foreach ($bot as $p) { $out[] = (int) round($p[0]); $out[] = (int) round($p[1]); }
         array_push($out, (int) $W, (int) $H, 0, (int) $H);
-        imagefilledpolygon($im, $out, count($out) / 2, $clear);
+        self::poly($im, $out, $clear);
         imagefilledrectangle($im, 0, (int) $y0, (int) ($cx - $hw), $H, $clear);
         imagefilledrectangle($im, (int) ($cx + $hw), (int) $y0, $W, $H, $clear);
         imagealphablending($im, true);
         // herbe (bande suivant la crête) et brins
         $g1 = self::col($im, 112, 160, 60); $g2 = self::col($im, 82, 132, 48);
         for ($i = 0; $i < $N; $i++) {
-            imagefilledpolygon($im, array((int) $top[$i][0], (int) $top[$i][1], (int) $top[$i + 1][0], (int) $top[$i + 1][1], (int) $top[$i + 1][0], (int) ($top[$i + 1][1] + 18 * $S), (int) $top[$i][0], (int) ($top[$i][1] + 18 * $S)), 4, $g1);
-            imagefilledpolygon($im, array((int) $top[$i][0], (int) ($top[$i][1] + 14 * $S), (int) $top[$i + 1][0], (int) ($top[$i + 1][1] + 14 * $S), (int) $top[$i + 1][0], (int) ($top[$i + 1][1] + 24 * $S), (int) $top[$i][0], (int) ($top[$i][1] + 24 * $S)), 4, $g2);
+            self::poly($im, array((int) $top[$i][0], (int) $top[$i][1], (int) $top[$i + 1][0], (int) $top[$i + 1][1], (int) $top[$i + 1][0], (int) ($top[$i + 1][1] + 18 * $S), (int) $top[$i][0], (int) ($top[$i][1] + 18 * $S)), $g1);
+            self::poly($im, array((int) $top[$i][0], (int) ($top[$i][1] + 14 * $S), (int) $top[$i + 1][0], (int) ($top[$i + 1][1] + 14 * $S), (int) $top[$i + 1][0], (int) ($top[$i + 1][1] + 24 * $S), (int) $top[$i][0], (int) ($top[$i][1] + 24 * $S)), $g2);
         }
         for ($k = 0; $k < 70; $k++) {
             $t = (self::rnd($seed) - 0.5) * 1.96; $x = $cx + $t * $hw; $y = self::mound($t, $y0, $H) + 2 * $S;
             $hgt = (8 + self::rnd($seed) * 12) * $S; $lean = (self::rnd($seed) - 0.5) * 8 * $S;
-            imagefilledpolygon($im, array((int) ($x - 2 * $S), (int) $y, (int) ($x + 2 * $S), (int) $y, (int) ($x + $lean), (int) ($y - $hgt)), 3, $g1);
+            self::poly($im, array((int) ($x - 2 * $S), (int) $y, (int) ($x + 2 * $S), (int) $y, (int) ($x + $lean), (int) ($y - $hgt)), $g1);
         }
         // pied du tronc : racines apparentes, puis tronc et houppier
         $wood = $c['wood'];
@@ -442,7 +457,7 @@ class TNGBook_Art {
         imagealphablending($outim, false); imagesavealpha($outim, true);
         imagefill($outim, 0, 0, imagecolorallocatealpha($outim, 255, 255, 255, 127));
         imagecopyresampled($outim, $im, 0, 0, 0, 0, $w, $h, $W, $H);
-        imagedestroy($im);
+        self::free($im);
         return self::png($outim);
     }
 
@@ -489,9 +504,9 @@ class TNGBook_Art {
         imagefill($out, 0, 0, imagecolorallocate($out, 243, 240, 232));   // crème
         imagealphablending($out, true);
         imagecopyresampled($out, $im, 0, 0, 0, 0, $w, $h, $W, $H);
-        imagedestroy($im);
+        self::free($im);
         ob_start(); imagejpeg($out, null, 88); $bin = (string) ob_get_clean();
-        imagedestroy($out);
+        self::free($out);
         return $bin;
     }
 
@@ -527,7 +542,7 @@ class TNGBook_Art {
             $t = $k / 22 * 2 * M_PI; $lx = cos($t) * $rx; $ly = sin($t) * $ry;
             $pts[] = (int) round($x + $lx * $ca - $ly * $sa); $pts[] = (int) round($y + $lx * $sa + $ly * $ca);
         }
-        imagefilledpolygon($im, $pts, 22, $col);
+        self::poly($im, $pts, $col);
     }
 
     /** Coquelicot : pétales ronds semi-transparents qui se superposent, cœur sombre et étamines. */
@@ -604,7 +619,7 @@ class TNGBook_Art {
         imagealphablending($out, false); imagesavealpha($out, true);
         imagefill($out, 0, 0, imagecolorallocatealpha($out, 255, 255, 255, 127));
         imagecopyresampled($out, $im, 0, 0, 0, 0, $w, $h, $W, $H);
-        imagedestroy($im);
+        self::free($im);
         return self::png($out);
     }
 
@@ -639,7 +654,7 @@ class TNGBook_Art {
         imagealphablending($small, false);
         imagecopyresampled($small, $tile, 0, 0, 0, 0, $T, $T, $T * $S, $T * $S);
         imagealphablending($small, true);
-        imagedestroy($tile);
+        self::free($tile);
         return $small;
     }
 
@@ -688,7 +703,7 @@ class TNGBook_Art {
         imagealphablending($out, false); imagesavealpha($out, true);
         imagefill($out, 0, 0, imagecolorallocatealpha($out, 255, 255, 255, 127));
         imagecopyresampled($out, $im, 0, 0, 0, 0, $w, $h, $W, $H);
-        imagedestroy($im);
+        self::free($im);
         return self::png($out);
     }
 
@@ -719,7 +734,7 @@ class TNGBook_Art {
         imagealphablending($small, false);
         imagecopyresampled($small, $tile, 0, 0, 0, 0, $T, $T, $T * $S, $T * $S);
         imagealphablending($small, true);
-        imagedestroy($tile);
+        self::free($tile);
         return $small;
     }
 
@@ -732,7 +747,7 @@ class TNGBook_Art {
         $clear = imagecolorallocatealpha($im, 255, 255, 255, 127);
         $cx = $W / 2; $cy = $H / 2;
         $dia = function ($x, $y, $rw, $rh, $c) use ($im) {
-            imagefilledpolygon($im, [(int) ($x - $rw), (int) $y, (int) $x, (int) ($y - $rh), (int) ($x + $rw), (int) $y, (int) $x, (int) ($y + $rh)], 4, $c);
+            self::poly($im, [(int) ($x - $rw), (int) $y, (int) $x, (int) ($y - $rh), (int) ($x + $rw), (int) $y, (int) $x, (int) ($y + $rh)], $c);
         };
         foreach ([-1, 1] as $s) {
             // filet effilé du centre vers le bord
@@ -762,7 +777,7 @@ class TNGBook_Art {
         imagealphablending($out, false); imagesavealpha($out, true);
         imagefill($out, 0, 0, imagecolorallocatealpha($out, 255, 255, 255, 127));
         imagecopyresampled($out, $im, 0, 0, 0, 0, $w, $h, $W, $H);
-        imagedestroy($im);
+        self::free($im);
         return self::png($out);
     }
 
@@ -801,7 +816,7 @@ class TNGBook_Art {
             $put($f, $x1 - $T + 1, $y1 - $T + 1);
             imageflip($f, IMG_FLIP_HORIZONTAL);
             $put($f, $x0, $y1 - $T + 1);
-            imagedestroy($f); imagedestroy($small);
+            self::free($f); self::free($small);
             return self::png($im);
         }
         if ($style !== 'ornate') {
@@ -827,7 +842,7 @@ class TNGBook_Art {
         imagealphablending($small, false);
         imagecopyresampled($small, $tile, 0, 0, 0, 0, $T, $T, $T * $S, $T * $S);
         imagealphablending($small, true);
-        imagedestroy($tile);
+        self::free($tile);
         $put = function ($t, $dx, $dy) use ($im, $T) { imagecopy($im, $t, $dx, $dy, 0, 0, $T, $T); };
         $put($small, $x0, $y0);
         $f = imagecreatetruecolor($T, $T); imagealphablending($f, false); imagesavealpha($f, true);
@@ -837,7 +852,7 @@ class TNGBook_Art {
         $put($f, $x1 - $T + 1, $y1 - $T + 1);
         imageflip($f, IMG_FLIP_HORIZONTAL);
         $put($f, $x0, $y1 - $T + 1);
-        imagedestroy($f); imagedestroy($small);
+        self::free($f); self::free($small);
         return self::png($im);
     }
 }

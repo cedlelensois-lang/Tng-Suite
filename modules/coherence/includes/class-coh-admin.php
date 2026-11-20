@@ -479,7 +479,7 @@ class TNGCoh_Admin {
 		header( 'Content-Disposition: attachment; filename="coherence-' . sanitize_file_name( $f['tree'] ) . '-' . gmdate( 'Y-m-d' ) . '.csv"' );
 		$out = fopen( 'php://output', 'w' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen
 		fwrite( $out, "\xEF\xBB\xBF" ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fwrite
-		fputcsv( $out, array( tngs_t( 'Gravité' ), tngs_t( 'Type' ), tngs_t( 'Anomalie' ), tngs_t( 'Détail' ), tngs_t( 'Personne' ), tngs_t( 'Famille' ), tngs_t( 'Seconde personne' ), tngs_t( 'Score' ), tngs_t( 'Arbre' ) ), ';' );
+		fputcsv( $out, array( tngs_t( 'Gravité' ), tngs_t( 'Type' ), tngs_t( 'Anomalie' ), tngs_t( 'Détail' ), tngs_t( 'Personne' ), tngs_t( 'Famille' ), tngs_t( 'Seconde personne' ), tngs_t( 'Score' ), tngs_t( 'Arbre' ) ), ';', '"', '' );
 		$sev  = TNGCoh_Rules::sev_labels();
 		$cats   = TNGCoh_Rules::cats();
 		$titles = TNGCoh_Rules::titles();
@@ -500,7 +500,9 @@ class TNGCoh_Admin {
 						'dup' === $r['cat'] ? (int) $r['score'] : '',
 						self::cell( $r['tree'] ),
 					),
-					';'
+					';',
+					'"',
+					''
 				);
 			}
 			$off += 2000;

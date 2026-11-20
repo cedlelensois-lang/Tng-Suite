@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.20.5
+Stable tag: 3.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,13 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the tables it created in the WordPress database (`tngi_inbreeding` for the implex module; `tngs_coh_res` and `tngs_coh_key` for the data consistency check). Your TNG data is never touched.
 
 == Changelog ==
+
+= 3.0.0 =
+* Première version stable : toutes les fonctions (livre, cohérence des données, éventail, implexe, fiche, statistiques, cartes…) sont figées ; les correctifs suivants seront des 3.0.x.
+* Audit de sécurité : tous les points d’entrée (admin_post, AJAX, REST, shortcodes) vérifiés (droits et jeton), requêtes SQL préparées, sorties échappées, fichiers d’état signés ; aucune faille trouvée.
+* Compatibilité PHP 7.4 à 8.5 : les polygones des illustrations de couverture n’utilisent plus le paramètre « nombre de points » (obsolète depuis PHP 8.1), la libération des images GD n’appelle plus `imagedestroy()` sur PHP 8 (obsolète en 8.5), l’export CSV de la cohérence précise son caractère d’échappement (obsolète en 8.4) : plus d’avis « Deprecated » sur les hébergements qui les affichent.
+* Durcissement : fichiers `index.php` dans les dossiers du plugin ; outils de développement réservés à la ligne de commande et exclus du zip de la Release.
+* Documentation FR/EN et catalogue de traductions revus (1 728 textes, aucun manquant).
 
 = 2.20.5 =
 * Livre : un aperçu de la pochette s’affiche sous la liste « Illustration de couverture » et change dès que l’on choisit une autre illustration (17 vignettes, titre d’exemple ; les illustrations dessinées prennent ensuite la couleur du livre).

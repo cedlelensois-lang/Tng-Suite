@@ -1,4 +1,7 @@
 <?php
+if ( PHP_SAPI !== 'cli' ) {
+    exit; // outil de publication : ligne de commande uniquement
+}
 // Contrôle de publication : génère un PDF avec mPDF tel qu'embarqué dans le zip (polices élaguées) et vérifie qu'il est valide.
 require __DIR__ . '/../modules/book/vendor/autoload.php';
 $tmp = sys_get_temp_dir() . '/mpdf-check';

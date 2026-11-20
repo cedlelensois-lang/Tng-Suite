@@ -722,7 +722,7 @@ class TNGBook_Renderer {
             imagefilledellipse($im, 120, 118, 100, 115, $fg);
             imagefilledellipse($im, 120, 330, 220, 250, $fg);
             imagepng($im, $dest);
-            if (PHP_VERSION_ID < 80000) imagedestroy($im);   // sans effet depuis PHP 8.0, obsolète en 8.5
+            if (PHP_VERSION_ID < 80000) TNGBook_Art::free($im);   // sans effet depuis PHP 8.0, obsolète en 8.5
         }
         if (file_exists($dest)) {
             $this->av[$s] = $this->asset($dest, $url . '/avatar-' . $s . '.png', 'image/png');
@@ -1674,7 +1674,7 @@ class TNGBook_Renderer {
         $w = imagesx($g); $h = imagesy($g);
         if ($w > $target) {
             $n = imagescale($g, $target, (int) max(1, round($h * $target / $w)), IMG_BICUBIC);
-            if ($n) { if (PHP_VERSION_ID < 80000) imagedestroy($g); $g = $n; $w = imagesx($g); $h = imagesy($g); }
+            if ($n) { if (PHP_VERSION_ID < 80000) TNGBook_Art::free($g); $g = $n; $w = imagesx($g); $h = imagesy($g); }
         }
         $alpha = false;
         if ($mime !== 'image/jpeg') {
@@ -1687,10 +1687,10 @@ class TNGBook_Renderer {
         if ($alpha) { imagesavealpha($g, true); imagepng($g, null, 8); $out = 'image/png'; }
         else {
             $flat = imagecreatetruecolor($w, $h); imagefill($flat, 0, 0, imagecolorallocate($flat, 255, 255, 255)); imagecopy($flat, $g, 0, 0, 0, 0, $w, $h);
-            imagejpeg($flat, null, 80); $out = 'image/jpeg'; if (PHP_VERSION_ID < 80000) imagedestroy($flat);   // sans effet depuis PHP 8.0, obsolète en 8.5
+            imagejpeg($flat, null, 80); $out = 'image/jpeg'; if (PHP_VERSION_ID < 80000) TNGBook_Art::free($flat);   // sans effet depuis PHP 8.0, obsolète en 8.5
         }
         $new = (string) ob_get_clean();
-        if (PHP_VERSION_ID < 80000) imagedestroy($g);
+        if (PHP_VERSION_ID < 80000) TNGBook_Art::free($g);
         if ($new === '' || strlen($new) >= strlen($bin)) return $src;   // pas de gain : on garde l'original
         return ['data:' . $out . ';base64,' . base64_encode($new), $w0, $new, $out];
     }

@@ -180,7 +180,7 @@ class TNGBook_Boxes {
             }
         }
         ob_start(); imagepng($im, null, 6); $bin = ob_get_clean();
-        if (PHP_VERSION_ID < 80000) imagedestroy($im);
+        if (PHP_VERSION_ID < 80000) TNGBook_Art::free($im);
         if (!$bin) return '';
         $cm = min($maxWidthCm, $w / 40); $hcm = $cm * $h / $w;
         if ($hcm > 23) { $cm = 23 * $w / $h; }
