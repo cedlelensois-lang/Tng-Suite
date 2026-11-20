@@ -410,7 +410,18 @@ final class TNGBook {
         foreach ($choices as $v => $l) {
             echo '<option value="' . esc_attr($v) . '"' . selected((string) $current, (string) $v, false) . '>' . esc_html($l) . '</option>';
         }
-        echo '</select>' . ($desc ? '<p class="description">' . wp_kses_post($desc) . '</p>' : '') . '</td></tr>';
+        echo '</select>';
+        if ('cover_art' === $key) echo self::cover_preview($id, (string) $current);
+        echo ($desc ? '<p class="description">' . wp_kses_post($desc) . '</p>' : '') . '</td></tr>';
+    }
+
+    /** Aperçu de la pochette choisie (vignettes fournies, titre d'exemple ; les illustrations dessinées prendront la couleur du livre). */
+    private static function cover_preview($id, $current) {
+        $base = TNGBOOK_URL . 'assets/img/preview/cover-';
+        $cur  = in_array($current, TNGBook_Art::cover_choices(), true) ? $current : 'tree';
+        return '<p style="margin:10px 0 4px"><img id="' . esc_attr($id) . '-prev" src="' . esc_url($base . $cur . '.jpg') . '" alt="" width="200" style="max-width:100%;height:auto;border:1px solid #c3c4c7;box-shadow:0 1px 3px rgba(0,0,0,.15);background:#fff"></p>'
+            . '<p class="description">' . esc_html(tngs_t('Aperçu indicatif (titre d’exemple) : les illustrations dessinées prennent la couleur « en-têtes et liens » du livre.')) . '</p>'
+            . '<script>(function(){var s=document.getElementById(' . wp_json_encode($id) . '),i=document.getElementById(' . wp_json_encode($id . '-prev') . ');if(!s||!i)return;var b=' . wp_json_encode($base) . ';s.addEventListener("change",function(){i.src=b+s.value+".jpg";});})();</script>';
     }
 
     /** Liste déroulante dans une cellule de formulaire (plusieurs réglages regroupés dans une même ligne). */

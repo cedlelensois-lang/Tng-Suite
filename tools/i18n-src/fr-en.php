@@ -1531,4 +1531,5 @@ return array(
 	'Par type :' => 'By type:',
 	'parties' => 'parts',
 	'Analyse partielle : seules les parties ci-dessus ont été relancées. Les autres anomalies de la liste viennent de leur analyse précédente (voir « Parties analysées »).' => 'Partial analysis: only the parts listed above were run again. The other anomalies in the list come from their previous analysis (see “Parts analysed”).',
+	'Aperçu indicatif (titre d’exemple) : les illustrations dessinées prennent la couleur « en-têtes et liens » du livre.' => 'Indicative preview (sample title): the drawn illustrations use the book’s “headings and links” colour.',
 );

@@ -4567,6 +4567,9 @@ msgstr ""
 msgid "Analyse partielle : seules les parties ci-dessus ont été relancées. Les autres anomalies de la liste viennent de leur analyse précédente (voir « Parties analysées »)."
 msgstr ""
 
+msgid "Aperçu indicatif (titre d’exemple) : les illustrations dessinées prennent la couleur « en-têtes et liens » du livre."
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""
