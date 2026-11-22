@@ -276,14 +276,22 @@ var TNGFanLib = (function () {
 
   /** Texte du centre : lignes horizontales dans un disque de rayon R (unités) ; null si rien ne rentre. */
   function centerPlan(all, R, S) {
-    var n, fs, maxChars, W = R * S * 1.7;
+    var n, fs, k, Rp = R * S * 0.94, ok, ls, y, half, chord, mc;
     for (n = all.length; n >= 1; n--) {
-      fs = Math.min(14, R * S * 1.6 / (n * 1.3));
+      fs = Math.min(14, Rp * 1.6 / (n * 1.3));
       if (fs < 6) { continue; }
-      maxChars = Math.floor(W / (fs * 0.55));
-      if (maxChars < 3) { continue; }
-      var fu = fs / S, ls = all.slice(0, n).map(function (s) { return cut(s, maxChars); });
-      return { fs: fu, lines: ls.map(function (t, k) { return { text: t, bold: k === 0, y: (k - (n - 1) / 2) * fu * 1.3 }; }) };
+      ok = true; ls = [];
+      for (k = 0; k < n && ok; k++) {
+        y = Math.abs((k - (n - 1) / 2) * fs * 1.3) + fs * 0.65;     // bord le plus éloigné de la ligne
+        if (y >= Rp) { ok = false; break; }
+        chord = 2 * Math.sqrt(Rp * Rp - y * y) * 0.96;                // largeur du disque à cette hauteur
+        mc = Math.floor(chord / (fs * (k === 0 ? 0.6 : 0.55)));
+        if (mc < 3) { ok = false; break; }
+        ls.push(cut(all[k], mc));
+      }
+      if (!ok) { continue; }
+      var fu = fs / S;
+      return { fs: fu, lines: ls.map(function (t, kk) { return { text: t, bold: kk === 0, y: (kk - (n - 1) / 2) * fu * 1.3 }; }) };
     }
     return null;
   }
@@ -497,7 +505,8 @@ var TNGFanPdf = (function () {
     });
     (scene.edges || []).forEach(function (e) { ops.push(rg(e.fill) + '\n' + sectorOps(e.r0, e.r1, e.a0, e.a1) + '\nf'); });
     // disque central
-    ops.push('1 1 1 rg\n0.58 0.64 0.72 RG\n' + num(Math.max(0.5, 2 * sc)) + ' w\n' + sectorOps(0, scene.center.R, 0, 360) + '\nB');
+    var cp0 = L.pt(scene.center.R, 0);
+    ops.push('1 1 1 rg\n0.58 0.64 0.72 RG\n' + num(Math.max(0.5, 2 * sc)) + ' w\n' + num(X(cp0[0])) + ' ' + num(Y(cp0[1])) + ' m\n' + arcOps(scene.center.R, 0, 360) + '\nh\nB');
     // textes
     scene.nodes.forEach(function (n) {
       var plan = L.labelPlan(n.lines(opts.detail), n.r0, n.r1, n.a0, n.a1, sc, opts.minFs);

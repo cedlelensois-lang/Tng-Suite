@@ -86,6 +86,7 @@ Only the plugin's own settings, caches, scheduled task and the tables it created
 
 = 3.0.1 =
 * Fan chart export (PDF/PNG): the downloaded file now shows what the on-screen preview shows when zoomed. Names and dates were missing in the outer generations because the text was dropped below 6 pt; it is now scaled down to fit (down to 0.4 pt, readable by zooming in the PDF). New "Maximum size" sheet; "Fit to the text" no longer falls back to A0 when everything cannot fit, it uses the largest possible sheet; the dialog defaults to "Complete" content and reports how many boxes are readable at 4 pt or more.
+* Fan chart: the text of the centre disc no longer overflows the circle (each line is fitted to the width of the disc at its height), and the PDF no longer draws a stray vertical line from the rim to the centre.
 
 = 3.0.0 =
 * Première version stable : toutes les fonctions (livre, cohérence des données, éventail, implexe, fiche, statistiques, cartes…) sont figées ; les correctifs suivants seront des 3.0.x.
