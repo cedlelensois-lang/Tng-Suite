@@ -209,4 +209,10 @@ return array (
   202 => 'Résolution réduite à',
   203 => 'limite de taille d\'image du navigateur',
   204 => 'Échec de l\'export PNG.',
+  205 => 'Taille maximale (très grande feuille)',
+  206 => 'Comme dans les réglages du graphique',
+  207 => 'cases avec le texte complet lisible (4 pt ou plus)',
+  208 => 'les autres cases ont un texte très petit : il est complet, à lire en zoomant (PDF).',
+  209 => 'les autres cases ont un texte très petit ou tronqué : choisissez une feuille plus grande.',
+  210 => 'un PNG est limité en pixels : pour tout le détail, préférez le PDF (zoomable).',
 );

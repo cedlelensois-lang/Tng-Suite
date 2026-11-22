@@ -212,4 +212,10 @@ return array(
 	'Résolution réduite à' => 'Resolution reduced to',
 	'limite de taille d\'image du navigateur' => 'browser image size limit',
 	'Échec de l\'export PNG.' => 'PNG export failed.',
+	'Taille maximale (très grande feuille)' => 'Maximum size (very large sheet)',
+	'Comme dans les réglages du graphique' => 'As in the chart settings',
+	'cases avec le texte complet lisible (4 pt ou plus)' => 'boxes with their full text, readable (4 pt or more)',
+	'les autres cases ont un texte très petit : il est complet, à lire en zoomant (PDF).' => 'the other boxes have very small text: it is complete, to be read by zooming in (PDF).',
+	'les autres cases ont un texte très petit ou tronqué : choisissez une feuille plus grande.' => 'the other boxes have very small or truncated text: choose a larger sheet.',
+	'un PNG est limité en pixels : pour tout le détail, préférez le PDF (zoomable).' => 'a PNG is limited in pixels: for full detail, prefer the PDF (zoomable).',
 );

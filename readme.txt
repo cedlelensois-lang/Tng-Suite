@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.0.0
+Stable tag: 3.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the tables it created in the WordPress database (`tngi_inbreeding` for the implex module; `tngs_coh_res` and `tngs_coh_key` for the data consistency check). Your TNG data is never touched.
 
 == Changelog ==
+
+= 3.0.1 =
+* Fan chart export (PDF/PNG): the downloaded file now shows what the on-screen preview shows when zoomed. Names and dates were missing in the outer generations because the text was dropped below 6 pt; it is now scaled down to fit (down to 0.4 pt, readable by zooming in the PDF). New "Maximum size" sheet; "Fit to the text" no longer falls back to A0 when everything cannot fit, it uses the largest possible sheet; the dialog defaults to "Complete" content and reports how many boxes are readable at 4 pt or more.
 
 = 3.0.0 =
 * Première version stable : toutes les fonctions (livre, cohérence des données, éventail, implexe, fiche, statistiques, cartes…) sont figées ; les correctifs suivants seront des 3.0.x.

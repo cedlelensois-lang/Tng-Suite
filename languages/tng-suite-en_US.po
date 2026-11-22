@@ -5393,3 +5393,27 @@ msgctxt "js"
 msgid "Échec de l'export PNG."
 msgstr "PNG export failed."
 
+msgctxt "js"
+msgid "Taille maximale (très grande feuille)"
+msgstr "Maximum size (very large sheet)"
+
+msgctxt "js"
+msgid "Comme dans les réglages du graphique"
+msgstr "As in the chart settings"
+
+msgctxt "js"
+msgid "cases avec le texte complet lisible (4 pt ou plus)"
+msgstr "boxes with their full text, readable (4 pt or more)"
+
+msgctxt "js"
+msgid "les autres cases ont un texte très petit : il est complet, à lire en zoomant (PDF)."
+msgstr "the other boxes have very small text: it is complete, to be read by zooming in (PDF)."
+
+msgctxt "js"
+msgid "les autres cases ont un texte très petit ou tronqué : choisissez une feuille plus grande."
+msgstr "the other boxes have very small or truncated text: choose a larger sheet."
+
+msgctxt "js"
+msgid "un PNG est limité en pixels : pour tout le détail, préférez le PDF (zoomable)."
+msgstr "a PNG is limited in pixels: for full detail, prefer the PDF (zoomable)."
+

@@ -256,8 +256,8 @@ var TNGFanLib = (function () {
    * Plan de pose du texte d'un secteur (r0, r1 en unités ; S = pixels ou points par unité).
    * Résultat en unités : tangent → lignes posées sur des arcs ; radial → lignes dans un repère tourné.
    */
-  function labelPlan(all, r0, r1, a0, a1, S) {
-    var fit = fitText(all, r0 * S, r1 * S, a0, a1);
+  function labelPlan(all, r0, r1, a0, a1, S, minFs) {
+    var fit = fitText(all, r0 * S, r1 * S, a0, a1, minFs);
     if (!fit) { return null; }
     var fs = fit.fs / S, lh = fs * 1.2, cnt = fit.lines.length, k;
     var mid = normAngle((a0 + a1) / 2), rm = (r0 + r1) / 2, out;
@@ -381,11 +381,11 @@ var TNGFanPdf = (function () {
   }
 
   /** Cases dont le texte (au niveau de détail demandé) tient EN ENTIER sur cette feuille : { full, total }. */
-  function coverage(scene, pg, stopAtFail, detail) {
+  function coverage(scene, pg, stopAtFail, detail, minFs) {
     var full = 0, total = scene.nodes.length, i, n, lines, plan, ok, k;
     for (i = 0; i < total; i++) {
       n = scene.nodes[i]; lines = n.lines(detail || 0);
-      plan = L.labelPlan(lines, n.r0, n.r1, n.a0, n.a1, pg.sc);
+      plan = L.labelPlan(lines, n.r0, n.r1, n.a0, n.a1, pg.sc, minFs);
       ok = !!plan && plan.lines.length === lines.length;
       for (k = 0; ok && k < lines.length; k++) { if (plan.lines[k].text !== lines[k]) { ok = false; } }
       if (ok) { full++; } else if (stopAtFail) { return { full: full, total: total }; }
@@ -393,21 +393,29 @@ var TNGFanPdf = (function () {
     return { full: full, total: total };
   }
 
-  /** Plus petite feuille (A4…A0, puis format sur mesure jusqu'à 5 m) où tout le texte tient en entier. */
-  function fitToText(scene, orient, detail) {
-    var keys = ['A4', 'A3', 'A2', 'A1', 'A0'], i, pg, cov, last = null;
+  /** Plus grande feuille possible (limite des lecteurs PDF : 200 pouces = 14 400 points de côté). */
+  var MAXPT = 14400;
+  function maxPage(scene, orient) {
+    var vb = scene.vb, sc = Math.min((MAXPT - 120) / (vb[2] * 1.08), (MAXPT - 260) / (vb[3] * 1.08));
+    return pageFor(scene, { w: vb[2] * sc * 1.08 + 120, h: vb[3] * sc * 1.08 + 260 }, orient);
+  }
+
+  /**
+   * Plus petite feuille (A4…A0, puis format sur mesure jusqu'à la limite des lecteurs) où tout le texte tient en entier.
+   * Si même la feuille maximale ne suffit pas, c'est la feuille maximale qui est renvoyée (exact = false).
+   */
+  function fitToText(scene, orient, detail, minFs) {
+    var keys = ['A4', 'A3', 'A2', 'A1', 'A0'], i, pg, big, n = scene.nodes.length;
     for (i = 0; i < keys.length; i++) {
-      pg = pageFor(scene, keys[i], orient); last = pg;
-      if (coverage(scene, pg, true, detail).full === scene.nodes.length) { return { page: pg, exact: true }; }
+      pg = pageFor(scene, keys[i], orient);
+      if (coverage(scene, pg, true, detail, minFs).full === n) { return { page: pg, exact: true }; }
     }
-    var vb = scene.vb, land = pg.pw > pg.ph, sc = pg.sc * 1.12, MAX = 14400, big;
-    for (i = 0; i < 40; i++, sc *= 1.12) {
-      var w = vb[2] * sc * 1.08 + 120, h = vb[3] * sc * 1.08 + 260;
-      if (w > MAX || h > MAX) { break; }
-      big = pageFor(scene, { w: w, h: h }, orient);
-      if (coverage(scene, big, true, detail).full === scene.nodes.length) { return { page: big, exact: true }; }
+    var top = maxPage(scene, orient), sc = pg.sc * 1.12;
+    for (i = 0; i < 60 && sc < top.sc; i++, sc *= 1.12) {
+      big = pageFor(scene, { w: scene.vb[2] * sc * 1.08 + 120, h: scene.vb[3] * sc * 1.08 + 260 }, orient);
+      if (coverage(scene, big, true, detail, minFs).full === n) { return { page: big, exact: true }; }
     }
-    return { page: last, exact: false };
+    return { page: top, exact: coverage(scene, top, true, detail, minFs).full === n };
   }
 
   /**
@@ -492,7 +500,7 @@ var TNGFanPdf = (function () {
     ops.push('1 1 1 rg\n0.58 0.64 0.72 RG\n' + num(Math.max(0.5, 2 * sc)) + ' w\n' + sectorOps(0, scene.center.R, 0, 360) + '\nB');
     // textes
     scene.nodes.forEach(function (n) {
-      var plan = L.labelPlan(n.lines(opts.detail), n.r0, n.r1, n.a0, n.a1, sc);
+      var plan = L.labelPlan(n.lines(opts.detail), n.r0, n.r1, n.a0, n.a1, sc, opts.minFs);
       if (plan) { drawPlan(plan, n.txt); }
     });
     var cl = scene.center.lines(opts.detail), cp = L.centerPlan(cl, scene.center.R, sc);
@@ -614,7 +622,7 @@ var TNGFanPdf = (function () {
       ctx.beginPath(); ctx.arc(ox, oy, scene.center.R * sc, 0, 2 * Math.PI);
       ctx.fillStyle = '#ffffff'; ctx.fill(); ctx.strokeStyle = 'rgb(148,163,184)'; ctx.lineWidth = Math.max(0.5, 2 * sc); ctx.stroke();
       scene.nodes.forEach(function (n) {
-        var plan = L.labelPlan(n.lines(opts.detail), n.r0, n.r1, n.a0, n.a1, sc);
+        var plan = L.labelPlan(n.lines(opts.detail), n.r0, n.r1, n.a0, n.a1, sc, opts.minFs);
         if (plan) { drawPlan(plan, n.txt); }
       });
       var cl = scene.center.lines(opts.detail), cp = L.centerPlan(cl, scene.center.R, sc);
@@ -654,7 +662,7 @@ var TNGFanPdf = (function () {
     return Promise.resolve({ bytes: raw, flate: false });
   }
 
-  return { build: build, png: png, pngSize: pngSize, PAPERS: PAPERS, autoPaper: autoPaper, pdfString: pdfString, pageFor: pageFor, coverage: coverage, fitToText: fitToText };
+  return { build: build, png: png, pngSize: pngSize, PAPERS: PAPERS, autoPaper: autoPaper, pdfString: pdfString, pageFor: pageFor, coverage: coverage, fitToText: fitToText, maxPage: maxPage };
 })();
 
 /* ===================================================================== interface */
@@ -1164,15 +1172,15 @@ var TNGFanPdf = (function () {
     var self = this;
     if (!this.scene || !this.data) { return; }
     if (this.dlg) { this.dlg.remove(); this.dlg = null; }
-    var scene = this.pdfScene(), state = { pg: null }, timer = null;
+    var scene = this.pdfScene(), state = { pg: null }, timer = null, MINFS = 0.4, READ_FS = 4;
     var paper = el('select', {}), orient = el('select', {}), content = el('select', {}), fmt = el('select', {}), res = el('select', {});
     var transp = el('input', { type: 'checkbox' });
     [['pdf', 'PDF'], ['png', 'PNG']].forEach(function (o) { fmt.appendChild(el('option', { value: o[0], text: o[1] })); });
     [['150', '150 dpi'], ['200', '200 dpi (' + tngsT('recommandé') + ')'], ['300', '300 dpi']].forEach(function (o) { res.appendChild(el('option', { value: o[0], text: o[1] })); });
     res.value = '200';
-    [['text', tngsT('Adapté au texte (tout le texte en entier)')], ['auto', tngsT('Automatique')], ['A4', 'A4'], ['A3', 'A3'], ['A2', 'A2'], ['A1', 'A1'], ['A0', 'A0']].forEach(function (o) { paper.appendChild(el('option', { value: o[0], text: o[1] })); });
+    [['text', tngsT('Adapté au texte (tout le texte en entier)')], ['max', tngsT('Taille maximale (très grande feuille)')], ['auto', tngsT('Automatique')], ['A4', 'A4'], ['A3', 'A3'], ['A2', 'A2'], ['A1', 'A1'], ['A0', 'A0']].forEach(function (o) { paper.appendChild(el('option', { value: o[0], text: o[1] })); });
     [['auto', tngsT('Automatique')], ['portrait', tngsT('Portrait')], ['landscape', tngsT('Paysage')]].forEach(function (o) { orient.appendChild(el('option', { value: o[0], text: o[1] })); });
-    [['0', tngsT('Comme à l\'écran')], ['3', tngsT('Complet : dates et lieux complets')]].forEach(function (o) { content.appendChild(el('option', { value: o[0], text: o[1] })); });
+    [['3', tngsT('Complet : dates et lieux complets')], ['0', tngsT('Comme dans les réglages du graphique')]].forEach(function (o) { content.appendChild(el('option', { value: o[0], text: o[1] })); });
     var info = el('div', { 'class': 'tngfan-dlg-info' });
     var ok = el('button', { type: 'button', 'class': 'tngfan-dlg-ok', text: '⤓ ' + tngsT('Exporter en PDF') });
     var resRow = el('label', { 'class': 'tngfan-f' }, [el('span', { text: tngsT('Résolution') }), res]);
@@ -1187,18 +1195,25 @@ var TNGFanPdf = (function () {
       ok.disabled = true;
       info.textContent = tngsT('Calcul…');
       timer = setTimeout(function () {
-        var o = orient.value, det = +content.value, pg, exact = true, cov;
-        if (paper.value === 'text') { var r = TNGFanPdf.fitToText(scene, o, det); pg = r.page; exact = r.exact; }
+        var o = orient.value, det = +content.value, pg, exact = true, covL, covA;
+        if (paper.value === 'text') { var r = TNGFanPdf.fitToText(scene, o, det, READ_FS); pg = r.page; exact = r.exact; }
+        else if (paper.value === 'max') { pg = TNGFanPdf.maxPage(scene, o); }
         else { pg = TNGFanPdf.pageFor(scene, paper.value === 'auto' ? null : paper.value, o); }
-        cov = TNGFanPdf.coverage(scene, pg, false, det);
-        state.pg = pg; state.detail = det;
+        covL = TNGFanPdf.coverage(scene, pg, false, det, READ_FS);     // texte complet et lisible (≥ 4 pt)
+        covA = TNGFanPdf.coverage(scene, pg, false, det, MINFS);       // texte complet, même minuscule
+        state.pg = pg; state.detail = det; state.minFs = MINFS;
         var txt = tngsT('Feuille') + ' : ' + pg.label.replace(' portrait', ' ' + tngsT('portrait')).replace(' landscape', ' ' + tngsT('paysage')) + ' – ' +
-          cov.full + ' / ' + cov.total + ' ' + tngsT('cases avec le texte complet');
-        if (cov.full < cov.total) { txt += (paper.value === 'text' && !exact) ? ' – ' + tngsT('même au format maximal, certains textes restent tronqués.') : ' – ' + tngsT('les autres cases s\'affichent sans texte ou tronquées : choisissez une feuille plus grande.'); }
+          covL.full + ' / ' + covL.total + ' ' + tngsT('cases avec le texte complet lisible (4 pt ou plus)');
+        if (covL.full < covL.total) {
+          if (covA.full < covA.total) { txt += ' – ' + tngsT('même au format maximal, certains textes restent tronqués.'); }
+          else if (paper.value === 'text' || paper.value === 'max') { txt += ' – ' + tngsT('les autres cases ont un texte très petit : il est complet, à lire en zoomant (PDF).'); }
+          else { txt += ' – ' + tngsT('les autres cases ont un texte très petit ou tronqué : choisissez une feuille plus grande.'); }
+        }
         if (isPng()) {
           var sz = TNGFanPdf.pngSize(pg, +res.value);
           txt += ' – PNG ' + sz.w + ' × ' + sz.h + ' px (' + sz.dpi + ' dpi)';
           if (sz.reduced) { txt += ' – ' + tngsT('résolution réduite : limite de taille d\'image du navigateur.'); }
+          if (covL.full < covL.total) { txt += ' – ' + tngsT('un PNG est limité en pixels : pour tout le détail, préférez le PDF (zoomable).'); }
         }
         info.textContent = txt;
         ok.disabled = false;
@@ -1215,7 +1230,7 @@ var TNGFanPdf = (function () {
     paper.addEventListener('change', update);
     orient.addEventListener('change', update);
     content.addEventListener('change', update);
-    ok.addEventListener('click', function () { if (state.pg) { self.exportPdf(state.pg, state.detail, isPng() ? { dpi: +res.value, transparent: transp.checked } : null); close(); } });
+    ok.addEventListener('click', function () { if (state.pg) { self.exportPdf(state.pg, state.detail, state.minFs, isPng() ? { dpi: +res.value, transparent: transp.checked } : null); close(); } });
 
     this.dlg = el('div', { 'class': 'tngfan-dlg', role: 'dialog' }, [
       el('strong', { text: tngsT('Exporter') }),
@@ -1231,7 +1246,7 @@ var TNGFanPdf = (function () {
     syncFmt();
   };
 
-  Fan.prototype.exportPdf = function (page, detail, png) {
+  Fan.prototype.exportPdf = function (page, detail, minFs, png) {
     var self = this, st = this.st, d = this.data;
     if (!this.scene || !d) { return; }
     var P = d.persons, rp = P[d.root] || { h: 1 };
@@ -1244,7 +1259,8 @@ var TNGFanPdf = (function () {
       page: page || null,
       title: modeName + ' : ' + name + info,
       footer: tngsT('Généré avec TNG Suite') + ' – ' + new Date().toLocaleDateString(),
-      detail: detail || 0
+      detail: detail || 0,
+      minFs: minFs || 0.4
     };
     var wrap = this.pdfScene();
     if (this.pdfBtn) { this.pdfBtn.disabled = true; }
