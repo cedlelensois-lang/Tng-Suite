@@ -29,6 +29,7 @@ Collez le shortcode `[tng_flash]` dans une page ou un article.
 | search | 1 / 0 | 1 | Recherche et filtres. |
 | export | 1 / 0 | réglage | Boutons d’export. |
 | limit | 10 à 500 | 50 | Lignes affichées par page (bouton « Afficher plus »). |
+| rgpd | 0 | réglage du module | `rgpd="0"` affiche aussi les personnes vivantes ou privées sur cette page (et dans ses exports). Accepté seulement si l’auteur de la page peut modifier les contenus des autres (éditeur ou plus) et si le module n’est pas réglé sur « Toujours masquer ». |
 | title | texte | vide | Titre au-dessus de la liste. |
 
 ## Ce que voit le visiteur
@@ -39,4 +40,4 @@ Collez le shortcode `[tng_flash]` dans une page ou un article.
 
 ## Confidentialité
 
-Les personnes vivantes ou privées sont exclues ou incluses selon **TNG Suite > Général > Modules** (réglage « Vivants / privés » du module Liste flash).
+Les personnes vivantes ou privées sont exclues ou incluses selon **TNG Suite > Général > Modules** (réglage « Vivants / privés » du module Liste flash). L’**aperçu de l’administration** (réservé aux administrateurs) les inclut toujours, sauf si le module est réglé sur « Toujours masquer ». Pour les montrer aussi sur une page publique précise, ajoutez `rgpd="0"` au shortcode : `[tng_flash rgpd="0"]` (à n’utiliser que pour une page privée ou protégée par mot de passe : les visiteurs verraient des personnes vivantes).

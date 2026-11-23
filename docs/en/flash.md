@@ -29,6 +29,7 @@ Paste the `[tng_flash]` shortcode in a page or a post.
 | search | 1 / 0 | 1 | Search and filters. |
 | export | 1 / 0 | setting | Export buttons. |
 | limit | 10 to 500 | 50 | Rows shown per page (“Show more” button). |
+| rgpd | 0 | module setting | `rgpd="0"` also shows living or private people on this page (and in its exports). Accepted only if the page author can edit other people’s content (editor or above) and the module is not set to “Always hide”. |
 | title | text | empty | Title above the list. |
 
 ## What the visitor sees
@@ -39,4 +40,4 @@ Paste the `[tng_flash]` shortcode in a page or a post.
 
 ## Privacy
 
-Living or private people are excluded or included according to **TNG Suite > General > Modules** (the “Living / private” setting of the Flash list module).
+Living or private people are excluded or included according to **TNG Suite > General > Modules** (the “Living / private” setting of the Flash list module). The **administration preview** (administrators only) always includes them, unless the module is set to “Always hide”. To show them on one specific public page too, add `rgpd="0"` to the shortcode: `[tng_flash rgpd="0"]` (only for a private or password-protected page: visitors would see living people).

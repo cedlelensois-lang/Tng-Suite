@@ -72,14 +72,20 @@ class TNGFlash_Admin {
 		echo '<h2>' . esc_html( tngs_t( 'Utilisation' ) ) . '</h2>';
 		echo '<p><code>[tng_flash]</code> ' . esc_html( tngs_t( 'dans une page ou un article. Attributs facultatifs :' ) ) . '</p><ul class="ul-disc">'
 			. '<li><code>level="commune|departement|region|pays"</code>, <code>min="2"</code>, <code>variants="1|0"</code>, <code>tree="monarbre"</code></li>'
-			. '<li><code>search="1|0"</code> (' . esc_html( tngs_t( 'recherche et filtres' ) ) . '), <code>export="1|0"</code>, <code>limit="50"</code> (' . esc_html( tngs_t( 'lignes affichées par page' ) ) . '), <code>title="…"</code></li></ul>';
+			. '<li><code>search="1|0"</code> (' . esc_html( tngs_t( 'recherche et filtres' ) ) . '), <code>rgpd="0"</code> (' . esc_html( tngs_t( 'affiche aussi les personnes vivantes ou privées sur cette page ; sans cet attribut, le réglage du module s’applique' ) ) . '), <code>export="1|0"</code>, <code>limit="50"</code> (' . esc_html( tngs_t( 'lignes affichées par page' ) ) . '), <code>title="…"</code></li></ul>';
 
 		echo '<h2>' . esc_html( tngs_t( 'Aperçu' ) ) . '</h2>';
-		$p = TNGFlash_Data::params();
+		$show = ! TNGFlash_Data::hide_for( true );
+		$p    = TNGFlash_Data::params( array( 'hide' => TNGFlash_Data::hide_for( true ) ) );
+		echo '<p class="description">' . esc_html( tngs_t( $show ? 'Aperçu réservé aux administrateurs : les personnes vivantes ou privées sont incluses. Les visiteurs voient la liste selon le réglage « Vivants / privés » du module (ou l’attribut rgpd du shortcode).' : 'Le module est réglé sur « Toujours masquer » (TNG Suite > Général) : les personnes vivantes ou privées sont exclues, même ici.' ) ) . '</p>';
 		try {
 			$rows = TNGFlash_Data::get( $p );
 			echo '<p>' . esc_html( count( $rows ) ) . ' ' . esc_html( tngs_t( 'patronymes' ) ) . ' – ';
 			$q = array( 'action' => 'tngflash_export', 'level' => $p['level'], 'min' => $p['min'], 'variants' => $p['variants'], 'tree' => $p['tree'] );
+			if ( $show ) {
+				$q['lv'] = 'show';
+				$q['ls'] = TNGFlash_Data::living_sig();
+			}
 			echo '<a href="' . esc_url( add_query_arg( array_merge( $q, array( 'format' => 'csv' ) ), admin_url( 'admin-post.php' ) ) ) . '">CSV</a> · '
 				. '<a href="' . esc_url( add_query_arg( array_merge( $q, array( 'format' => 'txt' ) ), admin_url( 'admin-post.php' ) ) ) . '">TXT</a> · '
 				. '<a href="' . esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=tngflash_flush' ), 'tngflash_flush' ) ) . '">' . esc_html( tngs_t( 'Recalculer' ) ) . '</a></p>';

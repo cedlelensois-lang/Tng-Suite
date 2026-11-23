@@ -251,13 +251,29 @@ class TNGFlash_Data {
 		return $rows;
 	}
 
+	/** Signature qui autorise l'export d'une page dont l'auteur a choisi d'afficher les vivants (rgpd="0"). */
+	public static function living_sig() {
+		return wp_hash( 'tngflash-living-show' );
+	}
+
+	/**
+	 * Masquer les vivants et les privés ? « hide » du module (TNG Suite > Général) l'emporte toujours ;
+	 * $show = true les affiche (aperçu d'administration, ou shortcode rgpd="0" validé) ; sinon réglage du module.
+	 */
+	public static function hide_for( $show = false ) {
+		if ( 'hide' === tngs_privacy_mode( 'flash' ) ) {
+			return 1;
+		}
+		return $show ? 0 : ( tngs_hide_living( 'flash' ) ? 1 : 0 );
+	}
+
 	/** Paramètres de calcul à partir des réglages et des attributs (déjà nettoyés). */
 	public static function params( array $a = array() ) {
 		$o   = self::options();
 		$in  = array_merge( $o, array_intersect_key( $a, $o ) );
 		$p   = self::clean( $in );
 		$p['tree'] = isset( $a['tree'] ) && '' !== $a['tree'] ? preg_replace( '/[^A-Za-z0-9_\-]/', '', (string) $a['tree'] ) : tngs_gedcom();
-		$p['hide'] = tngs_hide_living( 'flash' ) ? 1 : 0;
+		$p['hide'] = isset( $a['hide'] ) ? (int) $a['hide'] : self::hide_for( false );
 		return $p;
 	}
 

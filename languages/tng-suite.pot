@@ -4732,6 +4732,15 @@ msgstr ""
 msgid "recherche et filtres"
 msgstr ""
 
+msgid "Aperçu réservé aux administrateurs : les personnes vivantes ou privées sont incluses. Les visiteurs voient la liste selon le réglage « Vivants / privés » du module (ou l’attribut rgpd du shortcode)."
+msgstr ""
+
+msgid "Le module est réglé sur « Toujours masquer » (TNG Suite > Général) : les personnes vivantes ou privées sont exclues, même ici."
+msgstr ""
+
+msgid "affiche aussi les personnes vivantes ou privées sur cette page ; sans cet attribut, le réglage du module s’applique"
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""

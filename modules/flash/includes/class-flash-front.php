@@ -29,6 +29,7 @@ class TNGFlash_Front {
 				'min'      => $o['min'],
 				'variants' => $o['variants'],
 				'tree'     => '',
+				'rgpd'     => '',
 				'search'   => '1',
 				'export'   => $o['export'],
 				'limit'    => '50',
@@ -45,16 +46,31 @@ class TNGFlash_Front {
 		$in['export']   = $flag( $in['export'] );
 		$in['limit']    = max( 10, min( 500, (int) $in['limit'] ) );
 		$in['title']    = sanitize_text_field( (string) $in['title'] );
+		$in['rgpd']     = in_array( strtolower( trim( (string) $in['rgpd'] ) ), array( '0', 'no', 'non', 'false', 'off' ), true ) ? '0' : '';
 		return $in;
 	}
 
+	/**
+	 * rgpd="0" : afficher les vivants et les privés sur cette page. Accepté seulement si l'auteur de la page peut publier
+	 * pour les autres (éditeur et plus) et si le module n'est pas réglé sur « toujours masquer ». Retourne true si accepté.
+	 */
+	private static function show_living( array $a ) {
+		if ( '0' !== $a['rgpd'] || 'hide' === tngs_privacy_mode( 'flash' ) ) {
+			return false;
+		}
+		$post   = get_post();
+		$author = $post ? (int) $post->post_author : 0;
+		return $author ? user_can( $author, 'edit_others_posts' ) : current_user_can( 'edit_others_posts' );
+	}
+
 	/** Paramètres de calcul d'après les attributs. */
-	public static function calc( array $a ) {
+	public static function calc( array $a, $show = false ) {
 		return TNGFlash_Data::params( array(
 			'level'    => $a['level'],
 			'min'      => $a['min'],
 			'variants' => $a['variants'],
 			'tree'     => $a['tree'],
+			'hide'     => TNGFlash_Data::hide_for( $show ),
 		) );
 	}
 
@@ -119,9 +135,10 @@ class TNGFlash_Front {
 	}
 
 	public static function shortcode( $atts ) {
-		$a = self::atts( $atts );
+		$a    = self::atts( $atts );
+		$show = self::show_living( $a );
 		try {
-			$rows = TNGFlash_Data::get( self::calc( $a ) );
+			$rows = TNGFlash_Data::get( self::calc( $a, $show ) );
 		} catch ( Throwable $e ) {
 			return current_user_can( 'manage_options' ) ? '<p class="tngflash-error">' . esc_html( tngs_t( 'Liste flash indisponible :' ) . ' ' . $e->getMessage() ) . '</p>' : '';
 		}
@@ -156,6 +173,10 @@ class TNGFlash_Front {
 				'variants' => (int) $a['variants'],
 				'tree'     => $a['tree'],
 			);
+			if ( $show ) {
+				$q['lv'] = 'show';
+				$q['ls'] = TNGFlash_Data::living_sig();
+			}
 			$o .= '<p class="tngflash-export">' . esc_html( tngs_t( 'Exporter :' ) )
 				. ' <a href="' . esc_url( add_query_arg( array_merge( $q, array( 'format' => 'csv' ) ), admin_url( 'admin-post.php' ) ) ) . '">CSV</a> · '
 				. '<a href="' . esc_url( add_query_arg( array_merge( $q, array( 'format' => 'txt' ) ), admin_url( 'admin-post.php' ) ) ) . '">TXT</a> · '
@@ -195,8 +216,10 @@ class TNGFlash_Front {
 		if ( ! $opt['export'] && ! current_user_can( 'manage_options' ) ) {
 			wp_die( esc_html( tngs_t( 'Export désactivé.' ) ), '', array( 'response' => 403 ) );
 		}
+		$ls   = isset( $_GET['ls'] ) ? (string) wp_unslash( $_GET['ls'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$show = isset( $_GET['lv'] ) && 'show' === $_GET['lv'] && hash_equals( TNGFlash_Data::living_sig(), $ls ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		try {
-			$rows = TNGFlash_Data::get( self::calc( $a ) );
+			$rows = TNGFlash_Data::get( self::calc( $a, $show ) );
 		} catch ( Throwable $e ) {
 			wp_die( esc_html( tngs_t( 'Liste flash indisponible.' ) ), '', array( 'response' => 503 ) );
 		}
