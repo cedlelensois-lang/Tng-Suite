@@ -266,8 +266,8 @@ function tngs_modules_ui() {
 function tngs_families() {
     return array(
         'trees'   => array( 'Arbres & visualisations', array( 'tree', 'link', 'timeline', 'fan' ) ),
-        'analyse' => array( 'Stats & analyses', array( 'stats', 'heatmap', 'implexe', 'flash', 'coherence' ) ),
-        'docs'    => array( 'Documents', array( 'book', 'fiche' ) ),
+        'analyse' => array( 'Stats & analyses', array( 'stats', 'heatmap', 'implexe', 'coherence' ) ),
+        'docs'    => array( 'Documents', array( 'book', 'fiche', 'flash' ) ),
         'media'   => array( 'Médias & widgets', array( 'gallery', 'extra', 'random' ) ),
     );
 }

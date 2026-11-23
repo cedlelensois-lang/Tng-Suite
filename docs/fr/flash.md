@@ -4,7 +4,7 @@ Une **liste flash** est le tableau des patronymes que vous étudiez, avec pour c
 
 ## Dans l’administration
 
-Menu **TNG Suite > Stats & analyses**, section **Liste flash**.
+Menu **TNG Suite > Documents**, section **Liste flash**.
 
 | Réglage | Rôle |
 |---|---|

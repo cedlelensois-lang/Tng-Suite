@@ -4,7 +4,7 @@ A **flash list** is the table of the surnames you research, giving for each one 
 
 ## In the administration
 
-Menu **TNG Suite > Stats & analyses**, section **Flash list**.
+Menu **TNG Suite > Documents**, section **Flash list**.
 
 | Setting | Role |
 |---|---|

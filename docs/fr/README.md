@@ -10,8 +10,8 @@ Le menu **TNG Suite** compte cinq entrées : **Général** et quatre familles. C
 |---|---|
 | Général | connexion, réglages communs, modules, maintenance |
 | Arbres & visualisations | Arbres & descendance, Bouton vers la fiche, Frise chronologique, Éventail / roue de parenté |
-| Stats & analyses | Statistiques & graphiques, Heatmap des lieux, Implexe & consanguinité, Liste flash des patronymes, Cohérence des données |
-| Documents | Livre généalogique, Fiche & listes de documents |
+| Stats & analyses | Statistiques & graphiques, Heatmap des lieux, Implexe & consanguinité, Cohérence des données |
+| Documents | Livre généalogique, Fiche & listes de documents, Liste flash des patronymes |
 | Médias & widgets | Galerie de médias, Nuage de noms & anniversaires, Individu au hasard |
 
 « Bouton vers la fiche » est activé avec « Arbres & descendance », et « Individu au hasard » avec « Nuage de noms & anniversaires » (une seule case d’activation et un seul réglage « Vivants / privés » pour chaque couple) ; leurs shortcodes sont inchangés.
@@ -26,11 +26,11 @@ Le menu **TNG Suite** compte cinq entrées : **Général** et quatre familles. C
   - [Statistiques & graphiques](stats.md)
   - [Heatmap des lieux](heatmap.md)
   - [Implexe & consanguinité](implexe.md)
-  - [Liste flash des patronymes](flash.md)
   - [Cohérence des données](coherence.md) (administrateurs)
 - **Documents**
   - [Livre généalogique](book.md)
   - [Fiche & listes de documents](fiche.md)
+  - [Liste flash des patronymes](flash.md)
 - **Médias & widgets**
   - [Galerie de médias](gallery.md)
   - [Nuage de noms & anniversaires](extra.md)

@@ -55,8 +55,8 @@ INSTALLATION / MIGRATION
 LE MENU : CINQ ENTRÉES (depuis la 2.8.0)
  Le menu « TNG Suite » compte Général et quatre familles ; chaque ancienne sous-page est maintenant une section (barre en haut de la page) :
   - Arbres & visualisations : Arbres & descendance, Bouton vers la fiche, Frise chronologique, Éventail.
-  - Stats & analyses : Statistiques & graphiques, Heatmap des lieux, Implexe & consanguinité, Liste flash des patronymes (shortcode [tng_flash] : patronymes, nombre de personnes, dates min/max et lieux ; recherche, filtres, export CSV/TXT), Cohérence des données.
-  - Documents : Livre généalogique, Fiche & listes de documents.
+  - Stats & analyses : Statistiques & graphiques, Heatmap des lieux, Implexe & consanguinité, Cohérence des données.
+  - Documents : Livre généalogique, Fiche & listes de documents, Liste flash des patronymes (shortcode [tng_flash] : patronymes, nombre de personnes, dates min/max et lieux ; recherche, filtres, export CSV/TXT).
   - Médias & widgets : Galerie de médias, Nuage de noms & anniversaires, Individu au hasard.
  Quand ce guide indique « TNG Suite > Stats & analyses > Statistiques & graphiques » ou « TNG Suite > Documents > Livre généalogique », ouvrez l'onglet de la famille, puis la section du même nom.
  « Bouton vers la fiche » est activé avec « Arbres & descendance », et « Individu au hasard » avec « Nuage de noms & anniversaires » : une case

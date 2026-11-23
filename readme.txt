@@ -85,6 +85,7 @@ Only the plugin's own settings, caches, scheduled task and the tables it created
 == Changelog ==
 
 = 3.1.1 =
+* The "Flash list" module moves to the "Documents" tab (it is a document to export and share).
 * Flash list: the place and period filters now apply to the same place (a surname is no longer kept because it has the place in another period); places that do not match are dimmed; the place filter searches all the places of a surname, not only the ones displayed.
 
 = 3.1.0 =

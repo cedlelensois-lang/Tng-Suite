@@ -1,6 +1,6 @@
 <?php
 /**
- * TNG Suite – module « Liste flash » (Analyses).
+ * TNG Suite – module « Liste flash » (Documents).
  * Liste des patronymes de l'arbre TNG avec, pour chacun : le nombre de personnes, la date minimale et la date maximale
  * (naissances, mariages, décès) et les lieux avec leur intervalle de dates. Les variantes d'orthographe sont regroupées
  * mais affichées. Page publique : shortcode [tng_flash] (recherche, filtres, tri, export CSV / TXT). Administration : réglages et aperçu.

@@ -10,8 +10,8 @@ The **TNG Suite** menu has five entries: **General** and four families. Each for
 |---|---|
 | General | connection, shared settings, modules, maintenance |
 | Trees & visualisations | Trees & descendants, Record link button, Timeline, Fan / kinship wheel |
-| Stats & analyses | Statistics & charts, Places heatmap, Implex & inbreeding, Surname flash list, Data consistency |
-| Documents | Family book, Individual sheet & document lists |
+| Stats & analyses | Statistics & charts, Places heatmap, Implex & inbreeding, Data consistency |
+| Documents | Family book, Individual sheet & document lists, Surname flash list |
 | Media & widgets | Media gallery, Name cloud & birthdays, Random individual |
 
 “Record link button” is switched on with “Trees & descendants”, and “Random individual” with “Name cloud & birthdays” (one activation box and one “Living / private” setting for each pair); their shortcodes are unchanged.
@@ -26,11 +26,11 @@ The **TNG Suite** menu has five entries: **General** and four families. Each for
   - [Statistics & charts](stats.md)
   - [Places heatmap](heatmap.md)
   - [Implex & inbreeding](implexe.md)
-  - [Surname flash list](flash.md)
   - [Data consistency](coherence.md) (administrators)
 - **Documents**
   - [Family book](book.md)
   - [Individual sheet & document lists](fiche.md)
+  - [Surname flash list](flash.md)
 - **Media & widgets**
   - [Media gallery](gallery.md)
   - [Name cloud & birthdays](extra.md)
