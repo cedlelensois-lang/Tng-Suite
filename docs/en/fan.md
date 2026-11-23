@@ -61,7 +61,8 @@ French alias of `[tng_fan]`.
 | nicknames | 1 / 0 | setting | Shows the TNG nickname in brackets right after the surname (“MALVACHE (Titi) Jean”); ignored if it is just one of the first names. Also in the panel (“Nicknames” tick-box) and in the PDF/PNG export. |
 | labels | symbols, letters | setting | Symbols (° †) or letters. |
 | pdf | 1 / 0 | 1 | Export button (PDF or PNG). |
-| controls | 1 / 0 | 1 | Zoom / navigation buttons. |
+| tabs | 1 / 0 | 1 | `0` hides only the three buttons Ancestor / Descendant / Mixed wheel (the rest of the bar stays). |
+| controls | 1 / 0 | 1 | Top bar (wheel types, back, export, options) and options panel; `0` = the wheel alone, with zoom. |
 | height | pixels | setting | Wheel height. |
 | class | CSS class | (empty) | CSS class added to the container. |
 

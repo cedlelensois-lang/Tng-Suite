@@ -945,9 +945,14 @@ final class TNGBook {
      * pointent vers la première page. Une ancre vide est donc ajoutée au début de chaque bloc portant un identifiant.
      */
     public static function pdf_anchors($html) {
-        return preg_replace_callback('#<(div|h[1-6])\b[^>]*?\sid="([^"]+)"[^>]*>#i', function ($m) {
-            return $m[2] === 'surn-root' ? $m[0] : $m[0] . '<a name="' . $m[2] . '"></a>';
+        $dot = function ($n) { return str_replace('.', '_d_', $n); };
+        $html = preg_replace_callback('#<(div|h[1-6])\b[^>]*?\sid="([^"]+)"[^>]*>#i', function ($m) use ($dot) {
+            return $m[2] === 'surn-root' ? $m[0] : $m[0] . '<a name="' . $dot($m[2]) . '"></a>';
         }, (string) $html);
+        // mPDF prend pour externe tout lien contenant un point : D1.1.2 ne menait nulle part. Points remplacés dans les renvois internes (et les ancres ci-dessus).
+        return preg_replace_callback('#(<a\b[^>]*?\shref=")\#([^"]*\.[^"]*)(")#i', function ($m) use ($dot) {
+            return $m[1] . '#' . $dot($m[2]) . $m[3];
+        }, $html);
     }
 
     /**

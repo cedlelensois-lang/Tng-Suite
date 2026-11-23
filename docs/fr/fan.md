@@ -61,7 +61,8 @@ Alias français de `[tng_fan]`.
 | nicknames | 1 / 0 | réglage | Affiche le surnom TNG entre parenthèses juste après le nom de famille (« MALVACHE (Titi) Jean ») ; ignoré s’il n’est qu’un des prénoms. Aussi dans le panneau (case « Surnoms ») et dans l’export PDF/PNG. |
 | labels | symbols, letters | réglage | Symboles (° †) ou lettres. |
 | pdf | 1 / 0 | 1 | Bouton d’export (PDF ou PNG). |
-| controls | 1 / 0 | 1 | Boutons de zoom / navigation. |
+| controls | 1 / 0 | 1 | Barre du haut (types de roue, retour, export, options) et panneau d’options ; `0` = roue seule, avec zoom. |
+| tabs | 1 / 0 | 1 | `0` masque seulement les trois boutons Roue d’ascendance / descendance / mixte (le reste de la barre reste affiché). |
 | height | pixels | réglage | Hauteur de la roue. |
 | class | classe CSS | (vide) | Classe CSS ajoutée au conteneur. |
 

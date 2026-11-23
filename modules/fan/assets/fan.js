@@ -734,7 +734,7 @@ var TNGFanPdf = (function () {
       });
       var gear = el('button', { type: 'button', 'class': 'tngfan-gear', 'aria-label': tngsT('Options'), title: tngsT('Options'), text: '⚙' });
       gear.addEventListener('click', function () { self.panel.hidden = !self.panel.hidden; });
-      var kids = [this.tabs, this.back];
+      var kids = c.tabs === 0 ? [this.back] : [this.tabs, this.back];   // tabs="0" : pas de boutons ascendance / descendance / mixte
       if (c.pdf) {
         this.pdfBtn = el('button', { type: 'button', 'class': 'tngfan-pdf', text: '⤓ PDF / PNG', title: tngsT('Exporter en PDF ou en PNG') });
         this.pdfBtn.addEventListener('click', function () { self.openPdfDialog(); });

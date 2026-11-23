@@ -97,6 +97,7 @@ class TNGFan_Front {
 			'pdf'        => '1',
 			'height'     => $o['height'],
 			'controls'   => '1',
+			'tabs'       => '1',
 			'class'      => '',
 		);
 	}
@@ -159,6 +160,7 @@ class TNGFan_Front {
 			'lsig'       => 'show' === $living ? self::living_sig() : '',
 			'siteUrl'    => tngs_site_url(),
 			'controls'   => $flag( $a['controls'] ),
+			'tabs'       => $flag( $a['tabs'] ),
 		);
 	}
 
