@@ -1545,6 +1545,6 @@ return array(
 	'Bleu et rose (idéale « selon le sexe »)' => 'Blue and pink (ideal for “by sex”)',
 	'Surnoms' => 'Nicknames',
 	'Afficher les surnoms' => 'Show nicknames',
-	'Afficher le surnom TNG entre guillemets après le prénom (« Jean-Baptiste « Baptiste » »)' => 'Show the TNG nickname in quotation marks after the first name (“Jean-Baptiste « Baptiste »”)',
+	'Afficher le surnom TNG entre parenthèses après le prénom (Jean-Baptiste (Baptiste))' => 'Show the TNG nickname in brackets after the first name (Jean-Baptiste (Baptiste))',
 	'(surnoms)' => '(nicknames)',
 );

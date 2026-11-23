@@ -58,7 +58,7 @@ French alias of `[tng_fan]`.
 | spouses | 1 / 0 | setting | Show spouses. |
 | living | default, hide, show | default | `hide` hides living people; `show` displays them only if General allows it. |
 | zoomdetail | 1 / 0 | setting | Richer text when zooming. |
-| nicknames | 1 / 0 | setting | Shows the TNG nickname in quotation marks after the first name (“Jean « Titi »”); ignored if it is just one of the first names. Also in the panel (“Nicknames” tick-box) and in the PDF/PNG export. |
+| nicknames | 1 / 0 | setting | Shows the TNG nickname in brackets after the first name (“Jean (Titi)”); ignored if it is just one of the first names. Also in the panel (“Nicknames” tick-box) and in the PDF/PNG export. |
 | labels | symbols, letters | setting | Symbols (° †) or letters. |
 | pdf | 1 / 0 | 1 | Export button (PDF or PNG). |
 | controls | 1 / 0 | 1 | Zoom / navigation buttons. |

@@ -85,7 +85,7 @@ Only the plugin's own settings, caches, scheduled task and the tables it created
 == Changelog ==
 
 = 3.0.2 =
-* Fan chart: new option to show the TNG nickname after the first name ("Nicknames" setting, panel tick-box, `nicknames="1"` attribute; also in the PDF/PNG export). 10 new colour palettes suited to genealogy (Sepia, Heritage, Autumn, Sunset, Coast, Spring, shades of green/red/purple, Blue and pink for colouring by sex).
+* Fan chart: new option to show the TNG nickname in brackets after the first name ("Nicknames" setting, panel tick-box, `nicknames="1"` attribute; also in the PDF/PNG export). 10 new colour palettes suited to genealogy (Sepia, Heritage, Autumn, Sunset, Coast, Spring, shades of green/red/purple, Blue and pink for colouring by sex).
 
 = 3.0.1 =
 * Fan chart export (PDF/PNG): the downloaded file now shows what the on-screen preview shows when zoomed. Names and dates were missing in the outer generations because the text was dropped below 6 pt; it is now scaled down to fit (down to 0.4 pt, readable by zooming in the PDF). New "Maximum size" sheet; "Fit to the text" no longer falls back to A0 when everything cannot fit, it uses the largest possible sheet; the dialog defaults to "Complete" content and reports how many boxes are readable at 4 pt or more.

@@ -4609,7 +4609,7 @@ msgstr ""
 msgid "Afficher les surnoms"
 msgstr ""
 
-msgid "Afficher le surnom TNG entre guillemets après le prénom (« Jean-Baptiste « Baptiste » »)"
+msgid "Afficher le surnom TNG entre parenthèses après le prénom (Jean-Baptiste (Baptiste))"
 msgstr ""
 
 msgid "(surnoms)"

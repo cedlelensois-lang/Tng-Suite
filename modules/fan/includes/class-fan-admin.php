@@ -281,7 +281,7 @@ class TNGFan_Admin {
 					<tr><th scope="row">Prénoms</th>
 						<td><?php self::select( 'firstnames', $o['firstnames'], array( 'usual' => 'Prénom usuel (le premier)', 'all' => 'Tous les prénoms' ) ); ?></td></tr>
 					<tr><th scope="row">Surnoms</th>
-						<td><label><input type="checkbox" name="<?php echo esc_attr( $n ); ?>[nicknames]" value="1" <?php checked( 1, (int) $o['nicknames'] ); ?>> Afficher le surnom TNG entre guillemets après le prénom (« Jean-Baptiste « Baptiste » »)</label></td></tr>
+						<td><label><input type="checkbox" name="<?php echo esc_attr( $n ); ?>[nicknames]" value="1" <?php checked( 1, (int) $o['nicknames'] ); ?>> Afficher le surnom TNG entre parenthèses après le prénom (Jean-Baptiste (Baptiste))</label></td></tr>
 					<tr><th>Style des textes</th>
 						<td><?php self::select( 'labels', $o['labels'], array( 'symbols' => '° naissance, † décès, x mariage', 'letters' => 'N : naissance, D : décès, M : mariage (style Heredis)' ) ); ?></td></tr>
 					<tr><th scope="row">Conjoints</th>

@@ -168,11 +168,11 @@ var TNGFanLib = (function () {
     return k < 2 ? 0 : (k < 3.5 ? 1 : (k < 6 ? 2 : 3));
   }
 
-  /** « Prénom » ou « Prénom « surnom » » selon l'option. */
+  /** « Prénom » ou « Prénom (surnom) » selon l'option. */
   function firstOf(p, st) {
     var fn = p.fn || '';
     if (st.firstnames === 'usual') { fn = fn.split(/\s+/)[0] || ''; }
-    if (st.nicknames && p.nn) { fn = (fn ? fn + ' ' : '') + '\u00ab ' + p.nn + ' \u00bb'; }
+    if (st.nicknames && p.nn) { fn = (fn ? fn + ' ' : '') + '(' + p.nn + ')'; }
     return fn;
   }
 

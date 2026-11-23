@@ -58,7 +58,7 @@ Alias français de `[tng_fan]`.
 | spouses | 1 / 0 | réglage | Afficher les conjoints. |
 | living | default, hide, show | default | `hide` masque les vivants ; `show` les affiche seulement si Général l’autorise. |
 | zoomdetail | 1 / 0 | réglage | Texte enrichi au zoom. |
-| nicknames | 1 / 0 | réglage | Affiche le surnom TNG entre guillemets après le prénom (« Jean « Titi » ») ; ignoré s’il n’est qu’un des prénoms. Aussi dans le panneau (case « Surnoms ») et dans l’export PDF/PNG. |
+| nicknames | 1 / 0 | réglage | Affiche le surnom TNG entre parenthèses après le prénom (« Jean (Titi) ») ; ignoré s’il n’est qu’un des prénoms. Aussi dans le panneau (case « Surnoms ») et dans l’export PDF/PNG. |
 | labels | symbols, letters | réglage | Symboles (° †) ou lettres. |
 | pdf | 1 / 0 | 1 | Bouton d’export (PDF ou PNG). |
 | controls | 1 / 0 | 1 | Boutons de zoom / navigation. |
