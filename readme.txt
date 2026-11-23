@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.1.1
+Stable tag: 3.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -84,8 +84,10 @@ Only the plugin's own settings, caches, scheduled task and the tables it created
 
 == Changelog ==
 
-= 3.1.1 =
+= 3.1.2 =
 * Flash list: with a place or period filter, the matching places are shown even when they were hidden behind "+N" (the others are dimmed).
+
+= 3.1.1 =
 * Flash list: the administration preview now includes living and private people (administrators only, unless the module is set to "Always hide"); new `rgpd="0"` shortcode attribute to show them on a given page (same safeguards as the fan chart: page author able to edit others' posts, module not set to "Always hide"); the exports follow.
 * The "Flash list" module moves to the "Documents" tab (it is a document to export and share).
 * Flash list: the place and period filters now apply to the same place (a surname is no longer kept because it has the place in another period); places that do not match are dimmed; the place filter searches all the places of a surname, not only the ones displayed.
