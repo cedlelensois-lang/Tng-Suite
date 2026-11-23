@@ -17,17 +17,39 @@
     var copy = box.querySelector('.tngflash-copy');
     var visible = rows.slice();
 
+    rows.forEach(function (r) { try { r.tngPls = JSON.parse(r.getAttribute('data-pls') || '[]'); } catch (e) { r.tngPls = []; } });
+
+    /** Le lieu (nom, année min, année max) correspond-il au texte de lieu et à la période ? */
+    function placeOk(pl, p, a, b) {
+      if (p && pl[0].indexOf(p) < 0) { return false; }
+      if (a !== null || b !== null) {
+        if (!pl[1] && !pl[2]) { return false; }
+        if (a !== null && pl[2] && pl[2] < a) { return false; }
+        if (b !== null && pl[1] && pl[1] > b) { return false; }
+      }
+      return true;
+    }
+
     function apply() {
       var t = q ? norm(q.value).trim() : '', p = pq ? norm(pq.value).trim() : '';
       var a = from && from.value !== '' ? parseInt(from.value, 10) : null, b = to && to.value !== '' ? parseInt(to.value, 10) : null;
+      var byPlace = !!p;
       visible = rows.filter(function (r) {
         if (t && r.getAttribute('data-name').indexOf(t) < 0) { return false; }
-        if (p && r.getAttribute('data-places').indexOf(p) < 0) { return false; }
         var mn = +r.getAttribute('data-min'), mx = +r.getAttribute('data-max');
         if (a !== null && mx && mx < a) { return false; }
         if (b !== null && mn && mn > b) { return false; }
         if ((a !== null || b !== null) && !mn && !mx) { return false; }
+        // lieu et période portent sur le MÊME lieu : un lieu cité dans une autre période ne compte pas
+        if (byPlace) { return r.tngPls.some(function (pl) { return placeOk(pl, p, a, b); }); }
         return true;
+      });
+      // les lieux qui ne correspondent pas aux filtres sont estompés
+      rows.forEach(function (r) {
+        [].forEach.call(r.querySelectorAll('.tngflash-pl'), function (c) {
+          var on = !!(p || a !== null || b !== null);
+          c.classList.toggle('tngflash-dim', on && !placeOk([c.getAttribute('data-nm'), +c.getAttribute('data-a'), +c.getAttribute('data-b')], p, a, b));
+        });
       });
       shown = limit;
       render();

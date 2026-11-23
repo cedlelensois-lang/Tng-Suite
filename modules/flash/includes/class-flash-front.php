@@ -68,6 +68,12 @@ class TNGFlash_Front {
 		return $p[0] . ( '' !== $r ? ' ' . str_replace( ' – ', '-', $r ) : '' );
 	}
 
+	/** Lieux affichés d'une ligne (les plus fréquents) et nombre de lieux non affichés. */
+	public static function shown( array $r ) {
+		$max = (int) TNGFlash_Data::options()['places_max'];
+		return array( array_slice( $r['places'], 0, $max ), max( 0, count( $r['places'] ) - $max ) + (int) $r['more'] );
+	}
+
 	/** Tableau HTML de la liste (public et aperçu d'administration). */
 	public static function table( array $rows, $limit = 0 ) {
 		$ev  = array( 'B' => 'naissances', 'M' => 'mariages', 'D' => 'décès' );
@@ -82,29 +88,30 @@ class TNGFlash_Front {
 				break;
 			}
 			$search = self::norm( $r['name'] . ' ' . implode( ' ', $r['variants'] ) );
-			$places = array();
+			$pls    = array();
 			foreach ( $r['places'] as $p ) {
-				$places[] = $p[0];
+				$pls[] = array( self::norm( $p[0] ), (int) $p[2], (int) $p[3] );
 			}
+			list( $shown, $more ) = self::shown( $r );
 			$out .= '<tr data-name="' . esc_attr( $search ) . '" data-n="' . (int) $r['n'] . '" data-min="' . (int) $r['min'] . '" data-max="' . (int) $r['max']
-				. '" data-places="' . esc_attr( self::norm( implode( ' ', $places ) ) ) . '">';
+				. '" data-pls="' . esc_attr( wp_json_encode( $pls ) ) . '">';
 			$out .= '<th scope="row" class="tngflash-name"><strong>' . esc_html( $r['name'] ) . '</strong>';
 			if ( $r['variants'] ) {
 				$out .= ' <span class="tngflash-var">(' . esc_html( implode( ', ', $r['variants'] ) ) . ')</span>';
 			}
 			$out .= '</th><td class="tngflash-n">' . (int) $r['n'] . '</td>';
 			$out .= '<td class="tngflash-dates">' . esc_html( TNGFlash_Data::range( $r['min'], $r['max'] ) ) . '</td><td class="tngflash-places">';
-			foreach ( $r['places'] as $p ) {
+			foreach ( $shown as $p ) {
 				$tip = array();
 				foreach ( $ev as $k => $label ) {
 					if ( $p[4][ $k ] ) {
 						$tip[] = $p[4][ $k ] . ' ' . tngs_t( $label );
 					}
 				}
-				$out .= '<span class="tngflash-pl" title="' . esc_attr( implode( ', ', $tip ) ) . '">' . esc_html( self::place_text( $p ) ) . ' <small>(' . (int) $p[1] . ')</small></span> ';
+				$out .= '<span class="tngflash-pl" data-nm="' . esc_attr( self::norm( $p[0] ) ) . '" data-a="' . (int) $p[2] . '" data-b="' . (int) $p[3] . '" title="' . esc_attr( implode( ', ', $tip ) ) . '">' . esc_html( self::place_text( $p ) ) . ' <small>(' . (int) $p[1] . ')</small></span> ';
 			}
-			if ( $r['more'] > 0 ) {
-				$out .= '<span class="tngflash-more">+' . (int) $r['more'] . '</span>';
+			if ( $more > 0 ) {
+				$out .= '<span class="tngflash-more">+' . (int) $more . '</span>';
 			}
 			$out .= '</td></tr>';
 		}
@@ -168,11 +175,12 @@ class TNGFlash_Front {
 	/** Ligne de texte : « NOM ; min ; max ; lieu (a-b), lieu (a-b) ». */
 	public static function txt_line( array $r ) {
 		$pl = array();
-		foreach ( $r['places'] as $p ) {
+		list( $shown, $more ) = self::shown( $r );
+		foreach ( $shown as $p ) {
 			$pl[] = self::place_text( $p );
 		}
 		$name = $r['name'] . ( $r['variants'] ? ' (' . implode( ', ', $r['variants'] ) . ')' : '' );
-		return $name . ' ; ' . ( $r['min'] ? $r['min'] : '' ) . ' ; ' . ( $r['max'] ? $r['max'] : '' ) . ' ; ' . implode( ', ', $pl ) . ( $r['more'] > 0 ? ' …' : '' );
+		return $name . ' ; ' . ( $r['min'] ? $r['min'] : '' ) . ' ; ' . ( $r['max'] ? $r['max'] : '' ) . ' ; ' . implode( ', ', $pl ) . ( $more > 0 ? ' …' : '' );
 	}
 
 	public static function export() {
@@ -210,7 +218,8 @@ class TNGFlash_Front {
 		fputcsv( $h, array( 'Patronyme', 'Variantes', 'Personnes', 'Date min', 'Date max', 'Lieux' ), ';', '"', '' );
 		foreach ( $rows as $r ) {
 			$pl = array();
-			foreach ( $r['places'] as $p ) {
+			list( $shown ) = self::shown( $r );
+			foreach ( $shown as $p ) {
 				$pl[] = self::place_text( $p ) . ' [' . (int) $p[1] . ']';
 			}
 			fputcsv( $h, array( self::cell( $r['name'] ), self::cell( implode( ', ', $r['variants'] ) ), (int) $r['n'], $r['min'] ? $r['min'] : '', $r['max'] ? $r['max'] : '', self::cell( implode( ' | ', $pl ) ) ), ';', '"', '' );

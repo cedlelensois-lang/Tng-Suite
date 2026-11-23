@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.1.0
+Stable tag: 3.1.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the tables it created in the WordPress database (`tngi_inbreeding` for the implex module; `tngs_coh_res` and `tngs_coh_key` for the data consistency check). Your TNG data is never touched.
 
 == Changelog ==
+
+= 3.1.1 =
+* Flash list: the place and period filters now apply to the same place (a surname is no longer kept because it has the place in another period); places that do not match are dimmed; the place filter searches all the places of a surname, not only the ones displayed.
 
 = 3.1.0 =
 * New module "Flash list" (shortcode `[tng_flash]`, Stats & analyses tab): table of surnames with the number of people, the minimum and maximum dates (births, marriages, deaths) and the places with their date range; spelling variants grouped but shown; minimum number of people per surname; place level (town, department, region, country); search, place and period filters, sorting, CSV/TXT export and "Copy for a forum". Living/private people follow the module privacy setting.

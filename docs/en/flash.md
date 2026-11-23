@@ -34,7 +34,7 @@ Paste the `[tng_flash]` shortcode in a page or a post.
 ## What the visitor sees
 
 - A table: **surname** (variants in brackets), **people**, **dates** (min – max over births, marriages and deaths) and **places** with their range and number of events; a tooltip details births, marriages and deaths.
-- A **search** by surname, a **filter** by place and by **period** (a surname is kept if its dates overlap the period); **sorting** by surname, number of people or dates (click the header).
+- A **search** by surname, a **filter** by place and by **period** (without a place: a surname is kept if its dates overlap the period; with a place: a matching place whose dates overlap the period is required; other places are dimmed; the filter searches all the places of a surname, not only the displayed ones); **sorting** by surname, number of people or dates (click the header).
 - **Export**: CSV (semicolon separator, UTF-8 with BOM, opens in Excel or LibreOffice), TXT (one line per surname: “NAME ; min date ; max date ; places”) and **Copy for a forum** (copies the rows shown after filtering).
 
 ## Privacy

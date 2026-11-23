@@ -34,7 +34,7 @@ Collez le shortcode `[tng_flash]` dans une page ou un article.
 ## Ce que voit le visiteur
 
 - Un tableau : **patronyme** (avec ses variantes entre parenthèses), **personnes**, **dates** (min – max sur les naissances, mariages et décès) et **lieux** avec leur intervalle et le nombre d’événements ; une info-bulle détaille naissances, mariages et décès.
-- Une **recherche** par patronyme, un **filtre** par lieu et par **période** (le patronyme est gardé si ses dates recoupent la période) ; le **tri** par patronyme, nombre de personnes ou dates (clic sur l’en-tête).
+- Une **recherche** par patronyme, un **filtre** par lieu et par **période** (sans lieu : le patronyme est gardé si ses dates recoupent la période ; avec un lieu : il faut un lieu correspondant dont les dates recoupent la période ; les autres lieux sont estompés ; le filtre cherche dans tous les lieux du patronyme, pas seulement ceux affichés) ; le **tri** par patronyme, nombre de personnes ou dates (clic sur l’en-tête).
 - **Exporter** : CSV (séparateur point-virgule, UTF-8 avec BOM, s’ouvre dans Excel ou LibreOffice), TXT (une ligne par patronyme : « NOM ; date min ; date max ; lieux ») et **Copier pour un forum** (copie les lignes affichées après filtrage).
 
 ## Confidentialité

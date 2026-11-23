@@ -204,7 +204,7 @@ class TNGFlash_Data {
 		}
 
 		$min = max( 1, (int) $o['min'] );
-		$max = max( 1, (int) $o['places_max'] );
+		$max = 200; // lieux conservés (la page n'en affiche que « places_max », mais le filtre par lieu les cherche tous)
 		$out = array();
 		foreach ( $groups as $g ) {
 			if ( $g['n'] < $min ) {
@@ -237,7 +237,7 @@ class TNGFlash_Data {
 	/** Liste en cache (une erreur n'est jamais mise en cache). */
 	public static function get( array $o ) {
 		$hours = max( 0, (int) tngs_setting( 'cache_hours' ) );
-		$key   = 'tngflash_' . md5( wp_json_encode( array( $o, (int) get_option( 'tngflash_gen', 1 ), tngs_prefix(), tngs_cache_ver(), 'v1' ) ) );
+		$key   = 'tngflash_' . md5( wp_json_encode( array( $o, (int) get_option( 'tngflash_gen', 1 ), tngs_prefix(), tngs_cache_ver(), 'v2' ) ) );
 		if ( $hours > 0 ) {
 			$hit = get_transient( $key );
 			if ( is_array( $hit ) ) {
