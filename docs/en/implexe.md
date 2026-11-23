@@ -4,7 +4,7 @@ Analysis of implex (ancestors appearing several times) and inbreeding. Three sec
 
 ## In the admin
 
-Menu **TNG Suite > Analyses**, sections **Implex: analysis**, **Implex: inbreeding** and **Implex: settings**.
+Menu **TNG Suite > Stats & analyses**, sections **Implex: analysis**, **Implex: inbreeding** and **Implex: settings**.
 
 ![Implex & inbreeding](../images/implex.png)
 

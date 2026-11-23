@@ -229,6 +229,7 @@ function tngs_page_modules() {
         'tng-implexe'             => 'implexe',
         'tng-implexe-inbreeding'  => 'implexe',
         'tng-implexe-settings'    => 'implexe',
+        'tng-flash'               => 'flash',
         'tng-coherence'           => 'coherence',
         'tng-coherence-settings'  => 'coherence',
         'tngbook'                 => 'book',

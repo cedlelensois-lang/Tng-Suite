@@ -1618,8 +1618,8 @@ msgstr "TNG Suite > General"
 msgid "TNG Suite > Général > Modules"
 msgstr "TNG Suite > General > Modules"
 
-msgid "TNG Suite > Analyses > Implexe : consanguinité"
-msgstr "TNG Suite > Analyses > Implex: inbreeding"
+msgid "TNG Suite > Stats & analyses > Implexe : consanguinité"
+msgstr "TNG Suite > Stats & analyses > Implex: inbreeding"
 
 msgid "TNG Suite – Général"
 msgstr "TNG Suite – General"
@@ -3574,6 +3574,9 @@ msgstr "The trees are drawn by the plugin in the book colour (“headings and li
 msgid "Arbres & visualisations"
 msgstr "Trees & visualisations"
 
+msgid "Stats & analyses"
+msgstr "Stats & analyses"
+
 msgid "Analyses"
 msgstr "Analyses"
 
@@ -3589,8 +3592,8 @@ msgstr "Trees, descendants & record link button"
 msgid "Nuage de noms, anniversaires & individu au hasard"
 msgstr "Name cloud, birthdays & random individual"
 
-msgid "[tng_stat_genre] [tng_stat_vivants] [tng_stat_demi_siecle] [tng_stat_mois] … (TNG Suite > Analyses > Stats : graphiques)"
-msgstr "[tng_stat_genre] [tng_stat_vivants] [tng_stat_demi_siecle] [tng_stat_mois] … (TNG Suite > Analyses > Stats: charts)"
+msgid "[tng_stat_genre] [tng_stat_vivants] [tng_stat_demi_siecle] [tng_stat_mois] … (TNG Suite > Stats & analyses > Stats : graphiques)"
+msgstr "[tng_stat_genre] [tng_stat_vivants] [tng_stat_demi_siecle] [tng_stat_mois] … (TNG Suite > Stats & analyses > Stats: charts)"
 
 msgid "(actuellement :"
 msgstr "(currently:"
@@ -4614,6 +4617,120 @@ msgstr "Show the TNG nickname in brackets after the first name (Jean-Baptiste (B
 
 msgid "(surnoms)"
 msgstr "(nicknames)"
+
+msgid "Afficher plus"
+msgstr "Show more"
+
+msgid "Aucun patronyme ne correspond."
+msgstr "No surname matches."
+
+msgid "Calcul relancé : la liste sera recalculée à la prochaine visite."
+msgstr "Calculation restarted: the list will be rebuilt on the next visit."
+
+msgid "Commune (1er élément du lieu)"
+msgstr "Town (1st part of the place)"
+
+msgid "Copie impossible : sélectionnez le texte à la main."
+msgstr "Copy failed: select the text by hand."
+
+msgid "Copier pour un forum"
+msgstr "Copy for a forum"
+
+msgid "Copié dans le presse-papiers."
+msgstr "Copied to the clipboard."
+
+msgid "Dates et lieux des personnes vivantes ou privées dans les lignes de la liste (nombre de personnes, dates minimale et maximale, lieux)."
+msgstr "Dates and places of living or private people in the list lines (number of people, minimum and maximum dates, places)."
+
+msgid "Département (2e élément du lieu)"
+msgstr "Department / county (2nd part of the place)"
+
+msgid "Export désactivé."
+msgstr "Export disabled."
+
+msgid "Export public"
+msgstr "Public export"
+
+msgid "Exporter :"
+msgstr "Export:"
+
+msgid "La liste flash donne, pour chaque patronyme de l’arbre, le nombre de personnes, la date minimale et la date maximale (naissances, mariages et décès) et les lieux avec leur intervalle de dates. Les variantes d’orthographe sont regroupées mais affichées. Elle sert à échanger avec d’autres généalogistes pour repérer des branches communes."
+msgstr "For each surname in the tree, the flash list gives the number of people, the minimum and maximum dates (births, marriages and deaths) and the places with their date range. Spelling variants are grouped but shown. It is used to exchange with other genealogists and spot common branches."
+
+msgid "Les lieux TNG sont du texte libre : on suppose « Commune, Département, Région, Pays » (les codes postaux sont ignorés)."
+msgstr "TNG places are free text: “Town, Department, Region, Country” is assumed (postal codes are ignored)."
+
+msgid "Lieux par patronyme"
+msgstr "Places per surname"
+
+msgid "Liste flash"
+msgstr "Flash list"
+
+msgid "Liste flash des patronymes"
+msgstr "Surname flash list"
+
+msgid "Liste flash indisponible :"
+msgstr "Flash list unavailable:"
+
+msgid "Liste flash indisponible."
+msgstr "Flash list unavailable."
+
+msgid "Niveau des lieux"
+msgstr "Place level"
+
+msgid "Patronyme"
+msgstr "Surname"
+
+msgid "Patronymes minimum"
+msgstr "Minimum per surname"
+
+msgid "Pays (dernier élément du lieu)"
+msgstr "Country (last part of the place)"
+
+msgid "Personnes"
+msgstr "People"
+
+msgid "Proposer les exports CSV, TXT et « Copier pour un forum » aux visiteurs."
+msgstr "Offer the CSV, TXT and “Copy for a forum” exports to visitors."
+
+msgid "Recalculer"
+msgstr "Recalculate"
+
+msgid "Regrouper les variantes d’orthographe (Lecoq, Lecocq…) ; elles restent affichées entre parenthèses."
+msgstr "Group spelling variants (Lecoq, Lecocq…); they stay shown in brackets."
+
+msgid "Région (3e élément du lieu)"
+msgstr "Region (3rd part of the place)"
+
+msgid "Seuls les 25 premiers patronymes sont montrés ici."
+msgstr "Only the first 25 surnames are shown here."
+
+msgid "Utilisation"
+msgstr "Usage"
+
+msgid "Variantes"
+msgstr "Variants"
+
+msgid "dans une page ou un article. Attributs facultatifs :"
+msgstr "in a page or a post. Optional attributes:"
+
+msgid "lieux les plus fréquents conservés pour chaque patronyme."
+msgstr "most frequent places kept for each surname."
+
+msgid "lignes affichées par page"
+msgstr "rows shown per page"
+
+msgid "patronymes"
+msgstr "surnames"
+
+msgid "patronymes affichés"
+msgstr "surnames shown"
+
+msgid "personnes : les patronymes portés par moins de personnes sont masqués (1 = tout afficher)."
+msgstr "people: surnames borne by fewer people are hidden (1 = show all)."
+
+msgid "recherche et filtres"
+msgstr "search and filters"
 
 msgctxt "js"
 msgid " Page "

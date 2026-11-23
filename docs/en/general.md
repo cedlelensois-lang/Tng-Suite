@@ -31,7 +31,7 @@ Menu **TNG Suite > General**.
 1. Choose the connection mode and fill in the TNG database; check the **Diagnostic**.
 2. Enter the TNG URL, the table prefix and the default tree.
 3. Choose the language and the Living / private setting (keep “Hide” unless you have a specific need).
-4. Enable the wanted modules: each one appears in the menu of its family (Trees & visualisations, Analyses, Documents, Media & widgets).
+4. Enable the wanted modules: each one appears in the menu of its family (Trees & visualisations, Stats & analyses, Documents, Media & widgets).
 5. Save.
 
 ## Notes

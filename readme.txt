@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.0.2
+Stable tag: 3.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,7 +26,7 @@ TNG Suite brings the display of your TNG genealogy data into WordPress through s
 * Fan / kinship wheel: ancestors (up to 12 generations), descendants or mixed wheel, spouses, text that adapts when zooming, PDF export, generator in the administration, adjustable shapes and colour palettes (`[tng_fan]`)
 * Implex and inbreeding analysis (`[tng_implexe]`, `[tng_consanguinite]`)
 * Family book: Sosa ancestry and d'Aboville descendants, printable page or PDF (`[tng_book]`)
-* Data consistency check (administrators only, no shortcode): impossible dates, ages, sex, family structure and possible duplicates with a score, read-only on your TNG data (TNG Suite > Analyses)
+* Data consistency check (administrators only, no shortcode): impossible dates, ages, sex, family structure and possible duplicates with a score, read-only on your TNG data (TNG Suite > Stats & analyses)
 
 **Connection to the TNG database** (TNG Suite > General), three modes:
 
@@ -84,6 +84,10 @@ Only the plugin's own settings, caches, scheduled task and the tables it created
 
 == Changelog ==
 
+= 3.1.0 =
+* New module "Flash list" (shortcode `[tng_flash]`, Stats & analyses tab): table of surnames with the number of people, the minimum and maximum dates (births, marriages, deaths) and the places with their date range; spelling variants grouped but shown; minimum number of people per surname; place level (town, department, region, country); search, place and period filters, sorting, CSV/TXT export and "Copy for a forum". Living/private people follow the module privacy setting.
+* The "Analyses" menu tab is now called "Stats & analyses".
+
 = 3.0.2 =
 * Fan chart: new option to show the TNG nickname in brackets after the first name ("Nicknames" setting, panel tick-box, `nicknames="1"` attribute; also in the PDF/PNG export). 10 new colour palettes suited to genealogy (Sepia, Heritage, Autumn, Sunset, Coast, Spring, shades of green/red/purple, Blue and pink for colouring by sex).
 
@@ -138,7 +142,7 @@ Only the plugin's own settings, caches, scheduled task and the tables it created
 * Livre (PDF) : avec une pochette pleine page à panneau en bas (chênes et peinture) et un titre long, la ligne « Document généré le… » passait seule sur une page presque blanche ; le titre long est désormais réduit pour tenir sur deux lignes dans le panneau.
 
 = 2.19.0 =
-* Nouveau module « Cohérence des données » (TNG Suite > Analyses, réservé aux administrateurs, sans shortcode) : contrôle en lecture seule de l'arbre TNG. Dates impossibles ou incohérentes (naissance après le décès, enfant né après la mort de la mère ou plus de 9 mois après celle du père, mariage hors de la vie des époux, âges au mariage et à la naissance des enfants, personne « vivante » trop âgée…), sexe incompatible avec le rôle de père ou de mère ou avec le prénom, structure des familles (boucles d'ascendance, enfant de plusieurs familles, couples en double, références à des personnes absentes), noms mal saisis, lieux écrits de plusieurs façons, et doublons possibles avec un score de probabilité triable. Seuils réglables, anomalies ignorables et restaurables, export CSV, lancement manuel par lots avec barre de progression (adapté aux grands arbres), résultats conservés jusqu'à la prochaine analyse. Rien n'est écrit dans la base TNG ; les résultats sont stockés dans deux tables de la base WordPress, supprimées à la désinstallation.
+* Nouveau module « Cohérence des données » (TNG Suite > Stats & analyses, réservé aux administrateurs, sans shortcode) : contrôle en lecture seule de l'arbre TNG. Dates impossibles ou incohérentes (naissance après le décès, enfant né après la mort de la mère ou plus de 9 mois après celle du père, mariage hors de la vie des époux, âges au mariage et à la naissance des enfants, personne « vivante » trop âgée…), sexe incompatible avec le rôle de père ou de mère ou avec le prénom, structure des familles (boucles d'ascendance, enfant de plusieurs familles, couples en double, références à des personnes absentes), noms mal saisis, lieux écrits de plusieurs façons, et doublons possibles avec un score de probabilité triable. Seuils réglables, anomalies ignorables et restaurables, export CSV, lancement manuel par lots avec barre de progression (adapté aux grands arbres), résultats conservés jusqu'à la prochaine analyse. Rien n'est écrit dans la base TNG ; les résultats sont stockés dans deux tables de la base WordPress, supprimées à la désinstallation.
 * Livre : formulaire simplifié. Palettes de couleurs regroupées par famille (24 palettes, mieux différenciées, six renommées) ; « Titre, auteur, préface et page sur le patronyme » dans un volet repliable (replié quand tout est vide) ; « Génération automatique de ce profil » repliable ; une case à cocher par partie directement dans la liste « Ordre et affichage des parties du livre » (les parties masquées restent à leur place) ; phrases détaillées, lieux traduits (pays et départements) et lieux de résidence toujours actifs (cases retirées) ; index des noms et index des lieux séparés. Les réglages et profils enregistrés sont convertis automatiquement.
 * Livre (PDF, modèle Moderne) : le filet vert à gauche des fiches reste continu même quand une photo accompagne le mini-arbre.
 * Éventail : export PNG en plus du PDF, avec les mêmes options que le PDF (format de feuille, orientation, contenu) ; résolution au choix (150, 200 ou 300 dpi), fond blanc ou transparent ; la résolution est réduite automatiquement si elle dépasse la limite d'image du navigateur.

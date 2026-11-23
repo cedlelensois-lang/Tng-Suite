@@ -4,7 +4,7 @@ Check of your TNG tree: impossible or inconsistent dates, ages, sex, family stru
 
 ## In the administration
 
-Menu **TNG Suite > Analyses**, sections **Consistency: data check** and **Consistency: thresholds and ignored anomalies**.
+Menu **TNG Suite > Stats & analyses**, sections **Consistency: data check** and **Consistency: thresholds and ignored anomalies**.
 
 ## Usage
 

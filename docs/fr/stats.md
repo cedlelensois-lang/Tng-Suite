@@ -4,7 +4,7 @@ Graphiques publics construits à partir de la base TNG : genre, vivants, naissan
 
 ## Dans l’administration
 
-Menu **TNG Suite > Analyses**, sections **Stats : réglages** et **Stats : graphiques**.
+Menu **TNG Suite > Stats & analyses**, sections **Stats : réglages** et **Stats : graphiques**.
 
 ![Statistiques & graphiques](../images/stats_chart.png)
 

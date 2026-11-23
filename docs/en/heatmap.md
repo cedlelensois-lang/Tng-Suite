@@ -4,7 +4,7 @@ Heat map of birth, baptism, marriage, death… places of the tree, with filters 
 
 ## In the admin
 
-Menu **TNG Suite > Analyses**, section **Places heatmap**.
+Menu **TNG Suite > Stats & analyses**, section **Places heatmap**.
 
 ![Places heatmap](../images/heatmap.png)
 

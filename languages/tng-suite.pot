@@ -1618,7 +1618,7 @@ msgstr ""
 msgid "TNG Suite > Général > Modules"
 msgstr ""
 
-msgid "TNG Suite > Analyses > Implexe : consanguinité"
+msgid "TNG Suite > Stats & analyses > Implexe : consanguinité"
 msgstr ""
 
 msgid "TNG Suite – Général"
@@ -3574,6 +3574,9 @@ msgstr ""
 msgid "Arbres & visualisations"
 msgstr ""
 
+msgid "Stats & analyses"
+msgstr ""
+
 msgid "Analyses"
 msgstr ""
 
@@ -3589,7 +3592,7 @@ msgstr ""
 msgid "Nuage de noms, anniversaires & individu au hasard"
 msgstr ""
 
-msgid "[tng_stat_genre] [tng_stat_vivants] [tng_stat_demi_siecle] [tng_stat_mois] … (TNG Suite > Analyses > Stats : graphiques)"
+msgid "[tng_stat_genre] [tng_stat_vivants] [tng_stat_demi_siecle] [tng_stat_mois] … (TNG Suite > Stats & analyses > Stats : graphiques)"
 msgstr ""
 
 msgid "(actuellement :"
@@ -4613,6 +4616,120 @@ msgid "Afficher le surnom TNG entre parenthèses après le prénom (Jean-Baptist
 msgstr ""
 
 msgid "(surnoms)"
+msgstr ""
+
+msgid "Afficher plus"
+msgstr ""
+
+msgid "Aucun patronyme ne correspond."
+msgstr ""
+
+msgid "Calcul relancé : la liste sera recalculée à la prochaine visite."
+msgstr ""
+
+msgid "Commune (1er élément du lieu)"
+msgstr ""
+
+msgid "Copie impossible : sélectionnez le texte à la main."
+msgstr ""
+
+msgid "Copier pour un forum"
+msgstr ""
+
+msgid "Copié dans le presse-papiers."
+msgstr ""
+
+msgid "Dates et lieux des personnes vivantes ou privées dans les lignes de la liste (nombre de personnes, dates minimale et maximale, lieux)."
+msgstr ""
+
+msgid "Département (2e élément du lieu)"
+msgstr ""
+
+msgid "Export désactivé."
+msgstr ""
+
+msgid "Export public"
+msgstr ""
+
+msgid "Exporter :"
+msgstr ""
+
+msgid "La liste flash donne, pour chaque patronyme de l’arbre, le nombre de personnes, la date minimale et la date maximale (naissances, mariages et décès) et les lieux avec leur intervalle de dates. Les variantes d’orthographe sont regroupées mais affichées. Elle sert à échanger avec d’autres généalogistes pour repérer des branches communes."
+msgstr ""
+
+msgid "Les lieux TNG sont du texte libre : on suppose « Commune, Département, Région, Pays » (les codes postaux sont ignorés)."
+msgstr ""
+
+msgid "Lieux par patronyme"
+msgstr ""
+
+msgid "Liste flash"
+msgstr ""
+
+msgid "Liste flash des patronymes"
+msgstr ""
+
+msgid "Liste flash indisponible :"
+msgstr ""
+
+msgid "Liste flash indisponible."
+msgstr ""
+
+msgid "Niveau des lieux"
+msgstr ""
+
+msgid "Patronyme"
+msgstr ""
+
+msgid "Patronymes minimum"
+msgstr ""
+
+msgid "Pays (dernier élément du lieu)"
+msgstr ""
+
+msgid "Personnes"
+msgstr ""
+
+msgid "Proposer les exports CSV, TXT et « Copier pour un forum » aux visiteurs."
+msgstr ""
+
+msgid "Recalculer"
+msgstr ""
+
+msgid "Regrouper les variantes d’orthographe (Lecoq, Lecocq…) ; elles restent affichées entre parenthèses."
+msgstr ""
+
+msgid "Région (3e élément du lieu)"
+msgstr ""
+
+msgid "Seuls les 25 premiers patronymes sont montrés ici."
+msgstr ""
+
+msgid "Utilisation"
+msgstr ""
+
+msgid "Variantes"
+msgstr ""
+
+msgid "dans une page ou un article. Attributs facultatifs :"
+msgstr ""
+
+msgid "lieux les plus fréquents conservés pour chaque patronyme."
+msgstr ""
+
+msgid "lignes affichées par page"
+msgstr ""
+
+msgid "patronymes"
+msgstr ""
+
+msgid "patronymes affichés"
+msgstr ""
+
+msgid "personnes : les patronymes portés par moins de personnes sont masqués (1 = tout afficher)."
+msgstr ""
+
+msgid "recherche et filtres"
 msgstr ""
 
 msgctxt "js"

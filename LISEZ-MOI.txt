@@ -55,10 +55,10 @@ INSTALLATION / MIGRATION
 LE MENU : CINQ ENTRÉES (depuis la 2.8.0)
  Le menu « TNG Suite » compte Général et quatre familles ; chaque ancienne sous-page est maintenant une section (barre en haut de la page) :
   - Arbres & visualisations : Arbres & descendance, Bouton vers la fiche, Frise chronologique, Éventail.
-  - Analyses : Statistiques & graphiques, Heatmap des lieux, Implexe & consanguinité, Cohérence des données.
+  - Stats & analyses : Statistiques & graphiques, Heatmap des lieux, Implexe & consanguinité, Liste flash des patronymes (shortcode [tng_flash] : patronymes, nombre de personnes, dates min/max et lieux ; recherche, filtres, export CSV/TXT), Cohérence des données.
   - Documents : Livre généalogique, Fiche & listes de documents.
   - Médias & widgets : Galerie de médias, Nuage de noms & anniversaires, Individu au hasard.
- Quand ce guide indique « TNG Suite > Analyses > Statistiques & graphiques » ou « TNG Suite > Documents > Livre généalogique », ouvrez l'onglet de la famille, puis la section du même nom.
+ Quand ce guide indique « TNG Suite > Stats & analyses > Statistiques & graphiques » ou « TNG Suite > Documents > Livre généalogique », ouvrez l'onglet de la famille, puis la section du même nom.
  « Bouton vers la fiche » est activé avec « Arbres & descendance », et « Individu au hasard » avec « Nuage de noms & anniversaires » : une case
  et un réglage « Vivants / privés » pour chaque couple. Les shortcodes et les réglages enregistrés ne changent pas.
 
@@ -117,7 +117,7 @@ VIVANTS / PRIVÉS : UN RÉGLAGE PAR MODULE (TNG Suite > Général > Modules)
  - Migration : si un ancien plugin affichait déjà les vivants, son module est repris sur « Afficher » (et signalé).
 
 
-STATISTIQUES : PERSONNALISER CHAQUE GRAPHIQUE (TNG Suite > Analyses > Statistiques & graphiques)
+STATISTIQUES : PERSONNALISER CHAQUE GRAPHIQUE (TNG Suite > Stats & analyses > Statistiques & graphiques)
 ------------------------------------------------------------------------------
  Pour chaque graphique : titre, type par défaut, remplacement de libellés (« Ancien = Nouveau », pour la légende
  et le tableau), titres d'axes, position de la légende (ou masquée), note, et couleurs.
@@ -365,12 +365,12 @@ NOUVEAUX MODULES : POINTS D'ATTENTION
    TNG Suite > Général > Modules > Livre généalogique > « Afficher (⚠️ RGPD) ». L'arbre et le préfixe viennent des
    réglages communs ; le dossier de TNG sur le disque est déduit de l'URL de TNG s'il est laissé vide.
    PDF direct : mPDF est inclus dans le plugin (modules/book/vendor/) ; s'il a été supprimé, « composer install --no-dev » dans modules/book/ le remet (sinon page imprimable).
- - Implexe & consanguinité (TNG Suite > Analyses > Implexe & consanguinité : analyse / consanguinité / réglages) : le masquage des vivants
+ - Implexe & consanguinité (TNG Suite > Stats & analyses > Implexe & consanguinité : analyse / consanguinité / réglages) : le masquage des vivants
    suit la case commune. Le calcul de consanguinité écrit dans une table de la base WordPress
    (<préfixe WP>tngi_inbreeding), supprimée à la désinstallation de la suite. Chart.js et vis-network sont chargés
    depuis libs/ s'ils y sont, sinon depuis cdnjs.cloudflare.com (l'adresse IP du visiteur est alors transmise à ce CDN).
 
- - Cohérence des données (TNG Suite > Analyses > Cohérence : contrôle des données / seuils et anomalies ignorées) : contrôle en lecture
+ - Cohérence des données (TNG Suite > Stats & analyses > Cohérence : contrôle des données / seuils et anomalies ignorées) : contrôle en lecture
    seule (jamais d'écriture dans la base TNG) réservé aux administrateurs : dates impossibles, âges, sexe, structure des familles,
    noms, lieux et doublons possibles avec un score. L'analyse se lance à la main, par lots avec barre de progression. Les résultats
    (noms, identifiants et dates, y compris de personnes vivantes) sont stockés dans deux tables de la base WordPress

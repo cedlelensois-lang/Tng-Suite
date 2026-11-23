@@ -31,7 +31,7 @@ Menu **TNG Suite > Général**.
 1. Choisissez le mode de connexion et renseignez la base TNG ; vérifiez le **Diagnostic**.
 2. Indiquez l’URL de TNG, le préfixe des tables et l’arbre par défaut.
 3. Choisissez la langue et le réglage Vivants / privés (laissez « Masquer » sauf besoin précis).
-4. Activez les modules voulus : chacun apparaît dans le menu de sa famille (Arbres & visualisations, Analyses, Documents, Médias & widgets).
+4. Activez les modules voulus : chacun apparaît dans le menu de sa famille (Arbres & visualisations, Stats & analyses, Documents, Médias & widgets).
 5. Enregistrez.
 
 ## Remarques

@@ -10,7 +10,7 @@ The **TNG Suite** menu has five entries: **General** and four families. Each for
 |---|---|
 | General | connection, shared settings, modules, maintenance |
 | Trees & visualisations | Trees & descendants, Record link button, Timeline, Fan / kinship wheel |
-| Analyses | Statistics & charts, Places heatmap, Implex & inbreeding, Data consistency |
+| Stats & analyses | Statistics & charts, Places heatmap, Implex & inbreeding, Surname flash list, Data consistency |
 | Documents | Family book, Individual sheet & document lists |
 | Media & widgets | Media gallery, Name cloud & birthdays, Random individual |
 
@@ -22,10 +22,11 @@ The **TNG Suite** menu has five entries: **General** and four families. Each for
   - [Record link button](link.md)
   - [Timeline](timeline.md)
   - [Fan / kinship wheel](fan.md)
-- **Analyses**
+- **Stats & analyses**
   - [Statistics & charts](stats.md)
   - [Places heatmap](heatmap.md)
   - [Implex & inbreeding](implexe.md)
+  - [Surname flash list](flash.md)
   - [Data consistency](coherence.md) (administrators)
 - **Documents**
   - [Family book](book.md)
@@ -46,6 +47,7 @@ The **TNG Suite** menu has five entries: **General** and four families. Each for
 | [Statistics & charts](stats.md) | `[tng_stat stat="…"]` and `[tng_stat_centenaires]` `[tng_stat_genre]` `[tng_stat_vivants]` `[tng_stat_age_union]` `[tng_stat_esperance]` `[tng_stat_pyramide]` `[tng_stat_distance]` `[tng_stat_demi_siecle]` `[tng_stat_mois]` `[tng_stat_villes]` `[tng_stat_metiers]` |
 | [Places heatmap](heatmap.md) | `[tng_heatmap]` |
 | [Implex & inbreeding](implexe.md) | `[tng_implexe]` `[tng_consanguinite]` |
+| [Surname flash list](flash.md) | `[tng_flash]` |
 | [Data consistency](coherence.md) | none (administration page reserved for administrators) |
 | [Family book](book.md) | `[tng_book]` |
 | [Individual sheet & document lists](fiche.md) | `[tng_listes]` `[tng_fiche]` |

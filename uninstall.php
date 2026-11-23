@@ -25,6 +25,8 @@ $options = array(
     'tri_photo_dir', 'tri_cache_minutes', 'tri_show_photo', 'tri_show_name', 'tri_show_dates', 'tri_avatar', 'tri_cache_version',
     // Extra
     'tng_exsc_gen',
+    // Liste flash
+    'tngflash_options', 'tngflash_gen',
     // Fiche généalogique (bouton / panneau)
     'tngfg_options',
     // Éventail
@@ -66,7 +68,7 @@ if ( function_exists( 'wp_unschedule_hook' ) ) {
 
 // Transients dont le nom est un préfixe + empreinte (on ne touche qu'aux nôtres).
 global $wpdb;
-$like_prefixes = array( 'tng_mg_', 'tri_ids_', 'tri_col_', 'tngft_', 'tng_exsc_', 'tngi_', 'tngstats_', 'tngfan_' );
+$like_prefixes = array( 'tng_mg_', 'tri_ids_', 'tri_col_', 'tngft_', 'tng_exsc_', 'tngi_', 'tngstats_', 'tngfan_', 'tngflash_' );
 foreach ( $like_prefixes as $p ) {
     $wpdb->query( $wpdb->prepare(
         "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",

@@ -207,11 +207,12 @@ function tngs_modules() {
         'timeline' => array( 'Frise chronologique', '[tng_timeline]', 'Événements des personnes vivantes ou privées dans la frise.' ),
         'heatmap'  => array( 'Heatmap des lieux', '[tng_heatmap]', 'Lieux et dates des personnes vivantes ou privées dans la carte.' ),
         'fan'      => array( 'Éventail / roue de parenté', '[tng_fan person="I1"] [tng_roue]', 'Noms, dates et lieux des personnes vivantes ou privées dans le graphique. Le paramètre living="show" du shortcode permet de les afficher sur une roue précise, sauf si « Toujours masquer » est choisi ici.' ),
-        'stats'    => array( 'Statistiques & graphiques', '[tng_stat_genre] [tng_stat_vivants] [tng_stat_demi_siecle] [tng_stat_mois] … (TNG Suite > Analyses > Stats : graphiques)', 'Seuls des totaux sont publiés : « Masquer » cache le nom des personnes privées dans la liste des centenaires.' ),
+        'stats'    => array( 'Statistiques & graphiques', '[tng_stat_genre] [tng_stat_vivants] [tng_stat_demi_siecle] [tng_stat_mois] … (TNG Suite > Stats & analyses > Stats : graphiques)', 'Seuls des totaux sont publiés : « Masquer » cache le nom des personnes privées dans la liste des centenaires.' ),
         'gallery'  => array( 'Galerie de médias', '[tng_media_gallery]', 'Médias liés à des personnes vivantes ou privées.' ),
         'random'   => array( 'Individu au hasard', '[tng_random_individual]', 'Tirage au sort parmi les personnes vivantes ou privées.' ),
         'extra'    => array( 'Nuage de noms & anniversaires', '[tng_name_cloud] [tng_births_today] [tng_marriages_today] [tng_deaths_today] [tng_recent_updates]', 'Noms de famille et anniversaires du jour des personnes vivantes ou privées.' ),
         'implexe'  => array( 'Implexe & consanguinité', '[tng_implexe] [tng_consanguinite]', 'Noms des personnes vivantes ou privées dans les graphes et les listes.' ),
+        'flash'    => array( 'Liste flash des patronymes', '[tng_flash]', 'Dates et lieux des personnes vivantes ou privées dans les lignes de la liste (nombre de personnes, dates minimale et maximale, lieux).' ),
         'coherence' => array( 'Cohérence des données', '(aucun shortcode : page d’administration réservée aux administrateurs)', null ),
         'book'     => array( 'Livre généalogique', '[tng_book] (et génération depuis l\'administration)', 'Personnes vivantes ou privées dans le livre (noms, dates, photos).' ),
         'fiche'    => array( 'Fiche & listes de documents', '[tng_listes]', 'Noms et dates des personnes vivantes ou privées dans les listes et les fiches individuelles.' ),
@@ -265,7 +266,7 @@ function tngs_modules_ui() {
 function tngs_families() {
     return array(
         'trees'   => array( 'Arbres & visualisations', array( 'tree', 'link', 'timeline', 'fan' ) ),
-        'analyse' => array( 'Analyses', array( 'stats', 'heatmap', 'implexe', 'coherence' ) ),
+        'analyse' => array( 'Stats & analyses', array( 'stats', 'heatmap', 'implexe', 'flash', 'coherence' ) ),
         'docs'    => array( 'Documents', array( 'book', 'fiche' ) ),
         'media'   => array( 'Médias & widgets', array( 'gallery', 'extra', 'random' ) ),
     );

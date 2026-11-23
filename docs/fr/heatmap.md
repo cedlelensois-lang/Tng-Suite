@@ -4,7 +4,7 @@ Carte de chaleur des lieux de naissance, baptême, mariage, décès… de l’ar
 
 ## Dans l’administration
 
-Menu **TNG Suite > Analyses**, section **Heatmap des lieux**.
+Menu **TNG Suite > Stats & analyses**, section **Heatmap des lieux**.
 
 ![Heatmap des lieux](../images/heatmap.png)
 

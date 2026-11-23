@@ -56,10 +56,10 @@ DON'T FORGET
 THE MENU: FIVE ENTRIES (since 2.8.0)
  The "TNG Suite" menu has General plus four families; every former sub-page is now a section (bar at the top of the page):
   - Trees & visualisations: Trees & descendants, Record link button, Timeline, Fan chart.
-  - Analyses: Statistics & charts, Places heatmap, Implex & inbreeding, Data consistency.
+  - Stats & analyses: Statistics & charts, Places heatmap, Implex & inbreeding, Surname flash list (shortcode [tng_flash]: surnames, number of people, min/max dates and places; search, filters, CSV/TXT export), Data consistency.
   - Documents: Family book, Fiche & document lists.
   - Media & widgets: Media gallery, Name cloud & birthdays, Random individual.
- Where this guide says "TNG Suite > Analyses > Statistics & charts" or "TNG Suite > Documents > Family book", open the family tab, then the section of that name.
+ Where this guide says "TNG Suite > Stats & analyses > Statistics & charts" or "TNG Suite > Documents > Family book", open the family tab, then the section of that name.
  "Record link button" is switched on with "Trees & descendants", and "Random individual" with "Name cloud & birthdays": one box and
  one "Living / private" setting for each pair. Shortcodes and saved settings are unchanged.
 
@@ -118,7 +118,7 @@ LIVING / PRIVATE PEOPLE: ONE SETTING PER MODULE (TNG Suite > General > Modules)
  - Migration: if an old plugin was already showing living people, its module is imported as "Show" (and flagged).
 
 
-STATISTICS: CUSTOMISE EACH CHART (TNG Suite > Analyses > Statistics & charts)
+STATISTICS: CUSTOMISE EACH CHART (TNG Suite > Stats & analyses > Statistics & charts)
 ------------------------------------------------------------
  For each chart: title, default type, label replacement ("Old = New", for the legend and the table), axis titles,
  legend position (or hidden), note, and colours.
@@ -367,13 +367,13 @@ NEW MODULES: THINGS TO KNOW
    TNG Suite > General > Modules > Family book > "Show (⚠️ GDPR)". The tree and the prefix come from the shared
    settings; the TNG folder on disk is derived from the TNG URL if left empty.
    Direct PDF: mPDF is included in the plugin (modules/book/vendor/); if it was removed, "composer install --no-dev" in modules/book/ restores it (otherwise a printable page).
- - Implex & inbreeding (TNG Suite > Analyses > Implex & inbreeding: analysis / inbreeding / settings): the hiding of living people
+ - Implex & inbreeding (TNG Suite > Stats & analyses > Implex & inbreeding: analysis / inbreeding / settings): the hiding of living people
    follows the shared box. The inbreeding calculation writes to a table of the WordPress database
    (<WP prefix>tngi_inbreeding), which is removed when the suite is uninstalled. Chart.js and vis-network are
    loaded from libs/ if present, otherwise from cdnjs.cloudflare.com (the visitor's IP address is then sent to
    that CDN).
 
- - Data consistency (TNG Suite > Analyses > Consistency: data check / thresholds and ignored anomalies): read-only check (never
+ - Data consistency (TNG Suite > Stats & analyses > Consistency: data check / thresholds and ignored anomalies): read-only check (never
    writes to the TNG database) reserved for administrators: impossible dates, ages, sex, family structure, names, places and
    possible duplicates with a score. The analysis is started by hand, in batches with a progress bar. The results (names,
    identifiers and dates, including living people) are stored in two tables of the WordPress database (<WP prefix>tngs_coh_res

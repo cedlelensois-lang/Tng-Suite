@@ -4,7 +4,7 @@ Analyse de l’implexe (ancêtres qui apparaissent plusieurs fois) et de la cons
 
 ## Dans l’administration
 
-Menu **TNG Suite > Analyses**, sections **Implexe : analyse**, **Implexe : consanguinité** et **Implexe : réglages**.
+Menu **TNG Suite > Stats & analyses**, sections **Implexe : analyse**, **Implexe : consanguinité** et **Implexe : réglages**.
 
 ![Implexe & consanguinité](../images/implex.png)
 

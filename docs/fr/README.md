@@ -10,7 +10,7 @@ Le menu **TNG Suite** compte cinq entrées : **Général** et quatre familles. C
 |---|---|
 | Général | connexion, réglages communs, modules, maintenance |
 | Arbres & visualisations | Arbres & descendance, Bouton vers la fiche, Frise chronologique, Éventail / roue de parenté |
-| Analyses | Statistiques & graphiques, Heatmap des lieux, Implexe & consanguinité, Cohérence des données |
+| Stats & analyses | Statistiques & graphiques, Heatmap des lieux, Implexe & consanguinité, Liste flash des patronymes, Cohérence des données |
 | Documents | Livre généalogique, Fiche & listes de documents |
 | Médias & widgets | Galerie de médias, Nuage de noms & anniversaires, Individu au hasard |
 
@@ -22,10 +22,11 @@ Le menu **TNG Suite** compte cinq entrées : **Général** et quatre familles. C
   - [Bouton vers la fiche](link.md)
   - [Frise chronologique](timeline.md)
   - [Éventail / roue de parenté](fan.md)
-- **Analyses**
+- **Stats & analyses**
   - [Statistiques & graphiques](stats.md)
   - [Heatmap des lieux](heatmap.md)
   - [Implexe & consanguinité](implexe.md)
+  - [Liste flash des patronymes](flash.md)
   - [Cohérence des données](coherence.md) (administrateurs)
 - **Documents**
   - [Livre généalogique](book.md)
@@ -46,6 +47,7 @@ Le menu **TNG Suite** compte cinq entrées : **Général** et quatre familles. C
 | [Statistiques & graphiques](stats.md) | `[tng_stat stat="…"]` et `[tng_stat_centenaires]` `[tng_stat_genre]` `[tng_stat_vivants]` `[tng_stat_age_union]` `[tng_stat_esperance]` `[tng_stat_pyramide]` `[tng_stat_distance]` `[tng_stat_demi_siecle]` `[tng_stat_mois]` `[tng_stat_villes]` `[tng_stat_metiers]` |
 | [Heatmap des lieux](heatmap.md) | `[tng_heatmap]` |
 | [Implexe & consanguinité](implexe.md) | `[tng_implexe]` `[tng_consanguinite]` |
+| [Liste flash des patronymes](flash.md) | `[tng_flash]` |
 | [Cohérence des données](coherence.md) | aucun (page d’administration réservée aux administrateurs) |
 | [Livre généalogique](book.md) | `[tng_book]` |
 | [Fiche & listes de documents](fiche.md) | `[tng_listes]` `[tng_fiche]` |

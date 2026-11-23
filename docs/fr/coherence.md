@@ -4,7 +4,7 @@ Contrôle de votre arbre TNG : dates impossibles ou incohérentes, âges, sexe, 
 
 ## Dans l’administration
 
-Menu **TNG Suite > Analyses**, sections **Cohérence : contrôle des données** et **Cohérence : seuils et anomalies ignorées**.
+Menu **TNG Suite > Stats & analyses**, sections **Cohérence : contrôle des données** et **Cohérence : seuils et anomalies ignorées**.
 
 ## Utilisation
 

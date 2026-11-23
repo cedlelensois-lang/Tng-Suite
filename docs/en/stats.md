@@ -4,7 +4,7 @@ Public charts built from the TNG database: gender, living, births and deaths per
 
 ## In the admin
 
-Menu **TNG Suite > Analyses**, sections **Stats: settings** and **Stats: charts**.
+Menu **TNG Suite > Stats & analyses**, sections **Stats: settings** and **Stats: charts**.
 
 ![Statistics & charts](../images/stats_chart.png)
 

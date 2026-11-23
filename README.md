@@ -15,7 +15,7 @@ Licence : GPLv2 ou ultérieure. Prérequis : WordPress 5.8+, PHP 7.4+ (code cont
 | Famille (menu **TNG Suite**) | Modules |
 |---|---|
 | Arbres & visualisations | [Arbres & descendance](docs/fr/trees.md), [Bouton vers la fiche](docs/fr/link.md), [Frise chronologique](docs/fr/timeline.md), [Éventail / roue de parenté](docs/fr/fan.md) |
-| Analyses | [Statistiques & graphiques](docs/fr/stats.md), [Heatmap des lieux](docs/fr/heatmap.md), [Implexe & consanguinité](docs/fr/implexe.md), [Cohérence des données](docs/fr/coherence.md) |
+| Stats & analyses | [Statistiques & graphiques](docs/fr/stats.md), [Heatmap des lieux](docs/fr/heatmap.md), [Implexe & consanguinité](docs/fr/implexe.md), [Liste flash des patronymes](docs/fr/flash.md), [Cohérence des données](docs/fr/coherence.md) |
 | Documents | [Livre généalogique](docs/fr/book.md), [Fiche & listes de documents](docs/fr/fiche.md) |
 | Médias & widgets | [Galerie de médias](docs/fr/gallery.md), [Nuage de noms & anniversaires](docs/fr/extra.md), [Individu au hasard](docs/fr/random.md) |
 
@@ -76,7 +76,7 @@ License: GPLv2 or later. Requirements: WordPress 5.8+, PHP 7.4+ (code checked fr
 | Family (**TNG Suite** menu) | Modules |
 |---|---|
 | Trees & visualisations | [Trees & descendants](docs/en/trees.md), [Record link button](docs/en/link.md), [Timeline](docs/en/timeline.md), [Fan / kinship wheel](docs/en/fan.md) |
-| Analyses | [Statistics & charts](docs/en/stats.md), [Places heatmap](docs/en/heatmap.md), [Implex & inbreeding](docs/en/implexe.md), [Data consistency](docs/en/coherence.md) |
+| Stats & analyses | [Statistics & charts](docs/en/stats.md), [Places heatmap](docs/en/heatmap.md), [Implex & inbreeding](docs/en/implexe.md), [Surname flash list](docs/en/flash.md), [Data consistency](docs/en/coherence.md) |
 | Documents | [Family book](docs/en/book.md), [Individual sheet & document lists](docs/en/fiche.md) |
 | Media & widgets | [Media gallery](docs/en/gallery.md), [Name cloud & birthdays](docs/en/extra.md), [Random individual](docs/en/random.md) |
 
