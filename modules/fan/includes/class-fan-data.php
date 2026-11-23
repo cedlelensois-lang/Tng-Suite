@@ -19,6 +19,7 @@ class TNGFan_Data {
 	private $hide;
 	private $noParentOrder = false;
 	private $hasPrefix = null;
+	private $hasNick   = null;
 	public $truncated = false;
 	public $truncatedAnc  = false;
 	public $truncatedDesc = false;
@@ -155,6 +156,31 @@ class TNGFan_Data {
 		return $this->hasPrefix;
 	}
 
+	private function has_nick() {
+		if ( null === $this->hasNick ) {
+			$r             = $this->db->get_results( "SHOW COLUMNS FROM {$this->t('people')} LIKE 'nickname'" );
+			$this->hasNick = ! empty( $r );
+		}
+		return $this->hasNick;
+	}
+
+	/** Surnom TNG sans guillemets ni parenthèses ; vide s'il n'est qu'un des prénoms. */
+	private static function nick( $nick, $first ) {
+		$n = trim( (string) $nick, " \t\n\r\"'“”«»()" );
+		if ( '' === $n ) {
+			return '';
+		}
+		$norm = function ( $x ) {
+			return trim( preg_replace( '/[^a-z0-9]+/', ' ', strtolower( remove_accents( (string) $x ) ) ) );
+		};
+		$nn = $norm( $n );
+		$ff = $norm( $first );
+		if ( '' === $nn || $nn === $ff || in_array( $nn, preg_split( '/\s+/', $ff ), true ) ) {
+			return '';
+		}
+		return $n;
+	}
+
 	/** Date abrégée : année, date numérique complète et texte d'origine. */
 	private static function dates( $tr, $raw ) {
 		$tr  = (string) $tr;
@@ -176,7 +202,7 @@ class TNGFan_Data {
 		$out = array();
 		$ids = array_values( array_unique( $ids ) );
 		foreach ( array_chunk( $ids, 400 ) as $chunk ) {
-			$pre  = $this->has_prefix() ? ', lnprefix' : '';
+			$pre  = ( $this->has_prefix() ? ', lnprefix' : '' ) . ( $this->has_nick() ? ', nickname' : '' );
 			$rows = $this->rows(
 				"SELECT personID, firstname, lastname{$pre}, sex, birthdate, birthdatetr, birthplace, deathdate, deathdatetr, deathplace, living, private FROM {$this->t('people')} WHERE gedcom = %s AND personID IN (" . $this->in( $chunk ) . ')',
 				array_merge( array( $this->tree ), $this->idv( $chunk ) )
@@ -194,6 +220,7 @@ class TNGFan_Data {
 				$out[ $r['personID'] ] = array(
 					'ln' => $ln,
 					'fn' => trim( (string) $r['firstname'] ),
+					'nn' => self::nick( isset( $r['nickname'] ) ? $r['nickname'] : '', $r['firstname'] ),
 					's'  => ( 'M' === $sex || 'F' === $sex ) ? $sex : '',
 					'by' => $by,
 					'bf' => $bf,

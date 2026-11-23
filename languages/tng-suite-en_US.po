@@ -4573,6 +4573,48 @@ msgstr "Indicative preview (sample title): the drawn illustrations use the book�
 msgid "Pochette pleine page (PDF) : campagne espagnole, chêne ensoleillé, herbes sèches dorées et ciel profond, texte sur fond blanc"
 msgstr "Full-page cover (PDF): Spanish countryside, sunlit oak, golden dry grass and deep sky, text on a white panel"
 
+msgid "Sépia (parchemin)"
+msgstr "Sepia (parchment)"
+
+msgid "Héritage (bleu, bordeaux, or)"
+msgstr "Heritage (blue, burgundy, gold)"
+
+msgid "Automne"
+msgstr "Autumn"
+
+msgid "Coucher de soleil"
+msgstr "Sunset"
+
+msgid "Côte (turquoise et sable)"
+msgstr "Coast (turquoise and sand)"
+
+msgid "Printemps (pastels)"
+msgstr "Spring (pastels)"
+
+msgid "Camaïeu de verts"
+msgstr "Shades of green"
+
+msgid "Camaïeu de rouges"
+msgstr "Shades of red"
+
+msgid "Camaïeu de violets"
+msgstr "Shades of purple"
+
+msgid "Bleu et rose (idéale « selon le sexe »)"
+msgstr "Blue and pink (ideal for “by sex”)"
+
+msgid "Surnoms"
+msgstr "Nicknames"
+
+msgid "Afficher les surnoms"
+msgstr "Show nicknames"
+
+msgid "Afficher le surnom TNG entre guillemets après le prénom (« Jean-Baptiste « Baptiste » »)"
+msgstr "Show the TNG nickname in quotation marks after the first name (“Jean-Baptiste « Baptiste »”)"
+
+msgid "(surnoms)"
+msgstr "(nicknames)"
+
 msgctxt "js"
 msgid " Page "
 msgstr " Page "
@@ -5416,4 +5458,8 @@ msgstr "the other boxes have very small or truncated text: choose a larger sheet
 msgctxt "js"
 msgid "un PNG est limité en pixels : pour tout le détail, préférez le PDF (zoomable)."
 msgstr "a PNG is limited in pixels: for full detail, prefer the PDF (zoomable)."
+
+msgctxt "js"
+msgid "Surnoms"
+msgstr "Nicknames"
 

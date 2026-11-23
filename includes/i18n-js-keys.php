@@ -215,4 +215,5 @@ return array (
   208 => 'les autres cases ont un texte très petit : il est complet, à lire en zoomant (PDF).',
   209 => 'les autres cases ont un texte très petit ou tronqué : choisissez une feuille plus grande.',
   210 => 'un PNG est limité en pixels : pour tout le détail, préférez le PDF (zoomable).',
+  211 => 'Surnoms',
 );

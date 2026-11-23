@@ -218,4 +218,5 @@ return array(
 	'les autres cases ont un texte très petit : il est complet, à lire en zoomant (PDF).' => 'the other boxes have very small text: it is complete, to be read by zooming in (PDF).',
 	'les autres cases ont un texte très petit ou tronqué : choisissez une feuille plus grande.' => 'the other boxes have very small or truncated text: choose a larger sheet.',
 	'un PNG est limité en pixels : pour tout le détail, préférez le PDF (zoomable).' => 'a PNG is limited in pixels: for full detail, prefer the PDF (zoomable).',
+	'Surnoms' => 'Nicknames',
 );

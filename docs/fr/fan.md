@@ -15,7 +15,7 @@ Menu **TNG Suite > Arbres & visualisations**, sections **Éventail : générer u
 | Personne de départ par défaut | Identifiant TNG utilisé quand `person` n’est pas indiqué. |
 | Type / Générations | Ascendants, descendants ou mixte ; nombre de générations (ascendants jusqu’à 12, descendants jusqu’au plafond réglé). |
 | Forme / Hauteur | Cercle complet, trois quarts ou demi-cercle ; hauteur en pixels. |
-| Coloration / Style / Palette | Par génération, par branche ou par sexe ; teinte légère ou plein ; palette (Arc-en-ciel, Classique, Pastel, Vive, Daltonien, Camaïeu de bleus, Terre, Gris) ou palette personnalisée. |
+| Coloration / Style / Palette | Par génération, par branche ou par sexe ; teinte légère ou plein ; palette (Arc-en-ciel, Classique, Pastel, Vive, Daltonien, Camaïeu de bleus, Terre, Gris, et 10 palettes généalogiques : Sépia, Héritage, Automne, Coucher de soleil, Côte, Printemps, Camaïeux de verts / rouges / violets, Bleu et rose — cette dernière est faite pour la coloration « par sexe » : les deux premières couleurs servent aux hommes et aux femmes ; les camaïeux se prêtent bien à « par génération ») ou palette personnalisée. |
 | Contenu : dates, lieux, prénoms, style des textes, conjoints, zoom, ancêtres inconnus | Années / dates complètes / aucune ; lieux (aucun, commune, complet) ; premier prénom ou tous ; symboles (° †) ou lettres (N : D : M :) ; affichage des conjoints ; texte qui s’enrichit au zoom ; cases vides pour les ancêtres inconnus. |
 | Qui peut voir le graphique | Tout le monde, utilisateurs connectés ou administrateurs. |
 | Cache (minutes) | Durée de mise en cache des données de la roue (30 par défaut). |
@@ -58,6 +58,7 @@ Alias français de `[tng_fan]`.
 | spouses | 1 / 0 | réglage | Afficher les conjoints. |
 | living | default, hide, show | default | `hide` masque les vivants ; `show` les affiche seulement si Général l’autorise. |
 | zoomdetail | 1 / 0 | réglage | Texte enrichi au zoom. |
+| nicknames | 1 / 0 | réglage | Affiche le surnom TNG entre guillemets après le prénom (« Jean « Titi » ») ; ignoré s’il n’est qu’un des prénoms. Aussi dans le panneau (case « Surnoms ») et dans l’export PDF/PNG. |
 | labels | symbols, letters | réglage | Symboles (° †) ou lettres. |
 | pdf | 1 / 0 | 1 | Bouton d’export (PDF ou PNG). |
 | controls | 1 / 0 | 1 | Boutons de zoom / navigation. |

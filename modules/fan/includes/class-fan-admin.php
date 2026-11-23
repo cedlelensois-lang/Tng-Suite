@@ -42,6 +42,7 @@ class TNGFan_Admin {
 			'show_empty'     => 0,
 			'spouses'        => 1,             // afficher les conjoints
 			'zoomdetail'     => 1,             // le texte s'enrichit au zoom
+			'nicknames'      => 0,             // afficher le surnom TNG après le prénom
 			'height'         => 720,
 			'cache_minutes'  => 30,
 			'access'         => 'all',         // all | logged | admin
@@ -63,6 +64,16 @@ class TNGFan_Admin {
 			'colorblind' => array( 'Daltonien (Okabe-Ito)', array( '#0072b2', '#e69f00', '#009e73', '#d55e00', '#cc79a7', '#56b4e9', '#f0e442', '#000000' ) ),
 			'blues'      => array( 'Camaïeu de bleus', array( '#0b3c5d', '#1d6fa5', '#328cc1', '#5aa9d6', '#8cc5e8', '#b9dcf2', '#d9ecf9', '#eef6fc' ) ),
 			'earth'      => array( 'Terre', array( '#7f5539', '#b08968', '#ddb892', '#9c6644', '#606c38', '#a3b18a', '#588157', '#e6ccb2' ) ),
+			'sepia' => array( 'Sépia (parchemin)', array( '#5b3a1e', '#8a5a2b', '#b07d3e', '#c9a063', '#dcc08e', '#9c6b4a', '#7a4e2d', '#e6d3a8' ) ),
+			'heritage' => array( 'Héritage (bleu, bordeaux, or)', array( '#1f3a5f', '#7b2d3b', '#c9a227', '#2f5d50', '#5b3a6e', '#b5651d', '#4a6572', '#8c6a5d' ) ),
+			'autumn' => array( 'Automne', array( '#7f1d1d', '#b91c1c', '#dd6b20', '#f59e0b', '#d4a017', '#8a6d3b', '#a0522d', '#556b2f' ) ),
+			'sunset' => array( 'Coucher de soleil', array( '#3d1f56', '#7b2d6e', '#c2406a', '#ef6b50', '#f89b3f', '#fcc85a', '#fde8a0' ) ),
+			'coast' => array( 'Côte (turquoise et sable)', array( '#264653', '#2a9d8f', '#8ab17d', '#e9c46a', '#f4a261', '#e76f51' ) ),
+			'spring' => array( 'Printemps (pastels)', array( '#f7a8b8', '#f9c784', '#c9e4a5', '#8fd3c1', '#9fc5f8', '#c5b0e8', '#f4d6e8', '#e3f0b8' ) ),
+			'greens' => array( 'Camaïeu de verts', array( '#1b4332', '#2d6a4f', '#40916c', '#52b788', '#74c69d', '#95d5b2', '#b7e4c7', '#d8f3dc' ) ),
+			'reds' => array( 'Camaïeu de rouges', array( '#5f0f1e', '#8b1a2b', '#b3262f', '#d64545', '#e87a7a', '#f2a9a9', '#f8cccc', '#fce8e8' ) ),
+			'purples' => array( 'Camaïeu de violets', array( '#2e1a47', '#4b2a7b', '#6d3fa0', '#8e5bc0', '#ab7fd6', '#c7a6e6', '#ddc8f0', '#efe4f8' ) ),
+			'bluepink' => array( 'Bleu et rose (idéale « selon le sexe »)', array( '#3b82c4', '#e0699b', '#7a8794', '#9aa0a6' ) ),
 			'greys'      => array( 'Gris', array( '#111827', '#374151', '#6b7280', '#9ca3af', '#d1d5db' ) ),
 		);
 	}
@@ -145,6 +156,7 @@ class TNGFan_Admin {
 		$o['show_empty']    = empty( $in['show_empty'] ) ? 0 : 1;
 		$o['spouses']       = empty( $in['spouses'] ) ? 0 : 1;
 		$o['zoomdetail']    = empty( $in['zoomdetail'] ) ? 0 : 1;
+		$o['nicknames']     = empty( $in['nicknames'] ) ? 0 : 1;
 		$o['height']        = max( 360, min( 1600, (int) ( isset( $in['height'] ) ? $in['height'] : $d['height'] ) ) );
 		$o['cache_minutes'] = max( 0, min( 1440, (int) ( isset( $in['cache_minutes'] ) ? $in['cache_minutes'] : $d['cache_minutes'] ) ) );
 
@@ -205,7 +217,7 @@ class TNGFan_Admin {
 			<p class="tngs-box">Insérez le shortcode <code>[tng_fan person="I1"]</code> dans une page. Options facultatives :
 				<code>mode="ancestors|descendants|mixed"</code>, <code>asc="6"</code>, <code>desc="4"</code>, <code>shape="full|three|half"</code>,
 				<code>color="generation|branch|sex"</code>, <code>palette="rainbow"</code>, <code>colors="#ff0000,#00ff00"</code>, <code>style="tint|solid"</code>,
-				<code>spouses="1|0"</code> (conjoints), <code>living="default|hide|show"</code> (personnes vivantes : voir l'avertissement du générateur), <code>zoomdetail="1|0"</code> (texte enrichi au zoom), <code>pdf="1|0"</code> (bouton d'export PDF),
+				<code>spouses="1|0"</code> (conjoints), <code>living="default|hide|show"</code> (personnes vivantes : voir l'avertissement du générateur), <code>nicknames="1|0"</code> (surnoms), <code>zoomdetail="1|0"</code> (texte enrichi au zoom), <code>pdf="1|0"</code> (bouton d'export PDF),
 				<code>height="720"</code>, <code>controls="0"</code> (masquer le panneau d'options), <code>tree="…"</code>.
 				Vous pouvez aussi <a href="<?php echo esc_url( tngs_page_url( 'tng-fan-gen' ) ); ?>">générer la roue directement depuis l'administration</a>.</p>
 
@@ -268,6 +280,8 @@ class TNGFan_Admin {
 						<td><?php self::select( 'places', $o['places'], array( 'none' => 'Aucun', 'commune' => 'Commune seule', 'full' => 'Lieu complet' ) ); ?></td></tr>
 					<tr><th scope="row">Prénoms</th>
 						<td><?php self::select( 'firstnames', $o['firstnames'], array( 'usual' => 'Prénom usuel (le premier)', 'all' => 'Tous les prénoms' ) ); ?></td></tr>
+					<tr><th scope="row">Surnoms</th>
+						<td><label><input type="checkbox" name="<?php echo esc_attr( $n ); ?>[nicknames]" value="1" <?php checked( 1, (int) $o['nicknames'] ); ?>> Afficher le surnom TNG entre guillemets après le prénom (« Jean-Baptiste « Baptiste » »)</label></td></tr>
 					<tr><th>Style des textes</th>
 						<td><?php self::select( 'labels', $o['labels'], array( 'symbols' => '° naissance, † décès, x mariage', 'letters' => 'N : naissance, D : décès, M : mariage (style Heredis)' ) ); ?></td></tr>
 					<tr><th scope="row">Conjoints</th>
@@ -327,6 +341,7 @@ class TNGFan_Admin {
 			'height'     => max( 360, min( 1600, (int) ( isset( $in['height'] ) ? $in['height'] : 720 ) ) ),
 			'spouses'    => empty( $in['spouses'] ) ? 0 : 1,
 			'zoomdetail' => empty( $in['zoomdetail'] ) ? 0 : 1,
+			'nicknames'  => empty( $in['nicknames'] ) ? 0 : 1,
 			'pdf'        => empty( $in['pdf'] ) ? 0 : 1,
 		);
 		update_option( self::GEN_OPT, $out, false );
@@ -352,7 +367,7 @@ class TNGFan_Admin {
 			'defs'    => array(
 				'mode' => $base['mode'], 'asc' => $base['asc'], 'desc' => $base['desc'], 'shape' => $base['shape'], 'color' => $base['color'],
 				'style' => $base['style'], 'palette' => $base['palette'], 'dates' => $base['dates'], 'places' => $base['places'],
-				'spouses' => $base['spouses'], 'zoomdetail' => $base['zoomDetail'], 'height' => (int) $o['height'],
+				'spouses' => $base['spouses'], 'zoomdetail' => $base['zoomDetail'], 'nicknames' => $base['nicknames'], 'height' => (int) $o['height'],
 			),
 			'ajax'    => admin_url( 'admin-ajax.php' ),
 			'nonce'   => wp_create_nonce( 'tngfan_gen_save' ),
@@ -374,6 +389,9 @@ class TNGFan_Admin {
 		}
 		if ( isset( $sv['zoomdetail'] ) ) {
 			$base['zoomDetail'] = (int) $sv['zoomdetail'];
+		}
+		if ( isset( $sv['nicknames'] ) ) {
+			$base['nicknames'] = (int) $sv['nicknames'];
 		}
 		$sel = function ( $id, $choices, $value ) {
 			echo '<select id="' . esc_attr( $id ) . '">';
@@ -413,6 +431,7 @@ class TNGFan_Admin {
 							Style <?php $sel( 'tg-labels', array( 'default' => 'Selon le réglage du module', 'symbols' => '° † x', 'letters' => 'N : D : M :' ), $labels_val ); ?><br>
 							<label><input id="tg-spouses" type="checkbox" <?php checked( 1, (int) $base['spouses'] ); ?>> Afficher les conjoints</label>
 							<label style="margin-left:14px"><input id="tg-zoomdetail" type="checkbox" <?php checked( 1, (int) $base['zoomDetail'] ); ?>> Enrichir le texte au zoom</label>
+							<label style="margin-left:14px"><input id="tg-nicknames" type="checkbox" <?php checked( 1, (int) $base['nicknames'] ); ?>> Afficher les surnoms</label>
 							<label style="margin-left:14px"><input id="tg-pdf" type="checkbox" <?php checked( 1, $pdf_val ); ?>> Bouton d'export PDF</label></td></tr>
 					<tr><th scope="row">Personnes vivantes</th>
 						<td><?php $sel( 'tg-living', array( 'default' => tngs_hide_living( 'fan' ) ? 'Selon le réglage du module (masquées)' : 'Selon le réglage du module (affichées)', 'hide' => 'Toujours masquer sur cette roue', 'show' => 'Afficher sur cette roue (⚠️ RGPD)' ), $living_val ); ?>
@@ -465,6 +484,7 @@ class TNGFan_Admin {
 				parts.push('spouses="' + c.spouses + '"');
 				parts.push('living="' + c.living + '"');
 				if (!c.zoomDetail) { parts.push('zoomdetail="0"'); }
+				if (+c.nicknames !== +d.nicknames) { parts.push('nicknames="' + (+c.nicknames ? 1 : 0) + '"'); }
 				if (!c.pdf) { parts.push('pdf="0"'); }
 				if (+val('tg-height') !== d.height) { parts.push('height="' + (+val('tg-height')) + '"'); }
 				return '[tng_fan ' + parts.join(' ') + ']';
@@ -478,7 +498,7 @@ class TNGFan_Admin {
 				c.root = person; c.mode = val('tg-mode'); c.shape = val('tg-shape'); c.color = val('tg-color'); c.style = val('tg-style');
 				c.asc = Math.max(1, Math.min(12, +val('tg-asc') || 1)); c.desc = Math.max(1, Math.min(c.descMax, +val('tg-desc') || 1));
 				c.palette = val('tg-palette'); c.colors = (c.presets[c.palette] || c.presets.rainbow)[1].slice();
-				c.dates = val('tg-dates'); c.places = val('tg-places'); c.spouses = val('tg-spouses'); c.zoomDetail = val('tg-zoomdetail'); c.pdf = val('tg-pdf');
+				c.dates = val('tg-dates'); c.places = val('tg-places'); c.spouses = val('tg-spouses'); c.zoomDetail = val('tg-zoomdetail'); c.nicknames = val('tg-nicknames'); c.pdf = val('tg-pdf');
 				if (val('tg-labels') !== 'default') { c.labels = val('tg-labels'); }
 				c.living = lv; c.lsig = lv === 'show' ? G.sigShow : '';
 				var h = Math.max(360, Math.min(1600, +val('tg-height') || 720));
@@ -497,7 +517,7 @@ class TNGFan_Admin {
 					var fd = new FormData();
 					fd.append('action', 'tngfan_gen_save'); fd.append('nonce', G.nonce);
 					fd.append('cfg', JSON.stringify({ person: person, mode: c.mode, shape: c.shape, color: c.color, style: c.style, palette: c.palette, dates: c.dates, places: c.places,
-						labels: val('tg-labels'), living: lv, asc: c.asc, desc: c.desc, height: h, spouses: c.spouses, zoomdetail: c.zoomDetail, pdf: c.pdf }));
+						labels: val('tg-labels'), living: lv, asc: c.asc, desc: c.desc, height: h, spouses: c.spouses, zoomdetail: c.zoomDetail, nicknames: c.nicknames, pdf: c.pdf }));
 					fetch(G.ajax, { method: 'POST', credentials: 'same-origin', body: fd });
 				} catch (e) {}
 				$('tg-sc-wrap').hidden = false;

@@ -93,6 +93,7 @@ class TNGFan_Front {
 			'living'     => 'default',
 			'zoomdetail' => $o['zoomdetail'],
 			'labels'     => '',
+			'nicknames'  => $o['nicknames'],
 			'pdf'        => '1',
 			'height'     => $o['height'],
 			'controls'   => '1',
@@ -152,6 +153,7 @@ class TNGFan_Front {
 			'showEmpty'  => (int) $o['show_empty'],
 			'spouses'    => $flag( $a['spouses'] ),
 			'zoomDetail' => $flag( $a['zoomdetail'] ),
+			'nicknames'  => $flag( $a['nicknames'] ),
 			'pdf'        => $flag( $a['pdf'] ),
 			'living'     => $living,
 			'lsig'       => 'show' === $living ? self::living_sig() : '',
@@ -253,7 +255,7 @@ class TNGFan_Front {
 		$hide   = self::hide_for_request( (string) $req->get_param( 'lv' ), (string) $req->get_param( 'ls' ) );
 
 		$mins = (int) $o['cache_minutes'];
-		$key  = 'tngfan_' . md5( wp_json_encode( array( $person, $tree, $asc, $desc, $spouses, $hide, $prefix, 'u2', tngs_cache_ver() ) ) );
+		$key  = 'tngfan_' . md5( wp_json_encode( array( $person, $tree, $asc, $desc, $spouses, $hide, $prefix, 'u3', tngs_cache_ver() ) ) );
 		if ( $mins > 0 ) {
 			$hit = get_transient( $key );
 			if ( false !== $hit ) {

@@ -168,6 +168,14 @@ var TNGFanLib = (function () {
     return k < 2 ? 0 : (k < 3.5 ? 1 : (k < 6 ? 2 : 3));
   }
 
+  /** « Prénom » ou « Prénom « surnom » » selon l'option. */
+  function firstOf(p, st) {
+    var fn = p.fn || '';
+    if (st.firstnames === 'usual') { fn = fn.split(/\s+/)[0] || ''; }
+    if (st.nicknames && p.nn) { fn = (fn ? fn + ' ' : '') + '\u00ab ' + p.nn + ' \u00bb'; }
+    return fn;
+  }
+
   /** Lignes de texte d'une personne, par ordre d'importance (les dernières sont abandonnées faute de place). */
   function lines(p, st, hiddenLabel, detail) {
     if (!p) { return []; }
@@ -177,8 +185,7 @@ var TNGFanLib = (function () {
     if (detail >= 1 && dates === 'none') { dates = 'years'; }
     if (detail >= 2 && places === 'none') { places = 'commune'; }
     if (detail >= 3) { dates = 'full'; places = 'full'; }
-    var fn = p.fn || '';
-    if (st.firstnames === 'usual') { fn = fn.split(/\s+/)[0] || ''; }
+    var fn = firstOf(p, st);
     var name = ((p.ln || '').toUpperCase() + (fn ? ' ' + fn : '')).trim() || '?';
     var out = [name], letters = st.labels === 'letters', pb = letters ? 'N : ' : '° ', pd = letters ? 'D : ' : '† ';
     var place = function (s) { return places === 'commune' ? String(s || '').split(',')[0].trim() : String(s || '').trim(); };
@@ -205,8 +212,7 @@ var TNGFanLib = (function () {
     if (!p) { return []; }
     if (p.h) { return [hiddenLabel]; }
     detail = detail || 0;
-    var fn = p.fn || '';
-    if (st.firstnames === 'usual') { fn = fn.split(/\s+/)[0] || ''; }
+    var fn = firstOf(p, st);
     var name = ((p.ln || '').toUpperCase() + (fn ? ' ' + fn : '')).trim() || '?';
     if (st.dates !== 'none' || detail >= 1) { if (p.by || p.dy) { name += ' (' + (p.by || '') + '-' + (p.dy || '') + ')'; } }
     var out = [name];
@@ -854,6 +860,7 @@ var TNGFanPdf = (function () {
     sel(tngsT('Dates'), 'dates', [['years', tngsT('Années')], ['full', tngsT('Dates complètes')], ['none', tngsT('Aucune')]]);
     sel(tngsT('Lieux'), 'places', [['none', tngsT('Aucun')], ['commune', tngsT('Commune')], ['full', tngsT('Lieu complet')]]);
     chk(tngsT('Conjoints'), 'spouses');
+    chk(tngsT('Surnoms'), 'nicknames');
     chk(tngsT('Texte enrichi au zoom'), 'zoomDetail');
     chk(tngsT('Ancêtres inconnus'), 'showEmpty');
 

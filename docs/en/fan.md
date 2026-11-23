@@ -15,7 +15,7 @@ Menu **TNG Suite > Trees & visualisations**, sections **Fan chart: generate a wh
 | Default starting person | TNG ID used when `person` is not given. |
 | Type / Generations | Ancestors, descendants or mixed; number of generations (ancestors up to 12, descendants up to the configured cap). |
 | Shape / Height | Full circle, three quarters or half circle; height in pixels. |
-| Colouring / Style / Palette | By generation, branch or sex; light tint or solid; palette (Rainbow, Classic, Pastel, Vivid, Colour-blind, Blues, Earth, Greys) or custom palette. |
+| Colouring / Style / Palette | By generation, branch or sex; light tint or solid; palette (Rainbow, Classic, Pastel, Vivid, Colour-blind, Blues, Earth, Greys, plus 10 genealogy palettes: Sepia, Heritage, Autumn, Sunset, Coast, Spring, Shades of green / red / purple, Blue and pink — the last is made for colouring “by sex”: its first two colours are used for men and women; the shades suit “by generation”) or custom palette. |
 | Content: dates, places, first names, text style, spouses, zoom, unknown ancestors | Years / full dates / none; places (none, town, full); first name or all; symbols (° †) or letters (B: D: M:); spouses; text that gets richer when zooming; empty slots for unknown ancestors. |
 | Who can see the chart | Everyone, logged-in users or administrators. |
 | Cache (minutes) | How long wheel data is cached (30 by default). |
@@ -58,6 +58,7 @@ French alias of `[tng_fan]`.
 | spouses | 1 / 0 | setting | Show spouses. |
 | living | default, hide, show | default | `hide` hides living people; `show` displays them only if General allows it. |
 | zoomdetail | 1 / 0 | setting | Richer text when zooming. |
+| nicknames | 1 / 0 | setting | Shows the TNG nickname in quotation marks after the first name (“Jean « Titi »”); ignored if it is just one of the first names. Also in the panel (“Nicknames” tick-box) and in the PDF/PNG export. |
 | labels | symbols, letters | setting | Symbols (° †) or letters. |
 | pdf | 1 / 0 | 1 | Export button (PDF or PNG). |
 | controls | 1 / 0 | 1 | Zoom / navigation buttons. |
