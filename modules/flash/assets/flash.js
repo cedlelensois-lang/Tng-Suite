@@ -45,11 +45,21 @@
         return true;
       });
       // les lieux qui ne correspondent pas aux filtres sont estompés
+      // filtre actif : on montre les lieux qui correspondent (même ceux cachés par « +N »), les autres sont estompés
+      var on = !!(p || a !== null || b !== null);
       rows.forEach(function (r) {
-        [].forEach.call(r.querySelectorAll('.tngflash-pl'), function (c) {
-          var on = !!(p || a !== null || b !== null);
-          c.classList.toggle('tngflash-dim', on && !placeOk([c.getAttribute('data-nm'), +c.getAttribute('data-a'), +c.getAttribute('data-b')], p, a, b));
+        var hiddenLeft = 0, chips = r.querySelectorAll('.tngflash-pl'), more = r.querySelector('.tngflash-more');
+        [].forEach.call(chips, function (c) {
+          var ok = placeOk([c.getAttribute('data-nm'), +c.getAttribute('data-a'), +c.getAttribute('data-b')], p, a, b), extra = c.classList.contains('tngflash-x');
+          c.classList.toggle('tngflash-dim', on && !ok);
+          c.hidden = extra && !(on && ok);
+          if (c.hidden) { hiddenLeft++; }
         });
+        if (more) {
+          hiddenLeft += +more.getAttribute('data-extra') || 0;
+          more.textContent = '+' + hiddenLeft;
+          more.hidden = hiddenLeft <= 0;
+        }
       });
       shown = limit;
       render();

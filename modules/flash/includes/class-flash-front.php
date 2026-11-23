@@ -109,6 +109,7 @@ class TNGFlash_Front {
 				$pls[] = array( self::norm( $p[0] ), (int) $p[2], (int) $p[3] );
 			}
 			list( $shown, $more ) = self::shown( $r );
+			$nshown               = count( $shown );
 			$out .= '<tr data-name="' . esc_attr( $search ) . '" data-n="' . (int) $r['n'] . '" data-min="' . (int) $r['min'] . '" data-max="' . (int) $r['max']
 				. '" data-pls="' . esc_attr( wp_json_encode( $pls ) ) . '">';
 			$out .= '<th scope="row" class="tngflash-name"><strong>' . esc_html( $r['name'] ) . '</strong>';
@@ -117,17 +118,17 @@ class TNGFlash_Front {
 			}
 			$out .= '</th><td class="tngflash-n">' . (int) $r['n'] . '</td>';
 			$out .= '<td class="tngflash-dates">' . esc_html( TNGFlash_Data::range( $r['min'], $r['max'] ) ) . '</td><td class="tngflash-places">';
-			foreach ( $shown as $p ) {
+			foreach ( $r['places'] as $pi => $p ) {
 				$tip = array();
 				foreach ( $ev as $k => $label ) {
 					if ( $p[4][ $k ] ) {
 						$tip[] = $p[4][ $k ] . ' ' . tngs_t( $label );
 					}
 				}
-				$out .= '<span class="tngflash-pl" data-nm="' . esc_attr( self::norm( $p[0] ) ) . '" data-a="' . (int) $p[2] . '" data-b="' . (int) $p[3] . '" title="' . esc_attr( implode( ', ', $tip ) ) . '">' . esc_html( self::place_text( $p ) ) . ' <small>(' . (int) $p[1] . ')</small></span> ';
+				$out .= '<span class="tngflash-pl' . ( $pi >= $nshown ? ' tngflash-x' : '' ) . '"' . ( $pi >= $nshown ? ' hidden' : '' ) . ' data-nm="' . esc_attr( self::norm( $p[0] ) ) . '" data-a="' . (int) $p[2] . '" data-b="' . (int) $p[3] . '" title="' . esc_attr( implode( ', ', $tip ) ) . '">' . esc_html( self::place_text( $p ) ) . ' <small>(' . (int) $p[1] . ')</small></span> ';
 			}
 			if ( $more > 0 ) {
-				$out .= '<span class="tngflash-more">+' . (int) $more . '</span>';
+				$out .= '<span class="tngflash-more" data-extra="' . (int) $r['more'] . '">+' . (int) $more . '</span>';
 			}
 			$out .= '</td></tr>';
 		}

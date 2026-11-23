@@ -15,6 +15,7 @@
 .tngflash-n, .tngflash-dates { white-space: nowrap; }
 .tngflash-pl { display: inline-block; margin: 0 .5em .15em 0; padding: .05em .5em; border-radius: 1em; background: rgba(128, 128, 128, .15); font-size: .92em; white-space: nowrap; }
 
+.tngflash-pl[hidden], .tngflash-more[hidden] { display: none; }
 .tngflash-dim { opacity: .35; }
 .tngflash-pl small { opacity: .65; }
 .tngflash-more { opacity: .65; }
