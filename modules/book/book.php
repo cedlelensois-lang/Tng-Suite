@@ -107,16 +107,27 @@ final class TNGBook {
     /** « Nouveau livre » : les réglages par défaut du plugin, en gardant seulement les réglages communs (dossier TNG, accès, langue, vivants/privés). */
     private static function new_book_opts(array $cur) {
         $o = self::defaults();
-        foreach (['tng_path', 'photo_folder', 'front_access', 'front_living', 'max_people', 'living', 'lang', 'prefix'] as $k) if (array_key_exists($k, $cur)) $o[$k] = $cur[$k];
+        foreach (['tng_path', 'photo_folder', 'front_access', 'front_living', 'max_people', 'living', 'living_v', 'lang', 'prefix'] as $k) if (array_key_exists($k, $cur)) $o[$k] = $cur[$k];
         return $o;
+    }
+
+    /**
+     * Vivants/privés d'un livre : include (en entier) | anonymize | exclude. Choix du livre ou du profil ;
+     * « Toujours masquer » (TNG Suite > Général > Modules) l'emporte toujours (include devient anonymize).
+     * Sans marqueur living_v (réglages d'avant ce choix), l'ancien comportement : le réglage du module décide.
+     */
+    private static function living_for(array $o) {
+        $v = (string) ($o['living'] ?? 'anonymize');
+        if (tngs_privacy_mode('book') === 'hide') return $v === 'exclude' ? 'exclude' : 'anonymize';
+        if (empty($o['living_v'])) return tngs_hide_living('book') ? ($v === 'exclude' ? 'exclude' : 'anonymize') : 'include';
+        return in_array($v, ['include', 'exclude', 'anonymize'], true) ? $v : 'anonymize';
     }
 
     public static function opts() {
         $o = self::saved_opts();
         $o['prefix'] = tngs_prefix();                       // réglage commun
-        // Vivants/privés : réglage du module (TNG Suite > Général > Modules). « Afficher » = inclus en entier.
-        if (!tngs_hide_living('book')) $o['living'] = 'include';
-        elseif ($o['living'] === 'include') $o['living'] = 'anonymize';
+        $o['living'] = self::living_for($o);
+        $o['living_v'] = 1;
         return $o;
     }
 
@@ -329,8 +340,8 @@ final class TNGBook {
         $out['lang'] = isset(self::langs()[$in['lang'] ?? '']) ? $in['lang'] : 'fr';
         $out['gen_up'] = max(0, (int) ($in['gen_up'] ?? 6));
         $out['gen_down'] = max(0, (int) ($in['gen_down'] ?? 4));
-        $out['living'] = in_array($in['living'] ?? '', ['exclude', 'anonymize'], true) ? $in['living'] : 'anonymize';
-        if (!tngs_hide_living('book')) $out['living'] = 'include';
+        $out['living'] = self::living_for(['living' => $in['living'] ?? 'anonymize', 'living_v' => !empty($in['living_v'])]);
+        $out['living_v'] = 1;
         $out['place_parts'] = max(0, min(5, (int) ($in['place_parts'] ?? 2)));
         $out['avatar'] = (($in['avatar'] ?? '') === 'round') ? 'round' : 'portrait';
         foreach (['photos', 'spphotos', 'spfiche', 'generic', 'sources', 'idxn', 'idxp', 'notes', 'military', 'mpf', 'mini', 'imgq', 'trees', 'stats', 'stats_first', 'stats_last', 'desclist', 'kids', 'histfiche', 'chrono', 'history', 'map', 'bapt', 'burial', 'asclist', 'sibs', 'cous', 'allunions'] as $k) {
@@ -499,18 +510,16 @@ final class TNGBook {
         self::field('Générations de descendants', 'gen_down', $o, 'number', '0 = pas de descendance. Aucune limite : 4 par défaut.', 'min="0"');
         if ($admin) self::field('Nombre maximum de personnes', 'max_people', $o, 'number', 'Garde-fou contre les livres trop lourds (délai dépassé, mémoire). 4000 par défaut ; <strong>0 = illimité</strong>. Si la génération échoue ou s’arrête, baissez cette valeur ou le nombre de générations.', 'min="0"');
         if ($admin) {
-            if (tngs_hide_living('book')) {
-                self::select('Personnes vivantes/privées', 'living', [
-                    'anonymize' => 'Anonymiser (« Personne vivante », sans date ni photo)',
-                    'exclude' => 'Exclure (retirées du livre)',
-                ], $o['living'], 'Pour les afficher en entier : TNG Suite > Général > Modules > Livre généalogique (⚠️ RGPD).');
-            } else {
-                echo '<tr><th>Personnes vivantes/privées</th><td><div style="border-left:4px solid #b32d2e;background:#fcf0f1;padding:10px 12px;max-width:640px">'
-                    . '<strong>⚠️ Attention, RGPD</strong> : les personnes vivantes ou privées sont incluses <strong>en entier</strong> (noms, dates, lieux, photos, notes). '
-                    . 'Ne diffusez pas ce livre sans leur consentement et réservez-le à un usage familial privé.<br>'
-                    . 'Pour les masquer : <a href="' . esc_url(admin_url('admin.php?page=tng-suite')) . '">TNG Suite &gt; Général &gt; Modules</a>.'
-                    . '</div></td></tr>';
-            }
+            $lv = [
+                'anonymize' => 'Anonymiser (« Personne vivante », sans date ni photo)',
+                'exclude' => 'Exclure (retirées du livre)',
+            ];
+            $always = tngs_privacy_mode('book') === 'hide';
+            if (!$always) $lv = ['include' => 'Afficher en entier (⚠️ RGPD : noms, dates, lieux, photos, notes)'] + $lv;
+            self::select('Personnes vivantes/privées', 'living', $lv, $o['living'],
+                $always ? 'Le module est réglé sur « Toujours masquer » (TNG Suite > Général > Modules) : elles ne peuvent pas être affichées en entier.'
+                    : '<strong>⚠️ Attention, RGPD</strong> : « Afficher en entier » inclut les personnes vivantes ou privées. Ne diffusez pas ce livre sans leur consentement et réservez-le à un usage familial privé. Ce choix est enregistré avec le profil.');
+            echo '<input type="hidden" name="' . esc_attr(self::OPT) . '[living_v]" value="1">';
         }
         self::select('Niveaux de lieux affichés', 'place_parts', ['1' => 'Commune seule', '2' => 'Commune, département', '3' => '3 niveaux', '0' => 'Lieu complet'], $o['place_parts']);
         self::select('Style des silhouettes génériques', 'avatar', ['portrait' => 'Portrait (cercle sur fond clair)', 'round' => 'Rond (sans fond)'], $o['avatar'] ?? 'portrait', 'Utilisé quand « Silhouettes génériques » est coché, pour les personnes sans photo.');

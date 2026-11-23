@@ -1390,6 +1390,15 @@ msgstr "Living or private people in the book (names, dates, photos)."
 msgid "Personnes vivantes/privées"
 msgstr "Living/private people"
 
+msgid "Afficher en entier (⚠️ RGPD : noms, dates, lieux, photos, notes)"
+msgstr "Show in full (⚠️ GDPR: names, dates, places, photos, notes)"
+
+msgid "Le module est réglé sur « Toujours masquer » (TNG Suite > Général > Modules) : elles ne peuvent pas être affichées en entier."
+msgstr "The module is set to “Always hide” (TNG Suite > General > Modules): they cannot be shown in full."
+
+msgid "<strong>⚠️ Attention, RGPD</strong> : « Afficher en entier » inclut les personnes vivantes ou privées. Ne diffusez pas ce livre sans leur consentement et réservez-le à un usage familial privé. Ce choix est enregistré avec le profil."
+msgstr "<strong>⚠️ Warning, GDPR</strong>: “Show in full” includes living or private people. Do not share this book without their consent and keep it for private family use. This choice is saved with the profile."
+
 msgid "Petits-enfants"
 msgstr "Grandchildren"
 

@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.1.3
+Stable tag: 3.1.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the tables it created in the WordPress database (`tngi_inbreeding` for the implex module; `tngs_coh_res` and `tngs_coh_key` for the data consistency check). Your TNG data is never touched.
 
 == Changelog ==
+
+= 3.1.4 =
+* Book: the "living/private people" choice (show in full / anonymise / exclude) can now be set per book and is saved in the profiles. "Always hide" in TNG Suite > General > Modules still takes priority. Existing profiles keep their previous behaviour.
 
 = 3.1.3 =
 * Fan chart: the nickname is now shown in brackets right after the surname ("MALVACHE (Titi) Jean") instead of after the first name.

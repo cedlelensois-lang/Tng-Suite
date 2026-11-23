@@ -49,7 +49,7 @@ The page (**Documents** tab) has three sections: **Book: generate a book**, **Bo
 - Event notes: with the “Notes” option, each event shown in a record (birth, baptism, occupation, residences, marriage, divorce, death, burial, military events) is followed by its TNG notes.
 - Each part starts on a new page.
 - The [tng_book] shortcode opens the generator to logged-in visitors if enabled.
-- Living people are fully included if you choose to show them: do not share the book without consent.
+- Living/private people: the choice (show in full, anonymise or exclude) is set for each book and saved in the profiles. “Always hide” for the module (TNG Suite > General > Modules) always takes priority. Showing living people in full is your responsibility (GDPR): do not share the book without their consent.
 
 ## Automatic generation
 

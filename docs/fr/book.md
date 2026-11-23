@@ -49,7 +49,7 @@ La page (onglet **Documents**) comporte trois sections : **Livre : générer un 
 - Notes d’événements : avec l’option « Notes », chaque événement affiché dans une fiche (naissance, baptême, profession, résidences, mariage, divorce, décès, inhumation, événements militaires) est suivi de ses notes TNG.
 - Chaque partie commence sur une nouvelle page.
 - Le shortcode [tng_book] ouvre le générateur aux visiteurs connectés si l’option est activée.
-- Les personnes vivantes sont incluses en entier si vous choisissez de les afficher : ne diffusez pas ce livre sans accord.
+- Personnes vivantes/privées : le choix (afficher en entier, anonymiser ou exclure) se règle pour chaque livre et est enregistré dans les profils. Le réglage « Toujours masquer » du module (TNG Suite > Général > Modules) l’emporte toujours. Les personnes vivantes affichées en entier engagent votre responsabilité (RGPD) : ne diffusez pas ce livre sans accord.
 
 ## Génération automatique
 

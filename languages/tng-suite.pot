@@ -1390,6 +1390,15 @@ msgstr ""
 msgid "Personnes vivantes/privées"
 msgstr ""
 
+msgid "Afficher en entier (⚠️ RGPD : noms, dates, lieux, photos, notes)"
+msgstr ""
+
+msgid "Le module est réglé sur « Toujours masquer » (TNG Suite > Général > Modules) : elles ne peuvent pas être affichées en entier."
+msgstr ""
+
+msgid "<strong>⚠️ Attention, RGPD</strong> : « Afficher en entier » inclut les personnes vivantes ou privées. Ne diffusez pas ce livre sans leur consentement et réservez-le à un usage familial privé. Ce choix est enregistré avec le profil."
+msgstr ""
+
 msgid "Petits-enfants"
 msgstr ""
 
