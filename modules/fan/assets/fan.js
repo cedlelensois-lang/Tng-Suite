@@ -168,12 +168,12 @@ var TNGFanLib = (function () {
     return k < 2 ? 0 : (k < 3.5 ? 1 : (k < 6 ? 2 : 3));
   }
 
-  /** « Prénom » ou « Prénom (surnom) » selon l'option. */
-  function firstOf(p, st) {
-    var fn = p.fn || '';
+  /** « NOM Prénom », ou « NOM (surnom) Prénom » avec l'option Surnoms (le surnom suit le nom de famille). */
+  function nameOf(p, st) {
+    var fn = p.fn || '', ln = (p.ln || '').toUpperCase();
     if (st.firstnames === 'usual') { fn = fn.split(/\s+/)[0] || ''; }
-    if (st.nicknames && p.nn) { fn = (fn ? fn + ' ' : '') + '(' + p.nn + ')'; }
-    return fn;
+    if (st.nicknames && p.nn) { ln = (ln ? ln + ' ' : '') + '(' + p.nn + ')'; }
+    return (ln + (fn ? ' ' + fn : '')).trim() || '?';
   }
 
   /** Lignes de texte d'une personne, par ordre d'importance (les dernières sont abandonnées faute de place). */
@@ -185,8 +185,7 @@ var TNGFanLib = (function () {
     if (detail >= 1 && dates === 'none') { dates = 'years'; }
     if (detail >= 2 && places === 'none') { places = 'commune'; }
     if (detail >= 3) { dates = 'full'; places = 'full'; }
-    var fn = firstOf(p, st);
-    var name = ((p.ln || '').toUpperCase() + (fn ? ' ' + fn : '')).trim() || '?';
+    var name = nameOf(p, st);
     var out = [name], letters = st.labels === 'letters', pb = letters ? 'N : ' : '° ', pd = letters ? 'D : ' : '† ';
     var place = function (s) { return places === 'commune' ? String(s || '').split(',')[0].trim() : String(s || '').trim(); };
     var bp = places !== 'none' ? place(p.bp) : '', dp = places !== 'none' ? place(p.dp) : '';
@@ -212,8 +211,7 @@ var TNGFanLib = (function () {
     if (!p) { return []; }
     if (p.h) { return [hiddenLabel]; }
     detail = detail || 0;
-    var fn = firstOf(p, st);
-    var name = ((p.ln || '').toUpperCase() + (fn ? ' ' + fn : '')).trim() || '?';
+    var name = nameOf(p, st);
     if (st.dates !== 'none' || detail >= 1) { if (p.by || p.dy) { name += ' (' + (p.by || '') + '-' + (p.dy || '') + ')'; } }
     var out = [name];
     if (mi && !ownerHidden) {

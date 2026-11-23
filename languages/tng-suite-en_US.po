@@ -4612,8 +4612,8 @@ msgstr "Nicknames"
 msgid "Afficher les surnoms"
 msgstr "Show nicknames"
 
-msgid "Afficher le surnom TNG entre parenthèses après le prénom (Jean-Baptiste (Baptiste))"
-msgstr "Show the TNG nickname in brackets after the first name (Jean-Baptiste (Baptiste))"
+msgid "Afficher le surnom TNG entre parenthèses après le nom de famille (MALVACHE (Baptiste) Jean-Baptiste)"
+msgstr "Show the TNG nickname in brackets after the surname (MALVACHE (Baptiste) Jean-Baptiste)"
 
 msgid "(surnoms)"
 msgstr "(nicknames)"

@@ -1546,7 +1546,7 @@ return array(
 	'Bleu et rose (idéale « selon le sexe »)' => 'Blue and pink (ideal for “by sex”)',
 	'Surnoms' => 'Nicknames',
 	'Afficher les surnoms' => 'Show nicknames',
-	'Afficher le surnom TNG entre parenthèses après le prénom (Jean-Baptiste (Baptiste))' => 'Show the TNG nickname in brackets after the first name (Jean-Baptiste (Baptiste))',
+	'Afficher le surnom TNG entre parenthèses après le nom de famille (MALVACHE (Baptiste) Jean-Baptiste)' => 'Show the TNG nickname in brackets after the surname (MALVACHE (Baptiste) Jean-Baptiste)',
 	'(surnoms)' => '(nicknames)',
 	'Afficher plus' => 'Show more',
 	'Aucun patronyme ne correspond.' => 'No surname matches.',

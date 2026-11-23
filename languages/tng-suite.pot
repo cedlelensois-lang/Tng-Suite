@@ -4612,7 +4612,7 @@ msgstr ""
 msgid "Afficher les surnoms"
 msgstr ""
 
-msgid "Afficher le surnom TNG entre parenthèses après le prénom (Jean-Baptiste (Baptiste))"
+msgid "Afficher le surnom TNG entre parenthèses après le nom de famille (MALVACHE (Baptiste) Jean-Baptiste)"
 msgstr ""
 
 msgid "(surnoms)"
