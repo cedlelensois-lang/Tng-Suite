@@ -29,7 +29,8 @@ Collez le shortcode `[tng_flash]` dans une page ou un article.
 | search | 1 / 0 | 1 | Recherche et filtres. |
 | export | 1 / 0 | réglage | Boutons d’export. |
 | limit | 10 à 500 | 50 | Lignes affichées par page (bouton « Afficher plus »). |
-| rgpd | 0 | réglage du module | `rgpd="0"` affiche aussi les personnes vivantes ou privées sur cette page (et dans ses exports). Accepté seulement si l’auteur de la page peut modifier les contenus des autres (éditeur ou plus) et si le module n’est pas réglé sur « Toujours masquer ». |
+| living | hide, show | réglage du module | `living="hide"` masque les personnes vivantes ou privées sur cette page (et dans ses exports), même si le module est réglé sur « Toujours afficher » ; `living="show"` les affiche (mêmes conditions que `rgpd="0"` ci-dessous). Sans l’attribut, le réglage du module s’applique. |
+| rgpd | 0 | réglage du module | `rgpd="0"` (équivaut à `living="show"`) affiche aussi les personnes vivantes ou privées sur cette page (et dans ses exports). Accepté seulement si l’auteur de la page peut modifier les contenus des autres (éditeur ou plus) et si le module n’est pas réglé sur « Toujours masquer ». |
 | title | texte | vide | Titre au-dessus de la liste. |
 
 ## Ce que voit le visiteur

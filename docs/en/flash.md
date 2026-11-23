@@ -29,7 +29,8 @@ Paste the `[tng_flash]` shortcode in a page or a post.
 | search | 1 / 0 | 1 | Search and filters. |
 | export | 1 / 0 | setting | Export buttons. |
 | limit | 10 to 500 | 50 | Rows shown per page (“Show more” button). |
-| rgpd | 0 | module setting | `rgpd="0"` also shows living or private people on this page (and in its exports). Accepted only if the page author can edit other people’s content (editor or above) and the module is not set to “Always hide”. |
+| living | hide, show | module setting | `living="hide"` hides living or private people on this page (and in its exports), even if the module is set to “Always show”; `living="show"` shows them (same conditions as `rgpd="0"` below). Without the attribute the module setting applies. |
+| rgpd | 0 | module setting | `rgpd="0"` (same as `living="show"`) also shows living or private people on this page (and in its exports). Accepted only if the page author can edit other people’s content (editor or above) and the module is not set to “Always hide”. |
 | title | text | empty | Title above the list. |
 
 ## What the visitor sees

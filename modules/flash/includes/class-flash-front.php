@@ -30,6 +30,7 @@ class TNGFlash_Front {
 				'variants' => $o['variants'],
 				'tree'     => '',
 				'rgpd'     => '',
+				'living'   => '',
 				'search'   => '1',
 				'export'   => $o['export'],
 				'limit'    => '50',
@@ -47,6 +48,9 @@ class TNGFlash_Front {
 		$in['limit']    = max( 10, min( 500, (int) $in['limit'] ) );
 		$in['title']    = sanitize_text_field( (string) $in['title'] );
 		$in['rgpd']     = in_array( strtolower( trim( (string) $in['rgpd'] ) ), array( '0', 'no', 'non', 'false', 'off' ), true ) ? '0' : '';
+		// living="hide|show" ; rgpd="0" reste accepté (équivaut à living="show").
+		$lv             = strtolower( trim( (string) $in['living'] ) );
+		$in['living']   = in_array( $lv, array( 'hide', 'show' ), true ) ? $lv : ( '0' === $in['rgpd'] ? 'show' : '' );
 		return $in;
 	}
 
@@ -55,7 +59,7 @@ class TNGFlash_Front {
 	 * pour les autres (éditeur et plus) et si le module n'est pas réglé sur « toujours masquer ». Retourne true si accepté.
 	 */
 	private static function show_living( array $a ) {
-		if ( '0' !== $a['rgpd'] || 'hide' === tngs_privacy_mode( 'flash' ) ) {
+		if ( 'show' !== $a['living'] || 'hide' === tngs_privacy_mode( 'flash' ) ) {
 			return false;
 		}
 		$post   = get_post();
@@ -64,13 +68,13 @@ class TNGFlash_Front {
 	}
 
 	/** Paramètres de calcul d'après les attributs. */
-	public static function calc( array $a, $show = false ) {
+	public static function calc( array $a, $show = false, $hide = false ) {
 		return TNGFlash_Data::params( array(
 			'level'    => $a['level'],
 			'min'      => $a['min'],
 			'variants' => $a['variants'],
 			'tree'     => $a['tree'],
-			'hide'     => TNGFlash_Data::hide_for( $show ),
+			'hide'     => TNGFlash_Data::hide_for( $show, $hide ),
 		) );
 	}
 
@@ -138,8 +142,9 @@ class TNGFlash_Front {
 	public static function shortcode( $atts ) {
 		$a    = self::atts( $atts );
 		$show = self::show_living( $a );
+		$hide = 'hide' === $a['living'];   // living="hide" : masque même si le module est réglé sur « afficher »
 		try {
-			$rows = TNGFlash_Data::get( self::calc( $a, $show ) );
+			$rows = TNGFlash_Data::get( self::calc( $a, $show, $hide ) );
 		} catch ( Throwable $e ) {
 			return current_user_can( 'manage_options' ) ? '<p class="tngflash-error">' . esc_html( tngs_t( 'Liste flash indisponible :' ) . ' ' . $e->getMessage() ) . '</p>' : '';
 		}
@@ -177,6 +182,8 @@ class TNGFlash_Front {
 			if ( $show ) {
 				$q['lv'] = 'show';
 				$q['ls'] = TNGFlash_Data::living_sig();
+			} elseif ( $hide ) {
+				$q['lv'] = 'hide';
 			}
 			$o .= '<p class="tngflash-export">' . esc_html( tngs_t( 'Exporter :' ) )
 				. ' <a href="' . esc_url( add_query_arg( array_merge( $q, array( 'format' => 'csv' ) ), admin_url( 'admin-post.php' ) ) ) . '">CSV</a> · '
@@ -219,8 +226,9 @@ class TNGFlash_Front {
 		}
 		$ls   = isset( $_GET['ls'] ) ? (string) wp_unslash( $_GET['ls'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$show = isset( $_GET['lv'] ) && 'show' === $_GET['lv'] && hash_equals( TNGFlash_Data::living_sig(), $ls ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$hide = isset( $_GET['lv'] ) && 'hide' === $_GET['lv']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		try {
-			$rows = TNGFlash_Data::get( self::calc( $a, $show ) );
+			$rows = TNGFlash_Data::get( self::calc( $a, $show, $hide ) );
 		} catch ( Throwable $e ) {
 			wp_die( esc_html( tngs_t( 'Liste flash indisponible.' ) ), '', array( 'response' => 503 ) );
 		}

@@ -260,8 +260,8 @@ class TNGFlash_Data {
 	 * Masquer les vivants et les privés ? « hide » du module (TNG Suite > Général) l'emporte toujours ;
 	 * $show = true les affiche (aperçu d'administration, ou shortcode rgpd="0" validé) ; sinon réglage du module.
 	 */
-	public static function hide_for( $show = false ) {
-		if ( 'hide' === tngs_privacy_mode( 'flash' ) ) {
+	public static function hide_for( $show = false, $force_hide = false ) {
+		if ( $force_hide || 'hide' === tngs_privacy_mode( 'flash' ) ) {
 			return 1;
 		}
 		return $show ? 0 : ( tngs_hide_living( 'flash' ) ? 1 : 0 );

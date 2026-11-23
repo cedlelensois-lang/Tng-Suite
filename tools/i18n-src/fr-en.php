@@ -1591,5 +1591,5 @@ return array(
 	'recherche et filtres' => 'search and filters',
 	'Aperçu réservé aux administrateurs : les personnes vivantes ou privées sont incluses. Les visiteurs voient la liste selon le réglage « Vivants / privés » du module (ou l’attribut rgpd du shortcode).' => 'Preview for administrators only: living or private people are included. Visitors see the list according to the module’s “Living / private” setting (or the shortcode’s rgpd attribute).',
 	'Le module est réglé sur « Toujours masquer » (TNG Suite > Général) : les personnes vivantes ou privées sont exclues, même ici.' => 'The module is set to “Always hide” (TNG Suite > General): living or private people are excluded, even here.',
-	'affiche aussi les personnes vivantes ou privées sur cette page ; sans cet attribut, le réglage du module s’applique' => 'also shows living or private people on this page; without this attribute the module setting applies',
+	'masque ou affiche les personnes vivantes ou privées sur cette page ; sans cet attribut, le réglage du module s’applique ; rgpd="0" équivaut à living="show"' => 'hides or shows living or private people on this page; without this attribute the module setting applies; rgpd="0" is the same as living="show"',
 );

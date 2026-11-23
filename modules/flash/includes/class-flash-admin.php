@@ -72,7 +72,7 @@ class TNGFlash_Admin {
 		echo '<h2>' . esc_html( tngs_t( 'Utilisation' ) ) . '</h2>';
 		echo '<p><code>[tng_flash]</code> ' . esc_html( tngs_t( 'dans une page ou un article. Attributs facultatifs :' ) ) . '</p><ul class="ul-disc">'
 			. '<li><code>level="commune|departement|region|pays"</code>, <code>min="2"</code>, <code>variants="1|0"</code>, <code>tree="monarbre"</code></li>'
-			. '<li><code>search="1|0"</code> (' . esc_html( tngs_t( 'recherche et filtres' ) ) . '), <code>rgpd="0"</code> (' . esc_html( tngs_t( 'affiche aussi les personnes vivantes ou privées sur cette page ; sans cet attribut, le réglage du module s’applique' ) ) . '), <code>export="1|0"</code>, <code>limit="50"</code> (' . esc_html( tngs_t( 'lignes affichées par page' ) ) . '), <code>title="…"</code></li></ul>';
+			. '<li><code>search="1|0"</code> (' . esc_html( tngs_t( 'recherche et filtres' ) ) . '), <code>living="hide|show"</code> (' . esc_html( tngs_t( 'masque ou affiche les personnes vivantes ou privées sur cette page ; sans cet attribut, le réglage du module s’applique ; rgpd="0" équivaut à living="show"' ) ) . '), <code>export="1|0"</code>, <code>limit="50"</code> (' . esc_html( tngs_t( 'lignes affichées par page' ) ) . '), <code>title="…"</code></li></ul>';
 
 		echo '<h2>' . esc_html( tngs_t( 'Aperçu' ) ) . '</h2>';
 		$show = ! TNGFlash_Data::hide_for( true );

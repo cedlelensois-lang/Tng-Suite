@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.1.5
+Stable tag: 3.1.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the tables it created in the WordPress database (`tngi_inbreeding` for the implex module; `tngs_coh_res` and `tngs_coh_key` for the data consistency check). Your TNG data is never touched.
 
 == Changelog ==
+
+= 3.1.6 =
+* Flash list: new `living="hide|show"` shortcode attribute. `hide` hides living/private people on that page (and in its exports) even if the module is set to show them; `show` replaces `rgpd="0"` (still accepted).
 
 = 3.1.5 =
 * Family book (PDF): internal links to numbers with a dot (D1.1, D1.1.2…) in the descendants part now work (mPDF treated any link containing a dot as external).

@@ -4747,8 +4747,8 @@ msgstr "Preview for administrators only: living or private people are included. 
 msgid "Le module est réglé sur « Toujours masquer » (TNG Suite > Général) : les personnes vivantes ou privées sont exclues, même ici."
 msgstr "The module is set to “Always hide” (TNG Suite > General): living or private people are excluded, even here."
 
-msgid "affiche aussi les personnes vivantes ou privées sur cette page ; sans cet attribut, le réglage du module s’applique"
-msgstr "also shows living or private people on this page; without this attribute the module setting applies"
+msgid "masque ou affiche les personnes vivantes ou privées sur cette page ; sans cet attribut, le réglage du module s’applique ; rgpd=\"0\" équivaut à living=\"show\""
+msgstr "hides or shows living or private people on this page; without this attribute the module setting applies; rgpd=\"0\" is the same as living=\"show\""
 
 msgctxt "js"
 msgid " Page "
