@@ -1596,4 +1596,5 @@ return array(
 	'Génération interrompue : le serveur a arrêté le processus (temps ou mémoire insuffisants).' => 'Generation interrupted: the server stopped the process (not enough time or memory).',
 	'Génération interrompue par le serveur.' => 'Generation interrupted by the server.',
 	'En retard : l’échéance est passée sans génération. Le planificateur de WordPress ne tourne que lorsque le site est visité ; sinon programmez une tâche cron du serveur qui appelle wp-cron.php toutes les heures.' => 'Late: the scheduled time has passed without a generation. WordPress\'s scheduler only runs when the site is visited; otherwise set up a server cron job that calls wp-cron.php every hour.',
+	'Le planificateur de WordPress ne répond pas sur ce site : cette page lance elle-même chaque étape. Gardez-la ouverte jusqu’à la fin du livre.' => 'WordPress\'s scheduler does not respond on this site: this page starts each step itself. Keep it open until the book is finished.',
 );

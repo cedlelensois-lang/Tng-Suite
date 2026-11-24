@@ -429,6 +429,10 @@ class TNGBook_Bg {
             if (!empty($j['detail'])) $h .= '<p class="description">' . esc_html(tngs_t('Morceau du PDF en cours :')) . ' ' . esc_html($j['detail']) . '</p>';
             if (!empty($j['total']) && !empty($j['runs'])) $h .= '<p class="description">' . esc_html(tngs_t('Le PDF est écrit par étapes courtes (chaque étape reprend là où la précédente s’est arrêtée) : étape')) . ' ' . (int) $j['runs'] . (!empty($j['wait']) ? ' — ' . esc_html(tngs_t('en attente de la suivante (WordPress relance ses tâches planifiées)')) : '') . '.</p>';
             $age = $now - (int) $j['beat'];
+            if (!empty($j['inline'])) {
+                $h .= '<p class="description" style="color:#996800">' . esc_html(tngs_t('Le planificateur de WordPress ne répond pas sur ce site : cette page lance elle-même chaque étape. Gardez-la ouverte jusqu’à la fin du livre.')) . '</p>';
+                return $h . self::btn(tngs_t('Annuler'));
+            }
             $h .= '<p class="description">' . esc_html(tngs_t('Vous pouvez quitter cette page : le livre se prépare sur le serveur.'))
                 . ($age >= 60 ? ' ' . esc_html(tngs_t('Dernier signe d’activité il y a')) . ' ' . esc_html(self::mins($age)) . '.' : '') . '</p>';
             return $h . self::btn(tngs_t('Annuler'));
@@ -452,6 +456,17 @@ class TNGBook_Bg {
         check_ajax_referer('tngbook_bg', '_n');
         $j = self::job();
         if (!$j) wp_send_json_success(['html' => '', 'active' => false]);
+        // Le planificateur de WordPress ne démarre rien (l'hébergeur bloque les appels du site vers lui-même) : cette requête, lancée par la page
+        // ouverte de l'administrateur, exécute elle-même l'étape en attente. Tant que la page reste ouverte, le travail avance.
+        $thr = !empty($j['inline']) ? 0 : 12;
+        $idle = $j['state'] === 'queued' ? time() - (int) $j['queued'] : (!empty($j['wait']) ? time() - (int) $j['wait'] : -1);
+        if ($idle >= $thr && $idle >= 0 && !($j['state'] === 'running' && self::stale($j))) {
+            self::run($j['id']);
+            $n = self::job();
+            if ($n && $n['id'] === $j['id'] && $n['state'] !== 'queued') { $n['inline'] = 1; self::save($n); }
+            wp_send_json_success(['html' => $n ? self::status_html($n) : '', 'active' => $n ? self::active($n) : false]);
+            return;
+        }
         if ($j['state'] === 'queued' || (!empty($j['wait']) && time() - (int) $j['wait'] > 8)) self::spawn();
         wp_send_json_success(['html' => self::status_html($j), 'active' => self::active($j)]);
     }

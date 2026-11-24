@@ -4762,6 +4762,9 @@ msgstr ""
 msgid "En retard : l’échéance est passée sans génération. Le planificateur de WordPress ne tourne que lorsque le site est visité ; sinon programmez une tâche cron du serveur qui appelle wp-cron.php toutes les heures."
 msgstr ""
 
+msgid "Le planificateur de WordPress ne répond pas sur ce site : cette page lance elle-même chaque étape. Gardez-la ouverte jusqu’à la fin du livre."
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""

@@ -80,6 +80,7 @@ Remarques :
 - Un PDF est écrit en plusieurs étapes courtes (environ 12 s chacune) : le document est mis en pause sur le serveur puis repris par une nouvelle tâche planifiée, ce qui évite les hébergeurs qui coupent un processus trop long. Le panneau indique l’étape en cours.
 - Un seul travail à la fois. Si l’hébergeur arrête le traitement, le panneau l’indique (« Génération interrompue ») avec la dernière étape atteinte : cochez « Compresser les images », réduisez le nombre de générations ou choisissez le format Word.
 - Comme la génération automatique, la tâche repose sur WP-Cron (voir ci-dessus). Si elle reste « en attente », programmez une tâche cron du serveur qui appelle `wp-cron.php`.
+- Si le planificateur de WordPress ne démarre rien (l’hébergeur bloque les appels du site vers lui-même), le panneau d’état lance lui-même chaque étape, à condition que la page reste ouverte : un message jaune vous le dit. Les générations **planifiées** (sans page ouverte) ont, elles, vraiment besoin de WP-Cron ou d’une tâche cron du serveur ; vous pouvez à tout moment utiliser **En arrière-plan** à la main.
 - Un e-mail peut être envoyé à la fin (réglage commun de la génération automatique).
 
 ---
