@@ -64,6 +64,7 @@ Notes:
 
 - WordPress only runs its tasks when the site is visited, so the time is approximate. For an exact time, set up a server cron job that calls `wp-cron.php` (for example every hour).
 - Direct PDF uses mPDF, included in the plugin (Releases zip and GitHub source alike). If you removed it, run `composer install --no-dev` in `modules/book`; without mPDF, generating a PDF profile fails (message in the “Last generation” column).
+- If the scheduled time passes without a generation, the overview shows it in red (“Late”): the scheduler did not run (site not visited, no server cron). If the server stops a generation in progress (not enough time or memory), the failure is recorded (“Generation interrupted”) and an e-mail is sent according to the setting; for a large book prefer **In the background** or raise `max_execution_time` and `memory_limit`.
 - Photos or notes changed without any change to the records are not detected by “only if the data has changed”: use **Generate now**.
 
 ## Background generation (beta)

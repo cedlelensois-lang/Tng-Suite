@@ -4750,6 +4750,18 @@ msgstr "The module is set to “Always hide” (TNG Suite > General): living or 
 msgid "masque ou affiche les personnes vivantes ou privées sur cette page ; sans cet attribut, le réglage du module s’applique ; rgpd=\"0\" équivaut à living=\"show\""
 msgstr "hides or shows living or private people on this page; without this attribute the module setting applies; rgpd=\"0\" is the same as living=\"show\""
 
+msgid "Génération interrompue : le serveur a arrêté le processus (temps ou mémoire insuffisants). Essayez « En arrière-plan », ou augmentez max_execution_time et memory_limit."
+msgstr "Generation interrupted: the server stopped the process (not enough time or memory). Try “In the background”, or raise max_execution_time and memory_limit."
+
+msgid "Génération interrompue : le serveur a arrêté le processus (temps ou mémoire insuffisants)."
+msgstr "Generation interrupted: the server stopped the process (not enough time or memory)."
+
+msgid "Génération interrompue par le serveur."
+msgstr "Generation interrupted by the server."
+
+msgid "En retard : l’échéance est passée sans génération. Le planificateur de WordPress ne tourne que lorsque le site est visité ; sinon programmez une tâche cron du serveur qui appelle wp-cron.php toutes les heures."
+msgstr "Late: the scheduled time has passed without a generation. WordPress's scheduler only runs when the site is visited; otherwise set up a server cron job that calls wp-cron.php every hour."
+
 msgctxt "js"
 msgid " Page "
 msgstr " Page "

@@ -64,6 +64,7 @@ Remarques :
 
 - WordPress ne lance ses tâches que lorsque le site est visité : l’heure est approximative. Pour une heure précise, programmez une tâche cron du serveur qui appelle `wp-cron.php` (par exemple toutes les heures).
 - Le PDF direct utilise mPDF, inclus dans le plugin (zip des Releases comme code source GitHub). Si vous l’avez supprimé, lancez `composer install --no-dev` dans `modules/book` ; sans mPDF, la génération d’un profil au format PDF échoue (message dans la colonne « Dernière génération »).
+- Si l’échéance est passée sans génération, la vue d’ensemble l’indique en rouge (« En retard ») : le planificateur n’a pas tourné (site non visité, cron serveur absent). Si le serveur arrête la génération en cours (temps ou mémoire insuffisants), l’échec est enregistré (« Génération interrompue ») et un e-mail est envoyé selon le réglage ; pour un gros livre, préférez **En arrière-plan** ou augmentez `max_execution_time` et `memory_limit`.
 - Les photos ou notes modifiées sans changement des fiches ne sont pas détectées par l’option « seulement si les données ont changé » : utilisez **Générer maintenant**.
 
 ## Génération en arrière-plan (bêta)

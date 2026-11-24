@@ -40,7 +40,7 @@ class TNGBook_Auto {
     }
 
     private static function job_defaults() {
-        return ['on' => 0, 'freq' => 'weekly', 'dow' => 1, 'dom' => 1, 'hour' => 3, 'next' => 0, 'last' => 0, 'status' => '', 'msg' => '', 'file' => '', 'size' => 0, 'sig' => ''];
+        return ['on' => 0, 'freq' => 'weekly', 'dow' => 1, 'dom' => 1, 'hour' => 3, 'next' => 0, 'last' => 0, 'status' => '', 'msg' => '', 'file' => '', 'size' => 0, 'sig' => '', 'try' => 0];
     }
 
     /** Retire la tâche d'un profil supprimé. */
@@ -95,7 +95,15 @@ class TNGBook_Auto {
         $dirty = false;
         foreach ($jobs as $name => $j) {
             if (!isset($profiles[$name])) { unset($jobs[$name]); $dirty = true; continue; }
-            if (!empty($j['on']) && !empty($j['next']) && (int) $j['next'] <= $now) $due[] = $name;
+            if (!empty($j['on']) && !empty($j['next']) && (int) $j['next'] <= $now) {
+                if (!empty($j['try']) && ($now - (int) $j['try']) > 40 * MINUTE_IN_SECONDS) {   // la tentative précédente n'a jamais rendu compte : le serveur a arrêté le processus
+                    self::record($name, ['fail', tngs_t('Génération interrompue : le serveur a arrêté le processus (temps ou mémoire insuffisants). Essayez « En arrière-plan », ou augmentez max_execution_time et memory_limit.')]);
+                    self::notify($name, ['fail', tngs_t('Génération interrompue : le serveur a arrêté le processus (temps ou mémoire insuffisants).')]);
+                    $jobs = self::jobs();
+                    continue;
+                }
+                $due[] = $name;
+            }
         }
         if ($dirty) update_option(self::JOBS, $jobs, false);
         foreach ($due as $name) self::run($name, false);
@@ -107,11 +115,23 @@ class TNGBook_Auto {
     public static function run($name, $manual) {
         if (get_transient(self::LOCK)) return ['skip', tngs_t('Une génération est déjà en cours.')];
         set_transient(self::LOCK, 1, 30 * MINUTE_IN_SECONDS);
+        $jobs = self::jobs();
+        if (isset($jobs[$name])) { $jobs[$name]['try'] = time(); update_option(self::JOBS, $jobs, false); }   // marque la tentative : sans compte rendu, elle est signalée comme interrompue
+        $done = false;
+        register_shutdown_function(function () use ($name, $manual, &$done) {   // erreur fatale (mémoire, temps) : l'échec est enregistré au lieu de disparaître
+            if ($done) return;
+            $e = error_get_last();
+            delete_transient(self::LOCK);
+            $res = ['fail', tngs_t('Génération interrompue par le serveur.') . ($e ? ' ' . $e['message'] : '')];
+            self::record($name, $res);
+            if (!$manual) self::notify($name, $res);
+        });
         try {
             $res = self::do_run($name, $manual);
         } catch (Throwable $e) {
             $res = ['fail', $e->getMessage()];
         }
+        $done = true;
         delete_transient(self::LOCK);
         self::record($name, $res);
         if (!$manual) self::notify($name, $res);
@@ -123,6 +143,7 @@ class TNGBook_Auto {
         $jobs = self::jobs();
         $j = array_merge(self::job_defaults(), $jobs[$name] ?? []);
         $j['last'] = time();
+        $j['try'] = 0;
         $j['status'] = $res[0];
         $j['msg'] = (string) $res[1];
         if ($res[0] === 'ok') { $j['file'] = (string) $res[2]; $j['size'] = (int) $res[3]; $j['sig'] = (string) ($res[4] ?? ''); }
@@ -507,7 +528,12 @@ class TNGBook_Auto {
             echo '<tr><td><strong>' . esc_html($name) . '</strong><br><span class="description">' . esc_html(strtoupper((string) ($prof['format'] ?? 'html'))) . '</span>';
             if (($prof['format'] ?? '') === 'pdf' && !TNGBook::mpdf_available()) echo '<br><span style="color:#b32d2e">' . esc_html(tngs_t('PDF direct indisponible (mPDF absent) : la génération échouera.')) . '</span>';
             echo '</td><td>' . (!empty($j['on']) ? '<span style="color:#1a7f37">●</span> ' : '<span style="color:#8c8f94">●</span> ') . esc_html(self::describe($j));
-            if (!empty($j['on']) && $j['next']) echo '<br><span class="description">' . esc_html(tngs_t('Prochaine :')) . ' ' . esc_html(wp_date('d/m/Y H:i', (int) $j['next'])) . '</span>';
+            if (!empty($j['on']) && $j['next']) {
+                echo '<br><span class="description">' . esc_html(tngs_t('Prochaine :')) . ' ' . esc_html(wp_date('d/m/Y H:i', (int) $j['next'])) . '</span>';
+                if ((int) $j['next'] < time() - HOUR_IN_SECONDS) {
+                    echo '<br><span style="color:#b32d2e">⚠ ' . esc_html(tngs_t('En retard : l’échéance est passée sans génération. Le planificateur de WordPress ne tourne que lorsque le site est visité ; sinon programmez une tâche cron du serveur qui appelle wp-cron.php toutes les heures.')) . '</span>';
+                }
+            }
             echo '</td><td>';
             if ($j['last']) {
                 $col = $j['status'] === 'ok' ? '#1a7f37' : ($j['status'] === 'fail' ? '#b32d2e' : '#6b6b6b');
