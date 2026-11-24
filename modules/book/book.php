@@ -425,6 +425,7 @@ final class TNGBook {
         }
         echo '</select>';
         if ('cover_art' === $key) echo self::cover_preview($id, (string) $current);
+        if ('avatar' === $key) echo self::avatar_preview($id, (string) $current);
         echo ($desc ? '<p class="description">' . wp_kses_post($desc) . '</p>' : '') . '</td></tr>';
     }
 
@@ -435,6 +436,17 @@ final class TNGBook {
         return '<p style="margin:10px 0 4px"><img id="' . esc_attr($id) . '-prev" src="' . esc_url($base . $cur . '.jpg') . '" alt="" width="200" style="max-width:100%;height:auto;border:1px solid #c3c4c7;box-shadow:0 1px 3px rgba(0,0,0,.15);background:#fff"></p>'
             . '<p class="description">' . esc_html(tngs_t('Aperçu indicatif (titre d’exemple) : les illustrations dessinées prennent la couleur « en-têtes et liens » du livre.')) . '</p>'
             . '<script>(function(){var s=document.getElementById(' . wp_json_encode($id) . '),i=document.getElementById(' . wp_json_encode($id . '-prev') . ');if(!s||!i)return;var b=' . wp_json_encode($base) . ';s.addEventListener("change",function(){i.src=b+s.value+".jpg";});})();</script>';
+    }
+
+    /** Aperçu des silhouettes génériques (homme, femme, inconnu) dans le style choisi ; change avec la liste. */
+    private static function avatar_preview($id, $current) {
+        $base = TNGBOOK_URL . 'assets/img/';
+        $round = $current === 'round';
+        $h = '<p id="' . esc_attr($id) . '-prev" style="margin:10px 0 4px;display:flex;gap:12px;align-items:flex-end">';
+        foreach (['male' => 'Homme', 'female' => 'Femme', 'unknown' => 'Inconnu'] as $n => $l) {
+            $h .= '<span style="text-align:center"><img data-av="' . esc_attr($n) . '" src="' . esc_url($base . $n . ($round ? '-round.png' : '.jpg')) . '" alt="" height="72" style="height:72px;width:auto;display:block;border:1px solid #c3c4c7;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.15)"><span class="description">' . esc_html(tngs_t($l)) . '</span></span>';
+        }
+        return $h . '</p><script>(function(){var s=document.getElementById(' . wp_json_encode($id) . '),p=document.getElementById(' . wp_json_encode($id . '-prev') . ');if(!s||!p)return;var b=' . wp_json_encode($base) . ';s.addEventListener("change",function(){var r=s.value==="round";[].forEach.call(p.querySelectorAll("img"),function(i){i.src=b+i.getAttribute("data-av")+(r?"-round.png":".jpg");});});})();</script>';
     }
 
     /** Liste déroulante dans une cellule de formulaire (plusieurs réglages regroupés dans une même ligne). */
