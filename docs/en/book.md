@@ -80,6 +80,7 @@ Notes:
 - A PDF is written in several short steps (about 12 s each): the document is paused on the server and resumed by a new scheduled task, which avoids hosts that cut off a long process. The panel shows the current step.
 - One job at a time. If the host stops the process, the panel says so (“Generation interrupted”) with the last step reached: tick “Compress images”, reduce the number of generations or choose the Word format.
 - Like automatic generation, the task relies on WP-Cron (see above). If it stays “waiting”, set up a server cron task that calls `wp-cron.php`.
+- If WordPress's scheduler starts nothing (the host blocks the site's calls to itself), the status panel starts each step itself, as long as the page stays open: a yellow message says so. **Scheduled** generations (no open page) really need WP-Cron or a server cron job; you can always use **In the background** by hand.
 - An e-mail can be sent at the end (common automatic generation setting).
 
 ---

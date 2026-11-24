@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.1.7
+Stable tag: 3.1.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the tables it created in the WordPress database (`tngi_inbreeding` for the implex module; `tngs_coh_res` and `tngs_coh_key` for the data consistency check). Your TNG data is never touched.
 
 == Changelog ==
+
+= 3.1.8 =
+* Family book, background generation: when WP-Cron cannot start the job (host blocking loopback requests), the status panel now runs each step itself while the page is open, instead of waiting forever.
 
 = 3.1.7 =
 * Family book, automatic generation: a scheduled generation that the server kills (time or memory) is now recorded as a failure (and e-mailed) instead of silently disappearing and retrying every hour; the overview shows "Late" in red when the scheduled time has passed without a run.
