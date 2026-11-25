@@ -1605,4 +1605,6 @@ return array(
 	'Média rattaché en double à la même personne' => 'Media attached twice to the same person',
 	'Même média rattaché plusieurs fois à la même personne' => 'Same media attached several times to the same person',
 	'Médias rattachés plusieurs fois' => 'Media attached several times',
+	'Ouvrir le média en édition dans TNG' => 'Open the media item for editing in TNG',
+	'média' => 'media',
 );

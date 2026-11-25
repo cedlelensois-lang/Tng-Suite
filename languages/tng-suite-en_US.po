@@ -4789,6 +4789,12 @@ msgstr "Same media attached several times to the same person"
 msgid "Médias rattachés plusieurs fois"
 msgstr "Media attached several times"
 
+msgid "Ouvrir le média en édition dans TNG"
+msgstr "Open the media item for editing in TNG"
+
+msgid "média"
+msgstr "media"
+
 msgctxt "js"
 msgid " Page "
 msgstr " Page "

@@ -150,6 +150,15 @@ class TNGCoh_Admin {
 		return '<a href="' . esc_url( $u ) . '" target="_blank" rel="noopener noreferrer" title="' . esc_attr( tngs_t( 'Ouvrir la fiche en édition dans TNG' ) ) . '"><code>' . esc_html( $id ) . '</code></a>';
 	}
 
+	private static function media_link( $mid ) {
+		$base = tngs_site_url();
+		if ( '' === $base || '' === $mid ) {
+			return '';
+		}
+		$u = add_query_arg( array( 'mediaID' => $mid ), $base . 'admin_editmedia.php' );
+		return '<a href="' . esc_url( $u ) . '" target="_blank" rel="noopener noreferrer" title="' . esc_attr( tngs_t( 'Ouvrir le média en édition dans TNG' ) ) . '">' . esc_html( tngs_t( 'média' ) ) . ' <code>' . esc_html( $mid ) . '</code></a>';
+	}
+
 	private static function message( array $row ) {
 		$p = json_decode( (string) $row['txt'], true );
 		return TNGCoh_Rules::describe( (string) $row['code'], is_array( $p ) ? $p : array() );
@@ -336,6 +345,13 @@ class TNGCoh_Admin {
 			echo '<td>' . esc_html( isset( $titles[ $r['code'] ] ) ? tngs_t( $titles[ $r['code'] ] ) : $r['code'] ) . '</td>';
 			echo '<td>' . esc_html( self::message( $r ) ) . '</td>';
 			$links = array_filter( array( self::link( 'P', $r['pid'], $tree ), self::link( 'F', $r['fid'], $tree ), self::link( 'P', $r['pid2'], $tree ) ), 'strlen' );
+			if ( in_array( $r['code'], array( 'M02', 'M03' ), true ) ) {   // le média concerné : page d'édition du média dans TNG
+				$pp = json_decode( (string) $r['txt'], true );
+				$ml = is_array( $pp ) && isset( $pp['mid'] ) ? self::media_link( (string) $pp['mid'] ) : '';
+				if ( '' !== $ml ) {
+					$links[] = $ml;
+				}
+			}
 			echo '<td>' . implode( ' ', $links ) . '</td>'; // phpcs:ignore WordPress.Security.EscapeOutput -- liens construits par self::link() (échappés).
 			echo '<td>' . ( 'dup' === $r['cat'] ? '<strong>' . (int) $r['score'] . '</strong>' : '–' ) . '</td>';
 			echo '<td><form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" class="tngcoh-inline">';
