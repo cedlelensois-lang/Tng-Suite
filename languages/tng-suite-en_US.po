@@ -4774,6 +4774,21 @@ msgstr "Woman"
 msgid "Inconnu"
 msgstr "Unknown"
 
+msgid "Le média n° {mid} est rattaché {n} fois à {who} au même endroit (liens en double)"
+msgstr "Media no. {mid} is attached {n} times to {who} in the same place (duplicate links)"
+
+msgid "Le média n° {mid} est rattaché {n} fois à {who} ({ev} événements ou emplacements différents)"
+msgstr "Media no. {mid} is attached {n} times to {who} ({ev} different events or locations)"
+
+msgid "Média rattaché en double à la même personne"
+msgstr "Media attached twice to the same person"
+
+msgid "Même média rattaché plusieurs fois à la même personne"
+msgstr "Same media attached several times to the same person"
+
+msgid "Médias rattachés plusieurs fois"
+msgstr "Media attached several times"
+
 msgctxt "js"
 msgid " Page "
 msgstr " Page "

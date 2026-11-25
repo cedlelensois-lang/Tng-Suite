@@ -196,7 +196,7 @@ class TNGCoh_Engine {
 			} elseif ( 'events' === $phase && ! empty( $max['ev'] ) ) {
 				$f = $st['cur'] / $max['ev'];
 			} elseif ( 'refs' === $phase ) {
-				$f = array_search( isset( $st['sub'] ) ? $st['sub'] : '', array( '', 'cit', 'src', 'med', 'cov' ), true ) / 5;
+				$f = array_search( isset( $st['sub'] ) ? $st['sub'] : '', array( '', 'cit', 'src', 'med', 'mdup', 'cov' ), true ) / 6;
 			}
 			$pct = (int) floor( $w[ $phase ][0] + $w[ $phase ][1] * min( 1, max( 0, (float) $f ) ) );
 		}
@@ -1341,7 +1341,7 @@ class TNGCoh_Engine {
 
 	/** Citations, sources, liens médias : références cassées, sources jamais citées, part des personnes sans source. */
 	private function phase_refs() {
-		$subs = array( 'cit', 'src', 'med', 'cov' );
+		$subs = array( 'cit', 'src', 'med', 'mdup', 'cov' );
 		$sub  = isset( $this->st['sub'] ) && '' !== $this->st['sub'] ? $this->st['sub'] : 'cit';
 		try {
 			$done = $this->refs_step( $sub );
@@ -1427,6 +1427,33 @@ class TNGCoh_Engine {
 				$o               = isset( $own[ $pf ] ) && in_array( $lt, array( 'I', 'F' ), true ) ? $own[ $pf ] : array( 'k' => '', 'who' => $pf );
 				$wk              = 'F' === $o['k'] ? 'F' : ( in_array( $lt, array( 'S', 'R', 'L', 'C' ), true ) ? $lt : '' );
 				$this->add( 'M01', 'P' === $o['k'] ? $pf : '', 'F' === $o['k'] ? $pf : '', '', array( 'who' => $o['who'], 'mid' => (string) $r['mediaID'] ) + ( '' !== $wk ? array( 'wk' => $wk ) : array() ), 0, null, (string) $r['medialinkID'] );
+			}
+			return false;
+		}
+		if ( 'mdup' === $sub ) {   // même média rattaché plusieurs fois à la même personne (ou famille, source…)
+			$rows = $this->rows(
+				"SELECT l.personID, l.mediaID, l.linktype, COUNT(*) n, COUNT(DISTINCT l.eventID) ev, MIN(l.medialinkID) mn FROM {$t['mlinks']} l
+				 WHERE l.gedcom = %s GROUP BY l.personID, l.mediaID, l.linktype HAVING COUNT(*) > 1 AND MIN(l.medialinkID) > %d ORDER BY MIN(l.medialinkID) LIMIT 400", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				array( $this->tree, (int) $this->st['cur'] )
+			);
+			if ( ! $rows ) {
+				return true;
+			}
+			$ids = array();
+			foreach ( $rows as $r ) {
+				if ( in_array( strtoupper( (string) $r['linktype'] ), array( 'I', 'F' ), true ) ) {
+					$ids[] = (string) $r['personID'];
+				}
+			}
+			$own = $this->owners( $ids );
+			foreach ( $rows as $r ) {
+				$this->st['cur'] = (int) $r['mn'];
+				$pf              = (string) $r['personID'];
+				$lt              = strtoupper( (string) $r['linktype'] );
+				$o               = isset( $own[ $pf ] ) && in_array( $lt, array( 'I', 'F' ), true ) ? $own[ $pf ] : array( 'k' => '', 'who' => $pf );
+				$wk              = 'F' === $o['k'] ? 'F' : ( in_array( $lt, array( 'S', 'R', 'L', 'C' ), true ) ? $lt : '' );
+				$same            = (int) $r['ev'] <= 1;
+				$this->add( $same ? 'M02' : 'M03', 'P' === $o['k'] ? $pf : '', 'F' === $o['k'] ? $pf : '', '', array( 'who' => $o['who'], 'mid' => (string) $r['mediaID'], 'n' => (int) $r['n'], 'ev' => (int) $r['ev'] ) + ( '' !== $wk ? array( 'wk' => $wk ) : array() ), 0, null, $r['mediaID'] . '~' . $lt );
 			}
 			return false;
 		}

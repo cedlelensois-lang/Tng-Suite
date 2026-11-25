@@ -288,7 +288,7 @@ class TNGCoh_Admin {
 			echo '<details class="tngcoh-partsinfo"><summary>' . esc_html( tngs_t( 'Parties analysées' ) ) . '</summary><ul><li>' . implode( '</li><li>', $bits ) . '</li></ul></details>'; // phpcs:ignore WordPress.Security.EscapeOutput -- éléments échappés ci-dessus.
 		}
 		if ( ! empty( $l['fail'] ) && is_array( $l['fail'] ) ) {
-			$fl = array( 'events' => 'Événements', 'cit' => 'Citations de sources', 'src' => 'Sources jamais citées', 'med' => 'Liens vers les médias', 'cov' => 'Part des personnes sans source' );
+			$fl = array( 'events' => 'Événements', 'cit' => 'Citations de sources', 'src' => 'Sources jamais citées', 'med' => 'Liens vers les médias', 'mdup' => 'Médias rattachés plusieurs fois', 'cov' => 'Part des personnes sans source' );
 			foreach ( $l['fail'] as $fk => $fm ) {
 				echo '<div class="notice notice-warning inline"><p>' . esc_html( tngs_t( 'Cette partie n’a pas pu être analysée (tables ou colonnes TNG inattendues) :' ) ) . ' <strong>' . esc_html( tngs_t( isset( $fl[ $fk ] ) ? $fl[ $fk ] : (string) $fk ) ) . '</strong> – <code>' . esc_html( (string) $fm ) . '</code></p></div>';
 			}

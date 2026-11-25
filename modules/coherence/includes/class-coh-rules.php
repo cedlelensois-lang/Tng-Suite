@@ -40,7 +40,7 @@ class TNGCoh_Rules {
 			'struct'   => array( 'T06', 'T09' ),
 			'dupes'    => array( 'P01' ),
 			'events'   => array( 'E01', 'E02', 'E03', 'E04', 'E05' ),
-			'refs'     => array( 'R01', 'R02', 'R03', 'M01' ),
+			'refs'     => array( 'R01', 'R02', 'R03', 'M01', 'M02', 'M03' ),
 			'places'   => array( 'L01' ),
 		);
 	}
@@ -178,6 +178,8 @@ class TNGCoh_Rules {
 			'R02' => array( 'source', self::INFO, 'Source « {src} » jamais citée{title}' ),
 			'R03' => array( 'source', self::INFO, '{pct} % des personnes ({n} sur {tot}) n’ont aucune source citée' ),
 			'M01' => array( 'source', self::WARN, 'Lien média de {who} : le média n° {mid} n’existe pas' ),
+			'M02' => array( 'source', self::WARN, 'Le média n° {mid} est rattaché {n} fois à {who} au même endroit (liens en double)' ),
+			'M03' => array( 'source', self::INFO, 'Le média n° {mid} est rattaché {n} fois à {who} ({ev} événements ou emplacements différents)' ),
 			'G01' => array( 'gedcom', self::WARN, 'Barre oblique « / » dans le nom : « {txt} » (elle délimite le nom de famille dans un fichier GEDCOM)' ),
 			'G02' => array( 'gedcom', self::WARN, 'Caractère de contrôle ou invisible dans le nom : « {txt} »' ),
 			'G03' => array( 'gedcom', self::INFO, 'Nom très long ({n} caractères, limite GEDCOM : 120) : « {txt} »' ),
@@ -241,6 +243,8 @@ class TNGCoh_Rules {
 			'R02' => 'Source jamais citée',
 			'R03' => 'Personnes sans aucune source',
 			'M01' => 'Lien vers un média inexistant',
+			'M02' => 'Média rattaché en double à la même personne',
+			'M03' => 'Même média rattaché plusieurs fois à la même personne',
 			'G01' => 'Barre oblique dans le nom',
 			'G02' => 'Caractère invisible dans le nom',
 			'G03' => 'Nom trop long pour GEDCOM',

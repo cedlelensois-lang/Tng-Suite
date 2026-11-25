@@ -3,7 +3,7 @@ Tags: genealogy, family tree, tng, timeline, statistics
 Requires at least: 5.8
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.1.9
+Stable tag: 3.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,9 @@ Yes, per module, in TNG Suite > General > Modules. A warning and a confirmation 
 Only the plugin's own settings, caches, scheduled task and the tables it created in the WordPress database (`tngi_inbreeding` for the implex module; `tngs_coh_res` and `tngs_coh_key` for the data consistency check). Your TNG data is never touched.
 
 == Changelog ==
+
+= 3.2.0 =
+* Data consistency: new checks M02 and M03 ("Sources and media" part) report a media item attached several times to the same person (duplicate links in the same place; same media attached to different events).
 
 = 3.1.9 =
 * Family book: the "Generic silhouettes style" setting now shows a preview of the man / woman / unknown silhouettes, updated when the style changes.

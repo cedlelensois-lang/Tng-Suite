@@ -1600,4 +1600,9 @@ return array(
 	'Homme' => 'Man',
 	'Femme' => 'Woman',
 	'Inconnu' => 'Unknown',
+	'Le média n° {mid} est rattaché {n} fois à {who} au même endroit (liens en double)' => 'Media no. {mid} is attached {n} times to {who} in the same place (duplicate links)',
+	'Le média n° {mid} est rattaché {n} fois à {who} ({ev} événements ou emplacements différents)' => 'Media no. {mid} is attached {n} times to {who} ({ev} different events or locations)',
+	'Média rattaché en double à la même personne' => 'Media attached twice to the same person',
+	'Même média rattaché plusieurs fois à la même personne' => 'Same media attached several times to the same person',
+	'Médias rattachés plusieurs fois' => 'Media attached several times',
 );

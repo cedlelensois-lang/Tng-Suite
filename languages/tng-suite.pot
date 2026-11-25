@@ -4774,6 +4774,21 @@ msgstr ""
 msgid "Inconnu"
 msgstr ""
 
+msgid "Le média n° {mid} est rattaché {n} fois à {who} au même endroit (liens en double)"
+msgstr ""
+
+msgid "Le média n° {mid} est rattaché {n} fois à {who} ({ev} événements ou emplacements différents)"
+msgstr ""
+
+msgid "Média rattaché en double à la même personne"
+msgstr ""
+
+msgid "Même média rattaché plusieurs fois à la même personne"
+msgstr ""
+
+msgid "Médias rattachés plusieurs fois"
+msgstr ""
+
 msgctxt "js"
 msgid " Page "
 msgstr ""
